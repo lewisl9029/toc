@@ -5,6 +5,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.provision :shell, path: "vagrant-provision.sh"
 
+  config.vm.provision "shell", run: "always" do |s|
+    s.inline = "alias toc='sudo /vagrant/docker-run.sh'"
+    s.inline = "alias toc-build='sudo /vagrant/docker-build.sh'"
+  end
+
   config.vm.network "forwarded_port", guest: 8100, host: 8100
   config.vm.network "forwarded_port", guest: 35729, host: 35729
 end
