@@ -8,8 +8,6 @@ VOLUME /toc
 
 WORKDIR /toc
 
-RUN npm install; npm cache clean
-
 EXPOSE 8100 35729
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["ionic"]
