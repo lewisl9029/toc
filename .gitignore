@@ -1,2 +1,5 @@
 .idea
 .vagrant
+node_modules/
+platforms/
+plugins/
