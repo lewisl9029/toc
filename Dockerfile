@@ -4,10 +4,10 @@ MAINTAINER Lewis Liu
 
 RUN npm install -g jspm ionic
 
-VOLUME /app
+VOLUME /toc
 
-WORKDIR /app
+WORKDIR /toc
 
-EXPOSE 3000
+EXPOSE 8100 35729
 
 CMD ["/bin/bash"]
