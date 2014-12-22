@@ -9,5 +9,3 @@ VOLUME /toc
 WORKDIR /toc
 
 EXPOSE 8100 35729
-
-ENTRYPOINT ["ionic"]
