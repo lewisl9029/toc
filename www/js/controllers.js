@@ -33,9 +33,9 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope) {
+.controller('PlaylistsCtrl', function($scope, es6Test) {
   $scope.playlists = [
-    { title: 'Reggae', id: 1 },
+    { title: es6Test, id: 1 },
     { title: 'Chill', id: 2 },
     { title: 'Dubstep', id: 3 },
     { title: 'Indie', id: 4 },

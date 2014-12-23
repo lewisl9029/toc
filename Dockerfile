@@ -1,8 +1,8 @@
-FROM lewisl9029/node-environment:latest
+FROM lewisl9029/node-environment:0.1.2
 
 MAINTAINER Lewis Liu
 
-RUN npm install -g jspm ionic cordova gulp; npm cache clean
+RUN npm install -g jspm jspm-bower traceur ionic cordova gulp karma ; npm cache clean
 
 VOLUME /toc
 
