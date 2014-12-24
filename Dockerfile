@@ -1,8 +1,16 @@
-FROM lewisl9029/node-environment:0.1.2
+FROM lewisl9029/node-environment:0.1.3
 
 MAINTAINER Lewis Liu
 
-RUN npm install -g jspm jspm-bower traceur ionic cordova gulp karma ; npm cache clean
+RUN npm install -g \
+  cordova \
+  gulp \
+  ionic \
+  jspm \
+  jspm-bower \
+  karma-cli \
+  traceur \
+  && npm cache clean
 
 VOLUME /toc
 
