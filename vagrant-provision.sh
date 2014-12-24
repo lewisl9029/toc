@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 apt-get update && apt-get -y install \
-  docker.io \
-  dos2unix \
+  docker.io=1.0.1~dfsg1-0ubuntu1~ubuntu0.14.04.1 \
+  dos2unix=6.0.4-1 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
