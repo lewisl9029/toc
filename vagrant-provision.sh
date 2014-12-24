@@ -12,7 +12,7 @@ dos2unix /vagrant/docker-build-dev.sh
 (
 cat <<EOF
 alias toc="sudo /vagrant/docker-run-dev.sh"
-alias stoc="sudo /vagrant/docker-serve-dev.sh"
-alias btoc="sudo /vagrant/docker-build-dev.sh"
+alias tocs="sudo /vagrant/docker-serve-dev.sh"
+alias tocb="sudo /vagrant/docker-build-dev.sh"
 EOF
 ) >> .bash_aliases

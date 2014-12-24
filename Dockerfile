@@ -1,6 +1,8 @@
-FROM lewisl9029/node-environment:0.1.4
+FROM lewisl9029/node-environment:0.1.5
 
 MAINTAINER Lewis Liu
+
+RUN n 0.10.35
 
 RUN npm install -g \
   cordova@4.1.2 \
