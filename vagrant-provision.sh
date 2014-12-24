@@ -2,7 +2,7 @@
 apt-get update && apt-get -y install \
   docker.io \
   dos2unix \
-  && apt-get clean
+  && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 dos2unix /vagrant/docker-run-dev.sh
