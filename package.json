@@ -16,8 +16,16 @@
   },
   "jspm": {
     "directories": {
-      "dist": "www",
+      "baseURL": "app",
+      "dist": "dist",
       "lib": "app"
+    },
+    "dependencies": {
+      "angular": "1.3.8",
+      "angular-ui-router": "0.2.13",
+      "es6-shim": "github:paulmillr/es6-shim@0.22.1",
+      "ionic": "0.9.26",
+      "ramda": "github:ramda/ramda@0.8.0"
     }
   }
 }

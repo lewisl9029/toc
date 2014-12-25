@@ -1,4 +1,4 @@
-FROM lewisl9029/node-environment:0.1.5
+FROM lewisl9029/node-environment:0.1.6
 
 MAINTAINER Lewis Liu
 
@@ -12,7 +12,7 @@ RUN npm install -g \
   traceur@0.0.79 \
   && npm cache clean
 
-RUN n 0.10.35
+RUN n 0.11.14
 
 VOLUME /toc
 
