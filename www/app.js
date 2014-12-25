@@ -5,10 +5,12 @@ import run from './app-run';
 import config from './app-config';
 
 import views from './views/views';
+import components from './components/components';
 
 let app = angular.module('toc', [
   'ionic',
-  views.name
+  views.name,
+  components.name
 ]).run(run)
   .config(config);
 
