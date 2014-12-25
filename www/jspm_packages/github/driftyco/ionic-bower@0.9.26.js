@@ -1,1 +1,0 @@
-module.exports = require("github:driftyco/ionic-bower@0.9.26/js/dist/js/ionic.bundle");

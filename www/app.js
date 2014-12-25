@@ -1,11 +1,11 @@
-let dependencies = [
+import angular from 'angular';
+import 'ionic';
+import run from './app-run';
+import config from './app-config';
+
+let app = angular.module('toc', [
   'ionic'
-];
+]).run(run)
+  .config(config);
 
-let dependenciesLoaded = dependencies.map((dependency) => {
-  return System.import(dependency);
-});
-
-export default Promise.all(dependenciesLoaded).then((dependencies) => {
-  return angular.module('toc', dependencies);
-}).catch(console.log);
+export default app;

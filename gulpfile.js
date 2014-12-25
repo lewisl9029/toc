@@ -36,12 +36,12 @@ gulp.task('sass', function(done) {
 });
 
 gulp.task('js', function() {
-  gulp.src('./www/app.js')
-    .pipe(sourcemaps.init())
-    .pipe(traceur())
-    .pipe(concat('app.es6.js'))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('./www/'));
+  //gulp.src('./www/app.js')
+  //  .pipe(sourcemaps.init())
+  //  .pipe(traceur())
+  //  .pipe(concat('app.es6.js'))
+  //  .pipe(sourcemaps.write())
+  //  .pipe(gulp.dest('./www/'));
 });
 
 gulp.task('watch', function() {

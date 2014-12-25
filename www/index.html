@@ -10,20 +10,12 @@
   <script src="jspm_packages/es6-module-loader.js"></script>
   <script src="jspm_packages/system.js"></script>
   <script src="config.js"></script>
-  <script src="jspm_packages/github/paulmillr/es6-shim@0.22.1/es6-shim.js"></script>
-  <script src="jspm_packages/github/angular/bower-angular@1.3.8/angular.js"></script>
-  <script src="app.es6.js" type="module"></script>
   <script>
-    System.import('app').then(function (appLoaded) {
-      appLoaded.then(function (app) {
-        angular.element(document).ready(function() {
-          angular.bootstrap(document, ['toc']);
-        });
-      });
-    });
+    System.baseURL = '/';
+    System.import('bootstrap');
   </script>
 </head>
-<body>
-
+<body data-toc-app ng-cloak>
+  <ion-nav-view></ion-nav-view>
 </body>
 </html>
