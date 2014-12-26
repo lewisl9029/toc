@@ -1,16 +1,33 @@
-FROM lewisl9029/node-environment:0.1.6
+FROM lewisl9029/node-environment:0.1.7
 
 MAINTAINER Lewis Liu
 
-RUN npm install -g \
-  cordova@4.1.2 \
-  gulp@3.8.10 \
-  ionic@1.2.13 \
-  jspm@0.9.0 \
-  jspm-bower@0.0.3 \
-  n@1.2.1 \
-  traceur@0.0.79 \
-  && npm cache clean
+# Set up android build environment
+WORKDIR /usr/local
+
+RUN curl -L -O http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz
+
+RUN apt-get -y install openjdk-7-jdk=7u71-2.5.3-0ubuntu0.14.04.1 && apt-get clean
+RUN apt-get -y install ant=1.9.3-2build1 && apt-get clean
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN tar xf android-sdk_r24.0.2-linux.tgz
+RUN rm -rf android-sdk_r24.0.2-linux.tgz
+
+RUN echo y | android-sdk-linux/tools/android update sdk --filter tools --no-ui --force -a
+RUN echo y | android-sdk-linux/tools/android update sdk --filter platform-tools --no-ui --force -a
+RUN echo y | android-sdk-linux/tools/android update sdk --filter android-19 --no-ui --force -a
+
+ENV ANDROID_HOME /usr/local/android-sdk-linux
+ENV PATH $PATH:$ANDROID_HOME/tools
+ENV PATH $PATH:$ANDROID_HOME/platform-tools
+
+# Set up node environment
+RUN npm install -g cordova@4.1.2
+RUN npm install -g gulp@3.8.10
+RUN npm install -g ionic@1.2.13
+RUN npm install -g jspm@0.9.0
+RUN npm cache clean
 
 RUN n 0.11.14
 
