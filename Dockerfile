@@ -30,13 +30,12 @@ RUN npm install -g cordova@4.1.2
 RUN npm install -g gulp@3.8.10
 RUN npm install -g ionic@1.2.13
 RUN npm install -g jspm@0.9.0
+RUN npm cache clean
 
 RUN n 0.11.14
 
 VOLUME /toc
 
 WORKDIR /toc
-
-RUN npm install && npm cache clean
 
 EXPOSE 8100 35729
