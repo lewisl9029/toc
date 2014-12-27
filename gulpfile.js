@@ -7,9 +7,7 @@ var paths = {
   sass: [
     './www/components/**/*.scss',
     './www/views/**/*.scss',
-    './www/app.scss',
-    '!./www/app.css',
-    '!./www/app.min.css'
+    './www/app.scss'
   ]
 };
 

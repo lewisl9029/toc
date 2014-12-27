@@ -4,6 +4,7 @@ import 'ionic';
 import run from './app-run';
 import config from './app-config';
 
+import libraries from './libraries/libraries';
 import views from './views/views';
 import components from './components/components';
 
