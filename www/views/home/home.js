@@ -6,7 +6,7 @@ import config from './home-config';
 import controller from './home-controller';
 import service from './home-service';
 
-let home = angular.module('toc.home', [
+let home = angular.module('toc.views.home', [
   contacts.name
 ]).config(config)
   .controller(controller.name, controller)
