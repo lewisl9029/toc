@@ -2,7 +2,9 @@ System.config({
   "paths": {
     "*": "*.js",
     "~/*": "/*.js",
-    "github:*": "jspm_packages/github/*.js"
+    "github:*": "jspm_packages/github/*.js",
+    "toc-messenger/*": "/*.js",
+    "npm:*": "jspm_packages/npm/*.js"
   }
 });
 
