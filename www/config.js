@@ -3,7 +3,7 @@ System.config({
     "*": "*.js",
     "~/*": "/*.js",
     "github:*": "jspm_packages/github/*.js",
-    "toc-messenger/*": "/*.js",
+    "toc/*": "/*.js",
     "npm:*": "jspm_packages/npm/*.js"
   }
 });

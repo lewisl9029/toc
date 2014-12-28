@@ -1,6 +1,5 @@
 import angular from 'angular';
 import 'ionic';
-import telehash from 'telehash';
 
 import libraries from './libraries/libraries';
 import views from './views/views';
