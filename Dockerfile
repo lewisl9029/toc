@@ -1,4 +1,4 @@
-FROM lewisl9029/node-environment:0.1.7
+FROM lewisl9029/node-environment:0.1.8
 
 MAINTAINER Lewis Liu
 
@@ -26,13 +26,13 @@ ENV PATH $PATH:$ANDROID_HOME/tools
 ENV PATH $PATH:$ANDROID_HOME/platform-tools
 
 # Set up node environment
+RUN n 0.11.14
+RUN npm install -g npm@2.1.16
 RUN npm install -g cordova@4.1.2
 RUN npm install -g gulp@3.8.10
 RUN npm install -g ionic@1.2.13
-RUN npm install -g jspm@0.9.0
+RUN npm install -g jspm@0.10.0
 RUN npm cache clean
-
-RUN n 0.11.14
 
 VOLUME /toc
 
