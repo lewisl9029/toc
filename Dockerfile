@@ -35,7 +35,6 @@ RUN ln -s phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/share/phantomjs
 RUN ln -s phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs
 RUN ln -s phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
 
-RUN n 0.11.14
 RUN npm install -g npm@2.1.16
 RUN npm install -g cordova@4.1.2
 RUN npm install -g gulp@3.8.10

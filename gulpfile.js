@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
 
 var paths = {
   sass: [
@@ -13,7 +14,9 @@ gulp.task('default', ['sass']);
 
 gulp.task('sass', function(done) {
   gulp.src('./www/app.scss')
+    .pipe(sourcemaps.init())
     .pipe(sass())
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('./www/'))
     .on('end', done);
 });
