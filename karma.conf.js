@@ -10,13 +10,23 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha'],
+    frameworks: [
+      'mocha',
+      'jspm'
+    ],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'www/**/*.js'
     ],
+
+    jspm: {
+      loadFiles: [
+        'www/**/*-test.unit.js'
+      ],
+      config: 'www/config.js',
+      packages: 'www/jspm_packages'
+    },
 
 
     // list of files to exclude
@@ -55,7 +65,17 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['ChromeHeadless'],
+
+    customLaunchers: {
+      ChromeHeadless: {
+        base: 'Chrome',
+        flags: [
+          '--no-sandbox',
+          '--disable-gpu'
+        ]
+      }
+    },
 
 
     // Continuous Integration mode
