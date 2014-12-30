@@ -74,6 +74,8 @@ I have provided several aliases for quick access to common dev workflows:
   tocs
   ```
   
+  Note that simply running toc ionic serve won't work because it requires ports to be exposed to the host VM and then to the local OS. This alias takes care of all the configuration for you.
+  
 - Test the app using karma (still working on this):
   ```
   toct
