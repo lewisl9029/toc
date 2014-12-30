@@ -3,6 +3,8 @@ Distributed Instant Messaging
 
 ## Environment Setup
 
+Note: The setup process can be somewhat bandwidth intensive as it involves downloading an Ubuntu Server VM and doing a bunch of apt-get install's and npm install's. The repository itself comes with all the non-global dependencies and binary packages checked in, and thus is also quite large. Be prepared to use up at least 2GB of data.
+
 1. Install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/)
 2. Clone the repository
 3. Open terminal and navigate to local repository
@@ -92,6 +94,6 @@ Let me know if you have suggestions for any aliases for other common tasks. Or b
 
 I have a Drone CI server hosted at http://azure.lewisl.net:8101, but this is on hold until I can get karma and docker in docker working properly.
 
-## Continous Delivery
+## Continous Deployment
 
 TBD - https://toc.lewisl.io
