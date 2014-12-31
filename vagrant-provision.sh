@@ -12,24 +12,24 @@ apt-get update && apt-get -y install \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*
 
-if [ ! -f $TOC_DIR:/containers/build/.packages/android-sdk_r24.0.2-linux.tgz ];
+if [ ! -f $TOC_DIR/containers/build/.packages/android-sdk_r24.0.2-linux.tgz ];
 then
-  wget -O $TOC_DIR:/containers/build/.packages/android-sdk_r24.0.2-linux.tgz https://dl.dropboxusercontent.com/u/172349/android-sdk_r24.0.2-linux.tgz
+  wget -O $TOC_DIR/containers/build/.packages/android-sdk_r24.0.2-linux.tgz https://dl.dropboxusercontent.com/u/172349/android-sdk_r24.0.2-linux.tgz
 fi
 
-if [ ! -f $TOC_DIR:/containers/test/.packages/google-chrome-stable_current_amd64.deb ];
+if [ ! -f $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb ];
 then
-  wget -O $TOC_DIR:/containers/test/.packages/google-chrome-stable_current_amd64.deb https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb
+  wget -O $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb
 fi
 
-#dos2unix /vagrant/docker-run-dev.sh
-#dos2unix /vagrant/docker-serve-dev.sh
-#dos2unix /vagrant/docker-build-dev.sh
+dos2unix $TOC_DIR/containers/toc-build.sh
+source $TOC_DIR/containers/toc-build.sh
 
 (
-cat <<EOF
-#alias toc="sudo /vagrant/docker-run-dev.sh"
-#alias tocs="sudo /vagrant/docker-serve-dev.sh"
-#alias tocb="sudo /vagrant/docker-build-dev.sh"
+cat <EOF
+alias toc="sudo docker run -i -t --rm -v $TOC_DIR:/toc toc-dev:$TOC_VERSION "$@""
+alias tocs="sudo docker run -i -t --rm -p 8100:8100 -p 35729:35729 -v $TOC_DIR:/toc toc-dev:$TOC_VERSION ionic serve "$@""
+alias toct="sudo docker run -i -t --rm -p 8101:8101 -v $TOC_DIR:/toc toc-test:$TOC_VERSION karma start "$@""
+alias tocb="sudo $TOC_DIR/containers/toc-build.sh"
 EOF
-) >> .bash_aliases
+) > .bash_aliases

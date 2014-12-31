@@ -16,10 +16,11 @@ RUN apt-get -y -f install && apt-get clean
 
 RUN apt-get -y install xvfb=2:1.15.1-0ubuntu2.6 && apt-get clean
 
-RUN Xvfb :1 -screen 0 1024x768x24 -ac &
 ENV DISPLAY :1
 
 # Expose karma server port
-EXPOSE 9876
+EXPOSE 8101
 
 WORKDIR /toc
+
+CMD sh -c (Xvfb :1 -screen 0 1024x768x24 -ac &) && (karma start)
