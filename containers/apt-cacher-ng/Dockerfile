@@ -1,1 +1,0 @@
-FROM toc-dev:latest

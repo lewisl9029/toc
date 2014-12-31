@@ -13,9 +13,9 @@ apt-get update && apt-get -y install \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*
 
-if [ ! -f $TOC_DIR/containers/build/.packages/android-sdk_r24.0.2-linux.tgz ];
+if [ ! -f $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz ];
 then
-  wget -O $TOC_DIR/containers/build/.packages/android-sdk_r24.0.2-linux.tgz https://dl.dropboxusercontent.com/u/172349/android-sdk_r24.0.2-linux.tgz
+  wget -O $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz https://dl.dropboxusercontent.com/u/172349/android-sdk_r24.0.2-linux.tgz
 fi
 
 if [ ! -f $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb ];
@@ -23,17 +23,20 @@ then
   wget -O $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb
 fi
 
-dos2unix $TOC_DIR/containers/toc-build-web.sh
-dos2unix $TOC_DIR/containers/toc-build-phone.sh
-source $TOC_DIR/containers/toc-build-web.sh
+dos2unix $TOC_DIR/containers/toc-setup-env.sh
+dos2unix $TOC_DIR/containers/toc-setup-web.sh
+dos2unix $TOC_DIR/containers/toc-setup-phone.sh
+source $TOC_DIR/containers/toc-setup-env.sh
+source $TOC_DIR/containers/toc-setup-web.sh
 
 (
 cat <<EOF
 alias toc="sudo docker run -i -t --rm -v $TOC_DIR:/toc toc-dev:latest "$@""
-alias tocb="$TOC_DIR/containers/toc-build-web.sh"
+alias toce="$TOC_DIR/containers/toc-setup-env.sh"
+alias tocb="$TOC_DIR/containers/toc-setup-web.sh"
 alias tocs="sudo docker run -i -t --rm -p 8100:8100 -p 35729:35729 -v $TOC_DIR:/toc toc-dev:latest ionic serve "$@""
 alias toci="sudo docker run -i -t --rm -v $TOC_DIR:/toc toc-dev:latest jspm install "$@""
 alias toct="sudo docker run -i -t --rm -p 8101:8101 -v $TOC_DIR:/toc toc-test:latest"
-alias tocp="$TOC_DIR/containers/toc-build-phone.sh && sudo docker run -i -t --rm -v $TOC_DIR:/toc toc-phone:latest"
+alias tocp="$TOC_DIR/containers/toc-setup-phone.sh"
 EOF
 ) > .bash_aliases
