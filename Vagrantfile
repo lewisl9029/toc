@@ -6,7 +6,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, path: "vagrant-provision.sh"
 
   config.vm.network "forwarded_port", guest: 8100, host: 8100
+  config.vm.network "forwarded_port", guest: 9876, host: 9876
   config.vm.network "forwarded_port", guest: 35729, host: 35729
+
+  config.vm.synced_folder ".", "/toc"
 
   config.vm.provider "virtualbox" do |v|
     v.memory = 1024

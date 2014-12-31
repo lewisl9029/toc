@@ -3,3 +3,4 @@
 platforms/
 plugins/
 www/app.css
+containers/**/.packages

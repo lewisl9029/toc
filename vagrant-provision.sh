@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+export TOC_DIR=/toc
+
 echo deb https://get.docker.com/ubuntu docker main \
   > /etc/apt/sources.list.d/docker.list
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
@@ -10,15 +12,24 @@ apt-get update && apt-get -y install \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*
 
+if [ ! -f $TOC_DIR:/containers/build/.packages/android-sdk_r24.0.2-linux.tgz ];
+then
+  wget -O $TOC_DIR:/containers/build/.packages/android-sdk_r24.0.2-linux.tgz https://dl.dropboxusercontent.com/u/172349/android-sdk_r24.0.2-linux.tgz
+fi
 
-dos2unix /vagrant/docker-run-dev.sh
-dos2unix /vagrant/docker-serve-dev.sh
-dos2unix /vagrant/docker-build-dev.sh
+if [ ! -f $TOC_DIR:/containers/test/.packages/google-chrome-stable_current_amd64.deb ];
+then
+  wget -O $TOC_DIR:/containers/test/.packages/google-chrome-stable_current_amd64.deb https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb
+fi
+
+#dos2unix /vagrant/docker-run-dev.sh
+#dos2unix /vagrant/docker-serve-dev.sh
+#dos2unix /vagrant/docker-build-dev.sh
 
 (
 cat <<EOF
-alias toc="sudo /vagrant/docker-run-dev.sh"
-alias tocs="sudo /vagrant/docker-serve-dev.sh"
-alias tocb="sudo /vagrant/docker-build-dev.sh"
+#alias toc="sudo /vagrant/docker-run-dev.sh"
+#alias tocs="sudo /vagrant/docker-serve-dev.sh"
+#alias tocb="sudo /vagrant/docker-build-dev.sh"
 EOF
 ) >> .bash_aliases
