@@ -1,6 +1,7 @@
 import angular from 'angular';
 import 'ionic';
 
+import services from './services/services';
 import libraries from './libraries/libraries';
 import views from './views/views';
 import components from './components/components';
@@ -10,6 +11,8 @@ import config from './app-config';
 
 let app = angular.module('toc', [
   'ionic',
+  services.name,
+  libraries.name,
   views.name,
   components.name
 ]).run(run)

@@ -2,6 +2,8 @@ FROM debian:wheezy
 
 MAINTAINER Lewis Liu
 
+RUN echo 'Acquire::http { Proxy "http://localhost:3142"; };' >> /etc/apt/apt.conf.d/01proxy
+
 RUN apt-get update \
   && apt-get -y install \
     build-essential=11.6ubuntu6 \

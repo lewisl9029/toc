@@ -5,6 +5,7 @@ MAINTAINER Lewis Liu
 VOLUME /toc
 
 # Set up node environment
+RUN npm set registry http://localhost:4873
 RUN npm install -g n@1.2.9
 RUN n 0.10.35
 RUN npm install -g npm@2.1.16
