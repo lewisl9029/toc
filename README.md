@@ -1,5 +1,6 @@
 # Toc Messenger
 Distributed Instant Messaging
+
 University of Waterloo Computer Engineering FYDP Project Group 010
 
 ## Environment Setup
