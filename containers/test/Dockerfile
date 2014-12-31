@@ -1,4 +1,4 @@
-FROM lewisl9029/toc-dev:latest
+FROM toc-dev:latest
 
 MAINTAINER Lewis Liu
 
@@ -10,9 +10,8 @@ WORKDIR /usr/local
 RUN npm install -g karma-cli@0.0.4
 RUN npm cache clean
 
-COPY .packages/google-chrome-stable_current_amd64.deb /usr/local
-RUN dpkg -i google-chrome-stable_current_amd64.deb
-RUN apt-get -y -f install && apt-get clean
+COPY .packages/google-chrome-stable_current_amd64.deb /usr/local/
+RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -y -f install && apt-get clean
 
 RUN apt-get -y install xvfb=2:1.15.1-0ubuntu2.6 && apt-get clean
 
@@ -23,4 +22,4 @@ EXPOSE 8101
 
 WORKDIR /toc
 
-CMD sh -c (Xvfb :1 -screen 0 1024x768x24 -ac &) && (karma start)
+CMD sh -c "(Xvfb :1 -screen 0 1024x768x24 -ac &) && karma start"
