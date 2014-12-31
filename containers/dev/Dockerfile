@@ -7,8 +7,8 @@ VOLUME /toc
 # Set up node environment
 RUN npm install -g npm@2.1.16
 RUN npm install -g cordova@4.1.2
-RUN npm install -g gulp@3.8.10
-RUN npm install -g ionic@1.2.13
+RUN npm install -g gulp-cli@0.1.3
+RUN npm install -g ionic@1.2.14
 RUN npm install -g jspm@0.10.0
 RUN npm cache clean
 
