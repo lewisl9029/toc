@@ -1,3 +1,0 @@
-[submodule "containers/cache/npm"]
-	path = containers/cache/npm
-	url = git@github.com:keyvanfatehi/docker-sinopia.git
