@@ -3,8 +3,10 @@ FROM ubuntu:14.04
 MAINTAINER Lewis Liu
 
 VOLUME ["/var/cache/apt-cacher-ng"]
+
 RUN apt-get update \
-  && apt-get install -y apt-cacher-ng
+  && apt-get install -y \
+    apt-cacher-ng=0.7.26-1
 
 EXPOSE 3142
 CMD chmod 777 /var/cache/apt-cacher-ng \
