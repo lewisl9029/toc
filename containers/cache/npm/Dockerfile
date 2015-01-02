@@ -1,18 +1,12 @@
 FROM toc-env:latest
 MAINTAINER Lewis Liu
 
-VOLUME /opt/sinopia/storage
-
-WORKDIR /opt/sinopia
-
 RUN adduser --disabled-password --gecos "" sinopia
-COPY /config_gen.js /opt/sinopia/config_gen.js
-COPY /start.sh /opt/sinopia/start.sh
-
-RUN npm install js-yaml sinopia@0.13.0
-RUN chown -R sinopia:sinopia /opt/sinopia
+RUN npm install -g sinopia
+RUN mkdir -p /usr/local/sinopia/storage
+RUN chown -R sinopia:sinopia /usr/local/sinopia
 
 USER sinopia
 
 EXPOSE 4873
-CMD ["/opt/sinopia/start.sh"]
+CMD sinopia --listen 0.0.0.0:4873
