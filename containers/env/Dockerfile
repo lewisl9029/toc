@@ -10,8 +10,6 @@ RUN echo 'Acquire::http { Proxy "http://'$(/sbin/ip route|awk '/default/ { print
 
 RUN apt-get update \
   && apt-get -y install \
-    build-essential=11.6ubuntu6 \
-    curl=7.35.0-1ubuntu2.2 \
     git=1:1.9.1-1 \
     python=2.7.5-5ubuntu3 \
   && apt-get clean \
