@@ -1,7 +1,6 @@
 .idea
 .vagrant
-.cache
-platforms/
-plugins/
-www/app.css
-**/.packages
+/platforms
+/plugins
+/www/app.css
+/**/.packages
