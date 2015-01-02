@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 
 MAINTAINER Lewis Liu
 
-VOLUME ["/var/cache/apt-cacher-ng"]
+VOLUME /var/cache/apt-cacher-ng
 
 RUN apt-get update \
   && apt-get install -y \

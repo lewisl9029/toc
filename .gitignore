@@ -4,4 +4,4 @@ cache/
 platforms/
 plugins/
 www/app.css
-containers/**/.packages
+**/.packages

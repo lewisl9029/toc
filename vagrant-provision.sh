@@ -13,6 +13,16 @@ apt-get update && apt-get -y install \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*
 
+if [ ! -f $TOC_DIR/.packages/docker-latest.tgz.tar ];
+then
+  wget -O $TOC_DIR/.packages/docker-latest.tgz.tar https://dl.dropboxusercontent.com/u/172349/docker-latest.tgz.tar
+fi
+
+if [ ! -f $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz ];
+then
+  wget -O $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz https://dl.dropboxusercontent.com/u/172349/node-v0.10.35-linux-x64.tar.gz
+fi
+
 if [ ! -f $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz ];
 then
   wget -O $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz https://dl.dropboxusercontent.com/u/172349/android-sdk_r24.0.2-linux.tgz
@@ -36,7 +46,7 @@ alias toce="$TOC_DIR/containers/toc-setup-env.sh"
 alias tocb="$TOC_DIR/containers/toc-setup-web.sh"
 alias tocs="sudo docker run -i -t --rm -p 8100:8100 -p 35729:35729 -v $TOC_DIR:/toc toc-dev:latest ionic serve "$@""
 alias toci="sudo docker run -i -t --rm -v $TOC_DIR:/toc toc-dev:latest jspm install "$@""
-alias toct="sudo docker run -i -t --rm -p 8101:8101 -v $TOC_DIR:/toc toc-test:latest"
+alias toct="sudo docker run -i -t --rm -p 8101:8101 -v $TOC_DIR:/toc toc-test:latest (Xvfb :1 -screen 0 1024x768x24 -ac &) && karma start "$@""
 alias tocp="$TOC_DIR/containers/toc-setup-phone.sh"
 EOF
 ) > .bash_aliases

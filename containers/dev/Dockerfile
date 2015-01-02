@@ -7,11 +7,11 @@ VOLUME /toc
 # Set up node environment
 RUN npm set registry http://"$(/sbin/ip route|awk '/default/ { print $3 }')":8202
 
-RUN npm install -g cordova@4.1.2
-RUN npm install -g gulp-cli@0.1.3
-RUN npm install -g ionic@1.2.14
-RUN npm install -g jspm@0.10.0
-RUN npm cache clean
+RUN npm install -g cordova@4.1.2 \
+  gulp-cli@0.1.3 \
+  ionic@1.2.14 \
+  jspm@0.10.0 \
+  && npm cache clean
 
 # Expose ionic serve port
 EXPOSE 8100
