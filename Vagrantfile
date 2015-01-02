@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 35729, host: 35729
 
   config.vm.synced_folder ".", "/toc"
-  config.vm.synced_folder "./cache", "/var/cache/toc",
+  config.vm.synced_folder "./.cache", "/var/cache/toc",
     id: "toc-root",
     owner: "vagrant",
     mount_options: ["dmode=777,fmode=777"]

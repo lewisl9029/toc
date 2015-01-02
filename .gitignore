@@ -1,6 +1,6 @@
 .idea
 .vagrant
-cache/
+.cache
 platforms/
 plugins/
 www/app.css
