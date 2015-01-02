@@ -1,12 +1,13 @@
 FROM toc-env:latest
 MAINTAINER Lewis Liu
 
-RUN adduser --disabled-password --gecos "" sinopia
-RUN npm install -g sinopia
-RUN mkdir -p /usr/local/sinopia/storage
-RUN chown -R sinopia:sinopia /usr/local/sinopia
+VOLUME /usr/local/sinopia/storage
 
-USER sinopia
+RUN npm install -g \
+  sinopia@1.0.0-beta.2 \
+  && npm cache clean
 
 EXPOSE 4873
-CMD sinopia --listen 0.0.0.0:4873
+
+CMD chmod 777 /usr/local/sinopia/storage \
+  && sinopia --listen 0.0.0.0:4873
