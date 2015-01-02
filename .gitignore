@@ -1,6 +1,5 @@
 .idea
-/.vagrant
-/.cache
+.vagrant
 /platforms
 /plugins
 /www/app.css
