@@ -29,8 +29,6 @@ then
   wget -O $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb
 fi
 
-chmod 777 /var/cache/toc
-
 echo deb https://get.docker.com/ubuntu docker main \
   > /etc/apt/sources.list.d/docker.list
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
