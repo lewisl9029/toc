@@ -5,7 +5,7 @@ University of Waterloo Computer Engineering FYDP Project Group 010
 
 ## Environment Setup
 
-Note: The setup process can be bandwidth intensive as it involves downloading an Ubuntu Server VM and doing a bunch of apt-get install's and npm install's. The repository itself comes with all the non-global dependencies checked in, and thus is also somewhat large. Be prepared to use up at least 2GB of data.
+Note: The setup process can be bandwidth intensive as it involves downloading an Ubuntu Server VM and doing a bunch of apt-get install's and npm install's. The repository itself comes with all the non-global dependencies checked in, and thus is also somewhat large. Be prepared to use up at least 1GB of data in total. Bandwidth usage after the initial `vagrant up` should be greatly reduced thanks to the custom toc-cache-apt and toc-cache-npm caching containers.
 
 1. Install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/)
 2. Clone the repository
@@ -68,6 +68,11 @@ To make modifications to the dev environment itself, edit the Dockerfile and reb
 
 I have provided several aliases for quick access to common dev workflows:
 
+- Build and run the toc-cache-apt, toc-cache-npm, toc-env docker containers:
+  ```
+  toce
+  ```
+
 - Build the toc-dev and toc-test docker containers:
   ```
   tocb
@@ -85,7 +90,7 @@ I have provided several aliases for quick access to common dev workflows:
   toct
   ```
   
-  You can debug karma tests using a browser on your host machine remotely by pointing it to http://localhost:8101.
+  You can debug karma tests on your host machine remotely by pointing any browser to http://localhost:8101.
 
 - Install new dependencies using jspm using the toc-dev container:
   ```
