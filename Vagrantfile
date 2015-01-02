@@ -15,7 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.synced_folder ".", "/toc"
   config.vm.synced_folder "./.cache", "/var/cache/toc",
-    id: "toc-root",
+    create: true,
     owner: "vagrant",
     mount_options: ["dmode=777,fmode=777"]
   config.vm.synced_folder ".", "/vagrant", disabled: true
