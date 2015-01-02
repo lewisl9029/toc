@@ -37,8 +37,13 @@ apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
 apt-get update \
   && apt-get -y install \
     lxc-docker=1.4.1 \
+    dos2unix=6.0.4-1 \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*
+
+dos2unix $TOC_DIR/containers/toc-setup-env.sh
+dos2unix $TOC_DIR/containers/toc-setup-phone.sh
+dos2unix $TOC_DIR/containers/toc-setup-web.sh
 
 source $TOC_DIR/containers/toc-setup-env.sh
 source $TOC_DIR/containers/toc-setup-web.sh
