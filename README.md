@@ -20,12 +20,7 @@ Note: The setup process can be bandwidth intensive as it involves downloading an
   vagrant ssh
   ```
   
-6. Build the toc-dev and toc-test docker containers for the app via the following alias:
-  ```
-  tocb
-  ```
-  
-7. You're now ready to develop!
+6. You're now ready to develop!
 
 ## Development Workflow
 
@@ -59,14 +54,25 @@ To run arbitrary commands inside the toc-dev docker container:
 
 Note that changes to the docker environment will be discarded on exit, and only changes to the mounted source files volume will be persisted (such as installing new dependencies via jspm install).
 
-To make modifications to the dev environment itself, edit the Dockerfile and rebuild the containers:
+To make modifications to the dev environment itself, edit the Dockerfiles and rebuild the containers using one of:
   ```
+  toce
   tocb
   ```
 
 ## Aliases
 
 I have provided several aliases for quick access to common dev workflows:
+
+- Run single command inside toc-dev container:
+  ```
+  toc *command*
+  ```
+  
+- Open interactive shell session in toc-dev container:
+  ```
+  toc
+  ```
 
 - Build and run the toc-cache-apt, toc-cache-npm, toc-env docker containers:
   ```
