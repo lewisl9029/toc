@@ -14,4 +14,4 @@ sudo docker build -t toc-cache-npm:$TOC_VER $TOC_DIR/containers/cache/npm
 sudo docker build -t toc-cache-npm:latest $TOC_DIR/containers/cache/npm
 sudo docker stop toc-cache-npm
 sudo docker rm toc-cache-npm
-sudo docker run --name toc-cache-npm -d -p 8202:4873 -v /var/cache/toc/npm:/opt/sinopia/storage toc-cache-npm:latest
+sudo docker run --name toc-cache-npm -d -p 8202:4873 -v /var/cache/toc/npm:/usr/local/sinopia/storage toc-cache-npm:latest
