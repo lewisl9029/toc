@@ -6,7 +6,13 @@
     "watch"
   ],
   "watchPatterns": [
-    "www/**/*",
-    "!www/**/*.scss"
+    "www/components/**/*",
+    "www/libraries/**/*",
+    "www/services/**/*",
+    "www/views/**/*",
+    "www/*",
+    "!www/components/**/*.scss",
+    "!www/views/**/*.scss",
+    "!www/*.scss"
   ]
 }
