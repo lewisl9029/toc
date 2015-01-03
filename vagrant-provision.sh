@@ -9,7 +9,7 @@ alias toce="$TOC_DIR/containers/toc-setup-env.sh"
 alias tocb="$TOC_DIR/containers/toc-setup-web.sh"
 alias tocs="sudo docker run -i -t --rm -p 8100:8100 -p 35729:35729 -v $TOC_DIR:/toc toc-dev:latest ionic serve "$@""
 alias toci="sudo docker run -i -t --rm -v $TOC_DIR:/toc toc-dev:latest jspm install "$@""
-alias toct="sudo docker run -i -t --rm -p 8101:8101 -v $TOC_DIR:/toc toc-test:latest (Xvfb :1 -screen 0 1024x768x24 -ac &) && karma start "$@""
+alias toct="sudo docker run -i -t --rm -p 8101:8101 -v $TOC_DIR:/toc toc-test:latest sh -c '(karma run "$@" &) && Xvfb :1 -screen 0 1024x768x24 -ac'"
 alias tocp="$TOC_DIR/containers/toc-setup-phone.sh"
 EOF
 ) > .bash_aliases

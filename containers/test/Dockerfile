@@ -24,5 +24,3 @@ ENV DISPLAY :1
 EXPOSE 8101
 
 WORKDIR /toc
-
-CMD sh -c "(Xvfb :1 -screen 0 1024x768x24 -ac &) && karma start"

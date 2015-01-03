@@ -22,7 +22,20 @@ module.exports = function(config) {
 
     jspm: {
       loadFiles: [
-        'www/**/*-test.unit.js'
+        'www/jspm_packages/*.js',
+        'www/components/**/*-test.unit.js',
+        'www/libraries/**/*-test.unit.js',
+        'www/services/**/*-test.unit.js',
+        'www/views/**/*-test.unit.js',
+        'www/*-test.unit.js'
+      ],
+      serveFiles: [
+        'www/jspm_packages/*.js',
+        'www/components/**/*.js',
+        'www/libraries/**/*.js',
+        'www/services/**/*.js',
+        'www/views/**/*.js',
+        'www/*.js'
       ],
       config: 'www/config.js',
       packages: 'www/jspm_packages'
@@ -60,7 +73,7 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false,
 
 
     // start these browsers
