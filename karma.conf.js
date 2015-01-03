@@ -23,21 +23,13 @@ module.exports = function(config) {
 
     jspm: {
       loadFiles: [
-        'www/components/**/*-test.unit.js',
-        'www/libraries/**/*-test.unit.js',
-        'www/services/**/*-test.unit.js',
-        'www/views/**/*-test.unit.js',
-        'www/*-test.unit.js'
+        'www/**/*-test.unit.js'
       ],
       serveFiles: [
-        'www/components/**/*.js',
-        'www/libraries/**/*.js',
-        'www/services/**/*.js',
-        'www/views/**/*.js',
-        'www/*.js'
+        'www/**/*.js'
       ],
       config: 'www/config.js',
-      packages: 'www/jspm_packages'
+      packages: 'www/jspm_packages/'
     },
 
 
