@@ -12,6 +12,7 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: [
       'mocha',
+      'chai-sinon',
       'jspm'
     ],
 
@@ -24,8 +25,11 @@ module.exports = function(config) {
       loadFiles: [
         'www/**/*-test.unit.js'
       ],
+      serveFiles: [
+        'www/**/*.js'
+      ],
       config: 'www/config.js',
-      packages: 'www/jspm_packages'
+      packages: 'www/jspm_packages/'
     },
 
 
@@ -62,10 +66,11 @@ module.exports = function(config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
-
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['ChromeHeadless'],
+    browsers: [
+      'ChromeHeadless'
+    ],
 
     customLaunchers: {
       ChromeHeadless: {
