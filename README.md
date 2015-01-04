@@ -18,7 +18,7 @@ I propose we should generally follow the [GitHub Flow](https://guides.github.com
 TL;DR:
 - Master should be always in a deployable state (see [Continous Deployment](#continuous-integration-and-deployment)).
 - Branches are only merged into master through pull requests reviewed by at least one other dev.
-- To strike a balance between developer productivity and review time, only a code review is necessary at this time. Functional review can be done during the [Staging -> Master deployment phase](#continuous-integration-and-deployment).
+- To strike a balance between developer productivity and review time, only a code review is necessary at this point. Functional review can be done during the [Staging -> Master deployment phase](#continuous-integration-and-deployment).
 
 I propose the following naming conventions for branch names:
 - Lower case
