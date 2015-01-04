@@ -3,6 +3,8 @@ Distributed Instant Messaging
 
 University of Waterloo Computer Engineering FYDP Project Group 010
 
+*I'm growing less and less fond of this name. Please consider "Toc" a codename and keep trying to think of better ones. =)*
+
 ## Development Workflow
 
 I propose we should generally follow the [GitHub Flow](https://guides.github.com/introduction/flow/index.html).
