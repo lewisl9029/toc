@@ -81,7 +81,9 @@ To make modifications to the dev environment itself, edit the Dockerfiles and re
 
 ### Aliases
 
-I have provided several aliases in the Vagrant VM for quick access to common dev workflows:
+I have provided several aliases in the Vagrant VM for quick access to common docker workflows. See their implementations in [vagrant-provision.sh](https://github.com/lewisl9029/toc/blob/master/vagrant-provision.sh).
+
+Let me know if you have suggestions for any aliases for other common tasks. Or better yet, make a PR for it yourself!
 
 - Run single command inside toc-dev container:
   ```
@@ -126,8 +128,6 @@ I have provided several aliases in the Vagrant VM for quick access to common dev
   ```
   tocp
   ```
-
-Let me know if you have suggestions for any aliases for other common tasks. Or better yet, make a PR for it yourself! (See [vagrant-provision.sh](https://github.com/lewisl9029/toc/blob/master/vagrant-provision.sh))
 
 ## Continuous Integration and Deployment
 
