@@ -52,6 +52,7 @@ Some readings/viewings:
 - [Arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) (Lambda function notation)
 - [New iteration patterns and collections](http://updates.html5rocks.com/2014/08/Collecting-and-Iterating-the-ES6-Way) (Set and Map)
 - [Lexical scoping](http://globaldev.co.uk/2013/09/es6-part-2/) (let keyword, **never use var again**) 
+- ~~[Class notation]~~ *see [below](#working-with-ramda-and-functional-composition) for why we'll never need this*
 
 ### Working with Ramda and functional composition
 - [A pragmatic intro into functional programming from the creator of Ramda, with comparisions to OO](http://scott.sauyet.com/Javascript/Talk/FunctionalProgramming/#slide-0)
