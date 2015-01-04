@@ -135,7 +135,7 @@ Ideally we should have a Continuous Integration and Continuous Deployment server
 
 Master branch in this repo should be automatically tested, built and deployed onto the staging server, which should then be manually smoke tested and then pushed to the production server. 
 
-Data model versioning and migrations should be implemented and tested as a first priority (currently looking for a library to handle this for HTML5 LocalStorage).
+Data model versioning and migrations should be implemented and tested as a first priority (currently looking for a library to handle this for HTML5 LocalStorage), and mocked with a library like [Faker](https://github.com/marak/Faker.js/).
 
 TBD - Writing my work term report on this. Current candidates for CI platforms are:
 - [wercker](http://wercker.com/)
