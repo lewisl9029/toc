@@ -41,6 +41,22 @@ Note: The setup process can be bandwidth intensive as it involves downloading an
   
 6. You're now ready to develop!
 
+  
+### Working with ECMAScript 6 (Next version of JavaScript)
+
+Some readings/viewings:
+- [Overview of ES6 features](http://es6rocks.com/2014/08/what-is-next-for-javascript/) (Video and accompanying slides) 
+- [Intro to JSPM](http://javascriptplayground.com/blog/2014/11/js-modules-jspm-systemjs/) (package manager, ES6 Modules based alternative to bower (Globals), npm (CommonJS), and is cross compatible with other module formats) 
+- [Generator functions!](http://davidwalsh.name/es6-generators) (allows for more expressive control flows for async operations) 
+- [Native Promises](http://www.html5rocks.com/en/tutorials/es6/promises/) (in angular, we still need to use $q to hook into the digest cycle, but $q itself will be implemented using Native ES6 Promises) 
+- [Arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) (Lambda function notation)
+- [New iteration patterns and collections](http://updates.html5rocks.com/2014/08/Collecting-and-Iterating-the-ES6-Way) (Set and Map)
+- [Lexical scoping](http://globaldev.co.uk/2013/09/es6-part-2/) (let keyword, **never use var again**) 
+
+### Working with Ramda and functional composition
+- [A pragmatic intro into functional programming from the creator of Ramda, with comparisions to OO](http://scott.sauyet.com/Javascript/Talk/FunctionalProgramming/#slide-0)
+- [Ramda Docs](http://ramdajs.com/docs/)
+
 ### Working with Vagrant and Docker
 
 Read up on [Docker](https://www.docker.com/) if you're not already familiar with it. The project makes heavy use of docker containers to build declarative, reproducible development environments and helper services like npm/apt-get caching.
@@ -80,8 +96,8 @@ To make modifications to the dev environment itself, edit the Dockerfiles and re
   toce
   tocb
   ```
-
-### Aliases
+  
+### Docker Aliases
 
 I have provided several aliases in the Vagrant VM for quick access to common docker workflows. See their implementations in [vagrant-provision.sh](https://github.com/lewisl9029/toc/blob/master/vagrant-provision.sh).
 
