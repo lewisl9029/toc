@@ -152,9 +152,11 @@ Let me know if you have suggestions for any aliases for other common tasks. Or b
 
 Ideally we should have a Continuous Integration and Continuous Deployment server set up before we start developing any real features. 
 
-Master branch in this repo should be automatically tested, built and deployed onto the staging server, which should then be manually smoke tested and then pushed to the production server. 
+Master branch in this repo should be automatically tested, built and deployed onto the staging server, which should then be manually smoke tested before being pushed to the production server. 
 
 Data model versioning and migrations should be implemented and tested as a first priority (currently looking for a library to handle this for HTML5 LocalStorage), and mock filled with a library like [Faker](https://github.com/marak/Faker.js/), even during development.
+
+Data model versions should be kept consistent with app versions (read version number from package.json from shell during builds and from browser at runtime). New versions should be marked with git release tags adhering to (semver)[http://semver.org/].
 
 TBD - Writing my work term report on CI platforms. Current candidates are:
 - [wercker](http://wercker.com/)
