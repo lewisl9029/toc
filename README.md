@@ -3,7 +3,24 @@ Distributed Instant Messaging
 
 University of Waterloo Computer Engineering FYDP Project Group 010
 
-## Environment Setup
+## Development Workflow
+
+I propose we should generally follow the [GitHub Flow](https://guides.github.com/introduction/flow/index.html).
+
+TL;DR:
+- Master should be always in a deployable state (see [Continous Deployment](#continuous-integration-and-deployment)).
+- Branches are only merged into master through pull requests reviewed by at least one other dev.
+
+I propose the following naming conventions for branch names:
+- Dash separated
+- Lower case
+- Features go in "feature-*" branches
+- Bug fixes go in "bugfix-*" branches
+- Refactoring/workflow improvements go in "devops-*" branches
+
+## Development Environment
+
+### Setup
 
 Note: The setup process can be bandwidth intensive as it involves downloading an Ubuntu Server VM and doing a bunch of apt-get install's and npm install's. The repository itself comes with all the non-global dependencies checked in, and thus is also somewhat large. Be prepared to use up at least 1GB of data in total. Bandwidth usage after the initial `vagrant up` should be greatly reduced thanks to the custom toc-cache-apt and toc-cache-npm caching containers.
 
@@ -22,7 +39,7 @@ Note: The setup process can be bandwidth intensive as it involves downloading an
   
 6. You're now ready to develop!
 
-## Development Workflow
+### Working with Vagrant and Docker
 
 You can edit files, make commits, push your branches on your local OS as you normally do.
 
@@ -60,9 +77,9 @@ To make modifications to the dev environment itself, edit the Dockerfiles and re
   tocb
   ```
 
-## Aliases
+### Aliases
 
-I have provided several aliases for quick access to common dev workflows:
+I have provided several aliases in the Vagrant VM for quick access to common dev workflows:
 
 - Run single command inside toc-dev container:
   ```
@@ -110,10 +127,12 @@ I have provided several aliases for quick access to common dev workflows:
 
 Let me know if you have suggestions for any aliases for other common tasks. Or better yet, make a PR for it yourself! (See [vagrant-provision.sh](https://github.com/lewisl9029/toc/blob/master/vagrant-provision.sh))
 
-## Continous Integration
+## Continuous Integration and Deployment
 
-TBD - https://drone.lewisl.io
+TBD - Writing my work term report on this. Current candidates are:
+[wercker](http://wercker.com/)
+[drone.io](https://drone.io/)
+[Magnum CI](https://magnum-ci.com/)
+[Codeship](https://codeship.com/pricing)
 
-## Continous Deployment
-
-TBD - https://toc.lewisl.io
+Let me know if you know of more that have free tiers for private projects.
