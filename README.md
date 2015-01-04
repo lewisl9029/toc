@@ -16,7 +16,7 @@ I propose the following naming conventions for branch names:
 - Dash separated
 - Features go in "feature-*" branches
 - Bug fixes go in "bugfix-*" branches
-- Refactoring/workflow improvements go in "devops-*" branches
+- Refactoring/workflow/environment changes go in "devops-*" branches
 
 ## Development Environment
 
