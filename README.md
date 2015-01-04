@@ -41,6 +41,8 @@ Note: The setup process can be bandwidth intensive as it involves downloading an
 
 ### Working with Vagrant and Docker
 
+Read up on [Docker](https://www.docker.com/) if you're not already familiar with it. The project makes heavy use of docker containers to build declarative, reproducible development environments and helper services like npm/apt-get caching.
+
 You can edit files, make commits, push your branches on your local OS as you normally do.
 
 Changes will be reflected in the VM and docker container immediately, because the working directory is mounted as a volume in /toc in the VM, which is then mounted as a volume /toc in the docker container.
