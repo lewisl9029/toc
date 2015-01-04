@@ -12,8 +12,8 @@ TL;DR:
 - Branches are only merged into master through pull requests reviewed by at least one other dev.
 
 I propose the following naming conventions for branch names:
-- Dash separated
 - Lower case
+- Dash separated
 - Features go in "feature-*" branches
 - Bug fixes go in "bugfix-*" branches
 - Refactoring/workflow improvements go in "devops-*" branches
@@ -129,10 +129,16 @@ Let me know if you have suggestions for any aliases for other common tasks. Or b
 
 ## Continuous Integration and Deployment
 
-TBD - Writing my work term report on this. Current candidates are:
-[wercker](http://wercker.com/)
-[drone.io](https://drone.io/)
-[Magnum CI](https://magnum-ci.com/)
-[Codeship](https://codeship.com/pricing)
+Ideally we should have a Continuous Integration and Continuous Deployment server set up before we start developing any real features. 
 
-Let me know if you know of more that have free tiers for private projects.
+Master branch in this repo should be automatically tested, built and deployed onto the staging server, which should then be manually smoke tested and then pushed to the production server. 
+
+Data model versioning and migrations should be implemented and tested as a first priority (currently looking for a library to handle this for HTML5 LocalStorage).
+
+TBD - Writing my work term report on this. Current candidates for CI platforms are:
+- [wercker](http://wercker.com/)
+- [drone.io](https://drone.io/)
+- [Magnum CI](https://magnum-ci.com/)
+- [Codeship](https://codeship.com/pricing)
+
+Let me know if you know of other ones that have free tiers for private projects.
