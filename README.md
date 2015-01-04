@@ -9,7 +9,7 @@ University of Waterloo Computer Engineering FYDP Project Group 010
 
 This document is **EXTREMELY opinionated**, formed from extensive readings but limited real world exposure to the technologies and workflows outlined. So there will inevitably be flaws in the technology choices and established workflows. 
 
-I HIGHLY welcome discussion on anything in this document as it will definitely lead to more learning and workflow improvements for all of us.
+I HIGHLY welcome discussion on anything in this document as it will definitely lead to more learning and workflow improvements for all of us. =)
 
 ## Development Workflow
 
