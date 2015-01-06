@@ -107,53 +107,9 @@ To make modifications to the dev environment itself, edit the Dockerfiles and re
   
 ### Docker Aliases
 
-I have provided several aliases in the Vagrant VM for quick access to common docker workflows. See their implementations in [vagrant-provision.sh](https://github.com/lewisl9029/toc/blob/master/vagrant-provision.sh).
+I have provided several aliases in the Vagrant VM for quick access to common docker workflows (such as toc, toce, tocb mentioned above). See their implementations in [vagrant-provision.sh](https://github.com/lewisl9029/toc/blob/master/vagrant-provision.sh).
 
 Let me know if you have suggestions for any aliases for other common tasks. Or better yet, make a PR for it yourself!
-
-- Run single command inside toc-dev container:
-  ```
-  toc *command*
-  ```
-  
-- Open interactive shell session in toc-dev container:
-  ```
-  toc
-  ```
-
-- Build and run the toc-cache-apt, toc-cache-npm, toc-env docker containers:
-  ```
-  toce
-  ```
-
-- Build the toc-dev and toc-test docker containers:
-  ```
-  tocb
-  ```
-
-- Serve the app using ionic serve on port 8100 using the toc-dev container:
-  ```
-  tocs
-  ```
-  
-  Note that simply running toc ionic serve won't work because it requires ports to be exposed to the host VM and then to the local OS. This alias takes care of all the configuration for you.
-  
-- Test the app using karma on the toc-test container:
-  ```
-  toct
-  ```
-  
-  You can debug karma tests on your host machine remotely by pointing any browser to http://localhost:8101.
-
-- Install new dependencies using jspm using the toc-dev container:
-  ```
-  toci
-  ```
-
-- Build the toc-phone container and use it to build an android .apk (iOS remote build workflow on hold):
-  ```
-  tocp
-  ```
 
 ## Continuous Integration and Deployment
 
