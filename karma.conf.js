@@ -22,14 +22,14 @@ module.exports = function(config) {
     ],
 
     jspm: {
+      packages: 'www/jspm_packages/',
       loadFiles: [
         'www/**/*-test.unit.js'
       ],
       serveFiles: [
         'www/**/*.js'
       ],
-      config: 'www/config.js',
-      packages: 'www/jspm_packages/'
+      config: 'www/config.js'
     },
 
 
