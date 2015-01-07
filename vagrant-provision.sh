@@ -14,8 +14,8 @@ alias toct="sudo docker run \
   -p 8101:8101 \
   -v $TOC_DIR:/toc \
   toc-test:latest \
-  sh -c '(karma start "$@" &) \
-    && Xvfb :1 -screen 0 1024x768x24 -ac'"
+  sh -c '(Xvfb :1 -screen 0 1024x768x24 -ac &) \
+    && karma start "$@"'"
 alias tocp="$TOC_DIR/containers/toc-setup-phone.sh"
 EOF
 ) > .bash_aliases
