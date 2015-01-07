@@ -6,8 +6,13 @@ University of Waterloo Computer Engineering FYDP Project Group 010
 *I'm growing less and less fond of this name. Please consider "Toc" a codename and keep trying to think of better ones. =)*
 
 ## Status
+###Codeship
+
 [ ![Codeship Status for lewisl9029/toc](https://codeship.com/projects/0121b910-784a-0132-57d8-2a704c6de457/status?branch=master)](https://codeship.com/projects/55660)
 
+###Magnum CI
+
+[ ![Magnum CI Status for lewisl9029/toc](https://magnum-ci.com/status/eecd17ba8e1b29b8b4627481ab878261.png)](https://magnum-ci.com/projects/2139)
 ## Disclaimer
 
 This document is **EXTREMELY opinionated**, formed from extensive readings but limited real world exposure to the technologies and workflows outlined. So there will inevitably be flaws in the technology choices and established workflows. 
