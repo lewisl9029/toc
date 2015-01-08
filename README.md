@@ -13,6 +13,9 @@ University of Waterloo Computer Engineering FYDP Project Group 010
 ###Magnum CI
 
 [ ![Magnum CI Status for lewisl9029/toc](https://magnum-ci.com/status/eecd17ba8e1b29b8b4627481ab878261.png)](https://magnum-ci.com/projects/2139)
+
+###Circle CI
+
 ## Disclaimer
 
 This document is **EXTREMELY opinionated**, formed from extensive readings but limited real world exposure to the technologies and workflows outlined. So there will inevitably be flaws in the technology choices and established workflows. 

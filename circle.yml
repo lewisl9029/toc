@@ -1,7 +1,0 @@
-dependencies:
-  override:
-    - npm install -g karma-cli
-
-test:
-  override:
-    - karma start --single-run true
