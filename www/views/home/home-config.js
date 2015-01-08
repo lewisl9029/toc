@@ -1,3 +1,4 @@
+import template from './home.html!';
 import controller from './home-controller';
 
 let config = function config($stateProvider) {
@@ -5,7 +6,7 @@ let config = function config($stateProvider) {
     url: '/home',
     views: {
       'content': {
-        templateUrl: 'views/home/home.html',
+        template: template,
         controller: controller.name + ' as vm'
       }
     }

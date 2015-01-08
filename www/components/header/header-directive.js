@@ -1,7 +1,9 @@
+import template from './header.html!';
+
 let directive = function tocHeader() {
   return {
     restrict: 'E',
-    templateUrl: 'components/header/header.html'
+    template: template
   };
 };
 

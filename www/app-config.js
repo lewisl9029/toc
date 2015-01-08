@@ -1,8 +1,10 @@
+import template from 'app.html!';
+
 let config = function config($stateProvider, $urlRouterProvider) {
   $stateProvider.state('app', {
     url: "/app",
     abstract: true,
-    templateUrl: "app.html"
+    template: template
   });
 
   // if none of the above states are matched, use this as the fallback
