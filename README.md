@@ -133,9 +133,9 @@ Data model versioning and migrations should be implemented and tested as a first
 Data model versions should be kept consistent with app versions (read version number from package.json from shell during builds and from browser at runtime). New versions should be marked with git release tags adhering to [semver](http://semver.org/).
 
 TBD - Writing my work term report on CI platforms. Current candidates are:
-- [wercker](http://wercker.com/)
+- [Circle CI](https://circleci.com/)
 - [drone.io](https://drone.io/)
 - [Magnum CI](https://magnum-ci.com/)
-- [Codeship](https://codeship.com/pricing)
+- [Codeship](https://codeship.com/)
 
 Let me know if you know of other ones that have free tiers for private projects.
