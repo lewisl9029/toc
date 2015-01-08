@@ -1,4 +1,370 @@
 "format register";
+(function(global) {
+
+  var defined = {};
+
+  // indexOf polyfill for IE8
+  var indexOf = Array.prototype.indexOf || function(item) {
+    for (var i = 0, l = this.length; i < l; i++)
+      if (this[i] === item)
+        return i;
+    return -1;
+  }
+
+  function dedupe(deps) {
+    var newDeps = [];
+    for (var i = 0, l = deps.length; i < l; i++)
+      if (indexOf.call(newDeps, deps[i]) == -1)
+        newDeps.push(deps[i])
+    return newDeps;
+  }
+
+  function register(name, deps, declare, execute) {
+    if (typeof name != 'string')
+      throw "System.register provided no module name";
+    
+    var entry;
+
+    // dynamic
+    if (typeof declare == 'boolean') {
+      entry = {
+        declarative: false,
+        deps: deps,
+        execute: execute,
+        executingRequire: declare
+      };
+    }
+    else {
+      // ES6 declarative
+      entry = {
+        declarative: true,
+        deps: deps,
+        declare: declare
+      };
+    }
+
+    entry.name = name;
+    
+    // we never overwrite an existing define
+    if (!defined[name])
+      defined[name] = entry; 
+
+    entry.deps = dedupe(entry.deps);
+
+    // we have to normalize dependencies
+    // (assume dependencies are normalized for now)
+    // entry.normalizedDeps = entry.deps.map(normalize);
+    entry.normalizedDeps = entry.deps;
+  }
+
+  function buildGroups(entry, groups) {
+    groups[entry.groupIndex] = groups[entry.groupIndex] || [];
+
+    if (indexOf.call(groups[entry.groupIndex], entry) != -1)
+      return;
+
+    groups[entry.groupIndex].push(entry);
+
+    for (var i = 0, l = entry.normalizedDeps.length; i < l; i++) {
+      var depName = entry.normalizedDeps[i];
+      var depEntry = defined[depName];
+      
+      // not in the registry means already linked / ES6
+      if (!depEntry || depEntry.evaluated)
+        continue;
+      
+      // now we know the entry is in our unlinked linkage group
+      var depGroupIndex = entry.groupIndex + (depEntry.declarative != entry.declarative);
+
+      // the group index of an entry is always the maximum
+      if (depEntry.groupIndex === undefined || depEntry.groupIndex < depGroupIndex) {
+        
+        // if already in a group, remove from the old group
+        if (depEntry.groupIndex) {
+          groups[depEntry.groupIndex].splice(indexOf.call(groups[depEntry.groupIndex], depEntry), 1);
+
+          // if the old group is empty, then we have a mixed depndency cycle
+          if (groups[depEntry.groupIndex].length == 0)
+            throw new TypeError("Mixed dependency cycle detected");
+        }
+
+        depEntry.groupIndex = depGroupIndex;
+      }
+
+      buildGroups(depEntry, groups);
+    }
+  }
+
+  function link(name) {
+    var startEntry = defined[name];
+
+    startEntry.groupIndex = 0;
+
+    var groups = [];
+
+    buildGroups(startEntry, groups);
+
+    var curGroupDeclarative = !!startEntry.declarative == groups.length % 2;
+    for (var i = groups.length - 1; i >= 0; i--) {
+      var group = groups[i];
+      for (var j = 0; j < group.length; j++) {
+        var entry = group[j];
+
+        // link each group
+        if (curGroupDeclarative)
+          linkDeclarativeModule(entry);
+        else
+          linkDynamicModule(entry);
+      }
+      curGroupDeclarative = !curGroupDeclarative; 
+    }
+  }
+
+  // module binding records
+  var moduleRecords = {};
+  function getOrCreateModuleRecord(name) {
+    return moduleRecords[name] || (moduleRecords[name] = {
+      name: name,
+      dependencies: [],
+      exports: {}, // start from an empty module and extend
+      importers: []
+    })
+  }
+
+  function linkDeclarativeModule(entry) {
+    // only link if already not already started linking (stops at circular)
+    if (entry.module)
+      return;
+
+    var module = entry.module = getOrCreateModuleRecord(entry.name);
+    var exports = entry.module.exports;
+
+    var declaration = entry.declare.call(global, function(name, value) {
+      module.locked = true;
+      exports[name] = value;
+
+      for (var i = 0, l = module.importers.length; i < l; i++) {
+        var importerModule = module.importers[i];
+        if (!importerModule.locked) {
+          var importerIndex = indexOf.call(importerModule.dependencies, module);
+          importerModule.setters[importerIndex](exports);
+        }
+      }
+
+      module.locked = false;
+      return value;
+    });
+    
+    module.setters = declaration.setters;
+    module.execute = declaration.execute;
+
+    if (!module.setters || !module.execute)
+      throw new TypeError("Invalid System.register form for " + entry.name);
+
+    // now link all the module dependencies
+    for (var i = 0, l = entry.normalizedDeps.length; i < l; i++) {
+      var depName = entry.normalizedDeps[i];
+      var depEntry = defined[depName];
+      var depModule = moduleRecords[depName];
+
+      // work out how to set depExports based on scenarios...
+      var depExports;
+
+      if (depModule) {
+        depExports = depModule.exports;
+      }
+      else if (depEntry && !depEntry.declarative) {
+        depExports = { 'default': depEntry.module.exports, __useDefault: true };
+      }
+      // in the module registry
+      else if (!depEntry) {
+        depExports = load(depName);
+      }
+      // we have an entry -> link
+      else {
+        linkDeclarativeModule(depEntry);
+        depModule = depEntry.module;
+        depExports = depModule.exports;
+      }
+
+      // only declarative modules have dynamic bindings
+      if (depModule && depModule.importers) {
+        depModule.importers.push(module);
+        module.dependencies.push(depModule);
+      }
+      else
+        module.dependencies.push(null);
+
+      // run the setter for this dependency
+      if (module.setters[i])
+        module.setters[i](depExports);
+    }
+  }
+
+  // An analog to loader.get covering execution of all three layers (real declarative, simulated declarative, simulated dynamic)
+  function getModule(name) {
+    var exports;
+    var entry = defined[name];
+
+    if (!entry) {
+      exports = load(name);
+      if (!exports)
+        throw new Error("Unable to load dependency " + name + ".");
+    }
+
+    else {
+      if (entry.declarative)
+        ensureEvaluated(name, []);
+    
+      else if (!entry.evaluated)
+        linkDynamicModule(entry);
+
+      exports = entry.module.exports;
+    }
+
+    if ((!entry || entry.declarative) && exports && exports.__useDefault)
+      return exports['default'];
+
+    return exports;
+  }
+
+  function linkDynamicModule(entry) {
+    if (entry.module)
+      return;
+
+    var exports = {};
+
+    var module = entry.module = { exports: exports, id: entry.name };
+
+    // AMD requires execute the tree first
+    if (!entry.executingRequire) {
+      for (var i = 0, l = entry.normalizedDeps.length; i < l; i++) {
+        var depName = entry.normalizedDeps[i];
+        var depEntry = defined[depName];
+        if (depEntry)
+          linkDynamicModule(depEntry);
+      }
+    }
+
+    // now execute
+    entry.evaluated = true;
+    var output = entry.execute.call(global, function(name) {
+      for (var i = 0, l = entry.deps.length; i < l; i++) {
+        if (entry.deps[i] != name)
+          continue;
+        return getModule(entry.normalizedDeps[i]);
+      }
+      throw new TypeError('Module ' + name + ' not declared as a dependency.');
+    }, exports, module);
+    
+    if (output)
+      module.exports = output;
+  }
+
+  /*
+   * Given a module, and the list of modules for this current branch,
+   *  ensure that each of the dependencies of this module is evaluated
+   *  (unless one is a circular dependency already in the list of seen
+   *  modules, in which case we execute it)
+   *
+   * Then we evaluate the module itself depth-first left to right 
+   * execution to match ES6 modules
+   */
+  function ensureEvaluated(moduleName, seen) {
+    var entry = defined[moduleName];
+
+    // if already seen, that means it's an already-evaluated non circular dependency
+    if (entry.evaluated || !entry.declarative)
+      return;
+
+    // this only applies to declarative modules which late-execute
+
+    seen.push(moduleName);
+
+    for (var i = 0, l = entry.normalizedDeps.length; i < l; i++) {
+      var depName = entry.normalizedDeps[i];
+      if (indexOf.call(seen, depName) == -1) {
+        if (!defined[depName])
+          load(depName);
+        else
+          ensureEvaluated(depName, seen);
+      }
+    }
+
+    if (entry.evaluated)
+      return;
+
+    entry.evaluated = true;
+    entry.module.execute.call(global);
+  }
+
+  // magical execution function
+  var modules = {};
+  function load(name) {
+    if (modules[name])
+      return modules[name];
+
+    var entry = defined[name];
+
+    // first we check if this module has already been defined in the registry
+    if (!entry)
+      throw "Module " + name + " not present.";
+
+    // recursively ensure that the module and all its 
+    // dependencies are linked (with dependency group handling)
+    link(name);
+
+    // now handle dependency execution in correct order
+    ensureEvaluated(name, []);
+
+    // remove from the registry
+    defined[name] = undefined;
+
+    var module = entry.declarative ? entry.module.exports : { 'default': entry.module.exports, '__useDefault': true };
+
+    // return the defined module object
+    return modules[name] = module;
+  };
+
+  return function(main, declare) {
+
+    var System;
+
+    // if there's a system loader, define onto it
+    if (typeof System != 'undefined' && System.register) {
+      declare(System);
+      System['import'](main);
+    }
+    // otherwise, self execute
+    else {
+      declare(System = {
+        register: register, 
+        get: load, 
+        set: function(name, module) {
+          modules[name] = module; 
+        },
+        newModule: function(module) {
+          return module;
+        },
+        global: global 
+      });
+      load(main);
+    }
+  };
+
+})(typeof window != 'undefined' ? window : global)
+/* ('mainModule', function(System) {
+  System.register(...);
+}); */
+('app', function(System) {
+
+
+
+
+System.register("app.css!github:systemjs/plugin-css@0.1.0", [], false, function() { console.log("SystemJS Builder - Plugin for app.css!github:systemjs/plugin-css@0.1.0 does not support sfx builds"); });
+
+System.register("github:driftyco/ionic-bower@1.0.0-beta.14/css/ionic.css!github:systemjs/plugin-css@0.1.0", [], false, function() { console.log("SystemJS Builder - Plugin for github:driftyco/ionic-bower@1.0.0-beta.14/css/ionic.css!github:systemjs/plugin-css@0.1.0 does not support sfx builds"); });
+
 
 
 System.register("github:angular/bower-angular@1.3.8/angular.min", [], false, function(__require, __exports, __module) {
@@ -12767,8 +13133,8 @@ System.register("github:driftyco/ionic-bower@1.0.0-beta.14/js/ionic", [], false,
 
 
 
-System.register("github:angular/bower-angular-animate@1.3.8/angular-animate", ["angular"], false, function(__require, __exports, __module) {
-  System.get("@@global-helpers").prepareGlobal(__module.id, ["angular"]);
+System.register("github:angular/bower-angular-animate@1.3.8/angular-animate", ["github:angular/bower-angular@1.3.8"], false, function(__require, __exports, __module) {
+  System.get("@@global-helpers").prepareGlobal(__module.id, ["github:angular/bower-angular@1.3.8"]);
   (function() {
     "format global";
     "deps angular";
@@ -13933,8 +14299,8 @@ System.register("github:angular/bower-angular-animate@1.3.8/angular-animate", ["
 
 
 
-System.register("github:angular/bower-angular-sanitize@1.3.8/angular-sanitize", ["angular"], false, function(__require, __exports, __module) {
-  System.get("@@global-helpers").prepareGlobal(__module.id, ["angular"]);
+System.register("github:angular/bower-angular-sanitize@1.3.8/angular-sanitize", ["github:angular/bower-angular@1.3.8"], false, function(__require, __exports, __module) {
+  System.get("@@global-helpers").prepareGlobal(__module.id, ["github:angular/bower-angular@1.3.8"]);
   (function() {
     "format global";
     "deps angular";
@@ -17243,7 +17609,7 @@ System.register("services/contacts/contacts-service", [], function($__export) {
 
 
 
-System.register("libraries/libraries", ["angular", "./ramda/ramda"], function($__export) {
+System.register("libraries/libraries", ["github:angular/bower-angular@1.3.8", "libraries/ramda/ramda"], function($__export) {
   "use strict";
   var __moduleName = "libraries/libraries";
   var angular,
@@ -17260,6 +17626,17 @@ System.register("libraries/libraries", ["angular", "./ramda/ramda"], function($_
       $__export('default', libraries);
     }
   };
+});
+
+
+
+System.register("views/home/home.html!github:systemjs/plugin-text@0.0.2", [], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = "<ion-view view-title=\"Home\">\r\n  <ion-content>\r\n    <h1 class=\"home-title\">Home</h1>\r\n    <div ng-repeat=\"contact in vm.contacts\">\r\n      {{contact.name}}\r\n    </div>\r\n  </ion-content>\r\n</ion-view>";
+  global.define = __define;
+  return module.exports;
 });
 
 
@@ -17291,22 +17668,13 @@ System.register("views/home/home-service", [], false, function(__require, __expo
 
 
 
-System.register("components/header/header-directive", [], function($__export) {
-  "use strict";
-  var __moduleName = "components/header/header-directive";
-  var directive;
-  return {
-    setters: [],
-    execute: function() {
-      directive = function tocHeader() {
-        return {
-          restrict: 'E',
-          templateUrl: 'components/header/header.html'
-        };
-      };
-      $__export('default', directive);
-    }
-  };
+System.register("components/header/header.html!github:systemjs/plugin-text@0.0.2", [], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = "<ion-nav-back-button>\r\n</ion-nav-back-button>\r\n\r\n<ion-nav-buttons side=\"left\">\r\n  <button class=\"button button-icon button-clear ion-navicon\" menu-toggle=\"left\">\r\n  </button>\r\n</ion-nav-buttons>";
+  global.define = __define;
+  return module.exports;
 });
 
 
@@ -17335,24 +17703,13 @@ System.register("app-run", [], function($__export) {
 
 
 
-System.register("app-config", [], function($__export) {
-  "use strict";
-  var __moduleName = "app-config";
-  var config;
-  return {
-    setters: [],
-    execute: function() {
-      config = function config($stateProvider, $urlRouterProvider) {
-        $stateProvider.state('app', {
-          url: "/app",
-          abstract: true,
-          templateUrl: "app.html"
-        });
-        $urlRouterProvider.otherwise('/app/home');
-      };
-      $__export('default', config);
-    }
-  };
+System.register("app.html!github:systemjs/plugin-text@0.0.2", [], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = "<ion-side-menus enable-menu-with-back-views=\"false\">\r\n  <ion-side-menu-content>\r\n    <ion-nav-bar class=\"bar-stable\">\r\n      <toc-header></toc-header>\r\n    </ion-nav-bar>\r\n    <ion-nav-view name=\"content\"></ion-nav-view>\r\n  </ion-side-menu-content>\r\n\r\n  <ion-side-menu side=\"left\" expose-aside-when=\"large\">\r\n  </ion-side-menu>\r\n</ion-side-menus>";
+  global.define = __define;
+  return module.exports;
 });
 
 
@@ -17422,13 +17779,16 @@ System.register("github:ramda/ramda@0.8.0", ["github:ramda/ramda@0.8.0/ramda"], 
 
 
 })();
-System.register("views/home/home-config", ["./home-controller"], function($__export) {
+System.register("views/home/home-config", ["views/home/home.html!github:systemjs/plugin-text@0.0.2", "views/home/home-controller"], function($__export) {
   "use strict";
   var __moduleName = "views/home/home-config";
-  var controller,
+  var template,
+      controller,
       config;
   return {
     setters: [function(m) {
+      template = m.default;
+    }, function(m) {
       controller = m.default;
     }],
     execute: function() {
@@ -17436,7 +17796,7 @@ System.register("views/home/home-config", ["./home-controller"], function($__exp
         $stateProvider.state('app.home', {
           url: '/home',
           views: {'content': {
-              templateUrl: 'views/home/home.html',
+              template: template,
               controller: controller.name + ' as vm'
             }}
         });
@@ -17448,28 +17808,55 @@ System.register("views/home/home-config", ["./home-controller"], function($__exp
 
 
 
-System.register("components/header/header", ["angular", "./header-directive"], function($__export) {
+System.register("components/header/header-directive", ["components/header/header.html!github:systemjs/plugin-text@0.0.2"], function($__export) {
   "use strict";
-  var __moduleName = "components/header/header";
-  var angular,
-      directive,
-      header;
+  var __moduleName = "components/header/header-directive";
+  var template,
+      directive;
   return {
     setters: [function(m) {
-      angular = m.default;
-    }, function(m) {
-      directive = m.default;
+      template = m.default;
     }],
     execute: function() {
-      header = angular.module('toc.components.header', []).directive(directive.name, directive);
-      $__export('default', header);
+      directive = function tocHeader() {
+        return {
+          restrict: 'E',
+          template: template
+        };
+      };
+      $__export('default', directive);
     }
   };
 });
 
 
 
-System.register("libraries/ramda/ramda", ["angular", "ramda"], function($__export) {
+System.register("app-config", ["app.html!github:systemjs/plugin-text@0.0.2"], function($__export) {
+  "use strict";
+  var __moduleName = "app-config";
+  var template,
+      config;
+  return {
+    setters: [function(m) {
+      template = m.default;
+    }],
+    execute: function() {
+      config = function config($stateProvider, $urlRouterProvider) {
+        $stateProvider.state('app', {
+          url: "/app",
+          abstract: true,
+          template: template
+        });
+        $urlRouterProvider.otherwise('/app/home');
+      };
+      $__export('default', config);
+    }
+  };
+});
+
+
+
+System.register("libraries/ramda/ramda", ["github:angular/bower-angular@1.3.8", "github:ramda/ramda@0.8.0"], function($__export) {
   "use strict";
   var __moduleName = "libraries/ramda/ramda";
   var angular,
@@ -17492,7 +17879,7 @@ System.register("libraries/ramda/ramda", ["angular", "ramda"], function($__expor
 
 
 
-System.register("views/home/home", ["angular", "services/contacts/contacts", "./home-config", "./home-controller", "./home-service"], function($__export) {
+System.register("views/home/home", ["github:angular/bower-angular@1.3.8", "services/contacts/contacts", "views/home/home-config", "views/home/home-controller", "views/home/home-service"], function($__export) {
   "use strict";
   var __moduleName = "views/home/home";
   var angular,
@@ -17522,29 +17909,29 @@ System.register("views/home/home", ["angular", "services/contacts/contacts", "./
 
 
 
-System.register("components/components", ["angular", "./header/header"], function($__export) {
+System.register("components/header/header", ["github:angular/bower-angular@1.3.8", "components/header/header-directive"], function($__export) {
   "use strict";
-  var __moduleName = "components/components";
+  var __moduleName = "components/header/header";
   var angular,
-      header,
-      components;
+      directive,
+      header;
   return {
     setters: [function(m) {
       angular = m.default;
     }, function(m) {
-      header = m.default;
+      directive = m.default;
     }],
     execute: function() {
-      components = angular.module('toc.components', [header.name]);
-      $__export('default', components);
+      header = angular.module('toc.components.header', []).directive(directive.name, directive);
+      $__export('default', header);
     }
   };
 });
 
 
 
-System.register("github:driftyco/ionic-bower@1.0.0-beta.14/js/ionic-angular", ["../css/ionic.css!", "./ionic", "angular", "angular-animate", "angular-sanitize", "angular-ui-router"], false, function(__require, __exports, __module) {
-  System.get("@@global-helpers").prepareGlobal(__module.id, ["../css/ionic.css!", "./ionic", "angular", "angular-animate", "angular-sanitize", "angular-ui-router"]);
+System.register("github:driftyco/ionic-bower@1.0.0-beta.14/js/ionic-angular", ["github:driftyco/ionic-bower@1.0.0-beta.14/css/ionic.css!github:systemjs/plugin-css@0.1.0", "github:driftyco/ionic-bower@1.0.0-beta.14/js/ionic", "github:angular/bower-angular@1.3.8", "github:angular/bower-angular-animate@1.3.8", "github:angular/bower-angular-sanitize@1.3.8", "github:angular-ui/ui-router@0.2.10"], false, function(__require, __exports, __module) {
+  System.get("@@global-helpers").prepareGlobal(__module.id, ["github:driftyco/ionic-bower@1.0.0-beta.14/css/ionic.css!github:systemjs/plugin-css@0.1.0", "github:driftyco/ionic-bower@1.0.0-beta.14/js/ionic", "github:angular/bower-angular@1.3.8", "github:angular/bower-angular-animate@1.3.8", "github:angular/bower-angular-sanitize@1.3.8", "github:angular-ui/ui-router@0.2.10"]);
   (function() {
     "format global";
     "deps ../css/ionic.css!";
@@ -23810,7 +24197,7 @@ System.register("github:driftyco/ionic-bower@1.0.0-beta.14/js/ionic-angular", ["
 
 
 
-System.register("services/contacts/contacts", ["angular", "libraries/ramda/ramda", "./contacts-service"], function($__export) {
+System.register("services/contacts/contacts", ["github:angular/bower-angular@1.3.8", "libraries/ramda/ramda", "services/contacts/contacts-service"], function($__export) {
   "use strict";
   var __moduleName = "services/contacts/contacts";
   var angular,
@@ -23834,7 +24221,7 @@ System.register("services/contacts/contacts", ["angular", "libraries/ramda/ramda
 
 
 
-System.register("views/views", ["angular", "./home/home"], function($__export) {
+System.register("views/views", ["github:angular/bower-angular@1.3.8", "views/home/home"], function($__export) {
   "use strict";
   var __moduleName = "views/views";
   var angular,
@@ -23855,6 +24242,27 @@ System.register("views/views", ["angular", "./home/home"], function($__export) {
 
 
 
+System.register("components/components", ["github:angular/bower-angular@1.3.8", "components/header/header"], function($__export) {
+  "use strict";
+  var __moduleName = "components/components";
+  var angular,
+      header,
+      components;
+  return {
+    setters: [function(m) {
+      angular = m.default;
+    }, function(m) {
+      header = m.default;
+    }],
+    execute: function() {
+      components = angular.module('toc.components', [header.name]);
+      $__export('default', components);
+    }
+  };
+});
+
+
+
 System.register("github:driftyco/ionic-bower@1.0.0-beta.14", ["github:driftyco/ionic-bower@1.0.0-beta.14/js/ionic-angular"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -23866,7 +24274,7 @@ System.register("github:driftyco/ionic-bower@1.0.0-beta.14", ["github:driftyco/i
 
 
 
-System.register("services/services", ["angular", "./contacts/contacts"], function($__export) {
+System.register("services/services", ["github:angular/bower-angular@1.3.8", "services/contacts/contacts"], function($__export) {
   "use strict";
   var __moduleName = "services/services";
   var angular,
@@ -23887,7 +24295,7 @@ System.register("services/services", ["angular", "./contacts/contacts"], functio
 
 
 
-System.register("app", ["angular", "ionic", "./services/services", "./libraries/libraries", "./views/views", "./components/components", "./app-run", "./app-config"], function($__export) {
+System.register("app", ["github:angular/bower-angular@1.3.8", "github:driftyco/ionic-bower@1.0.0-beta.14", "app.css!github:systemjs/plugin-css@0.1.0", "services/services", "libraries/libraries", "views/views", "components/components", "app-run", "app-config"], function($__export) {
   "use strict";
   var __moduleName = "app";
   var angular,
@@ -23901,7 +24309,7 @@ System.register("app", ["angular", "ionic", "./services/services", "./libraries/
   return {
     setters: [function(m) {
       angular = m.default;
-    }, function(m) {}, function(m) {
+    }, function(m) {}, function(m) {}, function(m) {
       services = m.default;
     }, function(m) {
       libraries = m.default;
@@ -23926,4 +24334,71 @@ System.register("app", ["angular", "ionic", "./services/services", "./libraries/
 
 
 
-//# sourceMappingURL=build.js.map
+(function() {
+  var loader = System;
+  var hasOwnProperty = loader.global.hasOwnProperty;
+  var moduleGlobals = {};
+  var curGlobalObj;
+  var ignoredGlobalProps;
+  if (typeof indexOf == 'undefined')
+    indexOf = Array.prototype.indexOf;
+  System.set("@@global-helpers", System.newModule({
+    prepareGlobal: function(moduleName, deps) {
+      for (var i = 0; i < deps.length; i++) {
+        var moduleGlobal = moduleGlobals[deps[i]];
+        if (moduleGlobal)
+          for (var m in moduleGlobal)
+            loader.global[m] = moduleGlobal[m];
+      }
+      curGlobalObj = {};
+      ignoredGlobalProps = ["indexedDB", "sessionStorage", "localStorage", "clipboardData", "frames", "webkitStorageInfo"];
+      for (var g in loader.global) {
+        if (indexOf.call(ignoredGlobalProps, g) != -1) { continue; }
+        if (!hasOwnProperty || loader.global.hasOwnProperty(g)) {
+          try {
+            curGlobalObj[g] = loader.global[g];
+          } catch (e) {
+            ignoredGlobalProps.push(g);
+          }
+        }
+      }
+    },
+    retrieveGlobal: function(moduleName, exportName, init) {
+      var singleGlobal;
+      var multipleExports;
+      var exports = {};
+      if (init) {
+        var depModules = [];
+        for (var i = 0; i < deps.length; i++)
+          depModules.push(require(deps[i]));
+        singleGlobal = init.apply(loader.global, depModules);
+      }
+      else if (exportName) {
+        var firstPart = exportName.split(".")[0];
+        singleGlobal = eval.call(loader.global, exportName);
+        exports[firstPart] = loader.global[firstPart];
+      }
+      else {
+        for (var g in loader.global) {
+          if (indexOf.call(ignoredGlobalProps, g) != -1)
+            continue;
+          if ((!hasOwnProperty || loader.global.hasOwnProperty(g)) && g != loader.global && curGlobalObj[g] != loader.global[g]) {
+            exports[g] = loader.global[g];
+            if (singleGlobal) {
+              if (singleGlobal !== loader.global[g])
+                multipleExports = true;
+            }
+            else if (singleGlobal !== false) {
+              singleGlobal = loader.global[g];
+            }
+          }
+        }
+      }
+      moduleGlobals[moduleName] = exports;
+      return multipleExports ? exports : singleGlobal;
+    }
+  }));
+})();
+
+});
+//# sourceMappingURL=app.js.map
