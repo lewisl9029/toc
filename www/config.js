@@ -13,6 +13,7 @@ System.config({
     "angular": "github:angular/bower-angular@1.3.8",
     "es6-shim": "github:paulmillr/es6-shim@0.22.1",
     "ionic": "github:driftyco/ionic-bower@1.0.0-beta.14",
+    "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "ramda": "github:ramda/ramda@0.8.0",
     "github:angular/bower-angular-animate@1.3.8": {
       "angular": "github:angular/bower-angular@1.3.8"
@@ -26,7 +27,9 @@ System.config({
       "angular-sanitize": "github:angular/bower-angular-sanitize@1.3.8",
       "angular-ui-router": "github:angular-ui/ui-router@0.2.10",
       "css": "github:systemjs/plugin-css@0.1.0"
-    }
+    },
+    "html": "github:systemjs/plugin-text@0.0.2",
+    "css": "github:systemjs/plugin-css@0.1.0"
   }
 });
 

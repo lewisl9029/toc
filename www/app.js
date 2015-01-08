@@ -1,5 +1,6 @@
 import angular from 'angular';
 import 'ionic';
+import 'app.css!';
 
 import services from './services/services';
 import libraries from './libraries/libraries';
