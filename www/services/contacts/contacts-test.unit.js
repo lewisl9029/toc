@@ -1,7 +1,13 @@
-//import angular from 'angular';
+import contacts from './contacts-service';
+import R from 'ramda';
 
 describe('contacts service', function() {
   it('should run test', function() {
-    expect(true).to.be.true;
+    var expectedContacts = [
+      { id: 1, name: 'contact 1' },
+      { id: 2, name: 'contact 2' },
+      { id: 3, name: 'contact 3' }
+    ];
+    expect(contacts(R)).to.deep.equal(expectedContacts);
   });
 });
