@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-TOC_DIR=/toc
+TOC_DIR=/home/$(whoami)/toc
 
 dos2unix $TOC_DIR/containers/toc-setup-env.sh
 dos2unix $TOC_DIR/containers/toc-setup-phone.sh

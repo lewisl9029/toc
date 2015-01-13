@@ -12,10 +12,9 @@
 #    git=1:1.9.1-1 \
 #  && apt-get clean
 #8. clone repo
-#cd /
+#cd ~
 #git clone git@github.com:lewisl9029/toc.git
 #add DRONE_GITHUB_CLIENT and DRONE_GITHUB_SECRET env vars
-
 
 source ./vagrant-provision.sh
 
