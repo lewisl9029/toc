@@ -29,7 +29,7 @@ module.exports = function(config) {
       serveFiles: [
         'www/**/*.js'
       ],
-      config: 'www/config.js'
+      config: 'www/config-test.js'
     },
 
 
