@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 USERNAME=$(whoami)
-sudo echo "USERNAME=$USERNAME" >> /etc/environment
-TOC_DIR=/home/$(whoami)/toc
-sudo echo "TOC_DIR=$TOC_DIR" >> /etc/environment
+echo "USERNAME=$USERNAME" | sudo tee -a /etc/environment
+TOC_DIR=/home/$USERNAME/toc
+echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
 
 (
-sudo cat <<EOF
+cat <<EOF
 alias toc="sudo docker run -i -t --rm -v $TOC_DIR:/toc toc-dev:latest "$@""
 alias toce="$TOC_DIR/containers/toc-setup-env.sh"
 alias tocb="$TOC_DIR/containers/toc-setup-web.sh"
@@ -21,7 +21,7 @@ alias toct="sudo docker run \
     && gulp test "$@"'"
 alias tocp="$TOC_DIR/containers/toc-setup-phone.sh"
 EOF
-) > .bash_aliases
+) | sudo tee .bash_aliases
 
 if [ ! -f $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz ];
 then
@@ -38,8 +38,8 @@ then
   wget -O $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb
 fi
 
-sudo echo deb https://get.docker.com/ubuntu docker main \
-  > /etc/apt/sources.list.d/docker.list
+echo deb https://get.docker.com/ubuntu docker main \
+  | sudo tee /etc/apt/sources.list.d/docker.list
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
   --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
 
