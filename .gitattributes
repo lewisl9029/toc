@@ -7,3 +7,5 @@
 *.zip binary
 *.gzip binary
 *.node binary
+*.eot binary
+*.ttf binary
