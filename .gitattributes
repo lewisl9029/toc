@@ -1,0 +1,9 @@
+* text eol=lf
+
+*.png binary
+*.jpg binary
+*.swf binary
+*.as binary
+*.zip binary
+*.gzip binary
+*.node binary

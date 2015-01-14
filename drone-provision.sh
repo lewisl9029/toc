@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #manually setup git and clone repo
-#echo GITHUB_OAUTH_TOKEN=<TOKEN HERE> | sudo tee -a /etc/environment
-#echo DRONE_GITHUB_CLIENT=<TOKEN HERE> | sudo tee -a /etc/environment
-#echo DRONE_GITHUB_SECRET=<TOKEN HERE> | sudo tee -a /etc/environment
+#echo GITHUB_OAUTH_TOKEN=TOKEN | sudo tee -a /etc/environment
+#echo DRONE_GITHUB_CLIENT=ID | sudo tee -a /etc/environment
+#echo DRONE_GITHUB_SECRET=SECRET | sudo tee -a /etc/environment
 #exit
 #vagrant ssh
 #sudo apt-get update \
@@ -11,6 +11,8 @@
 #  && sudo apt-get clean
 #cd ~
 #git clone https://$GITHUB_OAUTH_TOKEN@github.com/lewisl9029/toc.git
+#create vm image
+#source ./drone-provision.sh
 
 source ./vagrant-provision.sh
 
