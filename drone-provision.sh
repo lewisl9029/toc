@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
-#manually setup github deploy key on server
-#1. copy ssh keys to ~/.ssh
-#2. eval `ssh-agent -s`
-#3. chmod 600 ~/.ssh/toc
-#4. ssh-add ~/.ssh/toc
-#5. add public key to github
-#6. test using ssh -T git@github.com
-#7. install git
-#apt-get update \
-#  && apt-get install -y \
+#manually setup git and clone repo
+#echo GITHUB_OAUTH_TOKEN=<TOKEN HERE> | sudo tee -a /etc/environment
+#echo DRONE_GITHUB_CLIENT=<TOKEN HERE> | sudo tee -a /etc/environment
+#echo DRONE_GITHUB_SECRET=<TOKEN HERE> | sudo tee -a /etc/environment
+#exit
+#vagrant ssh
+#sudo apt-get update \
+#  && sudo apt-get install -y \
 #    git=1:1.9.1-1 \
-#  && apt-get clean
-#8. clone repo
+#  && sudo apt-get clean
 #cd ~
-#git clone git@github.com:lewisl9029/toc.git
-#add DRONE_GITHUB_CLIENT and DRONE_GITHUB_SECRET env vars
+#mkdir toc
+#cd toc
+#git init
+#git pull https://$GITHUB_OAUTH_TOKEN@github.com/lewisl9029/toc.git
 
 source ./vagrant-provision.sh
 

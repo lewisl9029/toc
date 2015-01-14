@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-TOC_VER="$(cat $TOC_DIR/containers/toc.version)"
+TOC_VER="$(git describe --tags --abbrev=0)"
 
 if [ ! -f /var/lib/drone/drone.sqlite ];
 then
