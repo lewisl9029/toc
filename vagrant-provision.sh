@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-echo "TOC_DIR=/toc" >> /etc/environment
-TOC_DIR=/toc
+
+USERNAME=$(whoami)
+echo "USERNAME=$USERNAME" | sudo tee -a /etc/environment
+TOC_DIR=/home/$USERNAME/toc
+echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
 
 (
 cat <<EOF
@@ -18,7 +21,7 @@ alias toct="sudo docker run \
     && gulp test "$@"'"
 alias tocp="$TOC_DIR/containers/toc-setup-phone.sh"
 EOF
-) > .bash_aliases
+) | sudo tee .bash_aliases
 
 if [ ! -f $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz ];
 then
@@ -36,16 +39,16 @@ then
 fi
 
 echo deb https://get.docker.com/ubuntu docker main \
-  > /etc/apt/sources.list.d/docker.list
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
+  | sudo tee /etc/apt/sources.list.d/docker.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
   --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
 
-apt-get update \
-  && apt-get -y install \
+sudo apt-get update \
+  && sudo apt-get -y install \
     lxc-docker=1.4.1 \
     dos2unix=6.0.4-1 \
-  && apt-get clean \
-  && rm -rf /tmp/* /var/tmp/*
+  && sudo apt-get clean \
+  && sudo rm -rf /tmp/* /var/tmp/*
 
 dos2unix $TOC_DIR/containers/toc-setup-env.sh
 dos2unix $TOC_DIR/containers/toc-setup-phone.sh

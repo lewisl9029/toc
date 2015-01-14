@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-TOC_VER="$(cat $TOC_DIR/containers/toc.version)"
+TOC_VER="$(git describe --tags --abbrev=0)"
 
 sudo docker build -t toc-cache-apt:$TOC_VER $TOC_DIR/containers/cache/apt
 sudo docker build -t toc-cache-apt:latest $TOC_DIR/containers/cache/apt
