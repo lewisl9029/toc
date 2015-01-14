@@ -21,21 +21,27 @@ alias toct="sudo docker run \
     && gulp test "$@"'"
 alias tocp="$TOC_DIR/containers/toc-setup-phone.sh"
 EOF
-) | sudo tee .bash_aliases
+) | tee ~/.bash_aliases
 
 if [ ! -f $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz ];
 then
-  wget -O $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz https://dl.dropboxusercontent.com/u/172349/node-v0.10.35-linux-x64.tar.gz
-fi
-
-if [ ! -f $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz ];
-then
-  wget -O $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz https://dl.dropboxusercontent.com/u/172349/android-sdk_r24.0.2-linux.tgz
+  curl https://dl.dropboxusercontent.com/u/172349/node-v0.10.35-linux-x64.tar.gz \
+    --create-dirs \
+    -o $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz
 fi
 
 if [ ! -f $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb ];
 then
-  wget -O $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb
+  curl https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb \
+    --create-dirs \
+    -o $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb
+fi
+
+if [ ! -f $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz ];
+then
+  curl https://dl.dropboxusercontent.com/u/172349/android-sdk_r24.0.2-linux.tgz \
+    --create-dirs \
+    -o $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz
 fi
 
 echo deb https://get.docker.com/ubuntu docker main \
