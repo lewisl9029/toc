@@ -8,7 +8,7 @@ then
 fi
 
 sudo docker build -t toc-drone:$TOC_VER $TOC_DIR/containers/drone
-sudo docker build -t toc-drone:latest $TOC_DIR/containers/cache
+sudo docker build -t toc-drone:latest $TOC_DIR/containers/drone
 sudo docker stop toc-drone
 sudo docker rm toc-drone
 sudo docker run --name toc-drone -d -p 8080:8080 \
