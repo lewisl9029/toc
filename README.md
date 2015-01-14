@@ -18,7 +18,7 @@ University of Waterloo Computer Engineering FYDP Project Group 010
 [ ![Circle CI Status for lewisl9029/toc](https://circleci.com/gh/lewisl9029/toc.svg?style=svg&circle-token=dee735d27416c60483b8d4edfa735447d9d0d900)](https://circleci.com/gh/lewisl9029/toc)
 ## Disclaimer
 
-This document is **EXTREMELY opinionated**, formed from extensive readings but limited real world exposure to the technologies and workflows outlined. So there will inevitably be flaws in the technology choices and established workflows. 
+This document is **EXTREMELY opinionated**, formed from extensive readings but limited real world exposure to the technologies and workflows outlined. So there will inevitably be flaws in the technology choices and established workflows.
 
 I HIGHLY welcome discussion on anything in this document as it will definitely lead to more learning and workflow improvements for all of us. =)
 
@@ -51,25 +51,25 @@ Note: The setup process can be bandwidth intensive as it involves downloading an
   ```
   vagrant up
   ```
-  
+
 5. SSH into the development VM:
   ```
   vagrant ssh
   ```
-  
+
 6. You're now ready to develop!
 
-  
+
 ### Working with ECMAScript 6 (Next version of JavaScript)
 
 Some readings/viewings:
-- [Overview of ES6 features](http://es6rocks.com/2014/08/what-is-next-for-javascript/) (Video and accompanying slides) 
-- [Intro to JSPM](http://javascriptplayground.com/blog/2014/11/js-modules-jspm-systemjs/) (package manager, ES6 Modules based alternative to bower (Globals), npm (CommonJS), and is cross compatible with other module formats) 
-- [Generator functions!](http://davidwalsh.name/es6-generators) (allows for more expressive control flows for async operations) 
-- [Native Promises](http://www.html5rocks.com/en/tutorials/es6/promises/) (in angular, we still need to use $q to hook into the digest cycle, but $q itself will be implemented using Native ES6 Promises) 
+- [Overview of ES6 features](http://es6rocks.com/2014/08/what-is-next-for-javascript/) (Video and accompanying slides)
+- [Intro to JSPM](http://javascriptplayground.com/blog/2014/11/js-modules-jspm-systemjs/) (package manager, ES6 Modules based alternative to bower (Globals), npm (CommonJS), and is cross compatible with other module formats)
+- [Generator functions!](http://davidwalsh.name/es6-generators) (allows for more expressive control flows for async operations)
+- [Native Promises](http://www.html5rocks.com/en/tutorials/es6/promises/) (in angular, we still need to use $q to hook into the digest cycle, but $q itself will be implemented using Native ES6 Promises)
 - [Arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) (Lambda function notation)
 - [New iteration patterns and collections](http://updates.html5rocks.com/2014/08/Collecting-and-Iterating-the-ES6-Way) (Set and Map)
-- [Lexical scoping](http://globaldev.co.uk/2013/09/es6-part-2/) (let keyword, **never use var again**) 
+- [Lexical scoping](http://globaldev.co.uk/2013/09/es6-part-2/) (let keyword, **never use var again**)
 - ~~[Class notation]~~ *see [below](#working-with-ramda-and-functional-composition) for why we'll never need this*
 
 ### Working with Ramda and functional composition
@@ -115,7 +115,7 @@ To make modifications to the dev environment itself, edit the Dockerfiles and re
   toce
   tocb
   ```
-  
+
 ### Docker Aliases
 
 I have provided several aliases in the Vagrant VM for quick access to common docker workflows (such as toc, toce, tocb mentioned above). See their implementations in [vagrant-provision.sh](https://github.com/lewisl9029/toc/blob/master/vagrant-provision.sh).
@@ -124,9 +124,9 @@ Let me know if you have suggestions for any aliases for other common tasks. Or b
 
 ## Continuous Integration and Deployment
 
-Ideally we should have a Continuous Integration and Continuous Deployment server set up before we start developing any real features. 
+Ideally we should have a Continuous Integration and Continuous Deployment server set up before we start developing any real features.
 
-Master branch in this repo should be automatically tested, built and deployed onto the staging server, which should then be manually smoke tested before being pushed to the production server. 
+Master branch in this repo should be automatically tested, built and deployed onto the staging server, which should then be manually smoke tested before being pushed to the production server.
 
 Data model versioning and migrations should be implemented and tested as a first priority (currently looking for a library to handle this for HTML5 LocalStorage), and mock filled with a library like [Faker](https://github.com/marak/Faker.js/), even during development.
 
