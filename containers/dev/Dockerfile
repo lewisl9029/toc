@@ -9,7 +9,7 @@ RUN npm set registry http://"$(/sbin/ip route|awk '/default/ { print $3 }')":820
 
 RUN npm install -g cordova@4.2.0 && npm cache clean
 RUN npm install -g gulp-cli@0.1.4 && npm cache clean
-RUN npm install -g ionic@1.3.1 && npm cache clean
+RUN npm install -g ionic@1.3.2 && npm cache clean
 RUN npm install -g jspm@0.10.4 && npm cache clean
 
 # Expose ionic serve port
