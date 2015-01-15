@@ -1,3 +1,4 @@
 image: toc-test:latest
 script:
+  - Xvfb :1 -screen 0 1024x768x24 -ac &
   - gulp test --prod
