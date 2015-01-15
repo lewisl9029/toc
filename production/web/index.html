@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <title>Toc Messenger</title>
+  <script src="jspm_packages/traceur-runtime.js"></script>
+  <script src="jspm_packages/es6-module-loader.js"></script>
+  <script src="jspm_packages/system.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script>
+    System.import('app')
+      .then(function (app) {
+        app.default.initialize();
+      });
+  </script>
+</head>
+<body data-toc-app ng-cloak>
+<ion-nav-view></ion-nav-view>
+</body>
+</html>
