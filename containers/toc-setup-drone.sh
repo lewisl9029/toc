@@ -17,4 +17,9 @@ sudo docker run --name toc-drone -d -p 8080:8080 \
   -v /home/$USERNAME/drone/drone.sqlite:/var/lib/drone/drone.sqlite \
   -e DRONE_GITHUB_CLIENT=$DRONE_GITHUB_CLIENT \
   -e DRONE_GITHUB_SECRET=$DRONE_GITHUB_SECRET \
+  -e DRONE_SMTP_HOST=$DRONE_SMTP_HOST \
+  -e DRONE_SMTP_PORT=$DRONE_SMTP_PORT \
+  -e DRONE_SMTP_FROM=$DRONE_SMTP_FROM \
+  -e DRONE_SMTP_USER=$DRONE_SMTP_USER \
+  -e DRONE_SMTP_PASS=$DRONE_SMTP_PASS \
   toc-drone:latest
