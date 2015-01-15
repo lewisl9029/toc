@@ -8,6 +8,7 @@ University of Waterloo Computer Engineering FYDP Project Group 010
 ## Status
 [![Drone](http://toc.cloudapp.net:8080/api/badge/github.com/lewisl9029/toc/status.svg?branch=master)](http://toc.cloudapp.net:8080/github.com/lewisl9029/toc)
 
+## Disclaimer
 This document is **EXTREMELY opinionated**, formed from extensive readings but limited real world exposure to the technologies and workflows outlined. So there will inevitably be flaws in the technology choices and established workflows.
 
 I HIGHLY welcome discussion on anything in this document as it will definitely lead to more learning and workflow improvements for all of us. =)
