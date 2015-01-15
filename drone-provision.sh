@@ -11,8 +11,11 @@
 #  && sudo apt-get clean
 #cd ~
 #git clone https://$GITHUB_OAUTH_TOKEN@github.com/lewisl9029/toc.git
-#create vm image
+#deprovision and create vm image
 #source ./drone-provision.sh
+
+cd ~/toc
+git pull
 
 source ./vagrant-provision.sh
 
