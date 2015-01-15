@@ -8,6 +8,7 @@ RUN echo 'Acquire::http { Proxy "http://'$(/sbin/ip route|awk '/default/ { print
 
 RUN apt-get update \
   && apt-get -y install \
+    ca-certificates=20130906ubuntu2 \
     libsqlite3-dev=3.8.2-1ubuntu2 \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*
