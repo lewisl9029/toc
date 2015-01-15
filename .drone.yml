@@ -1,0 +1,3 @@
+image: toc-test:latest
+script:
+  - gulp test --prod
