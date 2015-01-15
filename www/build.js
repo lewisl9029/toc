@@ -22411,7 +22411,7 @@ System.register("services/services", ["angular", "./contacts/contacts"], functio
 
 
 
-System.register("app", ["angular", "ionic", "./app.css!", "./services/services", "./libraries/libraries", "./views/views", "./components/components", "./app-run", "./app-config"], function($__export) {
+System.register("app", ["angular", "ionic", "app.css!", "./services/services", "./libraries/libraries", "./views/views", "./components/components", "./app-run", "./app-config"], function($__export) {
   "use strict";
   var __moduleName = "app";
   var angular,
@@ -22454,4 +22454,4 @@ System.register("app", ["angular", "ionic", "./app.css!", "./services/services",
 
 
 
-//# sourceMappingURL=app.js.map
+//# sourceMappingURL=build.js.map
