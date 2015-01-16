@@ -19,14 +19,4 @@ let app = angular.module('toc', [
 ]).run(run)
   .config(config);
 
-let initialize = function() {
-  angular.element(document).ready(function() {
-    angular.bootstrap(document.querySelector('[data-toc-app]'), [
-      app.name
-    ]);
-  });
-};
-
-app.initialize = initialize;
-
 export default app;

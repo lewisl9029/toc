@@ -1,8 +1,8 @@
 import template from 'app.html!';
 
-let config = function config($stateProvider, $urlRouterProvider) {
+let config = function appConfig($stateProvider, $urlRouterProvider) {
   $stateProvider.state('app', {
-    url: "/app",
+    url: '/app',
     abstract: true,
     template: template
   });
