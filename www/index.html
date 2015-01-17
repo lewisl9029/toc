@@ -9,25 +9,34 @@
   <script src="jspm_packages/es6-module-loader.js"></script>
   <script src="jspm_packages/system.js"></script>
   <script src="config.js"></script>
-  <script src="splash.js"></script>
   <link rel="stylesheet" type="text/css" href="splash.css">
   <script>
-    //TODO: start splash screen here
-    // System.import('initialize')
-    //   .then(function (initialize) {
-    //     initialize.default();
-    //     //TODO: end splash screen here
-    //   });
+    System.import('initialize').then(
+      function initializeApp(initialize) {
+        initialize.default();
+      }
+    ).then(
+      function hideSplashscreen() {
+        var splashscreen = document.getElementsByClassName('splashscreen')[0];
+        splashscreen.className += ' fadeout-splashscreen';
+        setTimeout(function removeSplashscreen() {
+          document.getElementsByTagName('body')[0].removeChild(splashscreen);
+        }, 1000);
+      }
+    ).catch(console.log);
   </script>
 </head>
-<body data-toc-app ng-cloak>
-  <div class="spinner-area">
-    <div class="spinner">
-      <div class="rect1"></div>
-      <div class="rect2"></div>
-      <div class="rect3"></div>
-      <div class="rect4"></div>
-      <div class="rect5"></div>
+<body data-toc-app>
+  <ion-nav-view></ion-nav-view>
+  <div class="splashscreen">
+    <div class="spinner-area">
+      <div class="spinner">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+      </div>
     </div>
   </div>
 </body>
