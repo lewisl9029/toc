@@ -1,12 +1,22 @@
 {
-  //doesn't actually get used yet
   "tagname-lowercase": true,
   "attr-lowercase": true,
   "attr-value-double-quotes": true,
-  "doctype-first": false, //*
+  "attr-value-not-empty": false,
+  "doctype-first": false,
   "tag-pair": true,
+  "tag-self-close": false,
   "spec-char-escape": true,
   "id-unique": true,
   "src-not-empty": true,
-  "attr-no-duplication": true
+  "head-script-disabled": true,
+  "attr-no-duplication": true,
+  "img-alt-require": true,
+  "doctype-html5": true,
+  "id-class-value": "dash",
+  "style-disabled": true,
+  "space-tab-mixed-disabled": true,
+  "id-class-ad-disabled": true,
+  "href-abs-or-rel": false,
+  "attr-unsafe-chars": true
 }
