@@ -6,8 +6,14 @@
     "watch"
   ],
   "watchPatterns": [
-    "www/**/*",
-    "!www/**/*.scss",
-    "!www/**/*-test.unit.js"
+    "www/components/**/*",
+    "www/libraries/**/*",
+    "www/services/**/*",
+    "www/views/**/*",
+    "www/*",
+    "!www/components/**/*.scss",
+    "!www/views/**/*.scss",
+    "!www/*.scss",
+    "!www/services/**/*-test.unit.js"
   ]
 }
