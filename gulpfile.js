@@ -1,6 +1,8 @@
+/* jshint node: true */
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
+var jshint = require('gulp-jshint');
 var replace = require('gulp-replace');
 var rename = require('gulp-rename');
 var karma = require('karma').server;
@@ -11,6 +13,14 @@ var paths = {
     './www/components/**/*.scss',
     './www/views/**/*.scss',
     './www/app.scss'
+  ],
+  js: [
+    './www/components/**/*.js',
+    './www/libraries/**/*.js',
+    './www/services/**/*.js',
+    './www/views/**/*.js',
+    './www/*.js',
+    './*.js'
   ]
 };
 
@@ -29,7 +39,7 @@ gulp.task('watch', function() {
   gulp.watch(paths.sass, ['sass']);
 });
 
-gulp.task('test', function(done) {
+gulp.task('test', ['verify'], function(done) {
   gulp.src('./www/config.js')
     .pipe(replace('jspm_packages', 'www/jspm_packages'))
     .pipe(rename('config-test.js'))
@@ -39,4 +49,15 @@ gulp.task('test', function(done) {
     configFile: __dirname + '/karma.conf.js',
     singleRun: argv.prod
   }, argv.prod ? done : undefined);
+});
+
+gulp.task('verify', function() {
+  gulp.src(paths.js)
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'))
+    .pipe(jshint.reporter('fail'));
+});
+
+gulp.task('style', function() {
+
 });
