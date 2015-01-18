@@ -4,6 +4,7 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var jshint = require('gulp-jshint');
 var htmlhint = require('gulp-htmlhint');
+var scsslint = require('gulp-scsslint');
 var replace = require('gulp-replace');
 var rename = require('gulp-rename');
 var karma = require('karma').server;
@@ -69,6 +70,11 @@ gulp.task('lint', function() {
     }))
     .pipe(htmlhint.reporter())
     .pipe(htmlhint.failReporter());
+
+  gulp.src(paths.sass)
+    .pipe(scsslint())
+    .pipe(scsslint.reporter())
+    .pipe(scsslint.reporter('fail'));
 });
 
 gulp.task('style', function() {

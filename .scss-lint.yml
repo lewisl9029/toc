@@ -43,7 +43,7 @@ linters:
 
   HexLength:
     enabled: true
-    style: short # or 'long'
+    style: long # or 'short'
 
   HexNotation:
     enabled: true
@@ -67,7 +67,7 @@ linters:
 
   LeadingZero:
     enabled: true
-    style: exclude_zero # or 'include_zero'
+    style: include_zero # or 'exclude_zero'
 
   MergeableSelector:
     enabled: true
@@ -75,7 +75,7 @@ linters:
 
   NameFormat:
     enabled: true
-    allow_leading_underscore: true
+    allow_leading_underscore: false
     convention: hyphenated_lowercase # or 'BEM', or a regex pattern
 
   NestingDepth:
@@ -101,7 +101,7 @@ linters:
 
   SelectorDepth:
     enabled: true
-    max_depth: 3
+    max_depth: 2
 
   SelectorFormat:
     enabled: true
@@ -112,7 +112,7 @@ linters:
 
   SingleLinePerProperty:
     enabled: true
-    allow_single_line_rule_sets: true
+    allow_single_line_rule_sets: false
 
   SingleLinePerSelector:
     enabled: true
@@ -144,7 +144,7 @@ linters:
     enabled: true
 
   TrailingZero:
-    enabled: false
+    enabled: true
 
   UnnecessaryMantissa:
     enabled: true
