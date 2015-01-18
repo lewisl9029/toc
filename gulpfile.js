@@ -1,6 +1,9 @@
 /* jshint node: true */
 var gulp = require('gulp');
 var sass = require('gulp-sass');
+var postcss = require('gulp-postcss');
+var autoprefixer = require('autoprefixer-core');
+var cssgrace = require('cssgrace');
 var sourcemaps = require('gulp-sourcemaps');
 var jshint = require('gulp-jshint');
 var htmlhint = require('gulp-htmlhint');
@@ -40,6 +43,12 @@ gulp.task('sass', function(done) {
   gulp.src('./www/app.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
+    .pipe(postcss([
+      autoprefixer({
+        browsers: ['last 2 version']
+      }),
+      cssgrace
+    ]))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('./www/'))
     .on('end', done);
