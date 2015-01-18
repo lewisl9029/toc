@@ -1,0 +1,10 @@
+// Depends on `positioning-coordinates`.
+
+@mixin scut-relative (
+  $coordinates: n n n n
+) {
+
+  position: relative;
+  @include scut-coords($coordinates);
+
+}

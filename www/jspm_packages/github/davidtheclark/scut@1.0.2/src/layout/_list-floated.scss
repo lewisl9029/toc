@@ -1,0 +1,26 @@
+// Depends on `list-unstyled` and `clearfix`.
+
+@mixin scut-list-floated (
+  $space: false,
+  $dir: left,
+  $no-margin: true
+) {
+
+  @include scut-list-unstyled($no-margin);
+  @include scut-clearfix;
+
+  & > li {
+    float: $dir;
+  }
+
+  @if $space {
+    & > li + li {
+      margin-#{$dir}: $space;
+    }
+  }
+
+}
+
+%scut-list-floated {
+  @include scut-list-floated;
+}

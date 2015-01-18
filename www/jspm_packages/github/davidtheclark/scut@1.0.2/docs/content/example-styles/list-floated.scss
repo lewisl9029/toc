@@ -1,0 +1,25 @@
+/* import start */
+@import "../../../dist/scut";
+@import "example-variables";
+/* import end */
+
+/* hidden rules */
+.eg-list-floated {
+  & > li {
+    @extend %eg-dark-btn;
+  }
+}
+/* end hidden rules */
+
+/* example start */
+.eg-list-floated-1 {
+  @include scut-list-floated;
+  // or @extend %scut-list-floated;
+}
+.eg-list-floated-2 {
+  @include scut-list-floated(1em, $no-margin: false);
+}
+.eg-list-floated-3 {
+  @include scut-list-floated(2em, right);
+}
+/* example end */

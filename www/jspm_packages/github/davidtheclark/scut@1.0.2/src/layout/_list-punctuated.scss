@@ -1,0 +1,22 @@
+// Depends on `list-unstyled`.
+
+@mixin scut-list-punctuated (
+  $divider: ", ",
+  $display: inline,
+  $no-margin: true
+) {
+
+  @include scut-list-unstyled($no-margin);
+
+  & > li {
+    display: $display;
+    &:not(:last-child):after {
+      content: $divider;
+    }
+  }
+
+}
+
+%scut-list-comma {
+  @include scut-list-punctuated;
+}

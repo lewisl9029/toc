@@ -43,14 +43,17 @@
       .then(
         function hideSplashscreen() {
           clearTimeout(showSpinnerTimeout);
-          var splashscreen = document.getElementsByClassName('splashscreen')[0];
+          var splashscreen = document.getElementsByClassName(
+            'splashscreen')[0];
           splashscreen.className += ' fadeout-splashscreen';
           setTimeout(function removeSplashscreen() {
-            splashscreen.parentNode.removeChild(splashscreen);
+            splashscreen.parentNode.removeChild(
+              splashscreen);
           }, 1000);
         }
       )
       .catch(console.log);
+
   </script>
 </body>
 

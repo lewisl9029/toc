@@ -12,11 +12,9 @@
 // $assertive:                       #ef473a !default;
 // $royal:                           #886aea !default;
 // $dark:                            #444 !default;
-
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: 'jspm_packages/github/driftyco/ionic-bower@1.0.0-beta.14/fonts' !default;
-
 // Include all of Ionic
 @import 'jspm_packages/github/driftyco/ionic-bower@1.0.0-beta.14/scss/ionic';
-
+@import 'jspm_packages/github/davidtheclark/scut@1.0.2/dist/_scut.scss';
 @import 'views/views';

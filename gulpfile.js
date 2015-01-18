@@ -36,7 +36,7 @@ var paths = {
 
 gulp.task('default', ['sass']);
 
-gulp.task('sass', function (done) {
+gulp.task('sass', function(done) {
   gulp.src('./www/app.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
@@ -45,11 +45,11 @@ gulp.task('sass', function (done) {
     .on('end', done);
 });
 
-gulp.task('watch', function () {
+gulp.task('watch', function() {
   gulp.watch(paths.sass, ['sass']);
 });
 
-gulp.task('test', ['lint'], function (done) {
+gulp.task('test', ['lint'], function(done) {
   gulp.src('./www/config.js')
     .pipe(replace('jspm_packages', 'www/jspm_packages'))
     .pipe(rename('config-test.js'))
@@ -63,14 +63,14 @@ gulp.task('test', ['lint'], function (done) {
 
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
-gulp.task('lint-js', function () {
+gulp.task('lint-js', function() {
   return gulp.src(paths.js)
     .pipe(jshint())
     .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('lint-html', function () {
+gulp.task('lint-html', function() {
   return gulp.src(paths.html)
     .pipe(htmlhint({
       htmlhintrc: './.htmlhintrc'
@@ -79,7 +79,7 @@ gulp.task('lint-html', function () {
     .pipe(htmlhint.failReporter());
 });
 
-gulp.task('lint-sass', function () {
+gulp.task('lint-sass', function() {
   return gulp.src(paths.sass)
     .pipe(scsslint())
     .pipe(scsslint.reporter())
@@ -88,22 +88,22 @@ gulp.task('lint-sass', function () {
 
 gulp.task('style', ['style-js', 'style-html']);
 
-gulp.task('style-js', function () {
-  return gulp.src(paths.js, {
-      base: './'
-    })
-    .pipe(jsbeautifier({
-      config: './.jsbeautifyrc'
-    }))
-    .pipe(gulp.dest('./'));
-});
+var makeStyleTask = function makeStyleTask(paths) {
+  var style = function style() {
+    return gulp.src(paths, {
+        base: './'
+      })
+      .pipe(jsbeautifier({
+        config: './.jsbeautifyrc'
+      }))
+      .pipe(gulp.dest('./'));
+  };
 
-gulp.task('style-html', function () {
-  return gulp.src(paths.html, {
-      base: './'
-    })
-    .pipe(jsbeautifier({
-      config: './.jsbeautifyrc'
-    }))
-    .pipe(gulp.dest('./'));
-});
+  return style;
+};
+
+gulp.task('style-js', makeStyleTask(paths.js));
+
+gulp.task('style-html', makeStyleTask(paths.html));
+
+//gulp.task('style-sass', makeStyleTask(paths.sass));
