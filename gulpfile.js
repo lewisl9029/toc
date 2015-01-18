@@ -5,6 +5,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var jshint = require('gulp-jshint');
 var htmlhint = require('gulp-htmlhint');
 var scsslint = require('gulp-scsslint');
+var esformatter = require('gulp-esformatter');
 var replace = require('gulp-replace');
 var rename = require('gulp-rename');
 var karma = require('karma').server;
@@ -52,31 +53,41 @@ gulp.task('test', ['lint'], function(done) {
     .pipe(rename('config-test.js'))
     .pipe(gulp.dest('./www/'));
 
-  karma.start({
+  return karma.start({
     configFile: __dirname + '/karma.conf.js',
     singleRun: argv.prod
   }, argv.prod ? done : undefined);
 });
 
-gulp.task('lint', function() {
-  gulp.src(paths.js)
+gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
+
+gulp.task('lint-js', function() {
+  return gulp.src(paths.js)
     .pipe(jshint())
     .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('fail'));
+});
 
-  gulp.src(paths.html)
+gulp.task('lint-html', function() {
+  return gulp.src(paths.html)
     .pipe(htmlhint({
       htmlhintrc: './.htmlhintrc'
     }))
     .pipe(htmlhint.reporter())
     .pipe(htmlhint.failReporter());
+});
 
-  gulp.src(paths.sass)
+gulp.task('lint-sass', function() {
+  return gulp.src(paths.sass)
     .pipe(scsslint())
     .pipe(scsslint.reporter())
     .pipe(scsslint.reporter('fail'));
 });
 
 gulp.task('style', function() {
-
+  return gulp.src('./gulpfile.js', {
+    base: './'
+  })
+    .pipe(esformatter())
+    .pipe(gulp.dest('./'));
 });
