@@ -8,8 +8,10 @@ var scsslint = require('gulp-scsslint');
 var jsbeautifier = require('gulp-jsbeautifier');
 var replace = require('gulp-replace');
 var rename = require('gulp-rename');
-var karma = require('karma').server;
-var argv = require('yargs').argv;
+var karma = require('karma')
+  .server;
+var argv = require('yargs')
+  .argv;
 
 var paths = {
   sass: [
@@ -84,10 +86,10 @@ gulp.task('lint-sass', function () {
     .pipe(scsslint.reporter('fail'));
 });
 
-gulp.task('style', ['style-js', 'style-html', 'style-sass']);
+gulp.task('style', ['style-js', 'style-html']);
 
 gulp.task('style-js', function () {
-  return gulp.src('./gulpfile.js', {
+  return gulp.src(paths.js, {
       base: './'
     })
     .pipe(jsbeautifier({
@@ -97,7 +99,7 @@ gulp.task('style-js', function () {
 });
 
 gulp.task('style-html', function () {
-  return gulp.src('./www/index.html', {
+  return gulp.src(paths.html, {
       base: './'
     })
     .pipe(jsbeautifier({

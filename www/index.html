@@ -34,20 +34,23 @@
       spinnerArea.appendChild(spinner);
     }, 1000);
 
-    System.import('initialize').then(
-      function initializeApp(initialize) {
-        initialize.default();
-      }
-    ).then(
-      function hideSplashscreen() {
-        clearTimeout(showSpinnerTimeout);
-        var splashscreen = document.getElementsByClassName('splashscreen')[0];
-        splashscreen.className += ' fadeout-splashscreen';
-        setTimeout(function removeSplashscreen() {
-          splashscreen.parentNode.removeChild(splashscreen);
-        }, 1000);
-      }
-    ).catch(console.log);
+    System.import('initialize')
+      .then(
+        function initializeApp(initialize) {
+          initialize.default();
+        }
+      )
+      .then(
+        function hideSplashscreen() {
+          clearTimeout(showSpinnerTimeout);
+          var splashscreen = document.getElementsByClassName('splashscreen')[0];
+          splashscreen.className += ' fadeout-splashscreen';
+          setTimeout(function removeSplashscreen() {
+            splashscreen.parentNode.removeChild(splashscreen);
+          }, 1000);
+        }
+      )
+      .catch(console.log);
   </script>
 </body>
 
