@@ -1,13 +1,23 @@
-import angular from 'angular';
-import app from './app';
+(function initialize() {
+  var spinner = document.getElementsByClassName('spinner')[0];
+  var spinnerArea = spinner.parentNode;
+  spinnerArea.removeChild(spinner);
 
-let initialize = () => {
-  angular.element(document)
-    .ready(function() {
-      angular.bootstrap(document.querySelector('[data-toc-app]'), [
-        app.name
-      ]);
-    });
-};
+  var showSpinnerTimeout = setTimeout(function showSpinner() {
+    spinnerArea.appendChild(spinner);
+  }, 1000);
 
-export default initialize;
+  System.import('app')
+    .then(function initializeApp(app) {
+      app.initialize();
+    })
+    .then(function hideSplashscreen() {
+      clearTimeout(showSpinnerTimeout);
+      var splashscreen = document.getElementsByClassName('splashscreen')[0];
+      splashscreen.className += ' fadeout-splashscreen';
+      setTimeout(function removeSplashscreen() {
+        splashscreen.parentNode.removeChild(splashscreen);
+      }, 1000);
+    })
+    .catch(console.log);
+})();
