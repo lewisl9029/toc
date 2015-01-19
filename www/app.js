@@ -11,12 +11,13 @@ import run from './app-run';
 import config from './app-config';
 
 let app = angular.module('toc', [
-  'ionic',
-  services.name,
-  libraries.name,
-  views.name,
-  components.name
-]).run(run)
+    'ionic',
+    services.name,
+    libraries.name,
+    views.name,
+    components.name
+  ])
+  .run(run)
   .config(config);
 
 export default app;

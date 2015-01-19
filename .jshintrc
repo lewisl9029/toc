@@ -32,13 +32,12 @@
   "maxdepth" : false, // {int} Max depth of nested blocks (within functions)
   "maxstatements" : false, // {int} Max number statements per function
   "maxcomplexity" : false, // {int} Max cyclomatic complexity per function
-  "maxlen" : false, // {int} Max number of characters per line
+  "maxlen" : 80, // {int} Max number of characters per line
   // Relaxing
   "asi" : false, // true: Tolerate Automatic Semicolon Insertion (no semicolons)
   "boss" : false, // true: Tolerate assignments where comparisons would be expected
   "debug" : false, // true: Allow debugger statements e.g. browser breakpoints.
   "eqnull" : false, // true: Tolerate use of `== null`
-  "es5" : true, // *true: Allow ES5 syntax (ex: getters and setters)
   "esnext" : true, // *true: Allow ES.next (ES6) syntax (ex: `const`)
   "moz" : false, // true: Allow Mozilla specific syntax (extends and overrides esnext features)
   // (ex: `for each`, multiple try/catch, function expression…)
@@ -66,7 +65,7 @@
   "couch" : false, // CouchDB
   "devel" : true, // Development/debugging (alert, confirm, etc)
   "dojo" : false, // Dojo Toolkit
-  "jasmine" : false, // Jasmine
+  "jasmine" : true, // Jasmine
   "jquery" : false, // jQuery
   "mocha" : true, // Mocha
   "mootools" : false, // MooTools
@@ -80,7 +79,5 @@
   "wsh" : false, // Windows Scripting Host
   "yui" : false, // Yahoo User Interface
   // Custom Globals
-  "globals" : {
-    "expect": false
-    } //* additional predefined global variables
+  "globals" : {} //* additional predefined global variables
 }

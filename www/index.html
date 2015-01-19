@@ -1,31 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head lang="en">
   <meta charset="UTF-8">
-  <meta name="viewport"
-    content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
   <title>Toc Messenger</title>
-  <script src="jspm_packages/traceur-runtime.js"></script>
-  <script src="jspm_packages/es6-module-loader.js"></script>
-  <script src="jspm_packages/system.js"></script>
-  <script src="config.js"></script>
-  <link rel="stylesheet" type="text/css" href="splash.css">
-  <script>
-    System.import('initialize').then(
-      function initializeApp(initialize) {
-        initialize.default();
-      }
-    ).then(
-      function hideSplashscreen() {
-        var splashscreen = document.getElementsByClassName('splashscreen')[0];
-        splashscreen.className += ' fadeout-splashscreen';
-        setTimeout(function removeSplashscreen() {
-          document.getElementsByTagName('body')[0].removeChild(splashscreen);
-        }, 1000);
-      }
-    ).catch(console.log);
-  </script>
 </head>
+
 <body data-toc-app>
   <ion-nav-view></ion-nav-view>
   <div class="splashscreen">
@@ -39,5 +20,41 @@
       </div>
     </div>
   </div>
+  <script src="jspm_packages/traceur-runtime.js"></script>
+  <script src="jspm_packages/es6-module-loader.js"></script>
+  <script src="jspm_packages/system.js"></script>
+  <script src="config.js"></script>
+  <link rel="stylesheet" type="text/css" href="splashscreen.css">
+  <script>
+    var spinner = document.getElementsByClassName('spinner')[0];
+    var spinnerArea = spinner.parentNode;
+    spinnerArea.removeChild(spinner);
+
+    var showSpinnerTimeout = setTimeout(function showSpinner() {
+      spinnerArea.appendChild(spinner);
+    }, 1000);
+
+    System.import('initialize')
+      .then(
+        function initializeApp(initialize) {
+          initialize.default();
+        }
+      )
+      .then(
+        function hideSplashscreen() {
+          clearTimeout(showSpinnerTimeout);
+          var splashscreen = document.getElementsByClassName(
+            'splashscreen')[0];
+          splashscreen.className += ' fadeout-splashscreen';
+          setTimeout(function removeSplashscreen() {
+            splashscreen.parentNode.removeChild(
+              splashscreen);
+          }, 1000);
+        }
+      )
+      .catch(console.log);
+
+  </script>
 </body>
+
 </html>

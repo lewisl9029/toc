@@ -7,8 +7,9 @@ import controller from './home-controller';
 import service from './home-service';
 
 let home = angular.module('toc.views.home', [
-  contacts.name
-]).config(config)
+    contacts.name
+  ])
+  .config(config)
   .controller(controller.name, controller)
   .factory(service.name, service);
 

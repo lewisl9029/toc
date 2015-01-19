@@ -17,6 +17,7 @@ System.config({
     "ionic": "github:driftyco/ionic-bower@1.0.0-beta.14",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "ramda": "github:ramda/ramda@0.8.0",
+    "scut": "github:davidtheclark/scut@1.0.2",
     "github:angular/bower-angular-animate@1.3.8": {
       "angular": "github:angular/bower-angular@1.3.8"
     },
