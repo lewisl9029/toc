@@ -20,41 +20,12 @@
       </div>
     </div>
   </div>
+  <link rel="stylesheet" type="text/css" href="splashscreen.css">
   <script src="jspm_packages/traceur-runtime.js"></script>
   <script src="jspm_packages/es6-module-loader.js"></script>
   <script src="jspm_packages/system.js"></script>
   <script src="config.js"></script>
-  <link rel="stylesheet" type="text/css" href="splashscreen.css">
-  <script>
-    var spinner = document.getElementsByClassName('spinner')[0];
-    var spinnerArea = spinner.parentNode;
-    spinnerArea.removeChild(spinner);
-
-    var showSpinnerTimeout = setTimeout(function showSpinner() {
-      spinnerArea.appendChild(spinner);
-    }, 1000);
-
-    System.import('initialize')
-      .then(
-        function initializeApp(initialize) {
-          initialize.default();
-        }
-      )
-      .then(
-        function hideSplashscreen() {
-          clearTimeout(showSpinnerTimeout);
-          var splashscreen = document.getElementsByClassName(
-            'splashscreen')[0];
-          splashscreen.className += ' fadeout-splashscreen';
-          setTimeout(function removeSplashscreen() {
-            splashscreen.parentNode.removeChild(
-              splashscreen);
-          }, 1000);
-        }
-      )
-      .catch(console.log);
-
-  </script>
+  <script src="initialize.js"></script>
 </body>
 
 </html>

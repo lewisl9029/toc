@@ -16,7 +16,10 @@
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: 'jspm_packages/github/driftyco/ionic-bower@1.0.0-beta.14/fonts' !default;
 
-// Include all of Ionic
+// Library imports
 @import 'jspm_packages/github/driftyco/ionic-bower@1.0.0-beta.14/scss/ionic';
 @import 'jspm_packages/github/davidtheclark/scut@1.0.2/dist/scut';
+
+// App imports
 @import 'views/views';
+@import 'components/components';
