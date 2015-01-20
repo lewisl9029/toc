@@ -2,10 +2,11 @@ image: toc-build:latest
 script:
   - Xvfb :1 -screen 0 1024x768x24 -ac &
   - gulp verify --prod
+
 deploy:
   bash:
-    script:
-      - ./drone-deploy.sh
+    command: source ./drone-deploy.sh
+
 notify:
   email:
     recipients:
