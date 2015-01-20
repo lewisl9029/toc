@@ -63,5 +63,6 @@
     "grunt-ngdocs": "~0.1.7"
   },
   "main": "release/angular-ui-router",
+  "jspm": {},
   "dependencies": {}
 }

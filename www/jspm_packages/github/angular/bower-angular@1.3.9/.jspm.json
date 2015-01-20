@@ -1,8 +1,7 @@
 {
-  "name": "angular-animate",
-  "version": "1.3.8",
-  "description": "AngularJS module for animations",
-  "main": "angular-animate.js",
+  "name": "angular",
+  "version": "1.3.9",
+  "description": "HTML enhanced for web apps",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,7 +13,6 @@
     "angular",
     "framework",
     "browser",
-    "animation",
     "client-side"
   ],
   "author": "Angular Core Team <angular-core+npm@google.com>",
@@ -22,5 +20,19 @@
   "bugs": {
     "url": "https://github.com/angular/angular.js/issues"
   },
-  "homepage": "http://angularjs.org"
+  "homepage": "http://angularjs.org",
+  "jspm": {
+    "main": "angular.min",
+    "shim": {
+      "angular.min": {
+        "exports": "angular"
+      }
+    }
+  },
+  "main": "angular.min",
+  "shim": {
+    "angular.min": {
+      "exports": "angular"
+    }
+  }
 }

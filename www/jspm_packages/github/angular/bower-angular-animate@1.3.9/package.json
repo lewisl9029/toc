@@ -1,8 +1,7 @@
 {
-  "name": "angular-sanitize",
-  "version": "1.3.8",
-  "description": "AngularJS module for sanitizing HTML",
-  "main": "angular-sanitize.js",
+  "name": "angular-animate",
+  "version": "1.3.9",
+  "description": "AngularJS module for animations",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,7 +13,7 @@
     "angular",
     "framework",
     "browser",
-    "html",
+    "animation",
     "client-side"
   ],
   "author": "Angular Core Team <angular-core+npm@google.com>",

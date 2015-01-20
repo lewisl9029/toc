@@ -3,7 +3,7 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer-core');
-//var cssgrace = require('cssgrace');
+var cssgrace = require('cssgrace');
 var sourcemaps = require('gulp-sourcemaps');
 var jshint = require('gulp-jshint');
 var htmlhint = require('gulp-htmlhint');
@@ -48,6 +48,7 @@ gulp.task('watch', function watch() {
 
 //TODO: add minification steps
 //TODO: add android/ios/node-webkit build steps
+//TODO: append version + latest folders for each build
 gulp.task('build', ['build-js', 'build-html']);
 
 gulp.task('style', ['style-js', 'style-html']);
@@ -57,7 +58,6 @@ gulp.task('verify', ['test', 'lint']);
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
 gulp.task('build-js', ['build-sass'], function buildJs() {
-  //TODO: append version + latest folder
   jspm.bundle('app', basePaths.prod + 'app.js', {});
 
   return gulp.src([
@@ -78,24 +78,33 @@ gulp.task('build-html', function buildHtml() {
 });
 
 gulp.task('build-sass', function buildSass() {
-  var cssDestination = argv.prod ? basePaths.prod: basePaths.dev;
-
   //TODO: explore uncss viability
-  return gulp.src([
-      basePaths.dev + 'app.scss',
-      basePaths.dev + 'initialize.scss'
-    ])
+  gulp.src(basePaths.dev + 'initialize.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(postcss([
       autoprefixer({
         browsers: ['last 2 version']
       })
-      // Blocked by https://github.com/cssdream/cssgrace/issues/7
+      // FIXME: blocked by https://github.com/cssdream/cssgrace/issues/7
       //cssgrace
     ]))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest(cssDestination));
+    .pipe(gulp.dest(basePaths.dev))
+    .pipe(gulp.dest(basePaths.prod));
+
+  return gulp.src(basePaths.dev + 'app.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass())
+    .pipe(postcss([
+      autoprefixer({
+        browsers: ['last 2 version']
+      }),
+      cssgrace
+    ]))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(basePaths.dev))
+    .pipe(gulp.dest(basePaths.prod));
 });
 
 gulp.task('test', function test(done) {
