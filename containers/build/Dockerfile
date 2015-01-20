@@ -29,7 +29,7 @@ RUN echo y | android-sdk-linux/tools/android update sdk --filter tools --no-ui -
 ENV ANDROID_HOME /usr/local/android-sdk-linux
 ENV PATH $PATH:$ANDROID_HOME/tools
 ENV PATH $PATH:$ANDROID_HOME/platform-tools
-ENV BITBUCKET_OAUTH_TOKEN $BITBUCKET_OAUTH_TOKEN
+ENV BITBUCKET_OAUTH_TOKEN ${BITBUCKET_OAUTH_TOKEN}
 
 #TODO: configure ionic build service for ios
 #TODO: configure ionic cli crosswalk runtime
