@@ -1,4 +1,3 @@
-/* */ 
 window.onload = function() {
   var fileLinkBase = document.body.getAttribute('data-file-link-base');
   var buildServer = document.body.getAttribute('data-build-server');

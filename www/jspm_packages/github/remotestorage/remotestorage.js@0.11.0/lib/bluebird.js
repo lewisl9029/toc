@@ -1,5 +1,3 @@
-/* */ 
-"format global";
 /**
  * bluebird build version 2.3.4
  * Features enabled: core, nodeify

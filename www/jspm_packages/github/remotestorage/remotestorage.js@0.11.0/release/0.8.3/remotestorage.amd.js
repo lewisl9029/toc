@@ -1,5 +1,3 @@
-/* */ 
-"format global";
 /** remotestorage.js 0.8.3, http://remotestorage.io, MIT-licensed **/
 define([], function() {
 

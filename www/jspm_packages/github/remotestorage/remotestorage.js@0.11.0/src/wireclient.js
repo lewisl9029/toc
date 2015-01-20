@@ -1,4 +1,3 @@
-/* */ 
 (function (global) {
   var RS = RemoteStorage;
 

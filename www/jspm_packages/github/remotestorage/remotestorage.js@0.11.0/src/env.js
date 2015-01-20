@@ -1,4 +1,3 @@
-/* */ 
 (function (pMode) {
 
   var mode = pMode,

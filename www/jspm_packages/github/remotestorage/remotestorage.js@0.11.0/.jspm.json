@@ -4,7 +4,7 @@
   "version": "0.11.0",
   "private": false,
   "license": "MIT",
-  "main": "release/0.11.0/remotestorage",
+  "main": "./node-main.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/remotestorage/remotestorage.js.git"
@@ -17,11 +17,7 @@
   "scripts": {
     "test": "node_modules/jaribu/bin/jaribu"
   },
-  "jspm": {
-    "main": "release/0.11.0/remotestorage",
-    "format": "global"
-  },
-  "format": "global",
+  "jspm": {},
   "dependencies": {
     "bluebird": "^2.3.2",
     "tv4": "^1.1.4",

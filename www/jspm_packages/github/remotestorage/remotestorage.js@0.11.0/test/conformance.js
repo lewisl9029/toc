@@ -1,5 +1,3 @@
-/* */ 
-"format global";
 var assert = require('assert');
 var util = require('util');
 var helpers = require('./conformance-helpers');
