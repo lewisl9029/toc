@@ -11,7 +11,10 @@ sudo docker build -t toc-drone:$TOC_VER $TOC_DIR/containers/drone
 sudo docker build -t toc-drone:latest $TOC_DIR/containers/drone
 sudo docker stop toc-drone
 sudo docker rm toc-drone
-sudo docker run --name toc-drone -d -p 8080:8080 \
+sudo docker run \
+  -d \
+  --name toc-drone \
+  -p 8080:8080 \
   -v /var/lib/drone \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /home/$USERNAME/drone/drone.sqlite:/var/lib/drone/drone.sqlite \
