@@ -27,10 +27,3 @@ sudo docker run \
   -e DRONE_SMTP_USER=$DRONE_SMTP_USER \
   -e DRONE_SMTP_PASS=$DRONE_SMTP_PASS \
   toc-drone:latest
-
-sudo docker build -t toc-build:$TOC_VER $TOC_DIR/containers/build
-sudo docker build -t toc-build:latest $TOC_DIR/containers/build
-sudo docker run
-  -i -t --rm
-  -v $TOC_DIR:/toc
-  toc-build:latest
