@@ -3,7 +3,7 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer-core');
-var cssgrace = require('cssgrace');
+//var cssgrace = require('cssgrace');
 var sourcemaps = require('gulp-sourcemaps');
 var jshint = require('gulp-jshint');
 var htmlhint = require('gulp-htmlhint');
@@ -15,60 +15,95 @@ var argv = require('yargs')
   .argv;
 var jspm = require('jspm');
 
+var basePaths = {
+  dev: './www/',
+  prod: './prod/www/'
+};
+
 var paths = {
   sass: [
-    './www/components/**/*.scss',
-    './www/views/**/*.scss',
-    './www/app.scss'
+    basePaths.dev + 'components/**/*.scss',
+    basePaths.dev + 'views/**/*.scss',
+    basePaths.dev + 'app.scss',
+    basePaths.dev + 'initialize.scss'
   ],
   js: [
-    './www/components/**/*.js',
-    './www/libraries/**/*.js',
-    './www/services/**/*.js',
-    './www/views/**/*.js',
-    './www/*.js',
+    basePaths.dev + 'components/**/*.js',
+    basePaths.dev + 'libraries/**/*.js',
+    basePaths.dev + 'services/**/*.js',
+    basePaths.dev + 'views/**/*.js',
+    basePaths.dev + '*.js',
     './*.js'
   ],
   html: [
-    './www/components/**/*.html',
-    './www/views/**/*.html',
-    './www/*.html'
+    basePaths.dev + 'components/**/*.html',
+    basePaths.dev + 'views/**/*.html',
+    basePaths.dev + '*.html'
   ]
 };
-
-gulp.task('default', ['build-sass']);
-
-gulp.task('build', ['build-sass'], function build() {
-  return jspm.bundle();
-});
-
-gulp.task('build-sass', function buildSass(done) {
-  gulp.src('./www/app.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass())
-    .pipe(postcss([
-      autoprefixer({
-        browsers: ['last 2 version']
-      }),
-      cssgrace
-    ]))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('./www/'))
-    .on('end', done);
-});
 
 gulp.task('watch', function watch() {
   gulp.watch(paths.sass, ['build-sass']);
 });
 
-gulp.task('test', ['lint'], function test(done) {
+//TODO: add minification steps
+//TODO: add android/ios/node-webkit build steps
+gulp.task('build', ['build-js', 'build-html']);
+
+gulp.task('style', ['style-js', 'style-html']);
+
+gulp.task('verify', ['test', 'lint']);
+
+gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
+
+gulp.task('build-js', ['build-sass'], function buildJs() {
+  //TODO: append version + latest folder
+  jspm.bundle('app', basePaths.prod + 'app.js', {});
+
+  return gulp.src([
+      basePaths.dev + 'jspm_packages/es6-module-loader.js',
+      basePaths.dev + 'jspm_packages/system.js',
+      basePaths.dev + 'jspm_packages/traceur-runtime.js',
+      basePaths.dev + 'config.js',
+      basePaths.dev + 'initialize.js',
+    ], {
+      base: basePaths.dev
+    })
+    .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('build-html', function buildHtml() {
+  return gulp.src(basePaths.dev + 'index.html')
+    .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('build-sass', function buildSass() {
+  var cssDestination = argv.prod ? basePaths.prod: basePaths.dev;
+
+  //TODO: explore uncss viability
+  return gulp.src([
+      basePaths.dev + 'app.scss',
+      basePaths.dev + 'initialize.scss'
+    ])
+    .pipe(sourcemaps.init())
+    .pipe(sass())
+    .pipe(postcss([
+      autoprefixer({
+        browsers: ['last 2 version']
+      })
+      // Blocked by https://github.com/cssdream/cssgrace/issues/7
+      //cssgrace
+    ]))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(cssDestination));
+});
+
+gulp.task('test', function test(done) {
   return karma.start({
     configFile: __dirname + '/karma.conf.js',
     singleRun: argv.prod
   }, argv.prod ? done : undefined);
 });
-
-gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
 gulp.task('lint-js', function lintJs() {
   return gulp.src(paths.js)
@@ -92,8 +127,6 @@ gulp.task('lint-sass', function lintSass() {
     .pipe(scsslint.reporter())
     .pipe(scsslint.reporter('fail'));
 });
-
-gulp.task('style', ['style-js', 'style-html']);
 
 var makeStyleTask = function makeStyleTask(paths) {
   var style = function style() {

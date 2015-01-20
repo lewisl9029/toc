@@ -25,8 +25,8 @@
     .then(function hideSplashscreen() {
       // Remove if time elapsed < 1s
       // Else fadeout
-      var spinner = document.getElementsByClassName('spinner')[0];
-      spinner.className += ' fadeout-spinner';
+      // var spinner = document.getElementsByClassName('spinner')[0];
+      // spinner.className += ' fadeout-spinner';
 
       var splashscreen = document.getElementsByClassName('splashscreen')[0];
       splashscreen.className += ' fadeout-splashscreen';
