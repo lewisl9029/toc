@@ -22,12 +22,20 @@ module.exports = function(config) {
     jspm: {
       packages: 'www/jspm_packages/',
       loadFiles: [
-        'www/**/*-test.unit.js'
+        'www/components/**/*-test.unit.js',
+        'www/libraries/**/*-test.unit.js',
+        'www/services/**/*-test.unit.js',
+        'www/views/**/*-test.unit.js',
+        'www/*-test.unit.js'
       ],
       serveFiles: [
         'www/**/*.js'
       ],
-      config: 'www/config-test.js'
+      config: 'www/config.js'
+    },
+
+    proxies: {
+      '/base/jspm_packages/': '/base/www/jspm_packages/'
     },
 
     // list of files to exclude
@@ -70,8 +78,7 @@ module.exports = function(config) {
       ChromeHeadless: {
         base: 'Chrome',
         flags: [
-          '--no-sandbox',
-          '--disable-gpu'
+          '--no-sandbox'
         ]
       }
     },
