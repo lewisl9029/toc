@@ -9,8 +9,6 @@ var jshint = require('gulp-jshint');
 var htmlhint = require('gulp-htmlhint');
 var scsslint = require('gulp-scsslint');
 var jsbeautifier = require('gulp-jsbeautifier');
-var replace = require('gulp-replace');
-var rename = require('gulp-rename');
 var karma = require('karma')
   .server;
 var argv = require('yargs')
@@ -59,11 +57,6 @@ gulp.task('watch', function() {
 });
 
 gulp.task('test', ['lint'], function(done) {
-  gulp.src('./www/config.js')
-    .pipe(replace('jspm_packages', 'www/jspm_packages'))
-    .pipe(rename('config-test.js'))
-    .pipe(gulp.dest('./www/'));
-
   return karma.start({
     configFile: __dirname + '/karma.conf.js',
     singleRun: argv.prod
