@@ -2,7 +2,7 @@ image: toc-build:latest
 
 env:
   - BITBUCKET_OAUTH_TOKEN=$BITBUCKET_OAUTH_TOKEN
-  
+
 script:
   - Xvfb :1 -screen 0 1024x768x24 -ac &
   - gulp verify --prod

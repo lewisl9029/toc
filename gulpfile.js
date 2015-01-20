@@ -54,7 +54,7 @@ gulp.task('build', ['build-js', 'build-html']);
 
 gulp.task('style', ['style-js', 'style-html']);
 
-gulp.task('verify', ['test']);
+gulp.task('verify', ['test', 'lint']);
 
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
@@ -108,7 +108,7 @@ gulp.task('build-sass', function buildSass() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('test', ['lint'], function test(done) {
+gulp.task('test', function test(done) {
   return karma.start({
     configFile: __dirname + '/karma.conf.js',
     singleRun: argv.prod
