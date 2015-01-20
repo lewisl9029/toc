@@ -8,8 +8,8 @@ fi
 
 if [ -z "$TOC_DIR" ];
 then
-TOC_DIR=/home/$USERNAME/toc
-echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
+  TOC_DIR=/home/$USERNAME/toc
+  echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
 fi
 
 (
