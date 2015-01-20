@@ -13,6 +13,7 @@ var karma = require('karma')
   .server;
 var argv = require('yargs')
   .argv;
+var jspm = require('jspm');
 
 var paths = {
   sass: [
@@ -35,9 +36,13 @@ var paths = {
   ]
 };
 
-gulp.task('default', ['sass']);
+gulp.task('default', ['build-sass']);
 
-gulp.task('sass', function(done) {
+gulp.task('build', ['build-sass'], function build() {
+  return jspm.bundle();
+});
+
+gulp.task('build-sass', function buildSass(done) {
   gulp.src('./www/app.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
@@ -52,11 +57,11 @@ gulp.task('sass', function(done) {
     .on('end', done);
 });
 
-gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
+gulp.task('watch', function watch() {
+  gulp.watch(paths.sass, ['build-sass']);
 });
 
-gulp.task('test', ['lint'], function(done) {
+gulp.task('test', ['lint'], function test(done) {
   return karma.start({
     configFile: __dirname + '/karma.conf.js',
     singleRun: argv.prod
@@ -65,14 +70,14 @@ gulp.task('test', ['lint'], function(done) {
 
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
-gulp.task('lint-js', function() {
+gulp.task('lint-js', function lintJs() {
   return gulp.src(paths.js)
     .pipe(jshint())
     .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('lint-html', function() {
+gulp.task('lint-html', function lintHtml() {
   return gulp.src(paths.html)
     .pipe(htmlhint({
       htmlhintrc: './.htmlhintrc'
@@ -81,7 +86,7 @@ gulp.task('lint-html', function() {
     .pipe(htmlhint.failReporter());
 });
 
-gulp.task('lint-sass', function() {
+gulp.task('lint-sass', function lintSass() {
   return gulp.src(paths.sass)
     .pipe(scsslint())
     .pipe(scsslint.reporter())

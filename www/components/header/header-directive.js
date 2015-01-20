@@ -7,9 +7,4 @@ let directive = function tocHeader() {
   };
 };
 
-//function.name polyfill (mostly for IE)
-if (!directive.name) {
-  directive.name = 'tocHeader';
-}
-
 export default directive;

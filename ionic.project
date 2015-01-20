@@ -2,7 +2,7 @@
   "name": "Toc Messenger",
   "app_id": "",
   "gulpStartupTasks": [
-    "sass",
+    "build-sass",
     "watch"
   ],
   "watchPatterns": [
