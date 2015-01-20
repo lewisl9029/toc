@@ -49,6 +49,7 @@ gulp.task('watch', function watch() {
 //TODO: add minification steps
 //TODO: add android/ios/node-webkit build steps
 //TODO: append version + latest folders for each build
+//TODO: clean build directory before each build
 gulp.task('build', ['build-js', 'build-html']);
 
 gulp.task('style', ['style-js', 'style-html']);

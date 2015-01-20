@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 TOC_VER="$(git describe --tags --abbrev=0)"
 
+if [ ! -f $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz ];
+  then
+  curl https://dl.dropboxusercontent.com/u/172349/node-v0.10.35-linux-x64.tar.gz \
+  --create-dirs \
+  -o $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz
+fi
+
 sudo docker build -t toc-cache-apt:$TOC_VER $TOC_DIR/containers/cache/apt
 sudo docker build -t toc-cache-apt:latest $TOC_DIR/containers/cache/apt
 sudo docker stop toc-cache-apt

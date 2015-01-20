@@ -18,6 +18,7 @@ sudo docker run \
   -v /var/lib/drone \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /home/$USERNAME/drone/drone.sqlite:/var/lib/drone/drone.sqlite \
+  -e BITBUCKET_OAUTH_TOKEN=$BITBUCKET_OAUTH_TOKEN \
   -e DRONE_GITHUB_CLIENT=$DRONE_GITHUB_CLIENT \
   -e DRONE_GITHUB_SECRET=$DRONE_GITHUB_SECRET \
   -e DRONE_SMTP_HOST=$DRONE_SMTP_HOST \
@@ -26,3 +27,10 @@ sudo docker run \
   -e DRONE_SMTP_USER=$DRONE_SMTP_USER \
   -e DRONE_SMTP_PASS=$DRONE_SMTP_PASS \
   toc-drone:latest
+
+sudo docker build -t toc-build:$TOC_VER $TOC_DIR/containers/build
+sudo docker build -t toc-build:latest $TOC_DIR/containers/build
+sudo docker run
+  -i -t --rm
+  -v $TOC_DIR:/toc
+  toc-build:latest

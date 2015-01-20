@@ -1,4 +1,4 @@
-FROM toc-dev:latest
+FROM toc-test:latest
 
 MAINTAINER Lewis Liu
 
@@ -20,7 +20,7 @@ RUN apt-get -y install \
 RUN tar xf android-sdk_r24.0.2-linux.tgz \
   && rm -rf android-sdk_r24.0.2-linux.tgz
 
-# TODO: predownload sdk files and just copy?
+#TODO: predownload sdk files and just copy?
 RUN echo y | android-sdk-linux/tools/android update sdk --filter tools --no-ui --force -a \
  && echo y | android-sdk-linux/tools/android update sdk --filter build-tools-21.1.2 --no-ui --force -a \
  && echo y | android-sdk-linux/tools/android update sdk --filter platform-tools --no-ui --force -a \
@@ -30,6 +30,7 @@ ENV ANDROID_HOME /usr/local/android-sdk-linux
 ENV PATH $PATH:$ANDROID_HOME/tools
 ENV PATH $PATH:$ANDROID_HOME/platform-tools
 
-WORKDIR /toc
+#TODO: configure ionic build service for ios
+#TODO: configure ionic cli crosswalk runtime
 
-CMD ionic build android
+WORKDIR /toc

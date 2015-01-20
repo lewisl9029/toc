@@ -1,4 +1,12 @@
-image: toc-test:latest
+image: toc-build:latest
 script:
   - Xvfb :1 -screen 0 1024x768x24 -ac &
   - gulp verify --prod
+deploy:
+  bash:
+    script:
+      - ./drone-deploy.sh
+notify:
+  email:
+    recipients:
+      - toc-dev@lewisl.net
