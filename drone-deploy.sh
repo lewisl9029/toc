@@ -5,6 +5,8 @@ TOC_VER="$(git describe --tags --abbrev=0)"
 cd /
 git clone https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging
 
+cd /toc-staging/
+
 if [ "$DRONE_BRANCH" == "master" ];
 then
   cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/
