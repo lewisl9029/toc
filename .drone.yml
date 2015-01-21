@@ -9,8 +9,9 @@ deploy:
   bash:
     command: source ./drone-deploy.sh
 
-#FIXME: get email notifications working
 notify:
   email:
+    on_success: change
+    on_failure: change, blame
     recipients:
-      - toc-dev@lewisl.net
+      - toc-drone@lewisl.net
