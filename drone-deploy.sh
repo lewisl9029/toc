@@ -2,6 +2,9 @@
 gulp build
 TOC_VER="$(git describe --tags --abbrev=0)"
 
+git config --global user.email "tocbitbucket@lewisl.net"
+git config --global user.name "Toc Bitbucket"
+
 cd /
 git clone https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging
 
