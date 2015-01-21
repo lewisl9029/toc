@@ -8,11 +8,9 @@ git config --global user.name "Toc Bitbucket"
 cd /
 mkdir toc-staging
 cd /toc-staging/
-echo init
-git init
-echo pull
-git pull --quiet https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging
 
+git init
+git pull --quiet https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging
 
 if [ "$DRONE_BRANCH" == "master" ];
 then
@@ -23,9 +21,7 @@ else
   mkdir -p /toc-staging/dev/$DRONE_BRANCH/
   cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/dev/$DRONE_BRANCH/
 fi
-echo add
+
 git add -A .
-echo commit
 git commit -m "Staging Toc $TOC_VER at $DEPLOYMENT_PATH" --allow-empty
-echo push
 git push --quiet https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging master
