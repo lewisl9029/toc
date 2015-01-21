@@ -1,3 +1,5 @@
+/* */ 
+"format global";
 
 var fs = require('fs');
 var builder = require('./builder');

@@ -1,3 +1,5 @@
+/* */ 
+"format global";
 define([], function() {
   return {
     defineMocks: function(env) {

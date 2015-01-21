@@ -1,3 +1,5 @@
+/* */ 
+"format global";
 (function (global) {
   function logError(error) {
     if (typeof(error) === 'string') {

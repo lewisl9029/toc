@@ -1,3 +1,4 @@
+/* */ 
 (function(global) {
 
   var SETTINGS_KEY = "remotestorage:access";

@@ -1,3 +1,4 @@
+/* */ 
 (function (window){
 
   var t = RemoteStorage.I18n.translate;

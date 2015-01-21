@@ -1,8 +1,10 @@
+/* */ 
+"format global";
 if (typeof(define) !== 'function') {
   var define = require('amdefine');
 }
 
-define(['bluebird', 'test/helpers/mocks', 'requirejs'], function(Promise, mocks, requirejs) {
+define(["bluebird","test/helpers/mocks","requirejs"], function(Promise, mocks, requirejs) {
   global.Promise = Promise;
 
   var suites = [];

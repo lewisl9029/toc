@@ -1,3 +1,4 @@
+/* */ 
 (function (global) {
 
   var syncInterval = 10000,

@@ -1,3 +1,5 @@
+/* */ 
+"format global";
 var fs = require('fs');
 
 exports.build = function(components, selectedGroups, options) {
