@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #manually setup git and clone repo
-#echo GITHUB_OAUTH_TOKEN=TOKEN | sudo tee -a /etc/environment
+#echo GITHUB_OAUTH_TOKEN= | sudo tee -a /etc/environment
+#echo BITBUCKET_OAUTH_TOKEN= | sudo tee -a /etc/environment
 #echo DRONE_GITHUB_CLIENT= | sudo tee -a /etc/environment
 #echo DRONE_GITHUB_SECRET= | sudo tee -a /etc/environment
 #echo DRONE_SMTP_HOST= | sudo tee -a /etc/environment
@@ -19,7 +20,20 @@
 #deprovision and create vm image
 #source ./drone-provision.sh
 
-cd ~/toc
+if [ -z "$USERNAME" ];
+  then
+  USERNAME=$(whoami)
+  echo "USERNAME=$USERNAME" | sudo tee -a /etc/environment
+fi
+
+if [ -z "$TOC_DIR" ];
+  then
+  TOC_DIR=/home/$USERNAME/toc
+  echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
+fi
+
+cd $TOC_DIR
+
 git pull
 
 source ./vagrant-provision.sh
@@ -32,3 +46,4 @@ then
 fi
 
 source ./containers/toc-setup-drone.sh
+source ./containers/toc-setup-build.sh

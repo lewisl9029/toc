@@ -1,6 +1,5 @@
 /* */ 
 "format global";
-"deps ../css/ionic.css!";
 "deps ./ionic";
 "deps angular";
 "deps angular-animate";

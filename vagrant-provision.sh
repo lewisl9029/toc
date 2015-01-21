@@ -39,36 +39,16 @@ alias toct="sudo docker run \
   -p 8101:8101 \
   -v $TOC_DIR:/toc \
   toc-test:latest \
-  sh -c '(Xvfb :1 -screen 0 1024x768x24 -ac &) && gulp test "$@"'"
+  sh -c '(Xvfb :1 -screen 0 1024x768x24 -ac &) && gulp verify "$@"'"
 
-alias tocp="source $TOC_DIR/containers/toc-setup-phone.sh"
+alias tocb="source $TOC_DIR/containers/toc-setup-build.sh"
+alias tocd="source $TOC_DIR/containers/toc-setup-drone.sh"
 alias toce="source $TOC_DIR/containers/toc-setup-env.sh"
-alias tocb="source $TOC_DIR/containers/toc-setup-web.sh"
+alias tocw="source $TOC_DIR/containers/toc-setup-web.sh"
 EOF
 ) | tee ~/.bash_aliases
 
-if [ ! -f $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz ];
-then
-  curl https://dl.dropboxusercontent.com/u/172349/node-v0.10.35-linux-x64.tar.gz \
-    --create-dirs \
-    -o $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz
-fi
-
-if [ ! -f $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb ];
-then
-  curl https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb \
-    --create-dirs \
-    -o $TOC_DIR/containers/test/.packages/google-chrome-stable_current_amd64.deb
-fi
-
-if [ ! -f $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz ];
-then
-  curl https://dl.dropboxusercontent.com/u/172349/android-sdk_r24.0.2-linux.tgz \
-    --create-dirs \
-    -o $TOC_DIR/containers/phone/.packages/android-sdk_r24.0.2-linux.tgz
-fi
-
-DOCKER_VERSION = 1.4.1
+DOCKER_VERSION=1.4.1
 
 if ! dpkg -s lxc-docker | grep -q Version.*$DOCKER_VERSION;
 then
@@ -83,6 +63,8 @@ then
     && sudo apt-get clean \
     && sudo rm -rf /tmp/* /var/tmp/*
 fi
+
+cd $TOC_DIR
 
 source $TOC_DIR/containers/toc-setup-env.sh
 source $TOC_DIR/containers/toc-setup-web.sh

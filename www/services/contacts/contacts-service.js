@@ -8,9 +8,4 @@ let service = function contacts(R) {
   })(ids);
 };
 
-//function.name polyfill (mostly for IE)
-if (!service.name) {
-  service.name = 'contacts';
-}
-
 export default service;

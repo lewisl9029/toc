@@ -1,1 +1,0 @@
-module.exports = require("github:angular/bower-angular@1.3.8/angular.min");

@@ -18,6 +18,7 @@ sudo docker run \
   -v /var/lib/drone \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /home/$USERNAME/drone/drone.sqlite:/var/lib/drone/drone.sqlite \
+  -e BITBUCKET_OAUTH_TOKEN=$BITBUCKET_OAUTH_TOKEN \
   -e DRONE_GITHUB_CLIENT=$DRONE_GITHUB_CLIENT \
   -e DRONE_GITHUB_SECRET=$DRONE_GITHUB_SECRET \
   -e DRONE_SMTP_HOST=$DRONE_SMTP_HOST \

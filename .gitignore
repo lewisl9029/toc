@@ -2,5 +2,6 @@
 .vagrant
 /platforms
 /plugins
-/www/app.css
+/www/*.css
 /**/.packages
+/prod

@@ -1,4 +1,16 @@
-image: toc-test:latest
+image: toc-build:latest
+
 script:
+  - gulp lint
   - Xvfb :1 -screen 0 1024x768x24 -ac &
   - gulp test --prod
+
+deploy:
+  bash:
+    command: source ./drone-deploy.sh
+
+#FIXME: get email notifications working
+notify:
+  email:
+    recipients:
+      - toc-dev@lewisl.net

@@ -13,32 +13,88 @@ var karma = require('karma')
   .server;
 var argv = require('yargs')
   .argv;
+var jspm = require('jspm');
+
+var basePaths = {
+  dev: './www/',
+  prod: './prod/www/'
+};
 
 var paths = {
   sass: [
-    './www/components/**/*.scss',
-    './www/views/**/*.scss',
-    './www/app.scss'
+    basePaths.dev + 'components/**/*.scss',
+    basePaths.dev + 'views/**/*.scss',
+    basePaths.dev + 'app.scss',
+    basePaths.dev + 'initialize.scss'
   ],
   js: [
-    './www/components/**/*.js',
-    './www/libraries/**/*.js',
-    './www/services/**/*.js',
-    './www/views/**/*.js',
-    './www/*.js',
+    basePaths.dev + 'components/**/*.js',
+    basePaths.dev + 'libraries/**/*.js',
+    basePaths.dev + 'services/**/*.js',
+    basePaths.dev + 'views/**/*.js',
+    basePaths.dev + '*.js',
     './*.js'
   ],
   html: [
-    './www/components/**/*.html',
-    './www/views/**/*.html',
-    './www/*.html'
+    basePaths.dev + 'components/**/*.html',
+    basePaths.dev + 'views/**/*.html',
+    basePaths.dev + '*.html'
   ]
 };
 
-gulp.task('default', ['sass']);
+gulp.task('watch', function watch() {
+  gulp.watch(paths.sass, ['build-sass']);
+});
 
-gulp.task('sass', function(done) {
-  gulp.src('./www/app.scss')
+//TODO: add minification steps
+//TODO: add android/ios/node-webkit build steps
+//TODO: append version + latest folders for each build
+//TODO: clean build directory before each build
+gulp.task('build', ['build-js', 'build-html']);
+
+gulp.task('style', ['style-js', 'style-html']);
+
+gulp.task('verify', ['test', 'lint']);
+
+gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
+
+gulp.task('build-js', ['build-sass'], function buildJs() {
+  jspm.bundle('app', basePaths.prod + 'app.js', {});
+
+  return gulp.src([
+      basePaths.dev + 'jspm_packages/es6-module-loader.js',
+      basePaths.dev + 'jspm_packages/system.js',
+      basePaths.dev + 'jspm_packages/traceur-runtime.js',
+      basePaths.dev + 'config.js',
+      basePaths.dev + 'initialize.js',
+    ], {
+      base: basePaths.dev
+    })
+    .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('build-html', function buildHtml() {
+  return gulp.src(basePaths.dev + 'index.html')
+    .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('build-sass', function buildSass() {
+  //TODO: explore uncss viability
+  gulp.src(basePaths.dev + 'initialize.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass())
+    .pipe(postcss([
+      autoprefixer({
+        browsers: ['last 2 version']
+      })
+      // FIXME: blocked by https://github.com/cssdream/cssgrace/issues/7
+      //cssgrace
+    ]))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(basePaths.dev))
+    .pipe(gulp.dest(basePaths.prod));
+
+  return gulp.src(basePaths.dev + 'app.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(postcss([
@@ -48,31 +104,25 @@ gulp.task('sass', function(done) {
       cssgrace
     ]))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('./www/'))
-    .on('end', done);
+    .pipe(gulp.dest(basePaths.dev))
+    .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
-});
-
-gulp.task('test', ['lint'], function(done) {
+gulp.task('test', function test(done) {
   return karma.start({
     configFile: __dirname + '/karma.conf.js',
     singleRun: argv.prod
   }, argv.prod ? done : undefined);
 });
 
-gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
-
-gulp.task('lint-js', function() {
+gulp.task('lint-js', function lintJs() {
   return gulp.src(paths.js)
     .pipe(jshint())
     .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('lint-html', function() {
+gulp.task('lint-html', function lintHtml() {
   return gulp.src(paths.html)
     .pipe(htmlhint({
       htmlhintrc: './.htmlhintrc'
@@ -81,14 +131,12 @@ gulp.task('lint-html', function() {
     .pipe(htmlhint.failReporter());
 });
 
-gulp.task('lint-sass', function() {
+gulp.task('lint-sass', function lintSass() {
   return gulp.src(paths.sass)
     .pipe(scsslint())
     .pipe(scsslint.reporter())
     .pipe(scsslint.reporter('fail'));
 });
-
-gulp.task('style', ['style-js', 'style-html']);
 
 var makeStyleTask = function makeStyleTask(paths) {
   var style = function style() {
