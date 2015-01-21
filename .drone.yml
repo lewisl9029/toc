@@ -9,6 +9,7 @@ deploy:
   bash:
     command: source ./drone-deploy.sh
 
+#FIXME: get email notifications working
 notify:
   email:
     recipients:
