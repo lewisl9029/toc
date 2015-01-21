@@ -6,9 +6,11 @@ git config --global user.email "tocbitbucket@lewisl.net"
 git config --global user.name "Toc Bitbucket"
 
 cd /
-git clone https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging
-
+mkdir toc-staging
 cd /toc-staging/
+
+git init
+git pull --quiet https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging
 
 if [ "$DRONE_BRANCH" == "master" ];
 then
@@ -22,4 +24,4 @@ fi
 
 git add -A .
 git commit -m "Staging Toc $TOC_VER at $DEPLOYMENT_PATH" --allow-empty
-git push origin master
+git push --quiet https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging master

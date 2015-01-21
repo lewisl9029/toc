@@ -89,6 +89,7 @@ module.exports = function(config) {
 
     //TODO: run tests on a faster machine
     // see https://github.com/karma-runner/karma/issues/598
-    browserNoActivityTimeout: 30000
+    captureTimeout: 120000,
+    browserNoActivityTimeout: 60000
   });
 };
