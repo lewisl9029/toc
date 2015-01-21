@@ -9,7 +9,7 @@ cd /
 mkdir toc-staging
 cd /toc-staging/
 git init
-git pull https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging
+git pull https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging | grep -v $BITBUCKET_OAUTH_TOKEN
 
 if [ "$DRONE_BRANCH" == "master" ];
 then
@@ -24,4 +24,4 @@ fi
 git add -A .
 git commit -m "Staging Toc $TOC_VER at $DEPLOYMENT_PATH" --allow-empty
 
-git push https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging master > /dev/null
+git push https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging master
