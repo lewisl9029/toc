@@ -31,7 +31,10 @@ let service = function contacts($log, R, storage) {
     };
   });
 
-  storage.store.contacts.addContact({
+  storage.access.claim('contacts', 'rw');
+
+  //TODO: refactor storage API
+  storage.contacts.addContact({
     id: '1235',
     firstname: 'lewis',
     lastname: 'hoon'

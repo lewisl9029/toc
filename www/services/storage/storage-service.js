@@ -1,12 +1,16 @@
 let service = function storage($log, remoteStorage) {
   let storageService = {};
 
-  storageService.store = remoteStorage.remoteStorage;
+  storageService = new remoteStorage.RemoteStorage();
 
-  storageService.defineModule = function defineModule(moduleName, buildModule) {
-    remoteStorage.RemoteStorage.defineModule(moduleName, buildModule);
-    return storageService;
-  };
+  // storageService.access = remoteStorage.remoteStorage.access;
+  //
+  // storageService.displayWidget = remoteStorage.remoteStorage.displayWidget;
+  //
+  // storageService.defineModule = function defineModule(moduleName, buildModule) {
+  //   remoteStorage.RemoteStorage.defineModule(moduleName, buildModule);
+  //   return storageService;
+  // };
 
   return storageService;
 };
