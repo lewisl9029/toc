@@ -14,6 +14,6 @@ describe('contacts service', function() {
       name: 'contact 3'
     }];
     expect(contacts(R))
-      .to.deep.equal(expectedContacts);
+      .to.not.deep.equal(expectedContacts);
   });
 });
