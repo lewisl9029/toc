@@ -9,7 +9,8 @@ if [ "$DRONE_BRANCH" == "master" ];
 then
   cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/
 else
-  cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/$DRONE_BRANCH/www
+  mkdir /toc-staging/dev/$DRONE_BRANCH/
+  cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/dev/$DRONE_BRANCH/
 fi
 
 git add -A .
