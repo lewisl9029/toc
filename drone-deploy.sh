@@ -19,5 +19,5 @@ else
 fi
 
 git add -A .
-git commit -m "Staging $TOC_VER for branch $DRONE_BRANCH"
+git commit -m "Staging $TOC_VER for branch $DRONE_BRANCH at http://toc-staging.azurewebsites.net/dev/$DRONE_BRANCH/www/"
 git push origin
