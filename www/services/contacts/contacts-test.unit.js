@@ -15,5 +15,6 @@ describe('contacts service', function() {
     }];
     expect(contacts(R))
       .to.not.deep.equal(expectedContacts);
+      //still failing
   });
 });
