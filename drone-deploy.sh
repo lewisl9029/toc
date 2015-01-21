@@ -9,7 +9,7 @@ if [ "$DRONE_BRANCH" == "master" ];
 then
   cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/
 else
-  mkdir /toc-staging/dev/$DRONE_BRANCH/
+  mkdir -p /toc-staging/dev/$DRONE_BRANCH/
   cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/dev/$DRONE_BRANCH/
 fi
 
