@@ -22,6 +22,6 @@ else
 fi
 
 git add -A .
-git commit -m "Staging Toc $TOC_VER at $DEPLOYMENT_PATH" --allow-empty
+git commit -m "Staging Toc $TOC_VER at $DEPLOYMENT_PATH" --allow-empty > /dev/null
 
 git push https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging master > /dev/null
