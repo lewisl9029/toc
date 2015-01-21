@@ -9,7 +9,7 @@ cd /
 mkdir toc-staging
 cd /toc-staging/
 git init
-git pull https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging | grep -v -q --silent $BITBUCKET_OAUTH_TOKEN
+git pull https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging > /dev/null
 
 if [ "$DRONE_BRANCH" == "master" ];
 then
