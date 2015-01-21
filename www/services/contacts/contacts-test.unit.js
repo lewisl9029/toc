@@ -1,5 +1,6 @@
 import contacts from './contacts-service';
 import R from 'ramda';
+import storageMock from 'services/storage/storage-mock';
 
 describe('contacts service', function() {
   it('should run test', function() {
@@ -13,7 +14,7 @@ describe('contacts service', function() {
       id: 3,
       name: 'contact 3'
     }];
-    expect(contacts(R))
+    expect(contacts(undefined, R, storageMock))
       .to.deep.equal(expectedContacts);
   });
 });

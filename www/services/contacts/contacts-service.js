@@ -38,7 +38,7 @@ let service = function contacts($log, R, storage) {
     id: '1235',
     firstname: 'lewis',
     lastname: 'hoon'
-  }).catch($log.error);
+  });
 
   let ids = [1, 2, 3];
   return R.map(id => {

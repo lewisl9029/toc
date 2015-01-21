@@ -7,7 +7,8 @@ let service = function storage($log, remoteStorage) {
   //
   // storageService.displayWidget = remoteStorage.remoteStorage.displayWidget;
   //
-  // storageService.defineModule = function defineModule(moduleName, buildModule) {
+  // storageService.defineModule =
+  // function defineModule(moduleName, buildModule) {
   //   remoteStorage.RemoteStorage.defineModule(moduleName, buildModule);
   //   return storageService;
   // };
