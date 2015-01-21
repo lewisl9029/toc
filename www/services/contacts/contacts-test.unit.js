@@ -14,7 +14,6 @@ describe('contacts service', function() {
       name: 'contact 3'
     }];
     expect(contacts(R))
-      .to.not.deep.equal(expectedContacts);
-      //still failing
+      .to.deep.equal(expectedContacts);
   });
 });
