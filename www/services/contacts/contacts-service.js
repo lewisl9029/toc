@@ -1,52 +1,11 @@
-let service = function contacts($log, R, storage) {
-  storage.defineModule('contacts', function(privateClient) {
-    privateClient.declareType('contact', {
-      'description': 'a contact',
-      'type': 'object',
-      'properties': {
-        'id': {
-          'type': 'string'
-          // 'format': 'hashname'
-        },
-        'lastname': {
-          'type': 'string'
-        },
-        'firstname': {
-          'type': 'string'
-        },
-        'email': {
-          'type': 'string'
-        }
-      },
-      'required': ['id', 'firstname', 'lastname']
-    });
+let contactsService = function contacts(storage) {
+  let contactsService = {};
 
-    return {
-      //TODO: encryption
-      exports: {
-        addContact: function addContact(contact) {
-          return privateClient.storeObject('contact', contact.id, contact);
-        }
-      }
-    };
-  });
+  contactsService.initialize = function initializeContacts() {
+    contactsService.model = storage.contacts.getAllContacts();
+  };
 
-  storage.access.claim('contacts', 'rw');
-
-  //TODO: refactor storage API
-  storage.contacts.addContact({
-    id: '1235',
-    firstname: 'lewis',
-    lastname: 'hoon'
-  });
-
-  let ids = [1, 2, 3];
-  return R.map(id => {
-    return {
-      id: id,
-      name: 'contact ' + id
-    };
-  })(ids);
+  return contactsService;
 };
 
-export default service;
+export default contactsService;
