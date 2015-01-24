@@ -12,21 +12,14 @@ let storageService = function storage($log, remoteStorage) {
   };
 
   storageService.defineModel = function defineModel(model) {
-    remoteStorage.RemoteStorage.defineModule(model.name,
-      function buildModel(privateClient) {
-        privateClient.declareType(model.type, model.schema);
-        return {
-          exports: model.defineFunctions(privateClient)
-        };
-      }
-    );
+    remoteStorage.RemoteStorage.defineModule(model.name, model.builder);
 
     return remoteStorage.remoteStorage[name];
   };
 
   storageService.initializeModel = function initializeModel(model) {
     storageService[model.name] = storageService.defineModel(model);
-    storageService.claimAcces(model);
+    storageService.claimAccess(model);
   };
 
   storageService.initialize = function initialize() {

@@ -1,47 +1,50 @@
 import STORAGE_CONSTANTS from 'services/storage/storage-constants';
 
-let MODEL_TYPE = 'contact';
+import declareContactType from './storage-types/contact-type';
+import declareEndpointType from './storage-types/endpoint-type';
 
 let contactsModel = {
   name: 'contacts',
-  type: MODEL_TYPE,
   accessLevel: STORAGE_CONSTANTS.ACCESS_LEVELS.FULL,
-  schema: {
-    'description': 'a contact',
-    'type': MODEL_TYPE,
-    'properties': {
-      'id': {
-        'type': 'string'
-          // 'format': 'hashname'
-      },
-      'lastname': {
-        'type': 'string'
-      },
-      'firstname': {
-        'type': 'string'
-      },
-      'email': {
-        'type': 'string'
-      }
-    },
-    'required': ['id', 'firstname']
-  },
-  defineFunctions: function defineContactsFunctions(privateClient) {
-    let contactsFunctions = {};
+  builder: function buildContactsModel(privateClient) {
+    declareContactType(privateClient);
+    declareEndpointType(privateClient);
 
-    contactsFunctions.addContact = function addContact(contact) {
-      return privateClient.storeObject(MODEL_TYPE, contact.id, contact);
+    privateClient.declareType('contactStatusId', {
+      'description': 'contact status',
+      'type': 'number'
+    });
+
+    privateClient.declareType('contactActiveEndpointId', {
+      'description': 'the currently active telehash hashname',
+      'type': 'string'
+    });
+
+    let defineContactsFunctions =
+      function defineContactsFunctions(privateClient) {
+        let contactsFunctions = {};
+
+        contactsFunctions.putContactInfo =
+          function putContactInfo(contact) {
+            return privateClient
+              .storeObject('contact', contact.id + '/' + 'info', contact);
+          };
+
+        contactsFunctions.getContactInfo =
+          function getContactInfo(contactId) {
+            return privateClient.getObject(contactId + '/' + 'info');
+          };
+
+        contactsFunctions.getAllContacts = function getAllContacts() {
+          return privateClient.getAll('');
+        };
+
+        return contactsFunctions;
+      };
+
+    return {
+      exports: defineContactsFunctions(privateClient)
     };
-
-    contactsFunctions.getContact = function getContact(contactId) {
-      return privateClient.getObject(contactId);
-    };
-
-    contactsFunctions.getAllContacts = function getAllContacts() {
-      return privateClient.getAll('');
-    };
-
-    return contactsFunctions;
   }
 };
 
