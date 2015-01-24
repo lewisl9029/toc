@@ -1,8 +1,11 @@
+import STORAGE_CONSTANTS from 'services/storage/storage-constants';
+
 let MODEL_TYPE = 'contact';
 
 let contactsModel = {
   name: 'contacts',
   type: MODEL_TYPE,
+  accessLevel: STORAGE_CONSTANTS.ACCESS_LEVELS.FULL,
   schema: {
     'description': 'a contact',
     'type': MODEL_TYPE,

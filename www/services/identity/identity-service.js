@@ -1,7 +1,7 @@
 let identityService = function identity(storage) {
-  let identity = {};
+  let identityService = {};
 
-  return identity;
+  return identityService;
 };
 
 export default identityService;

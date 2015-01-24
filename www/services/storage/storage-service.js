@@ -7,11 +7,6 @@ let storageService = function storage($log, remoteStorage) {
 
   storageService.enableLog = remoteStorage.remoteStorage.enableLog;
 
-  storageService.ACCESS_LEVELS = {
-    READ: 'r',
-    FULL: 'rw'
-  };
-
   storageService.claimAccess = function claimAccess(model) {
     remoteStorage.remoteStorage.access.claim(model.name, model.accessLevel);
   };
@@ -19,7 +14,7 @@ let storageService = function storage($log, remoteStorage) {
   storageService.defineModel = function defineModel(model) {
     remoteStorage.RemoteStorage.defineModule(model.name,
       function buildModel(privateClient) {
-        privateClient.declareType(model.name, model.schema);
+        privateClient.declareType(model.type, model.schema);
         return {
           exports: model.defineFunctions(privateClient)
         };
