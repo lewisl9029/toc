@@ -6,6 +6,7 @@
 *.as binary
 *.zip binary
 *.gzip binary
+*.bz2 binary
 *.node binary
 *.eot binary
 *.ttf binary
