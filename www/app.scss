@@ -13,9 +13,10 @@
 // $royal:                           #886aea !default;
 // $dark:                            #444 !default;
 
+$card-border-radius: 0 !default;
+
 // Library imports
 @import 'libraries/libraries';
-
 // App imports
 @import 'views/views';
 @import 'components/components';
