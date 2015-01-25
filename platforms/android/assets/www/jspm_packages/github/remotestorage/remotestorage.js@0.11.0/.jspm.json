@@ -1,0 +1,27 @@
+{
+  "name": "remotestoragejs",
+  "description": "JavaScript library for integrating remoteStorage",
+  "version": "0.11.0",
+  "private": false,
+  "license": "MIT",
+  "main": "./node-main.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/remotestorage/remotestorage.js.git"
+  },
+  "homepage": "http://remotestorage.io",
+  "devDependencies": {
+    "jaribu": "0.x.x",
+    "minifier": "^0.6.0"
+  },
+  "scripts": {
+    "test": "node_modules/jaribu/bin/jaribu"
+  },
+  "jspm": {},
+  "dependencies": {
+    "bluebird": "^2.3.2",
+    "tv4": "^1.1.4",
+    "webfinger.js": "^2.0.5",
+    "xhr2": "0.0.7"
+  }
+}

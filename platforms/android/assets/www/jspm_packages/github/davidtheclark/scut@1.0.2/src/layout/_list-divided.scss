@@ -1,0 +1,55 @@
+// Depends on `list-floated`, which depends in turn on `list-unstyled` and `clearfix`.
+
+@mixin scut-list-divided (
+  $divider: "|",
+  $space: 0.5em,
+  $dir: left,
+  $height: false,
+  $no-margin: true
+) {
+
+  @include scut-list-floated($dir: $dir, $no-margin: $no-margin);
+
+  $pseudo: if($dir == left, 'before', 'after');
+
+  // If an explicit height is passed,
+  // things are different: All <li>s
+  // need the pseudo-element (to force height),
+  // but the first's must be hidden.
+
+  @if $height {
+    & > li {
+      height: $height;
+    }
+    & > li:#{$pseudo} {
+      height: $height;
+      content: $divider;
+      display: inline-block;
+      vertical-align: middle;
+      @content;
+    }
+    & > li:first-child:#{$pseudo} {
+      width: 0;
+      overflow: hidden;
+    }
+  }
+
+  & > li + li:#{$pseudo} {
+    @if not($height) {
+      content: $divider;
+      display: inline-block;
+      @content;
+    }
+    margin-left: $space;
+    margin-right: $space;
+  }
+
+}
+
+%scut-list-bar {
+  @include scut-list-divided;
+}
+
+%scut-list-breadcrumb {
+  @include scut-list-divided("/");
+}

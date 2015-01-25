@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>
+      {{title}}
+    </title>
+    <meta name="description" content="{{removeTicks description}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+  </head>
+
+  <body>
+
+    <header role="banner" class="site-banner">
+      {{>banner}}
+    </header>
+    <div class="site-body">
+      {{>body}}
+      {{>nav}}
+    </div>
+
+  <script src="prism.js"></script>
+  {{#if entry}}
+  <script src="main.js"></script>
+  {{/if}}
+  </body>
+
+</html>
