@@ -35,7 +35,10 @@ module.exports = function(config) {
 
     proxies: {
       '/base/jspm_packages/': '/base/www/jspm_packages/',
-      '/base/services/': '/base/www/services/'
+      '/base/views/': '/base/www/views/',
+      '/base/components/': '/base/www/components/',
+      '/base/services/': '/base/www/services/',
+      '/base/libraries/': '/base/www/libraries/'
     },
 
     // list of files to exclude
