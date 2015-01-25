@@ -1,3 +1,5 @@
+/* */ 
+"format global";
 var url = require('url');
 var _http = require('http');
 var _https = require('https');

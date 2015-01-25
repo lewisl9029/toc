@@ -4,7 +4,7 @@
   "version": "0.11.0",
   "private": false,
   "license": "MIT",
-  "main": "./node-main.js",
+  "main": "release/0.11.0/remotestorage",
   "repository": {
     "type": "git",
     "url": "git://github.com/remotestorage/remotestorage.js.git"
@@ -17,11 +17,13 @@
   "scripts": {
     "test": "node_modules/jaribu/bin/jaribu"
   },
-  "jspm": {},
-  "dependencies": {
-    "bluebird": "^2.3.2",
-    "tv4": "^1.1.4",
-    "webfinger.js": "^2.0.5",
-    "xhr2": "0.0.7"
-  }
+  "jspm": {
+    "registry": "jspm",
+    "main": "release/0.11.0/remotestorage",
+    "format": "global",
+    "dependencies": {}
+  },
+  "registry": "jspm",
+  "format": "global",
+  "dependencies": {}
 }

@@ -1,3 +1,4 @@
+/* */ 
 
 function generateCode(remoteStorage) {
   var output = "";

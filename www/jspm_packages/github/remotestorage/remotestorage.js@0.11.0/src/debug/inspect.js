@@ -1,3 +1,4 @@
+/* */ 
 (function() {
   function loadTable(table, storage, paths) {
     table.setAttribute('border', '1');

@@ -1,7 +1,9 @@
+/* */ 
+"format global";
 if (typeof define !== 'function') {
   var define = require('amdefine')(module);
 }
-define(['require'], function (require) {
+define(["require"], function (require) {
   var suites = [];
 	var oldReadBinaryData;
 

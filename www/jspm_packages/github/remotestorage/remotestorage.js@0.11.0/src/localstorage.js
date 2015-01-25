@@ -1,3 +1,4 @@
+/* */ 
 (function (global) {
   /**
    * Class: RemoteStorage.LocalStorage

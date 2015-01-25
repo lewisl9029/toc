@@ -1,3 +1,4 @@
+/* */ 
 (function (global) {
 
   function deprecate(thing, replacement) {

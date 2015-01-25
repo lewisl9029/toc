@@ -12,7 +12,6 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: [
       'mocha',
-      'chai-sinon',
       'jspm'
     ],
 
@@ -35,7 +34,11 @@ module.exports = function(config) {
     },
 
     proxies: {
-      '/base/jspm_packages/': '/base/www/jspm_packages/'
+      '/base/jspm_packages/': '/base/www/jspm_packages/',
+      '/base/views/': '/base/www/views/',
+      '/base/components/': '/base/www/components/',
+      '/base/services/': '/base/www/services/',
+      '/base/libraries/': '/base/www/libraries/'
     },
 
     // list of files to exclude

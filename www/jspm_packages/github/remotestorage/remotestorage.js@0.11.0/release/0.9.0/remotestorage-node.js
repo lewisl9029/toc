@@ -1,3 +1,5 @@
+/* */ 
+"format global";
 /** remotestorage.js 0.9.0, http://remotestorage.io, MIT-licensed **/
 
 /** FILE: lib/promising.js **/
