@@ -1,7 +1,9 @@
 import contactsModel from 'services/contacts/contacts-model';
 
-let storageService = function storage($log, remoteStorage) {
+let storageService = function storage($log, $window, remoteStorage) {
   let storageService = {};
+
+  storageService.local = $window.localStorage;
 
   storageService.connect = remoteStorage.remoteStorage.connect;
 

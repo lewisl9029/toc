@@ -1,7 +1,29 @@
 import STORAGE_CONSTANTS from 'services/storage/storage-constants';
 
-import declareContactType from './storage-types/contact-type';
-import declareEndpointType from './storage-types/endpoint-type';
+import declareContactType from './storage-types/contact-info-type';
+import declareEndpointType from './storage-types/contact-endpoint-type';
+
+let defineContactsFunctions =
+  function defineContactsFunctions(privateClient) {
+    let contactsFunctions = {};
+
+    contactsFunctions.putContactInfo =
+      function putContactInfo(contact) {
+        return privateClient
+          .storeObject('contact', contact.id + '/' + 'info', contact);
+      };
+
+    contactsFunctions.getContactInfo =
+      function getContactInfo(contactId) {
+        return privateClient.getObject(contactId + '/' + 'info');
+      };
+
+    contactsFunctions.getAllContacts = function getAllContacts() {
+      return privateClient.getAll('');
+    };
+
+    return contactsFunctions;
+  };
 
 let contactsModel = {
   name: 'contacts',
@@ -19,28 +41,6 @@ let contactsModel = {
       'description': 'the currently active telehash hashname',
       'type': 'string'
     });
-
-    let defineContactsFunctions =
-      function defineContactsFunctions(privateClient) {
-        let contactsFunctions = {};
-
-        contactsFunctions.putContactInfo =
-          function putContactInfo(contact) {
-            return privateClient
-              .storeObject('contact', contact.id + '/' + 'info', contact);
-          };
-
-        contactsFunctions.getContactInfo =
-          function getContactInfo(contactId) {
-            return privateClient.getObject(contactId + '/' + 'info');
-          };
-
-        contactsFunctions.getAllContacts = function getAllContacts() {
-          return privateClient.getAll('');
-        };
-
-        return contactsFunctions;
-      };
 
     return {
       exports: defineContactsFunctions(privateClient)
