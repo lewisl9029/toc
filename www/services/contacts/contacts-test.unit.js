@@ -1,12 +1,14 @@
+import chai from 'chai';
 import sinon from 'sinon';
 
+let expect = chai.expect;
+
 import contacts from './contacts-service';
-import contactsModel from './contacts-model';
 
 import mockStorage from 'services/storage/storage-test.mock';
 
 describe('contacts service', function() {
-  it('should initialize to expected state', function() {
+  it('should create storage model during initialization', function() {
     let mockContactsStorage = {};
     let mockContactsList = ['contact1'];
 
@@ -18,7 +20,6 @@ describe('contacts service', function() {
       .returns(mockContactsList);
 
     mockStorage.createModel
-      .withArgs(contactsModel)
       .onFirstCall()
       .returns(mockContactsStorage);
 
