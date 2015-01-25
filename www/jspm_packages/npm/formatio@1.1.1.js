@@ -1,0 +1,1 @@
+module.exports = require("npm:formatio@1.1.1/lib/formatio");

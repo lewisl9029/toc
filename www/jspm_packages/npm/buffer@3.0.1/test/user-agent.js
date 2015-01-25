@@ -1,0 +1,2 @@
+/* */ 
+(function(process) {})(require("process"));

@@ -1,0 +1,1 @@
+module.exports = require("npm:samsam@1.1.2/lib/samsam");
