@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+           id="org.apache.cordova.engine.crosswalk"
+      version="0.0.1-dev">
+
+    <name>Crosswalk Engine</name>
+    <description>Intel CrossWalk Engine</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,chromium,crosswalk,webview</keywords>
+    <repo>https://github.com/infil00p/cordova-crosswalk-engine.git</repo>
+    <issue></issue>
+
+    <engines>
+      <engine name="cordova-android" version=">=4.0.0-dev" />
+    </engines>
+
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <preference name="webView" value="org.apache.cordova.engine.crosswalk.XWalkCordovaWebView" />
+        </config-file>
+
+        <source-file src="src/android/XWalkCordovaWebView.java" target-dir="src/org/apache/cordova/engine/crosswalk" />
+        <source-file src="src/android/XWalkExposedJsApi.java" target-dir="src/org/apache/cordova/engine/crosswalk" />
+        <source-file src="src/android/XWalkCordovaResourceClient.java" target-dir="src/org/apache/cordova/engine/crosswalk" />
+        <source-file src="src/android/XWalkCordovaUiClient.java" target-dir="src/org/apache/cordova/engine/crosswalk" />
+        <source-file src="src/android/XWalkCordovaView.java" target-dir="src/org/apache/cordova/engine/crosswalk" />
+
+        <framework src="libs/xwalk_core_library" custom="true" />
+    </platform>
+</plugin>

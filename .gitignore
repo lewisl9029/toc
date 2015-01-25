@@ -1,7 +1,5 @@
 .idea
 .vagrant
-/platforms
-/plugins
 /www/*.css
-/**/.packages
+/containers/**/.packages
 /prod

@@ -1,0 +1,37 @@
+@mixin scut-sticky-footer-fixed (
+  $height,
+  $wrapper: ".wrapper",
+  $footer: ".scut-sticky"
+) {
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #{$wrapper} {
+    min-height: 100%;
+    margin-bottom: -$height;
+    &:after {
+      content: "";
+      display: block;
+    }
+  }
+
+  #{$wrapper}:after,
+  #{$footer} {
+    height: $height;
+  }
+
+}
+
+// deprecated
+@mixin scut-sticky-footer (
+  $height,
+  $wrapper: ".wrapper",
+  $footer: ".scut-sticky"
+){
+  @include scut-sticky-footer-fixed($height, $wrapper, $footer);
+}

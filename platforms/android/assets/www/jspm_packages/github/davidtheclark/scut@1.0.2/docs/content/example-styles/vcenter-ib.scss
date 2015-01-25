@@ -1,0 +1,36 @@
+/* import start */
+@import "../../../dist/scut";
+@import "example-variables";
+/* import end */
+
+/* hidden rules */
+.eg-vcenter-ib {
+  border: 5px solid $eg-dark;
+  padding: 0 1em;
+  height: 8em;
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+}
+.special-selector-1,
+.special-selector-2 {
+  padding-right: 1em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-vcenter-ib > p {
+  max-width: 90%;
+}
+.eg-vcenter-ib-1 {
+  @include scut-vcenter-ib;
+  // or @extend %scut-vcenter-ib;
+  }
+.eg-vcenter-ib-2 {
+  @include scut-vcenter-ib(".eg-vcenter-ib-inner");
+}
+// illustrating a list of selectors
+.eg-vcenter-ib-3 {
+  @include scut-vcenter-ib(".special-selector-1", ".special-selector-2", ".special-selector-3");
+}
+/* example end */

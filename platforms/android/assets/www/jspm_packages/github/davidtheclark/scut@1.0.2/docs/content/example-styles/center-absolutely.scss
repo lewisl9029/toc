@@ -1,0 +1,34 @@
+/* import start */
+@import "../../../dist/scut";
+@import "example-variables";
+/* import end */
+
+/* hidden rules */
+.eg-center-absolutely-container {
+  border: 5px solid $eg-dark;
+  height: 6em;
+  font-size: 0.8em;
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+  & > div {
+    background: $eg-muted;
+    padding: 0.5em;
+  }
+}
+/* end hidden rules */
+
+/* example start */
+.eg-center-absolutely-container {
+  position: relative;
+}
+.eg-center-absolutely-1 {
+  @include scut-center-absolutely(22em 2.5em);
+}
+.eg-center-absolutely-2 {
+  @include scut-center-absolutely(20em n);
+}
+.eg-center-absolutely-3 {
+  @include scut-center-absolutely(n 2.5em);
+}
+/* example end */

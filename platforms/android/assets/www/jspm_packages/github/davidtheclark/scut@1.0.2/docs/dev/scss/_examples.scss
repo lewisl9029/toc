@@ -1,0 +1,887 @@
+$eg-dark: #002834;
+$eg-light: #9AE9FF;
+$eg-muted: #CCCCCC;
+
+
+%eg-light-btn {
+  border: 1px solid $eg-dark;
+  color: $eg-dark;
+  padding: 0.3em 0.5em;
+}
+
+%eg-dark-btn {
+  background-color: $eg-dark;
+  color: white;
+  padding: 0.3em 0.5em;
+}
+
+/* hidden rules */
+.eg-border {
+  background-color: $eg-muted;
+  padding: 1em;
+  margin-top: 1em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-border-1 {
+  @include scut-border(5px solid, y n);
+}
+.eg-border-2 {
+  @include scut-border(0.5em solid $eg-light, n y);
+}
+.eg-border-3 {
+  @include scut-border(10px solid $eg-dark, y y n n);
+}
+.eg-border-4 {
+  @include scut-border(0.75em solid $eg-dark, n n y y);
+  @include scut-border(0.75em solid $eg-light, y y n n);
+}
+/* example end */
+
+/* hidden rules */
+.eg-center-absolutely-container {
+  border: 5px solid $eg-dark;
+  height: 6em;
+  font-size: 0.8em;
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+  & > div {
+    background: $eg-muted;
+    padding: 0.5em;
+  }
+}
+/* end hidden rules */
+
+/* example start */
+.eg-center-absolutely-container {
+  position: relative;
+}
+.eg-center-absolutely-1 {
+  @include scut-center-absolutely(22em 2.5em);
+}
+.eg-center-absolutely-2 {
+  @include scut-center-absolutely(20em n);
+}
+.eg-center-absolutely-3 {
+  @include scut-center-absolutely(n 2.5em);
+}
+/* example end */
+
+/* hidden rules */
+.eg-center-block {
+  background: $eg-muted;
+  padding: 1em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-center-block-1 {
+  width: 8em;
+  @include scut-center-block;
+  // or @extend %scut-center-block;
+}
+.eg-center-block-2 {
+  margin-top: 1em;
+  @include scut-center-block(80%);
+}
+/* example end */
+
+/* hidden rules */
+.eg-center-transform-container {
+  background: $eg-dark;
+  height: 6em;
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+  &.m-large {
+    height: 10em;
+  }
+}
+.eg-center-transform {
+  background: $eg-muted;
+  padding: 1em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-center-transform-container {
+  position: relative;
+}
+.eg-center-transform {
+  display: inline-block;
+}
+.eg-center-transform-1 {
+  @include scut-center-transform;
+  // or @extend %scut-center-transform;
+}
+.eg-center-transform-2 {
+  @include scut-center-transform(x);
+  // or @extend %scut-center-transform-x;
+}
+.eg-center-transform-3 {
+  @include scut-center-transform(y);
+  // or @extend %scut-center-transform-y;
+}
+.eg-center-transform-4 {
+  @include scut-center-transform;
+}
+/* example end */
+
+/* hidden rules */
+.eg-circle {
+  margin-right: 0.5em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-circle-1 {
+  @include scut-circle(1em);
+}
+.eg-circle-2 {
+  @include scut-circle(2em, $eg-light);
+}
+.eg-circle-3 {
+  @include scut-circle(2em, $eg-dark);
+  border: 5px solid $eg-light;
+}
+/* example end */
+
+/* hidden rules */
+.eg-clearfix-floater {
+  @extend %eg-dark-btn;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-clearfix-container {
+  @include scut-clearfix;
+  // or @extend %scut-clearfix;
+  background: $eg-muted;
+}
+.eg-clearfix-floater {
+  float: left;
+  margin: 1em;
+}
+/* example end */
+
+/* hidden rules */
+.eg-color-swap {
+  padding: 1em;
+  display: inline-block;
+  & + & {
+    margin-left: 1em;
+  }
+}
+/* end hidden rules */
+
+/* example start */
+.eg-color-swap-1 {
+  background: #fff;
+  // only text `color` changes, with a transition
+  @include scut-color-swap($eg-dark, $eg-light, 1s);
+}
+.eg-color-swap-2 {
+  // both text `color` and `background-color` change,
+  // with no transition
+  @include scut-color-swap($eg-light $eg-dark, $eg-dark $eg-light);
+}
+.eg-color-swap-3 {
+  color: #fff;
+  // only `background-color` changes, with a transition
+  @include scut-color-swap($eg-dark, $eg-light, 0.5s, true);
+}
+/* example end */
+
+/* hidden rules */
+.eg-em-c {
+  font-size: 16px;
+}
+.eg-em {
+  border: 5px solid $eg-dark;
+  padding: 10px;
+  margin-top: 1em;
+  &.m-1 {
+    margin-top: 0;
+  }
+}
+/* end hidden rules */
+
+/* example start */
+// first pair
+.eg-em-1 { width: scut-em(150); }
+.eg-em-2 { width: 150px; }
+// second pair
+.eg-em-3,
+.eg-em-4 { font-size: 20px; }
+.eg-em-3 { width: scut-em(250, 20); }
+.eg-em-4 { width: 250px; }
+// third pair
+.eg-em-5,
+.eg-em-6 { font-size: 0.6em; }
+.eg-em-5 { width: scut-em(275, 0.6em); }
+.eg-em-6 { width: 275px; }
+// list and units demonstration
+.eg-em-7 {
+  margin: scut-em(50 30px 0 60);
+  padding: scut-em(50 20px 0)
+}
+// changing the default $scut-em-base value
+// (compare to the second pair, above)
+$scut-em-base: 20;
+.eg-em-8 {
+  font-size: 20px;
+  width: scut-em(250);
+}
+/* example end */
+
+/* hidden rules */
+$scut-em-base: 16;
+/* end hidden rules */
+
+/* hidden rules */
+.eg-fill-container {
+  border: 5px solid $eg-dark;
+  height: 6em;
+  padding: 1em;
+  &:nth-of-type(2) {
+    margin-bottom: 2em;
+  }
+}
+.eg-fill-1 {
+  padding: 2.5em 1em 0;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-fill-container {
+  color: $eg-light;
+  position: relative;
+}
+.eg-fill-1 {
+  background-color: rgba(0,0,0,0.4);
+  @include scut-fill;
+  // or @extend %scut-fill;
+}
+.eg-fill-2 {
+  @include scut-fill;
+}
+.eg-fill-3 {
+  @include scut-fill(true);
+}
+/* example end */
+
+/* hidden rules */
+.eg-hanging-indent {
+  max-width: 25em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-hanging-indent-1 {
+  @include scut-hanging-indent;
+  // or @extend %scut-hanging-indent;
+}
+.eg-hanging-indent-2 {
+  @include scut-hanging-indent(2em);
+}
+/* example end */
+
+/* hidden rules */
+.eg-hd-bp {
+  padding: 1em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-hd-bp {
+  background-color: $eg-muted;
+  @include scut-hd-bp(2.0) {
+    background-color: $eg-light;
+  }
+}
+/* example end */
+
+/* example start */
+.eg-hide-visually {
+  @include scut-hide-visually;
+  // or @extend %scut-hide-visually;
+}
+/* example end */
+
+/* hidden start */
+.eg-image-replace {
+  margin-top: 1em;
+}
+/* hidden end */
+
+/* example start */
+.eg-image-replace {
+  @include scut-image-replace;
+  // or @extend %scut-image-replace;
+  background: url("//placehold.it/200x200") no-repeat;
+  background-size: contain;
+  height: 8em;
+}
+/* example end */
+
+/* hidden start */
+.eg-indented-ps {
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+}
+/* hidden end */
+
+/* example start */
+.eg-indented-ps-1 {
+  @include scut-indented-ps;
+  // or @extend %scut-indented-ps;
+}
+.eg-indented-ps-2 {
+  @include scut-indented-ps(3em, false);
+}
+/* example end */
+
+/* hidden rules */
+.eg-key-val-c {
+  max-width: 25em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-key-val-1 {
+  @include scut-key-val;
+  // or @extend %scut-key-val;
+}
+.eg-key-val-2 {
+  @include scut-key-val("\2014", 0.5em, 8em, 1em, 0.5em);
+  & > dt {
+    font-weight: bold;
+  }
+}
+.eg-key-val-3 {
+  $dt-width: 6em;
+  @include scut-key-val("", 0, $dt-width + 1em);
+  & > dt {
+    width: $dt-width;
+    text-align: right;
+    text-transform: uppercase;
+  }
+}
+/* example end */
+
+/* hidden start */
+/* hidden end */
+
+/* example start */
+.eg-link-bb-1 a {
+  @include scut-link-bb;
+  // or @extend %scut-link-bb;
+}
+.eg-link-bb-2 a {
+  color: $eg-muted;
+  @include scut-link-bb(inherit, double, 4px);
+  &:hover {
+    color: $eg-dark;
+    border-bottom-color: $eg-light;
+  }
+}
+/* example end */
+
+/* hidden rules */
+.eg-list-custom {
+  margin: 0;
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+}
+/* end hidden rules */
+
+/* example start */
+.eg-list-custom-1 {
+  @include scut-list-custom {
+    color: $eg-light;
+  }
+}
+.eg-list-custom-2 {
+  @include scut-list-custom("\00bb", 1.3em, 1em);
+}
+.eg-list-custom-3 {
+  @include scut-list-custom(count, 2em, 2em);
+}
+.eg-list-custom-4 {
+  @include scut-list-custom(count ")" lower-alpha, 1.5em) {
+    color: $eg-dark;
+    font-size: 1.5em;
+    font-weight: bold;
+    top: -0.25em;
+  }
+  & > li + li {
+    margin-top: 1em;
+  }
+}
+/* example end */
+
+/* hidden rules */
+/* end hidden rules */
+
+/* example start */
+.eg-list-bar {
+  @include scut-list-divided;
+  // or @extend %scut-list-bar;
+}
+.eg-list-breadcrumb {
+  @include scut-list-divided("/");
+  // or @extend %scut-list-breadcrumb;
+}
+.eg-list-divided-1 {
+  @include scut-list-divided("...", 0, right, $no-margin: false);
+}
+.eg-list-divided-2 {
+  @include scut-list-divided("", 0.5em, left, 3em) {
+    background-color: $eg-dark;
+    width: 1em;
+  }
+}
+/* example end */
+
+/* hidden rules */
+.eg-list-floated {
+  & > li {
+    @extend %eg-dark-btn;
+  }
+}
+/* end hidden rules */
+
+/* example start */
+.eg-list-floated-1 {
+  @include scut-list-floated;
+  // or @extend %scut-list-floated;
+}
+.eg-list-floated-2 {
+  @include scut-list-floated(1em, $no-margin: false);
+}
+.eg-list-floated-3 {
+  @include scut-list-floated(2em, right);
+}
+/* example end */
+
+/* hidden rules */
+.eg-list-inline {
+  & > li {
+    @extend %eg-dark-btn;
+  }
+}
+/* end hidden rules */
+
+/* example start */
+.eg-list-inline-1 {
+  @include scut-list-inline;
+  // or @extend %scut-list-inline;
+  }
+.eg-list-inline-2 {
+  @include scut-list-inline(1em, false);
+}
+/* example end */
+
+/* hidden rules */
+/* end hidden rules */
+
+/* example start */
+.eg-punctuated-list {
+  @include scut-list-punctuated;
+  // or @extend %scut-list-comma;
+}
+.eg-semicolon-list {
+  @include scut-list-punctuated("; ", $no-margin: false);
+}
+.eg-circle-list {
+  @include scut-list-punctuated("\0020\2022\0020");
+}
+/* example end */
+
+/* hidden rules */
+/* end hidden rules */
+
+/* example start */
+.eg-unstyled-list-1 {
+  @include scut-list-unstyled;
+  // or @extend %scut-list-unstyled;
+  }
+.eg-unstyled-list-2 {
+  @include scut-list-unstyled(false);
+}
+/* example end */
+
+/* hidden rules */
+.eg-margin-container {
+  border: 5px solid;
+  & + .eg-margin-container {
+    margin-top: 1em;
+  }
+}
+.eg-margin {
+  @extend %eg-dark-btn;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-margin-1 {
+  @include scut-margin(1em n);
+}
+.eg-margin-2 {
+  @include scut-margin(0.5em 3em);
+}
+.eg-margin-3 {
+  @include scut-margin(3em 1em n);
+}
+/* example end */
+
+/* hidden rules */
+.eg-padding {
+  @extend %eg-dark-btn;
+  margin-right: 1em;
+  margin-bottom: 1em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-padding {
+  display: inline-block;
+}
+.eg-padding-1 {
+  @include scut-padding(1em n);
+}
+.eg-padding-2 {
+  @include scut-padding(0.5em 3em);
+}
+.eg-padding-3 {
+  @include scut-padding(n 8em 3em n);
+}
+/* example end */
+
+/* hidden rules */
+.eg-absolute-container {
+  border: 5px solid $eg-dark;
+  height: 10em;
+  width: 15em;
+}
+.eg-absolute {
+  @extend %eg-dark-btn;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-absolute-container {
+  position: relative;
+}
+.eg-absolute-1 {
+  @include scut-absolute;
+  // or @extend %scut-absolute;
+  }
+.eg-absolute-2 {
+  @include scut-absolute(n 0.5em 1em n);
+}
+/* example end */
+
+/* hidden rules */
+.eg-fixed {
+  @extend %eg-dark-btn;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-fixed {
+  @include scut-fixed(n 2em 1em n);
+}
+/* example end */
+
+/* hidden rules */
+/* end hidden rules */
+
+/* example start */
+.eg-relative-1 {
+  @include scut-relative(0.2em 0.2em n n);
+}
+.eg-relative-2 {
+  @include scut-relative(a a 1em n);
+}
+.eg-relative-3 {
+  @include scut-relative(n n -0.5em 0.2em);
+}
+/* example end */
+
+/* hidden rules */
+.eg-ratio {
+  margin-top: 1em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-ratio {
+  background: $eg-muted;
+}
+.eg-ratio-1 {
+  width: 15em;
+  @include scut-ratio-box;
+  // or @extend %scut-ratio-box;
+}
+.eg-ratio-2 {
+  width: 7em;
+  @include scut-ratio-box;
+}
+.eg-ratio-3 {
+  width: 15em;
+  @include scut-ratio-box(16/9);
+}
+.eg-ratio-4 {
+  width: 7em;
+  @include scut-ratio-box(16/9);
+}
+.eg-ratio-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* example end */
+
+/* hidden rules */
+/* end hidden rules */
+
+/* example start */
+.eg-rem-fallback-1 { font-size: 20px; }
+.eg-rem-fallback-2 { @include scut-rem-fallback(20); }
+.eg-rem-fallback-3 {
+  @include scut-rem-fallback(30 50px 0 25px, margin);
+  @include scut-rem-fallback(20 30px, padding);
+  border: 5px solid;
+}
+/* example end */
+
+/* hidden rules */
+.eg-rem {
+  border: 5px solid $eg-dark;
+  padding: 10px;
+  margin-top: 1em;
+}
+.eg-rem-1 {
+  margin-top: 0;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-rem-1 { font-size: 24px; }
+.eg-rem-2 { font-size: scut-rem(24); }
+.eg-rem-3-container { font-size: 1000px; }
+.eg-rem-3 { font-size: scut-rem(24); }
+.eg-rem-4 {
+  margin: scut-rem(80 50px 0 100);
+  padding: scut-rem(30 20px);
+}
+/* example end */
+
+/* hidden rules */
+/* end hidden rules */
+
+/* example start */
+.eg-reverse-italics-default {
+  @include scut-reverse-italics;
+  // or @extend %scut-reverse-italics;
+}
+.eg-reverse-italics-variant {
+  @include scut-reverse-italics("strong" "b" ".no-italics");
+}
+/* example end */
+
+/* hidden rules */
+.eg-selected {
+  background-color: $eg-muted;
+  @extend %eg-light-btn;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-selected-1 {
+  @include scut-selected {
+    background-color: $eg-light;
+  }
+}
+.eg-selected-2 {
+  @include scut-selected(true) {
+    background-color: $eg-light;
+  }
+}
+/* example end */
+
+/* hidden rules */
+/* end hidden rules */
+
+/* example start */
+.eg-side-lined-1 {
+  @include scut-side-lined;
+  // or @extend %scut-side-lined;
+}
+.eg-side-lined-2 {
+  font-size: 2em;
+  @include scut-side-lined(0.3em, 1em, $eg-light, $v-adjust: 0.1em);
+}
+.eg-side-lined-3 {
+  @include scut-side-lined($double: 0.3em, $color: $eg-muted, $v-adjust: 0.05em);
+}
+.eg-side-lined-4 {
+  @include scut-side-lined($style: dotted);
+}
+/* example end */
+
+/* hidden rules */
+.eg-size {
+  background: $eg-muted;
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+}
+/* end hidden rules */
+
+/* example start */
+.eg-size-1 {
+  @include scut-size(8em);
+}
+.eg-size-2 {
+  @include scut-size(10em 5em);
+}
+/* example end */
+
+/* hidden rules */
+.eg-triangle-container > span {
+  margin-right: 1em;
+}
+.eg-triangle-button {
+  @extend %eg-light-btn;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-triangle-default {
+  @include scut-triangle;
+  // or @extend %scut-triangle;
+}
+.eg-triangle-equilateral {
+  @include scut-triangle(up, 100px 87px, $eg-muted);
+}
+.eg-triangle-top-right {
+  @include scut-triangle(top-right, 2em, $eg-dark);
+}
+.eg-triangle-bottom-left {
+  @include scut-triangle(bottom-left, 80px 40px, $eg-light);
+}
+.eg-triangle-button {
+  &:after {
+    content: "";
+    margin-left: 0.3em;
+  }
+  &.m-down:after {
+    @include scut-triangle(down);
+  }
+  &.m-up:after {
+    @include scut-triangle(up);
+  }
+  &.m-right:after {
+    @include scut-triangle;
+  }
+}
+/* example end */
+
+/* hidden start */
+/* hidden end */
+
+/* example start */
+.eg-truncate {
+  @include scut-truncate;
+  // or @extend %scut-truncate;
+}
+/* example end */
+
+/* hidden rules */
+.eg-vcenter-ib {
+  border: 5px solid $eg-dark;
+  padding: 0 1em;
+  height: 8em;
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+}
+.special-selector-1,
+.special-selector-2 {
+  padding-right: 1em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-vcenter-ib > p {
+  max-width: 90%;
+}
+.eg-vcenter-ib-1 {
+  @include scut-vcenter-ib;
+  // or @extend %scut-vcenter-ib;
+  }
+.eg-vcenter-ib-2 {
+  @include scut-vcenter-ib(".eg-vcenter-ib-inner");
+}
+// illustrating a list of selectors
+.eg-vcenter-ib-3 {
+  @include scut-vcenter-ib(".special-selector-1", ".special-selector-2", ".special-selector-3");
+}
+/* example end */
+
+/* hidden rules */
+.eg-vcenter-lh {
+  @extend %eg-dark-btn;
+  border: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  vertical-align: middle;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-vcenter-lh-1 {
+  @include scut-vcenter-lh(50px);
+}
+.eg-vcenter-lh-2 {
+  @include scut-vcenter-lh(50px);
+  font-size: 0.7em;
+}
+/* example end */
+
+/* hidden rules */
+.eg-vcenter-td {
+  border: 5px solid $eg-dark;
+  padding: 0 1em;
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+}
+.special-selector-1,
+.special-selector-2 {
+  padding-right: 1em;
+}
+/* end hidden rules */
+
+/* example start */
+.eg-vcenter-td-1 {
+  @include scut-vcenter-td;
+  // or @extend %scut-vcenter-td;
+  height: 8em;
+}
+.eg-vcenter-td-2 {
+  @include scut-vcenter-td(".eg-vcenter-td-inner");
+  height: 12em;
+}
+// illustrating a list of selectors
+.eg-vcenter-td-3 {
+  @include scut-vcenter-td(".special-selector-1", ".special-selector-2", ".special-selector-3");
+  height: 9em;
+}
+/* example end */
