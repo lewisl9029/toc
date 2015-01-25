@@ -1,20 +1,41 @@
+import sinon from 'sinon';
+
 import contacts from './contacts-service';
-import R from 'ramda';
-import storageMock from 'services/storage/storage-mock';
+import contactsModel from './contacts-model';
+
+import mockStorage from 'services/storage/storage-test.mock';
 
 describe('contacts service', function() {
-  it('should run test', function() {
-    var expectedContacts = [{
-      id: 1,
-      name: 'contact 1'
-    }, {
-      id: 2,
-      name: 'contact 2'
-    }, {
-      id: 3,
-      name: 'contact 3'
-    }];
-    expect(contacts(undefined, R, storageMock))
-      .to.deep.equal(expectedContacts);
+  it('should initialize to expected state', function() {
+    let mockContactsStorage = {};
+    let mockContactsList = ['contact1'];
+
+    mockContactsStorage.getAllContacts = sinon.stub();
+
+    mockContactsStorage.getAllContacts
+      .withArgs()
+      .onFirstCall()
+      .returns(mockContactsList);
+
+    mockStorage.createModel
+      .withArgs(contactsModel)
+      .onFirstCall()
+      .returns(mockContactsStorage);
+
+    let contactsService = contacts(mockStorage);
+
+    contactsService.initialize();
+
+    expect(contactsService.model)
+      .to.equal(mockContactsList);
+
+    expect(contactsService.storage)
+      .to.equal(mockContactsStorage);
+
+    expect(mockContactsStorage.getAllContacts.calledOnce)
+      .to.be.true();
+
+    expect(mockStorage.createModel.calledOnce)
+      .to.be.true();
   });
 });

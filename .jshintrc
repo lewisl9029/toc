@@ -79,5 +79,7 @@
   "wsh" : false, // Windows Scripting Host
   "yui" : false, // Yahoo User Interface
   // Custom Globals
-  "globals" : {} //* additional predefined global variables
+  "globals" : {
+    "sinon": true
+  } //* additional predefined global variables
 }
