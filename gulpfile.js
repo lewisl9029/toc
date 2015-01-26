@@ -63,8 +63,14 @@ gulp.task('build-js', ['build-sass'], function buildJs() {
 
   return gulp.src([
       basePaths.dev + 'jspm_packages/es6-module-loader.js',
+      basePaths.dev + 'jspm_packages/es6-module-loader.js.map',
+      basePaths.dev + 'jspm_packages/es6-module-loader.src.js',
       basePaths.dev + 'jspm_packages/system.js',
+      basePaths.dev + 'jspm_packages/system.js.map',
+      basePaths.dev + 'jspm_packages/system.src.js',
       basePaths.dev + 'jspm_packages/traceur-runtime.js',
+      basePaths.dev + 'jspm_packages/traceur-runtime.js.map',
+      basePaths.dev + 'jspm_packages/traceur-runtime.src.js',
       basePaths.dev + 'config.js',
       basePaths.dev + 'initialize.js',
     ], {
