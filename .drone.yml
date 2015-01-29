@@ -1,9 +1,7 @@
 image: toc-build:latest
 
 script:
-  - gulp lint
-  - Xvfb :1 -screen 0 1024x768x24 -ac &
-  - gulp test --prod
+  - gulp verify --prod
 
 deploy:
   bash:
