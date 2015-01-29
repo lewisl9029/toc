@@ -69,7 +69,7 @@
   "jquery": false, // jQuery
   "mocha": true, // Mocha
   "mootools": false, // MooTools
-  "node": false, // Node.js
+  "node": true, // Node.js
   "nonstandard": false, // Widely adopted globals (escape, unescape, etc)
   "prototypejs": false, // Prototype and Scriptaculous
   "qunit": false, // QUnit
@@ -81,5 +81,5 @@
   // Custom Globals
   "globals": {
     "sinon": true
-    } //* additional predefined global variables
+  } //* additional predefined global variables
 }

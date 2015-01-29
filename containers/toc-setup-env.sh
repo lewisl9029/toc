@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-TOC_VER="$(git describe --tags --abbrev=0)"
+TOC_VER="$(git -C $TOC_DIR describe --tags --abbrev=0)"
 
 if [ ! -f $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz ];
   then
@@ -19,8 +19,8 @@ CONTAINER_NAME=toc-cache-apt
 if sudo docker ps | grep $CONTAINER_NAME;
   then
   sudo docker stop $CONTAINER_NAME
-  sudo docker rm $CONTAINER_NAME
 fi
+sudo docker rm $CONTAINER_NAME
 sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/cache/apt
 sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/cache/apt
 sudo docker run -d \
@@ -37,8 +37,8 @@ CONTAINER_NAME=toc-cache-npm
 if sudo docker ps | grep $CONTAINER_NAME;
   then
   sudo docker stop $CONTAINER_NAME
-  sudo docker rm $CONTAINER_NAME
 fi
+sudo docker rm $CONTAINER_NAME
 sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/cache/npm
 sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/cache/npm
 
@@ -52,8 +52,8 @@ CONTAINER_NAME=toc-browser
 if sudo docker ps | grep $CONTAINER_NAME;
   then
   sudo docker stop $CONTAINER_NAME
-  sudo docker rm $CONTAINER_NAME
 fi
+sudo docker rm $CONTAINER_NAME
 sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/browser
 sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/browser
 sudo docker run -d \

@@ -56,6 +56,7 @@ module.exports = function(config) {
     reporters: ['progress'],
 
     // web server port
+    hostname: '172.17.42.1',
     port: 8101,
 
     // enable / disable colors in the output (reporters and logs)
@@ -75,15 +76,18 @@ module.exports = function(config) {
     // available browser launchers:
     //   https://npmjs.org/browse/keyword/karma-launcher
     browsers: [
-      'ChromeHeadless'
+      'ChromeWebDriver'
     ],
 
     customLaunchers: {
-      ChromeHeadless: {
-        base: 'Chrome',
-        flags: [
-          '--no-sandbox'
-        ]
+      'ChromeWebDriver': {
+        base: 'WebDriver',
+        config: {
+          hostname: '172.17.42.1',
+          port: 8203,
+        },
+        browserName: 'firefox',
+        name: 'Karma'
       }
     },
 
@@ -93,7 +97,7 @@ module.exports = function(config) {
 
     //TODO: run tests on a faster machine
     // see https://github.com/karma-runner/karma/issues/598
-    captureTimeout: 120000,
-    browserNoActivityTimeout: 60000
+    captureTimeout: 30000,
+    browserNoActivityTimeout: 20000
   });
 };

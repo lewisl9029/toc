@@ -39,7 +39,7 @@ alias toct="sudo docker run \
   -p 8101:8101 \
   -v $TOC_DIR:/toc \
   toc-test:latest \
-  sh -c '(Xvfb :1 -screen 0 1024x768x24 -ac &) && gulp verify "$@"'"
+  sh -c 'gulp verify "$@"'"
 
 alias tocb="source $TOC_DIR/containers/toc-setup-build.sh"
 alias tocd="source $TOC_DIR/containers/toc-setup-drone.sh"
@@ -63,8 +63,6 @@ if ! dpkg -s lxc-docker | grep -q Version.*$DOCKER_VERSION;
     && sudo apt-get clean \
     && sudo rm -rf /tmp/* /var/tmp/*
 fi
-
-cd $TOC_DIR
 
 source $TOC_DIR/containers/toc-setup-env.sh
 source $TOC_DIR/containers/toc-setup-web.sh
