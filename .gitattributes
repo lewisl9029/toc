@@ -4,6 +4,7 @@
 *.jpg binary
 *.swf binary
 *.as binary
+*.so binary
 *.zip binary
 *.gzip binary
 *.bz2 binary
