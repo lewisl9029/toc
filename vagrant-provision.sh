@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 if [ -z "$USERNAME" ];
-then
+  then
   USERNAME=$(whoami)
   echo "USERNAME=$USERNAME" | sudo tee -a /etc/environment
 fi
 
 if [ -z "$TOC_DIR" ];
-then
+  then
   TOC_DIR=/home/$USERNAME/toc
   echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
 fi
@@ -51,7 +51,7 @@ EOF
 DOCKER_VERSION=1.4.1
 
 if ! dpkg -s lxc-docker | grep -q Version.*$DOCKER_VERSION;
-then
+  then
   echo deb https://get.docker.com/ubuntu docker main \
     | sudo tee /etc/apt/sources.list.d/docker.list
   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \

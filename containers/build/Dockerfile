@@ -13,6 +13,7 @@ RUN apt-get -y install \
   ant=1.9.3-2build1 \
   lib32stdc++6=4.8.2-19ubuntu1 \
   lib32z1=1:1.2.8.dfsg-1ubuntu1 \
+  openjdk-7-jdk=7u71-2.5.3-0ubuntu0.14.04.1 \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*
 
