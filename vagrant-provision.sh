@@ -39,7 +39,7 @@ alias toct="sudo docker run \
   -p 8101:8101 \
   -v $TOC_DIR:/toc \
   toc-test:latest \
-  gulp verify "$@""
+  sh -c 'xvfb-run -n 1 --server-args=\"-screen 0, 1366x768x24\" gulp verify "$@"'"
 
 alias tocb="source $TOC_DIR/containers/toc-setup-build.sh"
 alias tocd="source $TOC_DIR/containers/toc-setup-drone.sh"

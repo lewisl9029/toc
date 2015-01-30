@@ -24,6 +24,11 @@ RUN npm install -g \
   protractor@1.6.1 \
   && npm cache clean
 
+COPY .packages/google-chrome-stable_current_amd64.deb /usr/local/
+RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -y -f install && apt-get clean
+
+ENV DISPLAY :1
+
 # Expose karma server port
 EXPOSE 8101
 

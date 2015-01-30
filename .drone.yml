@@ -4,7 +4,6 @@ git:
   depth: 1
 
 script:
-  - gulp lint
   - xvfb-run -n 1 --server-args="-screen 0, 1366x768x24" gulp verify --prod
 
 deploy:
