@@ -9,6 +9,11 @@ WORKDIR /usr/local
 RUN apt-get update \
   && apt-get -y install \
     ruby=1:1.9.3.4 \
+    xfonts-100dpi \
+    xfonts-75dpi \
+    xfonts-scalable \
+    xfonts-cyrillic \
+    xvfb=2:1.15.1-0ubuntu2.6 \
   && apt-get clean
 
 RUN gem install \

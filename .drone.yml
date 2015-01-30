@@ -1,15 +1,11 @@
 image: toc-build:latest
 
-docker:
-  ports:
-    - 8201:8201
-
 git:
   depth: 1
 
 script:
   - gulp lint
-  - karma start --singleRun
+  - xvfb-run -n 1 --server-args="-screen 0, 1366x768x24" gulp verify --prod
 
 deploy:
   bash:
