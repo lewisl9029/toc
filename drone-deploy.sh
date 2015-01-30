@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 gulp build
-TOC_VER="$(git describe --tags --abbrev=0)"
+TOC_VER="$(git -C $DRONE_BUILD_DIR describe --tags --abbrev=0)"
 
 git config --global user.email "tocbitbucket@lewisl.net"
 git config --global user.name "Toc Bitbucket"
