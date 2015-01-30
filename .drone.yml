@@ -1,7 +1,8 @@
 image: toc-build:latest
 
 script:
-  - gulp verify --prod
+  - gulp lint
+  - gulp test --prod
 
 deploy:
   bash:
