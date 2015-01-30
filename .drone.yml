@@ -1,5 +1,9 @@
 image: toc-build:latest
 
+docker:
+  port:
+    - 8201:8201
+
 git:
   depth: 1
 
