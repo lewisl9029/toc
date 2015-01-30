@@ -22,6 +22,7 @@ COPY .packages/google-chrome-stable_current_amd64.deb /usr/local/
 RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -y -f install && apt-get clean
 
 #RUN ln -s /usr/local/lib/node_modules/protractor/selenium/chromedriver /usr/local/bin/chromedriver
+RUN npm set registry http://"$(/sbin/ip route|awk '/default/ { print $3 }')":8202
 
 RUN npm install -g \
   selenium-standalone@3.2.0 \
