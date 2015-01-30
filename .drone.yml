@@ -2,7 +2,7 @@ image: toc-build:latest
 
 script:
   - gulp lint
-  - gulp test --prod
+  - karma start --singleRun
 
 deploy:
   bash:
