@@ -76,11 +76,11 @@ module.exports = function(config) {
     // available browser launchers:
     //   https://npmjs.org/browse/keyword/karma-launcher
     browsers: [
-      'ChromeWebDriver'
+      'FirefoxWebDriver'
     ],
 
     customLaunchers: {
-      'ChromeWebDriver': {
+      'FirefoxWebDriver': {
         base: 'WebDriver',
         config: {
           hostname: '172.17.42.1',

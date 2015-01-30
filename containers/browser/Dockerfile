@@ -14,20 +14,35 @@ RUN apt-get update \
   && rm -rf /tmp/* /var/tmp/*
 
 #FIXME: Chrome webdriver doesnt work, install selenium manually
-#COPY .packages/google-chrome-stable_current_amd64.deb /usr/local/
-#RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -y -f install && apt-get clean
-
-RUN npm install -g \
-  protractor@1.6.1 \
-  && npm cache clean
-
-RUN webdriver-manager update
+COPY .packages/google-chrome-stable_current_amd64.deb /usr/local/
+RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -y -f install && apt-get clean
 
 #RUN ln -s /usr/local/lib/node_modules/protractor/selenium/chromedriver /usr/local/bin/chromedriver
+
+RUN npm install -g \
+  selenium-standalone@3.2.0 \
+  && npm cache clean
+
+RUN selenium-standalone install
 
 ENV DISPLAY :1
 
 # Expose Selenium server port
 EXPOSE 4444
 
-CMD (Xvfb :1 -shmem -screen 0 1024x768x24 -ac &) && webdriver-manager start
+#RUN adduser --disabled-password --gecos '' selenium
+#RUN adduser selenium sudo
+#RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+#USER selenium
+
+#RUN chown -R selenium /home/selenium
+#RUN chgrp -R selenium /home/selenium
+
+#RUN sudo npm install -g \
+#  selenium-standalone@3.2.0 \
+#  && sudo npm cache clean
+
+#RUN sudo selenium-standalone install
+
+CMD xvfb-run --server-args="-screen 0, 1366x768x24" selenium-standalone start
