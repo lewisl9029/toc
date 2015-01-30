@@ -1,7 +1,7 @@
 image: toc-build:latest
 
 git:
-  depth: 1
+  depth: 50
 
 script:
   - xvfb-run -n 1 --server-args="-screen 0, 1366x768x24" gulp verify --prod
