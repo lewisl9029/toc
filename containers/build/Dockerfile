@@ -13,7 +13,7 @@ RUN apt-get -y install \
   ant=1.9.3-2build1 \
   lib32stdc++6=4.8.2-19ubuntu1 \
   lib32z1=1:1.2.8.dfsg-1ubuntu1 \
-  openjdk-7-jdk=7u71-2.5.3-0ubuntu0.14.04.1 \
+  openjdk-7-jdk=7u75-2.5.4-1~trusty1 \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*
 
@@ -24,7 +24,8 @@ RUN tar xf android-sdk_r24.0.2-linux.tgz \
 RUN echo y | android-sdk-linux/tools/android update sdk --filter tools --no-ui --force -a \
  && echo y | android-sdk-linux/tools/android update sdk --filter build-tools-21.1.2 --no-ui --force -a \
  && echo y | android-sdk-linux/tools/android update sdk --filter platform-tools --no-ui --force -a \
- && echo y | android-sdk-linux/tools/android update sdk --filter android-19 --no-ui --force -a
+ && echo y | android-sdk-linux/tools/android update sdk --filter android-19 --no-ui --force -a \
+ && echo y | android-sdk-linux/tools/android update sdk --filter android-21 --no-ui --force -a
 
 ENV ANDROID_HOME /usr/local/android-sdk-linux
 ENV PATH $PATH:$ANDROID_HOME/tools

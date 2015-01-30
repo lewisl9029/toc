@@ -20,6 +20,12 @@ alias toc="sudo docker run \
   toc-dev:latest \
   "$@""
 
+alias tocba="sudo docker run \
+  -i -t --rm \
+  -v $TOC_DIR:/toc \
+  toc-build:latest \
+  ionic build android "$@""
+
 alias toci="toc \
   jspm install "$@""
 
