@@ -9,6 +9,10 @@ RUN apt-get update \
     #chromium-browser=39.0.2171.65-0ubuntu0.14.04.1.1064 \
     firefox=35.0.1+build1-0ubuntu0.14.04.1 \
     openjdk-7-jdk=7u75-2.5.4-1~trusty1 \
+    xfonts-100dpi \
+    xfonts-75dpi \
+    xfonts-scalable \
+    xfonts-cyrillic \
     xvfb=2:1.15.1-0ubuntu2.6 \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*
@@ -45,4 +49,4 @@ EXPOSE 4444
 
 #RUN sudo selenium-standalone install
 
-CMD xvfb-run --server-args="-screen 0, 1366x768x24" selenium-standalone start
+CMD xvfb-run -n 1 --server-args="-screen 0, 1366x768x24" selenium-standalone start
