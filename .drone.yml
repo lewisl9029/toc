@@ -1,7 +1,7 @@
 image: toc-test:latest
 
 git:
-  depth: 50
+  depth: 100
 
 script:
   - gulp lint
