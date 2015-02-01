@@ -1,10 +1,11 @@
-image: toc-build:latest
+image: toc-test:latest
 
 git:
   depth: 50
 
 script:
-  - xvfb-run -n 1 --server-args="-screen 0, 1366x768x24" gulp verify --prod
+  - gulp lint
+  - xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" karma start --singleRun
 
 deploy:
   bash:
