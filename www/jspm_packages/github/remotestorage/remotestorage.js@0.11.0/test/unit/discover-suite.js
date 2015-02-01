@@ -1,9 +1,7 @@
-/* */ 
-"format global";
 if (typeof define !== 'function') {
   var define = require('amdefine')(module);
 }
-define(["bluebird","requirejs","fs","webfinger.js"], function (Promise, requirejs, fs, WebFinger) {
+define(['bluebird', 'requirejs', 'fs', 'webfinger.js'], function (Promise, requirejs, fs, WebFinger) {
 
   global.Promise = Promise;
   global.WebFinger = WebFinger;

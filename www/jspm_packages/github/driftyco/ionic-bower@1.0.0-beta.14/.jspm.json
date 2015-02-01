@@ -5,6 +5,7 @@
     "shim": {
       "js/ionic-angular": {
         "deps": [
+          "../css/ionic.css!",
           "./ionic",
           "angular",
           "angular-animate",
@@ -14,6 +15,7 @@
       }
     },
     "dependencies": {
+      "css": "0.1.0",
       "angular": "^1.3.2",
       "angular-animate": "^1.3.2",
       "angular-sanitize": "^1.3.2",
@@ -25,6 +27,7 @@
   "shim": {
     "js/ionic-angular": {
       "deps": [
+        "../css/ionic.css!",
         "./ionic",
         "angular",
         "angular-animate",
@@ -34,6 +37,7 @@
     }
   },
   "dependencies": {
+    "css": "0.1.0",
     "angular": "^1.3.2",
     "angular-animate": "^1.3.2",
     "angular-sanitize": "^1.3.2",

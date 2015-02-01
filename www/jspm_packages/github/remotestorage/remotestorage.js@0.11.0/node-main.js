@@ -1,5 +1,3 @@
-/* */ 
-"format global";
 global.XMLHttpRequest = require('xhr2');
 global.tv4 = require('tv4');
 global.Promise = require('bluebird');

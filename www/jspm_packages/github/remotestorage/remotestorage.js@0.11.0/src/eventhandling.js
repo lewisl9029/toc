@@ -1,4 +1,3 @@
-/* */ 
 (function (global) {
   /**
    * Interface: eventhandling

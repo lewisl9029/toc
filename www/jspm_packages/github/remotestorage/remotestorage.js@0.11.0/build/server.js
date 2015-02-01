@@ -1,5 +1,3 @@
-/* */ 
-"format global";
 
 var FILE_ROOT = "../"
 

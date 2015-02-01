@@ -13,7 +13,7 @@ var karma = require('karma')
   .server;
 var argv = require('yargs')
   .argv;
-var jspm = require('jspm');
+var run = require('gulp-run');
 
 var basePaths = {
   dev: './www/',
@@ -59,7 +59,7 @@ gulp.task('verify', ['test', 'lint']);
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
 gulp.task('build-js', ['build-sass'], function buildJs() {
-  jspm.bundle('app', basePaths.prod + 'app.js', {});
+  run('jspm bundle app ' + basePaths.prod + 'app.js').exec();
 
   return gulp.src([
       basePaths.dev + 'jspm_packages/es6-module-loader.js',

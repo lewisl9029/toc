@@ -1,5 +1,3 @@
-/* */ 
-"format global";
 /** remotestorage.js 0.11.0, http://remotestorage.io, MIT-licensed **/
 
 /** FILE: lib/bluebird.js **/

@@ -1,9 +1,7 @@
-/* */ 
-"format global";
 if (typeof define !== 'function') {
   var define = require('amdefine')(module);
 }
-define(["requirejs","fs"], function(requirejs, fs, undefined) {
+define(['requirejs', 'fs'], function(requirejs, fs, undefined) {
   var suites = [];
 
   suites.push({

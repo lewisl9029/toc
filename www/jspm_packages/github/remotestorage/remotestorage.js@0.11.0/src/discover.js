@@ -1,4 +1,3 @@
-/* */ 
 (function (global) {
 
   // feature detection flags

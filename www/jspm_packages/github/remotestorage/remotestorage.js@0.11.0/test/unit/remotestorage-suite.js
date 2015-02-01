@@ -1,9 +1,7 @@
-/* */ 
-"format global";
 if (typeof(define) !== 'function') {
   var define = require('amdefine.js');
 }
-define(["bluebird","requirejs","tv4"], function (Promise, requirejs, tv4) {
+define(['bluebird', 'requirejs', 'tv4'], function (Promise, requirejs, tv4) {
 
   global.Promise = Promise;
   global.tv4 = tv4;

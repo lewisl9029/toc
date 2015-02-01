@@ -1,4 +1,3 @@
-/* */ 
 (function () {
   /**
    * Class: RemoteStorage.I18n

@@ -1,4 +1,3 @@
-/* */ 
 (function () {
 
   RemoteStorage.MODULES = {};
