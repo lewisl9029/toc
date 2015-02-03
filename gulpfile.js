@@ -130,10 +130,7 @@ gulp.task('test-e2e', function test() {
   }
 
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
-
-  run('http-server ' + serverPath + ' -p 8100 &').exec();
-  run('protractor').exec();
-  run('kill %1').exec();
+  run('./$TOC_DIR/protractor-test.sh ' + serverPath).exec();
 });
 
 gulp.task('lint-js', function lintJs() {
