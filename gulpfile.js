@@ -132,7 +132,7 @@ gulp.task('test-e2e', function test() {
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
 
   return gulp.src('')
-    .pipe(run('./$TOC_DIR/protractor-test.sh ' + serverPath));
+    .pipe(run('bash -c "source protractor-test.sh ' + serverPath + '"'));
 });
 
 gulp.task('lint-js', function lintJs() {
