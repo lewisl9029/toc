@@ -97,7 +97,7 @@
         respondWith: function respondWith(method, url, body) {
           if (arguments.length == 1 && typeof method != "function") {
             this.response = responseArray(method);
-            return;
+            return ;
           }
           if (!this.responses) {
             this.responses = [];
@@ -131,7 +131,7 @@
         processRequest: function processRequest(request) {
           try {
             if (request.aborted) {
-              return;
+              return ;
             }
             var response = this.response || [404, {}, ""];
             if (this.responses) {
