@@ -116,12 +116,12 @@ gulp.task('build-sass', function buildSass() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('test-unit', function test(done) {
+gulp.task('test-unit', function test() {
+  var configFile = argv.prod ? 'karma-prod.conf.js' : 'karma.conf.js';
   return karma.start({
-    configFile: __dirname +
-      argv.prod ? '/karma-prod.conf.js' : '/karma.conf.js',
-    singleRun: !argv.ci
-  }, !argv.ci ? done : undefined);
+    configFile: __dirname + '/' + configFile,
+    singleRun: !argv.dev
+  });
 });
 
 gulp.task('test-e2e', function test() {
@@ -129,10 +129,9 @@ gulp.task('test-e2e', function test() {
     return;
   }
 
-  run('http-server ' +
-    argv.prod ? basePaths.prod : basePaths.dev + ' -p 8100 &')
-    .exec();
+  var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
 
+  run('http-server ' + serverPath + ' -p 8100 &').exec();
   run('protractor').exec();
   run('kill %1').exec();
 });

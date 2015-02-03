@@ -100,7 +100,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
 
     //TODO: run tests on a faster machine
     // see https://github.com/karma-runner/karma/issues/598

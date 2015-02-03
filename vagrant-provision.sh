@@ -41,6 +41,13 @@ alias tocs="sudo docker run \
   ionic serve "$@""
 
 alias toct="sudo docker run \
+    -i -t --rm \
+    -p 8101:8101 \
+    -v $TOC_DIR:/toc \
+    toc-test:latest \
+    sh -c 'xvfb-run -n 1 --server-args=\"-screen 0, 1366x768x24\" gulp test "$@"'"
+
+alias tocv="sudo docker run \
   -i -t --rm \
   -p 8101:8101 \
   -v $TOC_DIR:/toc \

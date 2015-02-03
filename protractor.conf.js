@@ -1,5 +1,6 @@
 // conf.js
 exports.config = {
+  framework: 'jasmine2',
   directConnect: true,
   capabilities: {
     'browserName': 'chrome',
