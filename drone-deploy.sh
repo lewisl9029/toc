@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 gulp build
-gulp test --prod
+xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" gulp test-unit --prod
+xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" gulp test-e2e --prod
 
 TOC_VER="$(git -C $DRONE_BUILD_DIR describe --tags --abbrev=0)"
 

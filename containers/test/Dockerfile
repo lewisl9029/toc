@@ -22,6 +22,7 @@ RUN gem install \
 RUN npm install -g \
   http-server@0.7.4 \
   karma-cli@0.0.4 \
+  mocha@2.1.0 \
   protractor@1.6.1 \
   && npm cache clean
 

@@ -116,12 +116,12 @@ gulp.task('build-sass', function buildSass() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('test-unit', function test() {
+gulp.task('test-unit', function test(done) {
   var configFile = argv.prod ? 'karma-prod.conf.js' : 'karma.conf.js';
   return karma.start({
     configFile: __dirname + '/' + configFile,
     singleRun: !argv.dev
-  });
+  }, done);
 });
 
 gulp.task('test-e2e', function test() {
@@ -130,7 +130,7 @@ gulp.task('test-e2e', function test() {
   }
 
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
-  run('./$TOC_DIR/protractor-test.sh ' + serverPath).exec();
+  return run('./$TOC_DIR/protractor-test.sh ' + serverPath).exec();
 });
 
 gulp.task('lint-js', function lintJs() {

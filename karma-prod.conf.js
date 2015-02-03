@@ -12,6 +12,7 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: [
       'mocha',
+      'chai',
       'jspm'
     ],
 
@@ -30,7 +31,7 @@ module.exports = function(config) {
       serveFiles: [
         'prod/www/**/*.js'
       ],
-      config: 'www/config.js'
+      config: 'prod/www/config.js'
     },
 
     proxies: {
@@ -99,7 +100,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
 
     //TODO: run tests on a faster machine
     // see https://github.com/karma-runner/karma/issues/598
