@@ -56,6 +56,8 @@ gulp.task('style', ['style-js', 'style-html']);
 
 gulp.task('verify', ['test', 'lint']);
 
+gulp.task('test', ['test-unit', 'test-e2e']);
+
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
 gulp.task('build-js', ['build-sass'], function buildJs() {
@@ -114,11 +116,25 @@ gulp.task('build-sass', function buildSass() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('test', function test(done) {
+gulp.task('test-unit', function test(done) {
   return karma.start({
-    configFile: __dirname + '/karma.conf.js',
-    singleRun: argv.prod
-  }, argv.prod ? done : undefined);
+    configFile: __dirname +
+      argv.prod ? '/karma-prod.conf.js' : '/karma.conf.js',
+    singleRun: !argv.ci
+  }, !argv.ci ? done : undefined);
+});
+
+gulp.task('test-e2e', function test() {
+  if (argv.ci) {
+    return;
+  }
+
+  run('http-server ' +
+    argv.prod ? basePaths.prod : basePaths.dev + ' -p 8100 &')
+    .exec();
+
+  run('protractor').exec();
+  run('kill %1').exec();
 });
 
 gulp.task('lint-js', function lintJs() {

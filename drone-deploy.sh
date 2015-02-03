@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 gulp build
+gulp test --prod
+
 TOC_VER="$(git -C $DRONE_BUILD_DIR describe --tags --abbrev=0)"
 
 git config --global user.email "tocbitbucket@lewisl.net"
@@ -15,10 +17,12 @@ git pull --quiet https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocm
 if [ "$DRONE_BRANCH" == "master" ];
 then
   DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/
+  rm -rf /toc-staging/www
   cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/
 else
   DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/dev/$DRONE_BRANCH/www/
   mkdir -p /toc-staging/dev/$DRONE_BRANCH/
+  rm -rf /toc-staging/dev/$DRONE_BRANCH/www
   cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/dev/$DRONE_BRANCH/
 fi
 

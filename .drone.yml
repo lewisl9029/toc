@@ -4,11 +4,7 @@ git:
   depth: 100
 
 script:
-  - gulp lint
-  - xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" karma start --singleRun
-  - http-server ./www -p 8100 &
-  - xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" protractor
-  - kill %1
+  - xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" gulp verify
 
 deploy:
   bash:
