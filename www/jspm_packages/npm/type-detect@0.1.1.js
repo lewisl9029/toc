@@ -1,1 +1,0 @@
-module.exports = require("npm:type-detect@0.1.1/index");

@@ -65,7 +65,7 @@
   "couch": false, // CouchDB
   "devel": true, // Development/debugging (alert, confirm, etc)
   "dojo": false, // Dojo Toolkit
-  "jasmine": false, // Jasmine
+  "jasmine": true, // Jasmine
   "jquery": false, // jQuery
   "mocha": true, // Mocha
   "mootools": false, // MooTools
@@ -79,5 +79,7 @@
   "wsh": false, // Windows Scripting Host
   "yui": false, // Yahoo User Interface
   // Custom Globals
-  "globals": {} //* additional predefined global variables
+  "globals": {
+    "sinon": true
+    } //* additional predefined global variables
 }
