@@ -13,7 +13,7 @@ var karma = require('karma')
   .server;
 var argv = require('yargs')
   .argv;
-var run = require('gulp-run');
+var shell = require('gulp-shell');
 
 var basePaths = {
   dev: './www/',
@@ -61,7 +61,8 @@ gulp.task('test', ['test-unit', 'test-e2e']);
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
 gulp.task('build-js', ['build-sass'], function buildJs() {
-  run('jspm bundle app ' + basePaths.prod + 'app.js').exec();
+  gulp.src('')
+    .pipe(shell('jspm bundle app ' + basePaths.prod + 'app.js'));
 
   return gulp.src([
       basePaths.dev + 'jspm_packages/es6-module-loader.js',
@@ -124,7 +125,7 @@ gulp.task('test-unit', function test(done) {
   }, done);
 });
 
-gulp.task('test-e2e', function test() {
+gulp.task('test-e2e', ['build-sass'], function test() {
   if (argv.ci) {
     return;
   }
@@ -132,7 +133,8 @@ gulp.task('test-e2e', function test() {
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
 
   return gulp.src('')
-    .pipe(run('bash -c "source protractor-test.sh ' + serverPath + '"'));
+  //FIXME: not propagating errors
+    .pipe(shell('bash -c "source protractor-test.sh ' + serverPath + '"'));
 });
 
 gulp.task('lint-js', function lintJs() {
