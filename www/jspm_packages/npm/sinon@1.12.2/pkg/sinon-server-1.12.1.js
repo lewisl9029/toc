@@ -258,7 +258,7 @@
     } else if (isNode) {
       loadDependencies(require, module.exports);
     } else if (!sinon) {
-      return;
+      return ;
     } else {
       makeApi(sinon);
     }
@@ -337,7 +337,7 @@
     } else if (isNode) {
       loadDependencies(require, module.exports, module);
     } else if (!sinon) {
-      return;
+      return ;
     } else {
       makeApi(sinon);
     }
@@ -454,7 +454,7 @@
     } else if (isNode) {
       loadDependencies(require, module.exports, module);
     } else if (!sinon) {
-      return;
+      return ;
     } else {
       makeApi(sinon);
     }
@@ -564,7 +564,7 @@
     }
     function each(collection, callback) {
       if (!collection) {
-        return;
+        return ;
       }
       for (var i = 0,
           l = collection.length; i < l; i += 1) {
@@ -945,7 +945,7 @@
     } else if (isNode) {
       loadDependencies(require, module.exports, module);
     } else if (typeof sinon === "undefined") {
-      return;
+      return ;
     } else {
       makeApi(sinon);
     }
@@ -1004,7 +1004,7 @@
     } else if (isNode) {
       loadDependencies(require, module.exports, module);
     } else if (!sinon) {
-      return;
+      return ;
     } else {
       makeApi(sinon);
     }
@@ -1104,7 +1104,7 @@
         respondWith: function respondWith(method, url, body) {
           if (arguments.length == 1 && typeof method != "function") {
             this.response = responseArray(method);
-            return;
+            return ;
           }
           if (!this.responses) {
             this.responses = [];
@@ -1138,7 +1138,7 @@
         processRequest: function processRequest(request) {
           try {
             if (request.aborted) {
-              return;
+              return ;
             }
             var response = this.response || [404, {}, ""];
             if (this.responses) {

@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
-TOC_VER="$(git describe --tags --abbrev=0)"
+TOC_VER="$(git -C $TOC_DIR describe --tags --abbrev=0)"
 
 if [ ! -f /home/$USERNAME/drone/drone.sqlite ];
-then
+  then
   mkdir /home/$USERNAME/drone
   touch /home/$USERNAME/drone/drone.sqlite
 fi
 
-sudo docker build -t toc-drone:$TOC_VER $TOC_DIR/containers/drone
-sudo docker build -t toc-drone:latest $TOC_DIR/containers/drone
-sudo docker stop toc-drone
-sudo docker rm toc-drone
+CONTAINER_NAME=toc-drone
+if sudo docker ps | grep $CONTAINER_NAME;
+  then
+  sudo docker stop $CONTAINER_NAME
+fi
+sudo docker rm $CONTAINER_NAME
+sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/drone
+sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/drone
 sudo docker run \
   -d \
-  --name toc-drone \
+  --name $CONTAINER_NAME \
   -p 8080:8080 \
   -v /var/lib/drone \
   -v /var/run/docker.sock:/var/run/docker.sock \
@@ -26,4 +30,4 @@ sudo docker run \
   -e DRONE_SMTP_FROM=$DRONE_SMTP_FROM \
   -e DRONE_SMTP_USER=$DRONE_SMTP_USER \
   -e DRONE_SMTP_PASS=$DRONE_SMTP_PASS \
-  toc-drone:latest
+  $CONTAINER_NAME:latest

@@ -10,26 +10,32 @@ System.config({
 
 System.config({
   "map": {
-    "angular": "github:angular/bower-angular@1.3.9",
+    "angular": "github:angular/bower-angular@1.3.11",
     "css": "github:systemjs/plugin-css@0.1.0",
     "es6-shim": "github:paulmillr/es6-shim@0.22.1",
     "html": "github:systemjs/plugin-text@0.0.2",
     "ionic": "github:driftyco/ionic-bower@1.0.0-beta.14",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "ramda": "github:ramda/ramda@0.8.0",
-    "remotestorage.js": "github:remotestorage/remotestorage.js@0.11.0",
+    "remotestorage.js": "github:remotestorage/remotestorage.js@0.11.1",
     "scut": "github:davidtheclark/scut@1.0.2",
     "sinon": "npm:sinon@1.12.2",
-    "github:angular/bower-angular-animate@1.3.9": {
-      "angular": "github:angular/bower-angular@1.3.9"
+    "github:angular/bower-angular-animate@1.3.11": {
+      "angular": "github:angular/bower-angular@1.3.11"
     },
-    "github:angular/bower-angular-sanitize@1.3.9": {
-      "angular": "github:angular/bower-angular@1.3.9"
+    "github:angular/bower-angular-sanitize@1.3.11": {
+      "angular": "github:angular/bower-angular@1.3.11"
+    },
+    "github:driftyco/ionic-bower@0.9.26": {
+      "angular": "github:angular/bower-angular@1.3.11",
+      "angular-animate": "github:angular/bower-angular-animate@1.3.11",
+      "angular-sanitize": "github:angular/bower-angular-sanitize@1.3.11",
+      "angular-ui-router": "github:angular-ui/ui-router@0.2.10"
     },
     "github:driftyco/ionic-bower@1.0.0-beta.14": {
-      "angular": "github:angular/bower-angular@1.3.9",
-      "angular-animate": "github:angular/bower-angular-animate@1.3.9",
-      "angular-sanitize": "github:angular/bower-angular-sanitize@1.3.9",
+      "angular": "github:angular/bower-angular@1.3.11",
+      "angular-animate": "github:angular/bower-angular-animate@1.3.11",
+      "angular-sanitize": "github:angular/bower-angular-sanitize@1.3.11",
       "angular-ui-router": "github:angular-ui/ui-router@0.2.10"
     },
     "github:jspm/nodelibs-process@0.1.0": {
@@ -57,4 +63,3 @@ System.config({
     }
   }
 });
-

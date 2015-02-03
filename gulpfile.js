@@ -13,7 +13,7 @@ var karma = require('karma')
   .server;
 var argv = require('yargs')
   .argv;
-var jspm = require('jspm');
+var shell = require('gulp-shell');
 
 var basePaths = {
   dev: './www/',
@@ -56,10 +56,13 @@ gulp.task('style', ['style-js', 'style-html']);
 
 gulp.task('verify', ['test', 'lint']);
 
+gulp.task('test', ['test-unit', 'test-e2e']);
+
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
 gulp.task('build-js', ['build-sass'], function buildJs() {
-  jspm.bundle('app', basePaths.prod + 'app.js', {});
+  gulp.src('')
+    .pipe(shell('jspm bundle app ' + basePaths.prod + 'app.js'));
 
   return gulp.src([
       basePaths.dev + 'jspm_packages/es6-module-loader.js',
@@ -114,11 +117,24 @@ gulp.task('build-sass', function buildSass() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('test', function test(done) {
+gulp.task('test-unit', function test(done) {
+  var configFile = argv.prod ? 'karma-prod.conf.js' : 'karma.conf.js';
   return karma.start({
-    configFile: __dirname + '/karma.conf.js',
-    singleRun: argv.prod
-  }, argv.prod ? done : undefined);
+    configFile: __dirname + '/' + configFile,
+    singleRun: !argv.dev
+  }, done);
+});
+
+gulp.task('test-e2e', ['build-sass'], function test() {
+  if (argv.ci) {
+    return;
+  }
+
+  var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
+
+  return gulp.src('')
+  //FIXME: not propagating errors
+    .pipe(shell('bash -c "source protractor-test.sh ' + serverPath + '"'));
 });
 
 gulp.task('lint-js', function lintJs() {

@@ -6,7 +6,7 @@
     var push = [].push;
     function exposeValue(sandbox, config, key, value) {
       if (!value) {
-        return;
+        return ;
       }
       if (config.injectInto && !(key in config.injectInto)) {
         config.injectInto[key] = value;
@@ -113,7 +113,7 @@
   } else if (isNode) {
     loadDependencies(require, module.exports, module);
   } else if (!sinon) {
-    return;
+    return ;
   } else {
     makeApi(sinon);
   }

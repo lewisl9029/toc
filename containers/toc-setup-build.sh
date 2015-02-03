@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-TOC_VER="$(git describe --tags --abbrev=0)"
+TOC_VER="$(git -C $TOC_DIR describe --tags --abbrev=0)"
 
 if [ ! -f $TOC_DIR/containers/build/.packages/android-sdk_r24.0.2-linux.tgz ];
   then

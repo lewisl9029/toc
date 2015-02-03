@@ -692,7 +692,7 @@
                   if (exception) {
                     throw exception;
                   }
-                  return;
+                  return ;
                 }
                 if (exception) {
                   throw exception;
@@ -764,7 +764,7 @@
                 };
                 clock.clearTimeout = function clearTimeout(timerId) {
                   if (!timerId) {
-                    return;
+                    return ;
                   }
                   if (!clock.timers) {
                     clock.timers = [];
@@ -1112,7 +1112,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -1191,7 +1191,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -1224,7 +1224,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -1255,7 +1255,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -1466,7 +1466,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -1525,7 +1525,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -1616,7 +1616,7 @@
                 l = args.length; i < l; ++i) {
               if (typeof args[i] === "function") {
                 args[i].apply(thisValue, slice.call(arguments, 1));
-                return;
+                return ;
               }
             }
             throwYieldError(this.proxy, " cannot yield since no callback was passed.", args);
@@ -1630,7 +1630,7 @@
                 l = args.length; i < l; ++i) {
               if (args[i] && typeof args[i][prop] === "function") {
                 args[i][prop].apply(thisValue, slice.call(arguments, 2));
-                return;
+                return ;
               }
             }
             throwYieldError(this.proxy, " cannot yield to '" + prop + "' since no callback was passed.", args);
@@ -1685,7 +1685,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -1707,7 +1707,7 @@
         }
         function matchingFake(fakes, args, strict) {
           if (!fakes) {
-            return;
+            return ;
           }
           for (var i = 0,
               l = fakes.length; i < l; i++) {
@@ -2025,7 +2025,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -2271,7 +2271,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -2386,7 +2386,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -2403,7 +2403,7 @@
         }
         function each(collection, callback) {
           if (!collection) {
-            return;
+            return ;
           }
           for (var i = 0,
               l = collection.length; i < l; i += 1) {
@@ -2606,7 +2606,7 @@
               sinon.expectation.fail(this.method + " called with " + thisValue + " as thisValue, expected " + this.expectedThis);
             }
             if (!("expectedArguments" in this)) {
-              return;
+              return ;
             }
             if (!args) {
               sinon.expectation.fail(this.method + " received no arguments, expected " + sinon.format(this.expectedArguments));
@@ -2717,7 +2717,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -2836,7 +2836,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -2999,7 +2999,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -3109,7 +3109,7 @@
       }
       function each(collection, callback) {
         if (!collection) {
-          return;
+          return ;
         }
         for (var i = 0,
             l = collection.length; i < l; i += 1) {
@@ -3490,7 +3490,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (typeof sinon === "undefined") {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -3590,7 +3590,7 @@
           respondWith: function respondWith(method, url, body) {
             if (arguments.length == 1 && typeof method != "function") {
               this.response = responseArray(method);
-              return;
+              return ;
             }
             if (!this.responses) {
               this.responses = [];
@@ -3624,7 +3624,7 @@
           processRequest: function processRequest(request) {
             try {
               if (request.aborted) {
-                return;
+                return ;
               }
               var response = this.response || [404, {}, ""];
               if (this.responses) {
@@ -3734,7 +3734,7 @@
         var push = [].push;
         function exposeValue(sandbox, config, key, value) {
           if (!value) {
-            return;
+            return ;
           }
           if (config.injectInto && !(key in config.injectInto)) {
             config.injectInto[key] = value;
@@ -3841,7 +3841,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -3920,7 +3920,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -3994,7 +3994,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }
@@ -4146,7 +4146,7 @@
       } else if (isNode) {
         loadDependencies(require, module.exports, module);
       } else if (!sinon) {
-        return;
+        return ;
       } else {
         makeApi(sinon);
       }

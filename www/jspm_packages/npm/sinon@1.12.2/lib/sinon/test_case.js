@@ -70,7 +70,7 @@
   } else if (isNode) {
     loadDependencies(require, module.exports, module);
   } else if (!sinon) {
-    return;
+    return ;
   } else {
     makeApi(sinon);
   }

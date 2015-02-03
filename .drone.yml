@@ -1,9 +1,12 @@
-image: toc-build:latest
+image: toc-test:latest
+
+git:
+  depth: 100
 
 script:
   - gulp lint
-  - Xvfb :1 -screen 0 1024x768x24 -ac &
-  - gulp test --prod
+  - xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" gulp test-unit
+  - xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" gulp test-e2e
 
 deploy:
   bash:

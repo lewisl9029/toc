@@ -106,7 +106,7 @@
   }
   function each(collection, callback) {
     if (!collection) {
-      return;
+      return ;
     }
     for (var i = 0,
         l = collection.length; i < l; i += 1) {
@@ -487,7 +487,7 @@
   } else if (isNode) {
     loadDependencies(require, module.exports, module);
   } else if (typeof sinon === "undefined") {
-    return;
+    return ;
   } else {
     makeApi(sinon);
   }

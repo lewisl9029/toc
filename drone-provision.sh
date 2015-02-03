@@ -13,7 +13,7 @@
 #vagrant ssh
 #sudo apt-get update \
 #  && sudo apt-get install -y \
-#    git=1:1.9.1-1 \
+#    git=1:1.9.1-1ubuntu0.1 \
 #  && sudo apt-get clean
 #cd ~
 #git clone https://$GITHUB_OAUTH_TOKEN@github.com/lewisl9029/toc.git

@@ -18,7 +18,7 @@
     }
     function matchingFake(fakes, args, strict) {
       if (!fakes) {
-        return;
+        return ;
       }
       for (var i = 0,
           l = fakes.length; i < l; i++) {
@@ -336,7 +336,7 @@
   } else if (isNode) {
     loadDependencies(require, module.exports, module);
   } else if (!sinon) {
-    return;
+    return ;
   } else {
     makeApi(sinon);
   }

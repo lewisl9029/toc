@@ -87,7 +87,7 @@
             l = args.length; i < l; ++i) {
           if (typeof args[i] === "function") {
             args[i].apply(thisValue, slice.call(arguments, 1));
-            return;
+            return ;
           }
         }
         throwYieldError(this.proxy, " cannot yield since no callback was passed.", args);
@@ -101,7 +101,7 @@
             l = args.length; i < l; ++i) {
           if (args[i] && typeof args[i][prop] === "function") {
             args[i][prop].apply(thisValue, slice.call(arguments, 2));
-            return;
+            return ;
           }
         }
         throwYieldError(this.proxy, " cannot yield to '" + prop + "' since no callback was passed.", args);
@@ -156,7 +156,7 @@
   } else if (isNode) {
     loadDependencies(require, module.exports, module);
   } else if (!sinon) {
-    return;
+    return ;
   } else {
     makeApi(sinon);
   }

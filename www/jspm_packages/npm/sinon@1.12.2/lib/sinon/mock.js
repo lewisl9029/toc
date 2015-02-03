@@ -13,7 +13,7 @@
     }
     function each(collection, callback) {
       if (!collection) {
-        return;
+        return ;
       }
       for (var i = 0,
           l = collection.length; i < l; i += 1) {
@@ -216,7 +216,7 @@
           sinon.expectation.fail(this.method + " called with " + thisValue + " as thisValue, expected " + this.expectedThis);
         }
         if (!("expectedArguments" in this)) {
-          return;
+          return ;
         }
         if (!args) {
           sinon.expectation.fail(this.method + " received no arguments, expected " + sinon.format(this.expectedArguments));
@@ -327,7 +327,7 @@
   } else if (isNode) {
     loadDependencies(require, module.exports, module);
   } else if (!sinon) {
-    return;
+    return ;
   } else {
     makeApi(sinon);
   }
