@@ -1,1 +1,0 @@
-module.exports = require("npm:assertion-error@1.0.0/index");

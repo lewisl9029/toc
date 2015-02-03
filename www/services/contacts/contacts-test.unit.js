@@ -1,7 +1,4 @@
-import chai from 'chai';
 import sinon from 'sinon';
-
-let expect = chai.expect;
 
 import contacts from './contacts-service';
 
