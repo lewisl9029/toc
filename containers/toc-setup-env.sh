@@ -48,15 +48,15 @@ sudo docker run -d \
   -v /var/cache/toc/npm:/usr/local/sinopia/storage \
   $CONTAINER_NAME:latest
 
-CONTAINER_NAME=toc-browser
-if sudo docker ps | grep $CONTAINER_NAME;
-  then
-  sudo docker stop $CONTAINER_NAME
-fi
-sudo docker rm $CONTAINER_NAME
-sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/browser
-sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/browser
-sudo docker run -d \
-  --name $CONTAINER_NAME \
-  -p 8203:4444 \
-  $CONTAINER_NAME:latest
+# CONTAINER_NAME=toc-browser
+# if sudo docker ps | grep $CONTAINER_NAME;
+#   then
+#   sudo docker stop $CONTAINER_NAME
+# fi
+# sudo docker rm $CONTAINER_NAME
+# sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/browser
+# sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/browser
+# sudo docker run -d \
+#   --name $CONTAINER_NAME \
+#   -p 8203:4444 \
+#   $CONTAINER_NAME:latest

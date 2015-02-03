@@ -20,12 +20,15 @@ RUN gem install \
   scss-lint -v 0.32.0
 
 RUN npm install -g \
+  http-server@0.7.4 \
   karma-cli@0.0.4 \
   protractor@1.6.1 \
   && npm cache clean
 
 COPY .packages/google-chrome-stable_current_amd64.deb /usr/local/
 RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -y -f install && apt-get clean
+
+RUN webdriver-manager update
 
 ENV DISPLAY :1
 
