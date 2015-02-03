@@ -38,7 +38,7 @@ alias tocs="sudo docker run \
   -p 35729:35729 \
   -v $TOC_DIR:/toc \
   toc-dev:latest \
-  ionic serve "$@""
+  ionic serve --lab "$@""
 
 alias toct="sudo docker run \
     -i -t --rm \
