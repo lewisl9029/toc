@@ -5,8 +5,9 @@ git:
 
 script:
   - gulp lint
-  - xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" gulp test-unit
-  - xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" gulp test-e2e
+  - Xvfb :1 -screen 0 1024x768x24
+  - gulp test-unit
+  - gulp test-e2e
 
 deploy:
   bash:
