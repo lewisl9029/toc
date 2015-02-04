@@ -1,19 +1,20 @@
 {
   "name": "Toc Messenger",
   "app_id": "",
+  "documentRoot": "app",
   "gulpStartupTasks": [
     "build-sass",
     "watch"
   ],
   "watchPatterns": [
-    "www/components/**/*",
-    "www/libraries/**/*",
-    "www/services/**/*",
-    "www/views/**/*",
-    "www/*",
-    "!www/components/**/*.scss",
-    "!www/views/**/*.scss",
-    "!www/*.scss",
-    "!www/services/**/*-test.unit.js"
+    "app/components/**/*",
+    "app/libraries/**/*",
+    "app/services/**/*",
+    "app/views/**/*",
+    "app/*",
+    "!app/components/**/*.scss",
+    "!app/views/**/*.scss",
+    "!app/*.scss",
+    "!app/services/**/*-test.unit.js"
   ]
 }

@@ -16,8 +16,8 @@ var argv = require('yargs')
 var shell = require('gulp-shell');
 
 var basePaths = {
-  dev: './www/',
-  prod: './prod/www/'
+  dev: './app/',
+  prod: './www/'
 };
 
 var paths = {
@@ -65,15 +65,12 @@ gulp.task('build-js', ['build-sass'], function buildJs() {
     .pipe(shell('jspm bundle app ' + basePaths.prod + 'app.js'));
 
   return gulp.src([
-      basePaths.dev + 'jspm_packages/es6-module-loader.js',
-      basePaths.dev + 'jspm_packages/es6-module-loader.js.map',
-      basePaths.dev + 'jspm_packages/es6-module-loader.src.js',
-      basePaths.dev + 'jspm_packages/system.js',
-      basePaths.dev + 'jspm_packages/system.js.map',
-      basePaths.dev + 'jspm_packages/system.src.js',
-      basePaths.dev + 'jspm_packages/traceur-runtime.js',
-      basePaths.dev + 'jspm_packages/traceur-runtime.js.map',
-      basePaths.dev + 'jspm_packages/traceur-runtime.src.js',
+      basePaths.dev + 'dependencies/es6-module-loader.js',
+      basePaths.dev + 'dependencies/es6-module-loader.js.map',
+      basePaths.dev + 'dependencies/es6-module-loader.src.js',
+      basePaths.dev + 'dependencies/system.js',
+      basePaths.dev + 'dependencies/system.js.map',
+      basePaths.dev + 'dependencies/system.src.js',
       basePaths.dev + 'config.js',
       basePaths.dev + 'initialize.js',
     ], {
@@ -133,7 +130,6 @@ gulp.task('test-e2e', ['build-sass'], function test() {
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
 
   return gulp.src('')
-  //FIXME: not propagating errors
     .pipe(shell('bash -c "source protractor-test.sh ' + serverPath + '"'));
 });
 

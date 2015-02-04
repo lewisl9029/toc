@@ -19,12 +19,12 @@ if [ "$DRONE_BRANCH" == "master" ];
 then
   DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/
   rm -rf /toc-staging/www
-  cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/
+  cp -Rf $DRONE_BUILD_DIR/www/* /toc-staging/www
 else
-  DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/dev/$DRONE_BRANCH/www/
-  mkdir -p /toc-staging/dev/$DRONE_BRANCH/
+  DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/dev/$DRONE_BRANCH/www
+  mkdir -p /toc-staging/dev/$DRONE_BRANCH/www
   rm -rf /toc-staging/dev/$DRONE_BRANCH/www
-  cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/dev/$DRONE_BRANCH/
+  cp -Rf $DRONE_BUILD_DIR/www/* /toc-staging/dev/$DRONE_BRANCH/www
 fi
 
 git add -A .
