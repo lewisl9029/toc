@@ -48,6 +48,14 @@ gulp.task('watch', function watch() {
   gulp.watch(paths.sass, ['build-sass']);
 });
 
+gulp.task('serve', function serve() {
+  var serveCommand = argv.prod ?
+    'http-server www -p 8100' :
+    'ionic serve --lab --address=localhost -i 8101';
+  return gulp.src('')
+    .pipe(shell(serveCommand));
+});
+
 gulp.task('clean', function clean(done) {
   return del([
     basePaths.prod + '**'
@@ -73,16 +81,15 @@ gulp.task('test', ['test-unit', 'test-e2e']);
 
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
-gulp.task('build-js', ['build-sass'], function buildJs() {
-  gulp.src('')
-    .pipe(shell('jspm bundle app ' + basePaths.prod + 'app.js'));
+
+
+gulp.task('build-js', ['build-jspm'], function buildJs() {
+  // gulp.src(basePaths.dev + 'app.js')
+  //   .pipe(ngAnnotate())
+  //   .pipe(gulp.dest(basePaths.dev));
 
   return gulp.src([
-      basePaths.dev + 'dependencies/es6-module-loader.js',
-      basePaths.dev + 'dependencies/es6-module-loader.js.map',
       basePaths.dev + 'dependencies/es6-module-loader.src.js',
-      basePaths.dev + 'dependencies/system.js',
-      basePaths.dev + 'dependencies/system.js.map',
       basePaths.dev + 'dependencies/system.src.js',
       basePaths.dev + 'config.js',
       basePaths.dev + 'initialize.js',
@@ -90,6 +97,13 @@ gulp.task('build-js', ['build-sass'], function buildJs() {
       base: basePaths.dev
     })
     .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('build-jspm', ['build-sass'], function buildJspm() {
+  return gulp.src('')
+    .pipe(shell([
+      'jspm bundle app ' + basePaths.prod + 'app.js --skip-source-maps'
+    ]));
 });
 
 gulp.task('build-html', function buildHtml() {

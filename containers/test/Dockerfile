@@ -34,6 +34,6 @@ RUN webdriver-manager update
 ENV DISPLAY :1
 
 # Expose karma server port
-EXPOSE 8101
+EXPOSE 8102
 
 WORKDIR /toc

@@ -5,7 +5,7 @@ git:
 
 script:
   - gulp lint
-  - Xvfb :1 -screen 0 1024x768x24
+  - Xvfb :1 -screen 0 1024x768x24 &
   - gulp test-unit
   - gulp test-e2e
 

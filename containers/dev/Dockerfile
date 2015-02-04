@@ -15,6 +15,6 @@ RUN npm install -g jspm@0.11.3 && npm cache clean
 # Expose ionic serve port
 EXPOSE 8100
 # Expose ionic serve livereload port
-EXPOSE 35729
+EXPOSE 8101
 
 WORKDIR /toc

@@ -37,19 +37,19 @@ alias tocs="sudo docker run \
   -p 8100:8100 \
   -p 35729:35729 \
   -v $TOC_DIR:/toc \
-  toc-dev:latest \
-  ionic serve --lab "$@""
+  toc-test:latest \
+  gulp serve "$@""
 
 alias toct="sudo docker run \
     -i -t --rm \
-    -p 8101:8101 \
+    -p 8102:8102 \
     -v $TOC_DIR:/toc \
     toc-test:latest \
     sh -c 'xvfb-run -n 1 --server-args=\"-screen 0, 1366x768x24\" gulp test "$@"'"
 
 alias tocv="sudo docker run \
   -i -t --rm \
-  -p 8101:8101 \
+  -p 8102:8102 \
   -v $TOC_DIR:/toc \
   toc-test:latest \
   sh -c 'xvfb-run -n 1 --server-args=\"-screen 0, 1366x768x24\" gulp verify "$@"'"

@@ -31,7 +31,7 @@ ENV ANDROID_HOME /usr/local/android-sdk-linux
 ENV PATH $PATH:$ANDROID_HOME/tools
 ENV PATH $PATH:$ANDROID_HOME/platform-tools
 
-EXPOSE 8101
+EXPOSE 8102
 
 #TODO: configure ionic build service for ios
 #TODO: configure ionic cli crosswalk runtime
