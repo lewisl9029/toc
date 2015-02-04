@@ -46,4 +46,4 @@ then
 fi
 
 source ./containers/toc-setup-drone.sh
-source ./containers/toc-setup-build.sh
+# source ./containers/toc-setup-build.sh

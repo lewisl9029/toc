@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 gulp build
-#xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" gulp test-unit --prod
-xvfb-run -n 1 --server-args="-screen 0, 1024x768x24" gulp test-e2e --prod
+#gulp test-unit --prod
+gulp test-e2e --prod
 
 TOC_VER="$(git -C $DRONE_BUILD_DIR describe --tags --abbrev=0)"
 
@@ -19,12 +19,13 @@ if [ "$DRONE_BRANCH" == "master" ];
 then
   DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/
   rm -rf /toc-staging/www
-  cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/
+  mkdir -p /toc-staging/www
+  cp -Rf $DRONE_BUILD_DIR/www/* /toc-staging/www
 else
-  DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/dev/$DRONE_BRANCH/www/
-  mkdir -p /toc-staging/dev/$DRONE_BRANCH/
+  DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/dev/$DRONE_BRANCH/www
   rm -rf /toc-staging/dev/$DRONE_BRANCH/www
-  cp -Rf $DRONE_BUILD_DIR/prod/* /toc-staging/dev/$DRONE_BRANCH/
+  mkdir -p /toc-staging/dev/$DRONE_BRANCH/www
+  cp -Rf $DRONE_BUILD_DIR/www/* /toc-staging/dev/$DRONE_BRANCH/www
 fi
 
 git add -A .

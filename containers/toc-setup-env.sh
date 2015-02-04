@@ -33,20 +33,20 @@ CONTAINER_NAME=toc-env
 sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/env
 sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/env
 
-CONTAINER_NAME=toc-cache-npm
-if sudo docker ps | grep $CONTAINER_NAME;
-  then
-  sudo docker stop $CONTAINER_NAME
-fi
-sudo docker rm $CONTAINER_NAME
-sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/cache/npm
-sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/cache/npm
-
-sudo docker run -d \
-  --name $CONTAINER_NAME \
-  -p 8202:4873 \
-  -v /var/cache/toc/npm:/usr/local/sinopia/storage \
-  $CONTAINER_NAME:latest
+# CONTAINER_NAME=toc-cache-npm
+# if sudo docker ps | grep $CONTAINER_NAME;
+#   then
+#   sudo docker stop $CONTAINER_NAME
+# fi
+# sudo docker rm $CONTAINER_NAME
+# sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/cache/npm
+# sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/cache/npm
+#
+# sudo docker run -d \
+#   --name $CONTAINER_NAME \
+#   -p 8202:4873 \
+#   -v /var/cache/toc/npm:/usr/local/sinopia/storage \
+#   $CONTAINER_NAME:latest
 
 # CONTAINER_NAME=toc-browser
 # if sudo docker ps | grep $CONTAINER_NAME;

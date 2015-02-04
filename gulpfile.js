@@ -14,10 +14,12 @@ var karma = require('karma')
 var argv = require('yargs')
   .argv;
 var shell = require('gulp-shell');
+var runSequence = require('run-sequence');
+var del = require('del');
 
 var basePaths = {
-  dev: './www/',
-  prod: './prod/www/'
+  dev: './app/',
+  prod: './www/'
 };
 
 var paths = {
@@ -46,11 +48,30 @@ gulp.task('watch', function watch() {
   gulp.watch(paths.sass, ['build-sass']);
 });
 
+gulp.task('serve', function serve() {
+  var serveCommand = argv.prod ?
+    'http-server www -p 8100' :
+    'ionic serve --lab --address=localhost -i 8101';
+  return gulp.src('')
+    .pipe(shell(serveCommand));
+});
+
+gulp.task('clean', function clean(done) {
+  return del([
+    basePaths.prod + '**'
+  ], done);
+});
+
 //TODO: add minification steps
 //TODO: add android/ios/node-webkit build steps
 //TODO: append version + latest folders for each build
-//TODO: clean build directory before each build
-gulp.task('build', ['build-js', 'build-html']);
+gulp.task('build', function build(done) {
+  return runSequence(
+    'clean',
+    ['build-js', 'build-html'],
+    done
+  );
+});
 
 gulp.task('style', ['style-js', 'style-html']);
 
@@ -60,26 +81,29 @@ gulp.task('test', ['test-unit', 'test-e2e']);
 
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
-gulp.task('build-js', ['build-sass'], function buildJs() {
-  gulp.src('')
-    .pipe(shell('jspm bundle app ' + basePaths.prod + 'app.js'));
+
+
+gulp.task('build-js', ['build-jspm'], function buildJs() {
+  // gulp.src(basePaths.dev + 'app.js')
+  //   .pipe(ngAnnotate())
+  //   .pipe(gulp.dest(basePaths.dev));
 
   return gulp.src([
-      basePaths.dev + 'jspm_packages/es6-module-loader.js',
-      basePaths.dev + 'jspm_packages/es6-module-loader.js.map',
-      basePaths.dev + 'jspm_packages/es6-module-loader.src.js',
-      basePaths.dev + 'jspm_packages/system.js',
-      basePaths.dev + 'jspm_packages/system.js.map',
-      basePaths.dev + 'jspm_packages/system.src.js',
-      basePaths.dev + 'jspm_packages/traceur-runtime.js',
-      basePaths.dev + 'jspm_packages/traceur-runtime.js.map',
-      basePaths.dev + 'jspm_packages/traceur-runtime.src.js',
+      basePaths.dev + 'dependencies/es6-module-loader.src.js',
+      basePaths.dev + 'dependencies/system.src.js',
       basePaths.dev + 'config.js',
       basePaths.dev + 'initialize.js',
     ], {
       base: basePaths.dev
     })
     .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('build-jspm', ['build-sass'], function buildJspm() {
+  return gulp.src('')
+    .pipe(shell([
+      'jspm bundle app ' + basePaths.prod + 'app.js --skip-source-maps'
+    ]));
 });
 
 gulp.task('build-html', function buildHtml() {
@@ -133,7 +157,6 @@ gulp.task('test-e2e', ['build-sass'], function test() {
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
 
   return gulp.src('')
-  //FIXME: not propagating errors
     .pipe(shell('bash -c "source protractor-test.sh ' + serverPath + '"'));
 });
 

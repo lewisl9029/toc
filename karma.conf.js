@@ -3,6 +3,10 @@
 // Generated on Sun Dec 28 2014 09:58:19 GMT+0000 (UTC)
 
 module.exports = function(config) {
+  var basePaths = {
+    dev: 'app/'
+  };
+
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -20,26 +24,26 @@ module.exports = function(config) {
     files: [],
 
     jspm: {
-      packages: 'www/jspm_packages/',
+      packages: basePaths.dev + 'dependencies/',
       loadFiles: [
-        'www/components/**/*-test.unit.js',
-        'www/libraries/**/*-test.unit.js',
-        'www/services/**/*-test.unit.js',
-        'www/views/**/*-test.unit.js',
-        'www/*-test.unit.js'
+        basePaths.dev + 'components/**/*-test.unit.js',
+        basePaths.dev + 'libraries/**/*-test.unit.js',
+        basePaths.dev + 'services/**/*-test.unit.js',
+        basePaths.dev + 'views/**/*-test.unit.js',
+        basePaths.dev + '*-test.unit.js'
       ],
       serveFiles: [
-        'www/**/*.js'
+        basePaths.dev + '**/*.js'
       ],
-      config: 'www/config.js'
+      config: basePaths.dev + 'config.js'
     },
 
     proxies: {
-      '/base/jspm_packages/': '/base/www/jspm_packages/',
-      '/base/views/': '/base/www/views/',
-      '/base/components/': '/base/www/components/',
-      '/base/services/': '/base/www/services/',
-      '/base/libraries/': '/base/www/libraries/'
+      '/base/dependencies/': '/base/' + basePaths.dev + 'dependencies/',
+      '/base/views/': '/base/' + basePaths.dev + 'views/',
+      '/base/components/': '/base/' + basePaths.dev + 'components/',
+      '/base/services/': '/base/' + basePaths.dev + 'services/',
+      '/base/libraries/': '/base/' + basePaths.dev + 'libraries/'
     },
 
     // list of files to exclude
@@ -57,7 +61,7 @@ module.exports = function(config) {
 
     // web server port
     //hostname: '172.17.42.1',
-    port: 8101,
+    port: 8102,
 
     // enable / disable colors in the output (reporters and logs)
     colors: true,

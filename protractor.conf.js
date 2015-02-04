@@ -1,4 +1,9 @@
 // conf.js
+
+var basePaths = {
+  dev: 'app/'
+};
+
 exports.config = {
   framework: 'jasmine2',
   directConnect: true,
@@ -9,5 +14,8 @@ exports.config = {
     }
   },
   // seleniumAddress: 'http://172.17.42.1:8203/wd/hub',
-  specs: ['www/app-test.e2e.js']
+  specs: [
+    basePaths.dev + 'views/**/*-test.e2e.js',
+    basePaths.dev + '*-test.e2e.js'
+  ]
 };

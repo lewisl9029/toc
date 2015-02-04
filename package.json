@@ -13,6 +13,7 @@
     "autoprefixer-core": "^5.0.0",
     "chai": "^1.10.0",
     "cssgrace": "^1.0.0",
+    "del": "^1.1.1",
     "gulp": "^3.8.10",
     "gulp-htmlhint": "0.0.9",
     "gulp-jsbeautifier": "0.0.4",
@@ -31,25 +32,30 @@
     "karma-webdriver-launcher": "^1.0.1",
     "mocha": "^2.1.0",
     "postcss": "^4.0.1",
+    "run-sequence": "^1.0.2",
     "sinon": "^1.12.2",
     "sinon-chai": "^2.6.0",
     "yargs": "^1.3.3"
   },
   "jspm": {
     "directories": {
-      "baseURL": "www",
+      "baseURL": "app",
       "dist": "dist",
-      "lib": "www"
+      "lib": "app",
+      "packages": "app/dependencies"
     },
     "dependencies": {
       "angular": "^1.3.8",
+      "css": "^0.1.0",
       "es6-shim": "github:paulmillr/es6-shim@0.22.1",
       "ionic": "1.0.0-beta.14",
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
       "ramda": "github:ramda/ramda@0.8.0",
       "remotestorage.js": "github:remotestorage/remotestorage.js@0.11.1",
+      "remotestorage.js@0.11.1": "github:remotestorage/remotestorage.js@0.11.1",
       "scut": "github:davidtheclark/scut@^1.0.2",
-      "sinon": "npm:sinon@^1.12.2"
+      "sinon": "npm:sinon@^1.12.2",
+      "text": "^0.0.2"
     }
   }
 }

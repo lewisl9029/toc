@@ -1,5 +1,5 @@
 .idea
 .vagrant
-/www/*.css
+/app/*.css
 /containers/**/.packages
-/prod
+/www
