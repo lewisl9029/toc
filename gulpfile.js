@@ -14,6 +14,8 @@ var karma = require('karma')
 var argv = require('yargs')
   .argv;
 var shell = require('gulp-shell');
+var runSequence = require('run-sequence');
+var del = require('del');
 
 var basePaths = {
   dev: './app/',
@@ -46,11 +48,22 @@ gulp.task('watch', function watch() {
   gulp.watch(paths.sass, ['build-sass']);
 });
 
+gulp.task('clean', function clean(done) {
+  return del([
+    basePaths.prod + '**'
+  ], done);
+});
+
 //TODO: add minification steps
 //TODO: add android/ios/node-webkit build steps
 //TODO: append version + latest folders for each build
-//TODO: clean build directory before each build
-gulp.task('build', ['build-js', 'build-html']);
+gulp.task('build', function build(done) {
+  return runSequence(
+    'clean',
+    ['build-js', 'build-html'],
+    done
+  );
+});
 
 gulp.task('style', ['style-js', 'style-html']);
 
