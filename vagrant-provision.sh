@@ -35,7 +35,7 @@ alias tocg="toc \
 alias tocs="sudo docker run \
   -i -t --rm \
   -p 8100:8100 \
-  -p 35729:35729 \
+  -p 8101:8101 \
   -v $TOC_DIR:/toc \
   toc-test:latest \
   gulp serve "$@""
