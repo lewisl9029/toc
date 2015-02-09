@@ -1,5 +1,7 @@
 * text eol=lf
 
+*.docx binary
+*.pdf binary
 *.png binary
 *.jpg binary
 *.swf binary
