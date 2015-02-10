@@ -24,14 +24,20 @@ alias toc="sudo docker run \
 alias tocb="tocg \
   build "$@""
 
-alias tocba="toc \
-  ionic build android "$@""
-
-alias toci="toc \
-  jspm install "$@""
-
 alias tocg="toc \
   gulp "$@""
+
+alias toci="tocj \
+  install "$@""
+
+alias tocj="toc \
+  jspm "@""
+
+alias tocn="toc \
+  npm "@""
+
+alias tocp="tocg \
+  package "$@""
 
 alias tocs="tocg \
   serve "$@""

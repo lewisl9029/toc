@@ -87,16 +87,15 @@ gulp.task('build', function build(done) {
 });
 
 gulp.task('package', ['clean-package'], function package() {
-  gulp.src('')
+  return gulp.src('')
     .pipe(shell(
-      'cp -rf ' + process.env.TOC_PACKAGE_PATH + '/* ' + process.env.TOC_PATH
+      'cp -rf ' + process.env.TOC_BUILD_DEPS_PATH + '/* .'
     ))
     .pipe(shell('ionic build android'))
-  
-  return gulp.src(
-      basePaths.platforms + 'android/build/outputs/apk/android-armv-debug.apk'
-    )
-    .pipe(gulp.dest(basePaths.prod));
+    .pipe(shell(
+      'cp ' + basePaths.platforms +
+        'android/build/outputs/apk/android-armv7-debug.apk ' + basePaths.prod
+    ));
 });
 
 gulp.task('style', ['style-js', 'style-html']);
