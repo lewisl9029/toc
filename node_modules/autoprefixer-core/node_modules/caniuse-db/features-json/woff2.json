@@ -110,7 +110,8 @@
       "39":"y",
       "40":"y",
       "41":"y",
-      "42":"y"
+      "42":"y",
+      "43":"y"
     },
     "safari":{
       "3.1":"n",
@@ -149,7 +150,8 @@
       "25":"y",
       "26":"y",
       "27":"y",
-      "28":"y"
+      "28":"y",
+      "29":"y"
     },
     "ios_saf":{
       "3.2":"n",
@@ -190,7 +192,7 @@
       "24":"y"
     },
     "and_chr":{
-      "39":"y"
+      "40":"y"
     },
     "and_ff":{
       "33":"n"
@@ -207,12 +209,12 @@
   "notes_by_num":{
     "1":"Default 'enabled' for Firefox Developer Edition and Nightly, but Beta and Release versions will need to set a flag to 'true' to [use WOFF2](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face#Browser_compatibility)."
   },
-  "usage_perc_y":40.13,
+  "usage_perc_y":41.74,
   "usage_perc_a":0,
   "ucprefix":false,
   "parent":"fontface",
   "keywords":"woff, fontface, webfonts",
-  "ie_id":"",
+  "ie_id":"wofffileformat20",
   "chrome_id":"6718644721549312",
   "shown":true
 }

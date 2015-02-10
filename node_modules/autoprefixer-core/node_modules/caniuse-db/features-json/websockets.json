@@ -124,7 +124,8 @@
       "39":"y",
       "40":"y",
       "41":"y",
-      "42":"y"
+      "42":"y",
+      "43":"y"
     },
     "safari":{
       "3.1":"n",
@@ -163,7 +164,8 @@
       "25":"y",
       "26":"y",
       "27":"y",
-      "28":"y"
+      "28":"y",
+      "29":"y"
     },
     "ios_saf":{
       "3.2":"n",
@@ -204,7 +206,7 @@
       "24":"y"
     },
     "and_chr":{
-      "39":"y"
+      "40":"y"
     },
     "and_ff":{
       "33":"y"
@@ -222,8 +224,8 @@
     "1":"Partial support refers to the websockets implementation using an older version of the protocol and/or the implementation being disabled by default (due to security issues with the older protocol).",
     "2":"Partial support refers to lacking support for binary data. "
   },
-  "usage_perc_y":82.91,
-  "usage_perc_a":1.52,
+  "usage_perc_y":84.54,
+  "usage_perc_a":1.47,
   "ucprefix":true,
   "parent":"",
   "keywords":"",

@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
 TOC_VER="$(git -C $TOC_DIR describe --tags --abbrev=0)"
 
-if [ ! -f $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz ];
+TOC_NODE_PACKAGE_NAME="node-v0.12.0-linux-x64.tar.gz"
+if [ ! -f $TOC_DIR/containers/env/.packages/$TOC_NODE_PACKAGE_NAME ];
   then
-  curl https://dl.dropboxusercontent.com/u/172349/node-v0.10.35-linux-x64.tar.gz \
+  curl https://dl.dropboxusercontent.com/u/172349/$TOC_NODE_PACKAGE_NAME \
   --create-dirs \
-  -o $TOC_DIR/containers/env/.packages/node-v0.10.35-linux-x64.tar.gz
+  -o $TOC_DIR/containers/env/.packages/$TOC_NODE_PACKAGE_NAME
 fi
 
-if [ ! -f $TOC_DIR/containers/browser/.packages/google-chrome-stable_current_amd64.deb ];
+TOC_CHROME_PACKAGE_NAME="google-chrome-stable_current_amd64_v20150209.deb"
+if [ ! -f $TOC_DIR/containers/browser/.packages/$TOC_CHROME_PACKAGE_NAME ];
   then
-  curl https://dl.dropboxusercontent.com/u/172349/google-chrome-stable_current_amd64.deb \
+  curl https://dl.dropboxusercontent.com/u/172349/$TOC_CHROME_PACKAGE_NAME \
   --create-dirs \
-  -o $TOC_DIR/containers/browser/.packages/google-chrome-stable_current_amd64.deb
+  -o $TOC_DIR/containers/browser/.packages/$TOC_CHROME_PACKAGE_NAME
 fi
 
 CONTAINER_NAME=toc-cache-apt

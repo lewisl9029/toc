@@ -106,7 +106,8 @@
       "39":"y x",
       "40":"y x",
       "41":"y x",
-      "42":"y x"
+      "42":"y x",
+      "43":"y x"
     },
     "safari":{
       "3.1":"y x",
@@ -145,7 +146,8 @@
       "25":"y x",
       "26":"y x",
       "27":"y x",
-      "28":"y x"
+      "28":"y x",
+      "29":"y x"
     },
     "ios_saf":{
       "3.2":"y x",
@@ -186,7 +188,7 @@
       "24":"y x"
     },
     "and_chr":{
-      "39":"y x"
+      "40":"y x"
     },
     "and_ff":{
       "33":"y x"
@@ -203,8 +205,8 @@
   "notes_by_num":{
     "1":"`-webkit-appearance` with value `none` is supported on IE11 Mobile for phones with \"[Windows Phone 8.1 Update](http://blogs.msdn.com/b/ie/archive/2014/07/31/the-mobile-web-should-just-work-for-everyone.aspx)\""
   },
-  "usage_perc_y":76.54,
-  "usage_perc_a":0.4,
+  "usage_perc_y":78.41,
+  "usage_perc_a":0.44,
   "ucprefix":false,
   "parent":"",
   "keywords":"",

@@ -11,4 +11,4 @@ if [ -z "$TOC_DIR" ];
   echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
 fi
 
-source $TOC_DIR/containers/toc-setup-env.sh
+# source $TOC_DIR/containers/toc-setup-env.sh

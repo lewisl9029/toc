@@ -1,8 +1,28 @@
 #!/usr/bin/env bash
 TOC_VER="$(git -C $TOC_DIR describe --tags --abbrev=0)"
 
-sudo docker build -t toc-dev:$TOC_VER $TOC_DIR/containers/dev
-sudo docker build -t toc-dev:latest $TOC_DIR/containers/dev
+TOC_NODE_PACKAGE_NAME="node-v0.12.0-linux-x64.tar.gz"
+if [ ! -f $TOC_DIR/containers/dev/.packages/$TOC_NODE_PACKAGE_NAME ];
+  then
+  curl https://dl.dropboxusercontent.com/u/172349/$TOC_NODE_PACKAGE_NAME \
+  --create-dirs \
+  -o $TOC_DIR/containers/dev/.packages/$TOC_NODE_PACKAGE_NAME
+fi
 
-sudo docker build -t toc-test:$TOC_VER $TOC_DIR/containers/test
-sudo docker build -t toc-test:latest $TOC_DIR/containers/test
+TOC_CHROME_PACKAGE_NAME="google-chrome-stable_current_amd64_v20150209.deb"
+if [ ! -f $TOC_DIR/containers/dev/.packages/$TOC_CHROME_PACKAGE_NAME ];
+  then
+  curl https://dl.dropboxusercontent.com/u/172349/$TOC_CHROME_PACKAGE_NAME \
+  --create-dirs \
+  -o $TOC_DIR/containers/dev/.packages/$TOC_CHROME_PACKAGE_NAME
+fi
+
+sed "s/{{TOC_NODE_PACKAGE_NAME}}/$TOC_NODE_PACKAGE_NAME/g; \
+  s/{{TOC_CHROME_PACKAGE_NAME}}/$TOC_CHROME_PACKAGE_NAME/g" \
+  $TOC_DIR/containers/dev/template/Dockerfile \
+  | tee $TOC_DIR/containers/dev/Dockerfile
+
+sudo docker build \
+  -t toc-dev:$TOC_VER $TOC_DIR/containers/dev
+sudo docker build \
+  -t toc-dev:latest $TOC_DIR/containers/dev

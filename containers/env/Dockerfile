@@ -6,7 +6,7 @@ WORKDIR /usr/local
 
 COPY .packages/node-v0.10.35-linux-x64.tar.gz /usr/local/
 
-RUN echo 'Acquire::http { Proxy "http://'$(/sbin/ip route|awk '/default/ { print $3 }')':8201"; };' >> /etc/apt/apt.conf.d/01proxy
+# RUN echo 'Acquire::http { Proxy "http://'$(/sbin/ip route|awk '/default/ { print $3 }')':8201"; };' >> /etc/apt/apt.conf.d/01proxy
 
 RUN apt-get update \
   && apt-get -y install \

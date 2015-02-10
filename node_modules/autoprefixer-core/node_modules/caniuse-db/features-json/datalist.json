@@ -126,7 +126,8 @@
       "39":"y",
       "40":"y",
       "41":"y",
-      "42":"y"
+      "42":"y",
+      "43":"y"
     },
     "safari":{
       "3.1":"p",
@@ -165,7 +166,8 @@
       "25":"y",
       "26":"y",
       "27":"y",
-      "28":"y"
+      "28":"y",
+      "29":"y"
     },
     "ios_saf":{
       "3.2":"p",
@@ -206,7 +208,7 @@
       "24":"p"
     },
     "and_chr":{
-      "39":"y"
+      "40":"y"
     },
     "and_ff":{
       "33":"y"
@@ -219,12 +221,12 @@
       "9.9":"y"
     }
   },
-  "notes":"Partial support in IE10 refers to [significantly buggy behavior](http://playground.onereason.eu/2013/04/ie10s-lousy-support-for-datalists/).",
+  "notes":"Partial support in IE10 refers to [significantly buggy behavior](http://playground.onereason.eu/2013/04/ie10s-lousy-support-for-datalists/). Firefox doesn't support [datalist association with inputs of type `number`](http://codepen.io/graste/pen/bNoVKW).",
   "notes_by_num":{
     
   },
-  "usage_perc_y":60.14,
-  "usage_perc_a":9.97,
+  "usage_perc_y":62.54,
+  "usage_perc_a":9.52,
   "ucprefix":false,
   "parent":"forms",
   "keywords":"list attribute",

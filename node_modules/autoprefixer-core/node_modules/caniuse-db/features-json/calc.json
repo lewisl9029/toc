@@ -38,6 +38,9 @@
     },
     {
       "description":"IE 9 - 11 don't render `box-shadow` when `calc()` is used for any of the values."
+    },
+    {
+      "description":"[IE11](http://connect.microsoft.com/IE/feedback/details/814380/css3-using-calc-inside-a-transform-is-invalid) and other browsers to a lesser extent have trouble supporting `calc()` inside [color or transform values](http://codepen.io/thebabydino/pen/wfraH)."
     }
   ],
   "categories":[
@@ -134,7 +137,8 @@
       "39":"y",
       "40":"y",
       "41":"y",
-      "42":"y"
+      "42":"y",
+      "43":"y"
     },
     "safari":{
       "3.1":"n",
@@ -173,7 +177,8 @@
       "25":"y",
       "26":"y",
       "27":"y",
-      "28":"y"
+      "28":"y",
+      "29":"y"
     },
     "ios_saf":{
       "3.2":"n",
@@ -214,7 +219,7 @@
       "24":"y"
     },
     "and_chr":{
-      "39":"y"
+      "40":"y"
     },
     "and_ff":{
       "33":"y"
@@ -231,8 +236,8 @@
   "notes_by_num":{
     
   },
-  "usage_perc_y":75.77,
-  "usage_perc_a":5.66,
+  "usage_perc_y":77.04,
+  "usage_perc_a":5.52,
   "ucprefix":false,
   "parent":"",
   "keywords":"",

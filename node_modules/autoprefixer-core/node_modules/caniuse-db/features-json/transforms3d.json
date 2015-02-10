@@ -131,7 +131,8 @@
       "39":"y",
       "40":"y",
       "41":"y",
-      "42":"y"
+      "42":"y",
+      "43":"y"
     },
     "safari":{
       "3.1":"n",
@@ -170,7 +171,8 @@
       "25":"y",
       "26":"y",
       "27":"y",
-      "28":"y"
+      "28":"y",
+      "29":"y"
     },
     "ios_saf":{
       "3.2":"y x",
@@ -211,7 +213,7 @@
       "24":"y"
     },
     "and_chr":{
-      "39":"y"
+      "40":"y"
     },
     "and_ff":{
       "33":"y"
@@ -228,8 +230,8 @@
   "notes_by_num":{
     
   },
-  "usage_perc_y":75.88,
-  "usage_perc_a":10.71,
+  "usage_perc_y":77.75,
+  "usage_perc_a":10.22,
   "ucprefix":false,
   "parent":"",
   "keywords":"css 3d,3dtransforms,translate3d,backface visibility,perspective",
