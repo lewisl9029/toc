@@ -15,8 +15,7 @@ cd /toc-staging/
 git init
 git pull --quiet https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging
 
-if [ "$DRONE_BRANCH" == "master" ];
-then
+if [ "$DRONE_BRANCH" == "master" ]; then
   DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/
   rm -rf /toc-staging/www
   mkdir -p /toc-staging/www

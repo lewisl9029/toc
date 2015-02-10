@@ -54,5 +54,8 @@
       "sinon": "npm:sinon@^1.12.2",
       "text": "^0.0.2"
     }
-  }
+  },
+  "cordovaPlugins": [
+    "./engine/cordova-crosswalk-engine-c0.6.1"
+  ]
 }

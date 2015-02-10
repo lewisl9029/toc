@@ -1,11 +1,12 @@
 System.config({
+  "baseURL": "/",
+  "transpiler": "6to5",
   "paths": {
     "*": "*.js",
-    "toc/*": "/*.js",
+    "toc/*": "*.js",
     "github:*": "dependencies/github/*.js",
     "npm:*": "dependencies/npm/*.js"
-  },
-  "transpiler": "6to5"
+  }
 });
 
 System.config({

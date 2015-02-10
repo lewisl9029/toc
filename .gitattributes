@@ -11,6 +11,9 @@
 *.zip binary
 *.gzip binary
 *.bz2 binary
+*.dat binary
+*.pak binary
+*.jar binary
 *.node binary
 *.eot binary
 *.ttf binary

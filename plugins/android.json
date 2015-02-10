@@ -17,7 +17,7 @@
                             "count": 1
                         },
                         {
-                            "xml": "<preference name=\"webView\" value=\"org.apache.cordova.engine.crosswalk.XWalkCordovaWebView\" />",
+                            "xml": "<preference name=\"webView\" value=\"org.crosswalk.engine.XWalkCordovaWebView\" />",
                             "count": 1
                         }
                     ]
@@ -35,7 +35,7 @@
         "org.apache.cordova.device": {
             "PACKAGE_NAME": "com.ionicframework.toc520592"
         },
-        "org.apache.cordova.engine.crosswalk": {
+        "org.crosswalk.engine": {
             "PACKAGE_NAME": "com.ionicframework.toc520592"
         }
     },

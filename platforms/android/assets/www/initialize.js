@@ -34,5 +34,5 @@
         splashscreen.parentNode.removeChild(splashscreen);
       }, 1000);
     })
-    .catch(console.log);
+    .catch(console.onerror);
 })();

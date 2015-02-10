@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 TOC_VER="$(git -C $TOC_DIR describe --tags --abbrev=0)"
 
-if [ ! -f /home/$USERNAME/drone/drone.sqlite ];
-  then
+if [ ! -f /home/$USERNAME/drone/drone.sqlite ]; then
   mkdir /home/$USERNAME/drone
   touch /home/$USERNAME/drone/drone.sqlite
 fi
 
 CONTAINER_NAME=toc-drone
-if sudo docker ps | grep $CONTAINER_NAME;
-  then
+if sudo docker ps | grep $CONTAINER_NAME; then
   sudo docker stop $CONTAINER_NAME
 fi
+
 sudo docker rm $CONTAINER_NAME
 sudo docker build -t $CONTAINER_NAME:$TOC_VER $TOC_DIR/containers/drone
 sudo docker build -t $CONTAINER_NAME:latest $TOC_DIR/containers/drone

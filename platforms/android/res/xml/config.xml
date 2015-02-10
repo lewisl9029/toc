@@ -21,5 +21,5 @@
     <feature name="Device">
         <param name="android-package" value="org.apache.cordova.device.Device" />
     </feature>
-    <preference name="webView" value="org.apache.cordova.engine.crosswalk.XWalkCordovaWebView" />
+    <preference name="webView" value="org.crosswalk.engine.XWalkCordovaWebView" />
 </widget>

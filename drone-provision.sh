@@ -20,14 +20,12 @@
 #deprovision and create vm image
 #source ./drone-provision.sh
 
-if [ -z "$USERNAME" ];
-  then
+if [ -z "$USERNAME" ]; then
   USERNAME=$(whoami)
   echo "USERNAME=$USERNAME" | sudo tee -a /etc/environment
 fi
 
-if [ -z "$TOC_DIR" ];
-  then
+if [ -z "$TOC_DIR" ]; then
   TOC_DIR=/home/$USERNAME/toc
   echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
 fi
@@ -38,10 +36,9 @@ git pull
 
 source ./vagrant-provision.sh
 
-if [ ! -f $TOC_DIR/containers/drone/.packages/drone.deb ];
-then
+if [ ! -f $TOC_DIR/containers/drone/.packages/drone.deb ]; then
   curl https://dl.dropboxusercontent.com/u/172349/drone.deb \
-    --create-dirs \
+    --create-dirs --progress-bar \
     -o $TOC_DIR/containers/drone/.packages/drone.deb
 fi
 

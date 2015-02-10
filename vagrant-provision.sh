@@ -14,6 +14,9 @@ fi
 cat <<EOF
 alias toc="sudo docker run \
   -i -t --rm \
+  -p 8100:8100 \
+  -p 8101:8101 \
+  -p 8102:8102 \
   -v $TOC_DIR:/toc \
   toc-dev:latest \
   "$@""
@@ -30,27 +33,14 @@ alias toci="toc \
 alias tocg="toc \
   gulp "$@""
 
-alias tocs="sudo docker run \
-  -i -t --rm \
-  -p 8100:8100 \
-  -p 8101:8101 \
-  -v $TOC_DIR:/toc \
-  toc-dev:latest \
+alias tocs="toc \
   gulp serve "$@""
 
-alias toct="sudo docker run \
-  -i -t --rm \
-  -p 8102:8102 \
-  -v $TOC_DIR:/toc \
-  toc-dev:latest \
+alias toct="toc \
   sh -c 'xvfb-run -n 1 --server-args=\"-screen 0, 1366x768x24\" \
     gulp test "$@"'"
 
-alias tocv="sudo docker run \
-  -i -t --rm \
-  -p 8102:8102 \
-  -v $TOC_DIR:/toc \
-  toc-dev:latest \
+alias tocv="toc \
   sh -c 'xvfb-run -n 1 --server-args=\"-screen 0, 1366x768x24\" \
     gulp verify "$@"'"
 
