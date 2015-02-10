@@ -34,9 +34,12 @@ RUN tar xzf node-v0.12.0-linux-x64.tar.gz \
   --strip-components=1 \
   --exclude="README.md" --exclude="LICENSE" --exclude="ChangeLog"
 
+RUN npm install -g n && npm cache clean
+RUN n 0.10.36
+
 RUN npm install -g \
   cordova@4.2.0 \
-  gulp@3.8.11 \
+  gulp-cli@0.1.5 \
   http-server@0.7.4 \
   karma-cli@0.0.4 \
   ionic@1.3.9 \
