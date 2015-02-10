@@ -11,6 +11,7 @@ WORKDIR /usr/local
 RUN apt-get update \
   && apt-get install -y \
     build-essential=11.6ubuntu6 \
+    curl=7.35.0-1ubuntu2.3 \
     git=1:1.9.1-1 \
     python=2.7.5-5ubuntu3 \
     ruby=1:1.9.3.4 \
