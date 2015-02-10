@@ -5,9 +5,9 @@ if [ -z "$USERNAME" ]; then
   echo "USERNAME=$USERNAME" | sudo tee -a /etc/environment
 fi
 
-if [ -z "$TOC_DIR" ]; then
-  TOC_DIR=/home/$USERNAME/toc
-  echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
+if [ -z "$TOC_PATH" ]; then
+  TOC_PATH=/home/$USERNAME/toc
+  echo "TOC_PATH=$TOC_PATH" | sudo tee -a /etc/environment
 fi
 
 (
@@ -17,14 +17,14 @@ alias toc="sudo docker run \
   -p 8100:8100 \
   -p 8101:8101 \
   -p 8102:8102 \
-  -v $TOC_DIR:/toc \
+  -v $TOC_PATH:/toc \
   toc-dev:latest \
   "$@""
 
-alias tocba="sudo docker run \
-  -i -t --rm \
-  -v $TOC_DIR:/toc \
-  toc-build:latest \
+alias tocb="tocg \
+  build "$@""
+
+alias tocba="toc \
   ionic build android "$@""
 
 alias toci="toc \
@@ -33,8 +33,8 @@ alias toci="toc \
 alias tocg="toc \
   gulp "$@""
 
-alias tocs="toc \
-  gulp serve "$@""
+alias tocs="tocg \
+  serve "$@""
 
 alias toct="toc \
   sh -c 'xvfb-run -n 1 --server-args=\"-screen 0, 1366x768x24\" \
@@ -44,10 +44,8 @@ alias tocv="toc \
   sh -c 'xvfb-run -n 1 --server-args=\"-screen 0, 1366x768x24\" \
     gulp verify "$@"'"
 
-alias tocb="source $TOC_DIR/containers/toc-setup-build.sh"
-alias tocd="source $TOC_DIR/containers/toc-setup-drone.sh"
-alias toce="source $TOC_DIR/containers/toc-setup-env.sh"
-alias tocw="source $TOC_DIR/containers/toc-setup-web.sh"
+alias tocd="source $TOC_PATH/containers/toc-setup-drone.sh"
+alias tocw="source $TOC_PATH/containers/toc-setup-app.sh"
 EOF
 ) | tee ~/.bash_aliases
 
@@ -67,5 +65,5 @@ if ! dpkg -s lxc-docker | grep -q Version.*$DOCKER_VERSION; then
     && sudo rm -rf /tmp/* /var/tmp/*
 fi
 
-# source $TOC_DIR/containers/toc-setup-env.sh
-source $TOC_DIR/containers/toc-setup-web.sh
+# source $TOC_PATH/containers/toc-setup-env.sh
+source $TOC_PATH/containers/toc-setup-dev.sh

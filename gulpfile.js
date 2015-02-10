@@ -19,7 +19,10 @@ var del = require('del');
 
 var basePaths = {
   dev: './app/',
-  prod: './www/'
+  prod: './www/',
+  platforms: './platforms/',
+  plugins: './plugins/',
+  engine: './engine/'
 };
 
 var paths = {
@@ -56,9 +59,19 @@ gulp.task('serve', function serve() {
     .pipe(shell(serveCommand));
 });
 
-gulp.task('clean', function clean(done) {
+gulp.task('clean', ['clean-build', 'clean-package']);
+
+gulp.task('clean-build', function clean(done) {
   return del([
     basePaths.prod + '**'
+  ], done);
+});
+
+gulp.task('clean-package', function clean(done) {
+  return del([
+    basePaths.platforms + '**',
+    basePaths.plugins + '**',
+    basePaths.engine + '**'
   ], done);
 });
 
@@ -67,10 +80,23 @@ gulp.task('clean', function clean(done) {
 //TODO: append version + latest folders for each build
 gulp.task('build', function build(done) {
   return runSequence(
-    'clean',
+    'clean-build',
     ['build-js', 'build-html'],
     done
   );
+});
+
+gulp.task('package', ['clean-package'], function package() {
+  gulp.src('')
+    .pipe(shell(
+      'cp -rf ' + process.env.TOC_PACKAGE_PATH + '/* ' + process.env.TOC_PATH
+    ))
+    .pipe(shell('ionic build android'))
+  
+  return gulp.src(
+      basePaths.platforms + 'android/build/outputs/apk/android-armv-debug.apk'
+    )
+    .pipe(gulp.dest(basePaths.prod));
 });
 
 gulp.task('style', ['style-js', 'style-html']);

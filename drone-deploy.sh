@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-gulp build
-#gulp test-unit --prod
-gulp test-e2e --prod
+gulp package
 
 TOC_VER="$(git -C $DRONE_BUILD_DIR describe --tags --abbrev=0)"
 
@@ -17,14 +15,18 @@ git pull --quiet https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocm
 
 if [ "$DRONE_BRANCH" == "master" ]; then
   DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/
+  cp -rf $DRONE_BUILD_DIR/platforms/android/build/outputs/apk/android-armv7-debug.apk \
+    /toc-staging/www
   rm -rf /toc-staging/www
   mkdir -p /toc-staging/www
-  cp -Rf $DRONE_BUILD_DIR/www/* /toc-staging/www
+  cp -rf $DRONE_BUILD_DIR/www/* /toc-staging/www
 else
   DEPLOYMENT_PATH=http://toc-staging.azurewebsites.net/dev/$DRONE_BRANCH/www
+  cp -rf $DRONE_BUILD_DIR/platforms/android/build/outputs/apk/android-armv7-debug.apk \
+    /toc-staging/dev/$DRONE_BRANCH/www
   rm -rf /toc-staging/dev/$DRONE_BRANCH/www
   mkdir -p /toc-staging/dev/$DRONE_BRANCH/www
-  cp -Rf $DRONE_BUILD_DIR/www/* /toc-staging/dev/$DRONE_BRANCH/www
+  cp -rf $DRONE_BUILD_DIR/www/* /toc-staging/dev/$DRONE_BRANCH/www
 fi
 
 git add -A .

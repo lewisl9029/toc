@@ -4,3 +4,6 @@
 /containers/**/.packages
 /containers/**/.build
 /www
+/platforms
+/engine
+/plugins

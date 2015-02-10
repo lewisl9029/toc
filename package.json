@@ -56,6 +56,9 @@
     }
   },
   "cordovaPlugins": [
-    "./engine/cordova-crosswalk-engine-c0.6.1"
+    "./engine/cordova-crosswalk-engine-c0.6.1",
+    "org.apache.cordova.device",
+    "com.ionic.keyboard",
+    "org.apache.cordova.console"
   ]
 }

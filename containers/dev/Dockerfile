@@ -10,9 +10,13 @@ WORKDIR /usr/local
 
 RUN apt-get update \
   && apt-get install -y \
+    ant=1.9.3-2build1 \
     build-essential=11.6ubuntu6 \
     curl=7.35.0-1ubuntu2.3 \
     git=1:1.9.1-1 \
+    lib32stdc++6=4.8.2-19ubuntu1 \
+    lib32z1=1:1.2.8.dfsg-1ubuntu1 \
+    openjdk-7-jdk=7u75-2.5.4-1~trusty1 \
     python=2.7.5-5ubuntu3 \
     ruby=1:1.9.3.4 \
     xfonts-100dpi=1:1.0.3 \
@@ -30,10 +34,14 @@ COPY {{TOC_CHROME_PACKAGE_NAME}} /usr/local/
 RUN dpkg -i {{TOC_CHROME_PACKAGE_NAME}}; \
   apt-get -y -f install && apt-get clean
 
-COPY {{TOC_NODE_PACKAGE_NAME}} /usr/local/
-RUN tar xzf {{TOC_NODE_PACKAGE_NAME}} \
-  --strip-components=1 \
-  --exclude="README.md" --exclude="LICENSE" --exclude="ChangeLog"
+ADD {{TOC_NODE_PACKAGE_NAME}} /usr/local/
+ADD {{TOC_ANDROID_PACKAGE_NAME}} /usr/local/
+
+ENV TOC_PACKAGE_PATH /usr/local/toc-package/
+
+ADD {{TOC_PLATFORMS_PACKAGE_NAME}} $TOC_PACKAGE_PATH
+ADD {{TOC_PLUGIN_PACKAGE_NAME}} $TOC_PACKAGE_PATH
+ADD {{TOC_ENGINE_PACKAGE_NAME}} $TOC_PACKAGE_PATH
 
 RUN npm install -g n && npm cache clean
 RUN n 0.10.36
@@ -51,6 +59,9 @@ RUN npm install -g \
 RUN webdriver-manager update
 
 ENV DISPLAY :1
+ENV ANDROID_HOME /usr/local/android-sdk-linux
+ENV PATH $PATH:$ANDROID_HOME/tools
+ENV PATH $PATH:$ANDROID_HOME/platform-tools
 
 # Expose ionic serve port
 EXPOSE 8100
