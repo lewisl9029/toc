@@ -11,6 +11,7 @@ WORKDIR /usr/local
 RUN apt-get update \
   && apt-get install -y \
     build-essential=11.6ubuntu6 \
+    curl=7.35.0-1ubuntu2.3 \
     git=1:1.9.1-1 \
     python=2.7.5-5ubuntu3 \
     ruby=1:1.9.3.4 \
@@ -25,12 +26,12 @@ RUN apt-get update \
 RUN gem install \
   scss-lint -v 0.33.0
 
-COPY .packages/google-chrome-stable_current_amd64_v20150209.deb /usr/local/
-RUN dpkg -i google-chrome-stable_current_amd64_v20150209.deb; \
+COPY {{TOC_CHROME_PACKAGE_NAME}} /usr/local/
+RUN dpkg -i {{TOC_CHROME_PACKAGE_NAME}}; \
   apt-get -y -f install && apt-get clean
 
-COPY .packages/node-v0.12.0-linux-x64.tar.gz /usr/local/
-RUN tar xzf node-v0.12.0-linux-x64.tar.gz \
+COPY {{TOC_NODE_PACKAGE_NAME}} /usr/local/
+RUN tar xzf {{TOC_NODE_PACKAGE_NAME}} \
   --strip-components=1 \
   --exclude="README.md" --exclude="LICENSE" --exclude="ChangeLog"
 
