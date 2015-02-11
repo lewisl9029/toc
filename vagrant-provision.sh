@@ -31,10 +31,10 @@ alias toci="tocj \
   install "$@""
 
 alias tocj="toc \
-  jspm "@""
+  jspm "$@""
 
 alias tocn="toc \
-  npm "@""
+  npm "$@""
 
 alias tocp="tocg \
   package "$@""

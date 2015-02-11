@@ -1,7 +1,7 @@
 import template from './home.html!text';
 import controller from './home-controller';
 
-let config = function config($stateProvider) {
+export default function configHome($stateProvider) {
   $stateProvider.state('app.home', {
     url: '/home',
     views: {
@@ -11,6 +11,4 @@ let config = function config($stateProvider) {
       }
     }
   });
-};
-
-export default config;
+}

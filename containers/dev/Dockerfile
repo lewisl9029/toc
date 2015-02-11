@@ -51,8 +51,8 @@ RUN npm install -g \
   gulp-cli@0.1.5 \
   http-server@0.7.4 \
   karma-cli@0.0.4 \
-  ionic@1.3.9 \
-  jspm@0.12.0 \
+  ionic@1.3.10 \
+  jspm@0.13.2 \
   protractor@1.6.1 \
   && npm cache clean
 

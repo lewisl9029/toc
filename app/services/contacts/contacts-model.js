@@ -25,7 +25,7 @@ let defineContactsFunctions =
     return contactsFunctions;
   };
 
-let contactsModel = {
+export default {
   name: 'contacts',
   accessLevel: STORAGE_CONSTANTS.ACCESS_LEVELS.FULL,
   builder: function buildContactsModel(privateClient) {
@@ -47,5 +47,3 @@ let contactsModel = {
     };
   }
 };
-
-export default contactsModel;

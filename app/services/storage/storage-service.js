@@ -1,4 +1,4 @@
-let storageService = function storage($log, $window, remoteStorage) {
+export default function storage($log, $window, remoteStorage) {
   let storageService = {};
 
   storageService.local = $window.localStorage;
@@ -23,6 +23,4 @@ let storageService = function storage($log, $window, remoteStorage) {
   };
 
   return storageService;
-};
-
-export default storageService;
+}

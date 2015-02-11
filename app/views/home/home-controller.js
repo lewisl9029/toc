@@ -1,5 +1,3 @@
-let controller = function HomeController(contacts) {
+export default function HomeController(contacts) {
   this.contacts = contacts;
-};
-
-export default controller;
+}

@@ -6,11 +6,9 @@ import config from './home-config';
 import controller from './home-controller';
 import service from './home-service';
 
-let home = angular.module('toc.views.home', [
+export default angular.module('toc.views.home', [
     contacts.name
   ])
   .config(config)
   .controller(controller.name, controller)
   .factory(service.name, service);
-
-export default home;

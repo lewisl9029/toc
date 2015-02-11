@@ -5,10 +5,8 @@ import storage from 'services/storage/storage';
 
 import service from './contacts-service';
 
-let contacts = angular.module('toc.services.contacts', [
+export default angular.module('toc.services.contacts', [
     ramda.name,
     storage.name
   ])
   .factory(service.name, service);
-
-export default contacts;

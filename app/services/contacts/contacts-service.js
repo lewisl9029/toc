@@ -1,6 +1,6 @@
 import contactsModel from 'services/contacts/contacts-model';
 
-let contactsService = function contacts(storage) {
+export default function contacts(storage) {
   let contactsService = {};
 
   contactsService.initialize = function initializeContacts() {
@@ -9,6 +9,4 @@ let contactsService = function contacts(storage) {
   };
 
   return contactsService;
-};
-
-export default contactsService;
+}

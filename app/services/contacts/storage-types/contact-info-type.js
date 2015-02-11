@@ -1,4 +1,4 @@
-let declareContactInfoType = function declareContactInfoType(privateClient) {
+export default function declareContactInfoType(privateClient) {
   privateClient.declareType('contactInfo', {
     'description': 'basic contact information',
     'type': 'contactInfo',
@@ -21,6 +21,4 @@ let declareContactInfoType = function declareContactInfoType(privateClient) {
     },
     'required': ['id', 'displayName']
   });
-};
-
-export default declareContactInfoType;
+}
