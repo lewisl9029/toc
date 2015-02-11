@@ -36,11 +36,5 @@ git pull
 
 source ./vagrant-provision.sh
 
-if [ ! -f $TOC_PATH/containers/drone/.packages/drone.deb ]; then
-  curl https://dl.dropboxusercontent.com/u/172349/drone.deb \
-    --create-dirs --progress-bar \
-    -o $TOC_PATH/containers/drone/.packages/drone.deb
-fi
-
 source ./containers/toc-setup-drone.sh
 # source ./containers/toc-setup-build.sh

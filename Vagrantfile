@@ -40,6 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.provider "vmware_workstation" do |vm|
+    # vm.gui = true
     vm.vmx["memsize"] = "1024"
     # vm.vmx["vmx.allowNested"] = "TRUE"
   end

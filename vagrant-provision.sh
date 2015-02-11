@@ -55,7 +55,7 @@ alias tocw="source $TOC_PATH/containers/toc-setup-app.sh"
 EOF
 ) | tee ~/.bash_aliases
 
-DOCKER_VERSION=1.4.1
+DOCKER_VERSION=1.5.0
 
 if ! dpkg -s lxc-docker | grep -q Version.*$DOCKER_VERSION; then
   echo deb https://get.docker.com/ubuntu docker main \

@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 TOC_VER="$(git -C $TOC_PATH describe --tags --abbrev=0)"
 
+TOC_DRONE_PACKAGE_NAME="drone.deb"
+
+if [ ! -f $TOC_PATH/containers/drone/.packages/$TOC_DRONE_PACKAGE_NAME ]; then
+  curl https://dl.dropboxusercontent.com/u/172349/$TOC_DRONE_PACKAGE_NAME \
+    --create-dirs -sS \
+    -o $TOC_PATH/containers/drone/.packages/$TOC_DRONE_PACKAGE_NAME
+fi
+
 if [ ! -f /home/$USERNAME/drone/drone.sqlite ]; then
   mkdir /home/$USERNAME/drone
   touch /home/$USERNAME/drone/drone.sqlite
