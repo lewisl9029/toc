@@ -1,10 +1,8 @@
 import template from './signin-form.html!text';
 
-let directive = function tocSigninForm() {
+export default function tocSigninForm() {
   return {
     restrict: 'E',
     template: template
   };
-};
-
-export default directive;
+}

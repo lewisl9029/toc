@@ -1,5 +1,3 @@
-let storageRun = function run(storage) {
+export default function runStorage(storage) {
   storage.initialize();
-};
-
-export default storageRun;
+}

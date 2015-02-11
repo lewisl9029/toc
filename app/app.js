@@ -10,7 +10,9 @@ import components from './components/components';
 import run from './app-run';
 import config from './app-config';
 
-let app = angular.module('toc', [
+let appName = 'toc';
+
+export default angular.module(appName, [
     'ionic',
     services.name,
     libraries.name,
@@ -20,12 +22,11 @@ let app = angular.module('toc', [
   .run(run)
   .config(config);
 
-export default app;
 export function initialize() {
   angular.element(document)
     .ready(function bootstrap() {
       angular.bootstrap(document.querySelector('[data-toc-app]'), [
-        app.name
+        appName
       ]);
     });
 }

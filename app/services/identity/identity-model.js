@@ -27,7 +27,7 @@ let defineIdentityFunctions =
     return identityFunctions;
   };
 
-let identityModel = {
+export default {
   name: 'identity',
   accessLevel: STORAGE_CONSTANTS.ACCESS_LEVELS.FULL,
   builder: function buildIdentityModel(privateClient) {
@@ -36,5 +36,3 @@ let identityModel = {
     };
   }
 };
-
-export default identityModel;

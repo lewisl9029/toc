@@ -1,4 +1,4 @@
-let appRun = function run($ionicPlatform) {
+export default function runApp($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default
     // Remove this to show the accessory bar above the keyboard for form inputs
@@ -10,6 +10,4 @@ let appRun = function run($ionicPlatform) {
       window.StatusBar.styleDefault();
     }
   });
-};
-
-export default appRun;
+}

@@ -75,8 +75,7 @@ gulp.task('clean-package', function clean(done) {
   ], done);
 });
 
-//TODO: add minification steps
-//TODO: add android/ios/node-webkit build steps
+//TODO: add node-webkit build steps
 //TODO: append version + latest folders for each build
 gulp.task('build', function build(done) {
   return runSequence(
@@ -127,7 +126,8 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
 gulp.task('build-jspm', ['build-sass'], function buildJspm() {
   return gulp.src('')
     .pipe(shell([
-      'jspm bundle app ' + basePaths.prod + 'app.js --skip-source-maps'
+      'jspm bundle app ' + basePaths.prod +
+        'app.js --minify --skip-source-maps --no-mangle'
     ]));
 });
 

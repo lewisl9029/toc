@@ -1,6 +1,6 @@
 import identityModel from 'services/identity/identity-model';
 
-let identityService = function identity(storage) {
+export default function identity(storage) {
   let identityService = {};
 
   identityService.initialize = function initializeIdentity() {
@@ -8,6 +8,4 @@ let identityService = function identity(storage) {
   };
 
   return identityService;
-};
-
-export default identityService;
+}

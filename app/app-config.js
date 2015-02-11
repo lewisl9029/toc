@@ -1,6 +1,6 @@
 import template from 'app.html!text';
 
-let appConfig = function config($stateProvider, $urlRouterProvider) {
+export default function configApp($stateProvider, $urlRouterProvider) {
   $stateProvider.state('app', {
     url: '/app',
     abstract: true,
@@ -15,6 +15,4 @@ let appConfig = function config($stateProvider, $urlRouterProvider) {
   // });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/home');
-};
-
-export default appConfig;
+}
