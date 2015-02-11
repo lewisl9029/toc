@@ -5,10 +5,10 @@ if [ -z "$USERNAME" ];
   echo "USERNAME=$USERNAME" | sudo tee -a /etc/environment
 fi
 
-if [ -z "$TOC_DIR" ];
+if [ -z "$TOC_PATH" ];
   then
-  TOC_DIR=/home/$USERNAME/toc
-  echo "TOC_DIR=$TOC_DIR" | sudo tee -a /etc/environment
+  TOC_PATH=/home/$USERNAME/toc
+  echo "TOC_PATH=$TOC_PATH" | sudo tee -a /etc/environment
 fi
 
-source $TOC_DIR/containers/toc-setup-env.sh
+# source $TOC_PATH/containers/toc-setup-env.sh

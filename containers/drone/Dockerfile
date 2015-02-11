@@ -1,13 +1,13 @@
-FROM ubuntu:14.04
+FROM ubuntu:14.04.1
 
 MAINTAINER Lewis Liu
 
 WORKDIR /usr/local
 
-RUN echo 'Acquire::http { Proxy "http://'$(/sbin/ip route|awk '/default/ { print $3 }')':8201"; };' >> /etc/apt/apt.conf.d/01proxy
+# RUN echo 'Acquire::http { Proxy "http://'$(/sbin/ip route|awk '/default/ { print $3 }')':8201"; };' >> /etc/apt/apt.conf.d/01proxy
 
 RUN apt-get update \
-  && apt-get -y install \
+  && apt-get install -y \
     ca-certificates=20130906ubuntu2 \
     libsqlite3-dev=3.8.2-1ubuntu2 \
   && apt-get clean \

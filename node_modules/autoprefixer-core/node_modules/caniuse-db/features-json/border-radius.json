@@ -133,16 +133,17 @@
       "39":"y",
       "40":"y",
       "41":"y",
-      "42":"y"
+      "42":"y",
+      "43":"y"
     },
     "safari":{
       "3.1":"y x",
       "3.2":"y x",
       "4":"y x",
       "5":"y",
-      "5.1":"y",
-      "6":"y",
-      "6.1":"y",
+      "5.1":"y #1",
+      "6":"y #1",
+      "6.1":"y #1",
       "7":"y",
       "7.1":"y",
       "8":"y"
@@ -172,7 +173,8 @@
       "25":"y",
       "26":"y",
       "27":"y",
-      "28":"y"
+      "28":"y",
+      "29":"y"
     },
     "ios_saf":{
       "3.2":"y x",
@@ -213,7 +215,7 @@
       "24":"y"
     },
     "and_chr":{
-      "39":"y"
+      "40":"y"
     },
     "and_ff":{
       "33":"y"
@@ -228,9 +230,9 @@
   },
   "notes":"",
   "notes_by_num":{
-    
+    "1":"Safari 6.1 and earlier did not apply `border-radius` correctly to image borders: http://stackoverflow.com/q/17202128"
   },
-  "usage_perc_y":89.66,
+  "usage_perc_y":90.86,
   "usage_perc_a":0.01,
   "ucprefix":false,
   "parent":"",

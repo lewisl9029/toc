@@ -1,8 +1,8 @@
 {
   "title":"Web Workers",
   "description":"Method of running scripts in the background, isolated from the web page",
-  "spec":"http://www.w3.org/TR/workers/",
-  "status":"cr",
+  "spec":"https://html.spec.whatwg.org/multipage/workers.html",
+  "status":"ls",
   "links":[
     {
       "url":"https://developer.mozilla.org/En/Using_web_workers",
@@ -118,7 +118,8 @@
       "39":"y",
       "40":"y",
       "41":"y",
-      "42":"y"
+      "42":"y",
+      "43":"y"
     },
     "safari":{
       "3.1":"p",
@@ -157,7 +158,8 @@
       "25":"y",
       "26":"y",
       "27":"y",
-      "28":"y"
+      "28":"y",
+      "29":"y"
     },
     "ios_saf":{
       "3.2":"n",
@@ -198,7 +200,7 @@
       "24":"y"
     },
     "and_chr":{
-      "39":"y"
+      "40":"y"
     },
     "and_ff":{
       "33":"y"
@@ -215,7 +217,7 @@
   "notes_by_num":{
     
   },
-  "usage_perc_y":84.6,
+  "usage_perc_y":86.18,
   "usage_perc_a":0,
   "ucprefix":false,
   "parent":"",

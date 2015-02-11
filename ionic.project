@@ -1,6 +1,6 @@
 {
   "name": "Toc Messenger",
-  "app_id": "",
+  "app_id": "7ab6b3ea",
   "documentRoot": "app",
   "gulpStartupTasks": [
     "build-sass",
@@ -16,5 +16,12 @@
     "!app/views/**/*.scss",
     "!app/*.scss",
     "!app/services/**/*-test.unit.js"
+  ],
+  "browsers": [
+    {
+      "platform": "android",
+      "browser": "crosswalk",
+      "version": "10.39.235.15"
+    }
   ]
 }

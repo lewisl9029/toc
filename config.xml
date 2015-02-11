@@ -16,4 +16,11 @@
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
+  <feature name="Keyboard">
+    <param name="ios-package" value="IonicKeyboard" onload="true"/>
+  </feature>
+  <feature name="Keyboard">
+    <param name="android-package" value="com.ionic.keyboard.IonicKeyboard" />
+    <param name="onload" value="true" />
+  </feature>
 </widget>

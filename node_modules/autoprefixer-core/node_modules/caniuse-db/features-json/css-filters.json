@@ -119,7 +119,8 @@
       "39":"y x",
       "40":"y x",
       "41":"y x",
-      "42":"y x"
+      "42":"y x",
+      "43":"y x"
     },
     "safari":{
       "3.1":"n",
@@ -158,7 +159,8 @@
       "25":"y x",
       "26":"y x",
       "27":"y x",
-      "28":"y x"
+      "28":"y x",
+      "29":"y x"
     },
     "ios_saf":{
       "3.2":"n",
@@ -199,7 +201,7 @@
       "24":"y x"
     },
     "and_chr":{
-      "39":"y x"
+      "40":"y x"
     },
     "and_ff":{
       "33":"a"
@@ -216,12 +218,12 @@
   "notes_by_num":{
     "1":"Supported in Firefox under the `layout.css.filters.enabled` flag."
   },
-  "usage_perc_y":60.79,
-  "usage_perc_a":11.71,
+  "usage_perc_y":66.87,
+  "usage_perc_a":7.71,
   "ucprefix":false,
   "parent":"",
   "keywords":"sepia,hue-rotate,invert,saturate",
   "ie_id":"filters",
-  "chrome_id":"",
+  "chrome_id":"5822463824887808",
   "shown":true
 }

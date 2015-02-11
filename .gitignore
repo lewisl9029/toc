@@ -2,4 +2,8 @@
 .vagrant
 /app/*.css
 /containers/**/.packages
+/containers/**/.build
 /www
+/platforms
+/engine
+/plugins

@@ -2,7 +2,7 @@
   "title":"Shared Web Workers",
   "description":"Method of allowing multiple scripts to communicate with a single web worker.",
   "spec":"https://html.spec.whatwg.org/multipage/workers.html#shared-workers-introduction",
-  "status":"cr",
+  "status":"ls",
   "links":[
     {
       "url":"http://www.sitepoint.com/javascript-shared-web-workers-html5/",
@@ -110,7 +110,8 @@
       "39":"y",
       "40":"y",
       "41":"y",
-      "42":"y"
+      "42":"y",
+      "43":"y"
     },
     "safari":{
       "3.1":"n",
@@ -149,7 +150,8 @@
       "25":"y",
       "26":"y",
       "27":"y",
-      "28":"y"
+      "28":"y",
+      "29":"y"
     },
     "ios_saf":{
       "3.2":"n",
@@ -190,7 +192,7 @@
       "24":"n"
     },
     "and_chr":{
-      "39":"n"
+      "40":"n"
     },
     "and_ff":{
       "33":"y"
@@ -207,12 +209,12 @@
   "notes_by_num":{
     
   },
-  "usage_perc_y":48.93,
+  "usage_perc_y":51.61,
   "usage_perc_a":0,
   "ucprefix":false,
   "parent":"webworkers",
   "keywords":"shared worker",
-  "ie_id":"",
+  "ie_id":"sharedwebworkers",
   "chrome_id":"",
   "shown":true
 }

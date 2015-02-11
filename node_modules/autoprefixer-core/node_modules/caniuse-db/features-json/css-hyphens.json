@@ -114,7 +114,8 @@
       "39":"n",
       "40":"n",
       "41":"n",
-      "42":"n"
+      "42":"n",
+      "43":"n"
     },
     "safari":{
       "3.1":"n",
@@ -153,7 +154,8 @@
       "25":"n",
       "26":"n",
       "27":"n",
-      "28":"n"
+      "28":"n",
+      "29":"n"
     },
     "ios_saf":{
       "3.2":"n",
@@ -194,7 +196,7 @@
       "24":"n"
     },
     "and_chr":{
-      "39":"n"
+      "40":"n"
     },
     "and_ff":{
       "33":"y x"
@@ -207,12 +209,12 @@
       "9.9":"a x"
     }
   },
-  "notes":"Chrome 29- and Android 4.0 Browser support \"-webkit-hyphens: none\", but not the \"auto\" property. Chrome 30+ doesn't support it either.",
+  "notes":"Chrome 29- and Android 4.0 Browser support \"-webkit-hyphens: none\", but not the \"auto\" property. Chrome 30+ doesn't support it either. It is [advisable to set the @lang attribute](http://blog.adrianroselli.com/2015/01/on-use-of-lang-attribute.html) on the HTML element to enable hyphenation support and improve accessibility.",
   "notes_by_num":{
     
   },
-  "usage_perc_y":32.28,
-  "usage_perc_a":3.78,
+  "usage_perc_y":32.08,
+  "usage_perc_a":4.01,
   "ucprefix":false,
   "parent":"",
   "keywords":"hyphen,shy",

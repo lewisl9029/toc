@@ -1,4 +1,4 @@
-image: toc-test:latest
+image: toc-dev:latest
 
 git:
   depth: 100
@@ -8,6 +8,9 @@ script:
   - Xvfb :1 -screen 0 1024x768x24 &
   - gulp test-unit
   - gulp test-e2e
+  - gulp build
+  #gulp test-unit --prod
+  - gulp test-e2e --prod
 
 deploy:
   bash:

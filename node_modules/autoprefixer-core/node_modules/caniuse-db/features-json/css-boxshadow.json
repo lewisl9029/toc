@@ -124,7 +124,8 @@
       "39":"y",
       "40":"y",
       "41":"y",
-      "42":"y"
+      "42":"y",
+      "43":"y"
     },
     "safari":{
       "3.1":"a x",
@@ -163,7 +164,8 @@
       "25":"y",
       "26":"y",
       "27":"y",
-      "28":"y"
+      "28":"y",
+      "29":"y"
     },
     "ios_saf":{
       "3.2":"a x",
@@ -204,7 +206,7 @@
       "24":"y"
     },
     "and_chr":{
-      "39":"y"
+      "40":"y"
     },
     "and_ff":{
       "33":"y"
@@ -221,8 +223,8 @@
   "notes_by_num":{
     
   },
-  "usage_perc_y":89.42,
-  "usage_perc_a":0.22,
+  "usage_perc_y":90.62,
+  "usage_perc_a":0.2,
   "ucprefix":false,
   "parent":"",
   "keywords":"box-shadows,boxshadows,box shadow,shaow",

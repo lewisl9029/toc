@@ -1,4 +1,4 @@
-FROM toc-test:latest
+FROM toc-devv:latest
 
 MAINTAINER Lewis Liu
 
