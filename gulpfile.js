@@ -183,9 +183,7 @@ gulp.task('test-e2e', ['build-sass'], function test() {
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
 
   return gulp.src('')
-    .pipe(run('http-server ' + serverPath + ' -p 8100 &'))
-    .pipe(shell('protractor'))
-    .pipe(run('kill %1'));
+    .pipe(shell('http-server ' + serverPath + ' -p 8100 & protractor; pkill -f http-server'));
 });
 
 gulp.task('lint-js', function lintJs() {
