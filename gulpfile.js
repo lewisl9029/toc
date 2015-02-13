@@ -16,6 +16,7 @@ var argv = require('yargs')
 var shell = require('gulp-shell');
 var runSequence = require('run-sequence');
 var del = require('del');
+var run = require('gulp-run');
 
 var basePaths = {
   dev: './app/',
@@ -182,7 +183,9 @@ gulp.task('test-e2e', ['build-sass'], function test() {
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
 
   return gulp.src('')
-    .pipe(shell('bash -c "source protractor-test.sh ' + serverPath + '"'));
+    .pipe(run('http-server ' + serverPath + ' -p 8100 &'))
+    .pipe(shell('protractor'))
+    .pipe(run('kill %1'));
 });
 
 gulp.task('lint-js', function lintJs() {
