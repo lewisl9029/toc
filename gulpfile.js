@@ -16,7 +16,6 @@ var argv = require('yargs')
 var shell = require('gulp-shell');
 var runSequence = require('run-sequence');
 var del = require('del');
-var run = require('gulp-run');
 
 var basePaths = {
   dev: './app/',
@@ -183,7 +182,8 @@ gulp.task('test-e2e', ['build-sass'], function test() {
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
 
   return gulp.src('')
-    .pipe(shell('http-server ' + serverPath + ' -p 8100 & protractor; pkill -f http-server'));
+    .pipe(shell('http-server ' + serverPath +
+      ' -p 8100 & protractor && pkill -f http-server'));
 });
 
 gulp.task('lint-js', function lintJs() {
