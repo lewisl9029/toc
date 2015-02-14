@@ -183,7 +183,7 @@ gulp.task('test-e2e', ['build-sass'], function test() {
 
   return gulp.src('')
     .pipe(shell(
-      'http-server ' + serverPath + ' -p 8100 & protractor;' +
+      'http-server ' + serverPath + ' -p 8100 -s & protractor;' +
       ' if [ $? != 0 ]; then pkill node && exit 1; else pkill node; fi'
     ));
 });
