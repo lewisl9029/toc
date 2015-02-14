@@ -182,7 +182,10 @@ gulp.task('test-e2e', ['build-sass'], function test() {
   var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
 
   return gulp.src('')
-    .pipe(shell('bash -c "source protractor-test.sh ' + serverPath + '"'));
+    .pipe(shell(
+      'http-server ' + serverPath + ' -p 8100 -s & protractor;' +
+      ' if [ $? != 0 ]; then pkill node && exit 1; else pkill node; fi'
+    ));
 });
 
 gulp.task('lint-js', function lintJs() {
