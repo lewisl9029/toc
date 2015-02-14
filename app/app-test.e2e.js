@@ -15,5 +15,6 @@ describe('app', function() {
   it('should have a title', function() {
     browser.get('http://localhost:8100/');
     expect(browser.getTitle()).toEqual('Toc Messenger');
+    expect(true).toEqual(false);
   });
 });
