@@ -1,13 +1,12 @@
 image: lewisl9029/toc-dev:latest
 
 git:
-  depth: 0
+  depth: 1
 
 script:
   - gulp lint
   - Xvfb :1 -screen 0 1024x768x24 &
   - gulp test-unit
-  - gulp test-e2e
   - gulp build
   #gulp test-unit --prod
   - gulp test-e2e --prod
