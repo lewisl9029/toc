@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#gulp package
+gulp package
 
 TOC_VER="$(git -C $DRONE_BUILD_DIR describe --tags --abbrev=0)"
 
