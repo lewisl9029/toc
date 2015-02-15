@@ -1,4 +1,4 @@
-image: toc-dev:latest
+image: lewisl9029/toc-dev:latest
 
 git:
   depth: 100
