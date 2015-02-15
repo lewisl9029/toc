@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-#gulp package
-
-TOC_VER="$(git -C $DRONE_BUILD_DIR describe --tags --abbrev=0)"
+# gulp package
 
 git config --global user.email "tocbitbucket@lewisl.net"
 git config --global user.name "Toc Bitbucket"
@@ -26,5 +24,5 @@ else
 fi
 
 git add -A .
-git commit -m "Staging Toc $TOC_VER at $DEPLOYMENT_PATH" --allow-empty
+git commit -m "Staging Toc $DRONE_BRANCH at $DEPLOYMENT_PATH" --allow-empty
 git push --quiet https://$BITBUCKET_OAUTH_TOKEN:x-oauth-basic@bitbucket.org/tocmessenger/toc-staging master
