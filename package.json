@@ -1,7 +1,7 @@
 {
   "name": "toc",
-  "version": "0.2.0",
-  "description": "Toc Messenger: An Ionic project",
+  "version": "0.1.0-alpha",
+  "description": "Toc Messenger",
   "repository": {
     "type": "git",
     "url": "git@github.com:lewisl9029/toc.git"
