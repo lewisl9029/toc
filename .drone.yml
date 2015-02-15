@@ -1,7 +1,7 @@
 image: lewisl9029/toc-dev:latest
 
 git:
-  depth: 100
+  depth: 0
 
 script:
   - gulp lint
