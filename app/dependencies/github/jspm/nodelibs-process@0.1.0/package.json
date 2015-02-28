@@ -1,6 +1,0 @@
-{
-  "registry": "npm",
-  "dependencies": {
-    "process": "^0.10.0"
-  }
-}
