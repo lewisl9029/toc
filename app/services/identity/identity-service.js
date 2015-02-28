@@ -8,7 +8,7 @@ export default function identity(state, storage) {
   };
 
   identityService.createNewIdentity = function createNewIdentity(userInfo) {
-    state.
+    state.users[1] = userInfo;
   };
 
   return identityService;

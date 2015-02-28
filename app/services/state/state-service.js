@@ -2,7 +2,7 @@ export default function state() {
   let stateService = {};
 
   stateService.initialize = function initializeState() {
-    state.users = new Map();
+    state.users = {};
   };
 
   return stateService;
