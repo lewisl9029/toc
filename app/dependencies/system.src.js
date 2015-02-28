@@ -1,5 +1,5 @@
 /*
- * SystemJS v0.13.0
+ * SystemJS v0.13.2
  */
 
 (function($__global) {
@@ -307,7 +307,7 @@ function meta(loader) {
 function register(loader) {
   if (typeof indexOf == 'undefined')
     indexOf = Array.prototype.indexOf;
-  if (typeof __eval == 'undefined')
+  if (typeof __eval == 'undefined' || typeof document != 'undefined' && !document.addEventListener)
     __eval = 0 || eval; // uglify breaks without the 0 ||
 
   loader._extensions = loader._extensions || [];
@@ -856,33 +856,34 @@ function register(loader) {
   }
 }
 /*
- * Extension to detect ES6 and auto-load Traceur or 6to5 for processing
+ * Extension to detect ES6 and auto-load Traceur or Babel for processing
  */
 function es6(loader) {
 
   loader._extensions.push(es6);
 
-  var transpiler, transpilerName, transpilerModule, transpilerRuntimeModule, transpilerRuntimeGlobal;
+  var transpiler, transpilerModule, transpilerRuntimeModule, transpilerRuntimeGlobal;
 
   var isBrowser = typeof window != 'undefined';
 
   function setTranspiler(name) {
     transpiler = name;
-    transpilerName = transpiler == '6to5' ? 'to5' : transpiler;
     transpilerModule = '@' + transpiler;
-    transpilerRuntimeModule = '@' + transpiler + '-runtime';
-    transpilerRuntimeGlobal = (transpilerName == 'to5' ? transpilerName : '$' + transpilerName) + 'Runtime';
+    transpilerRuntimeModule = transpilerModule + (transpiler == 'babel' ? '-helpers' : '-runtime');
+    transpilerRuntimeGlobal = transpiler == 'babel' ? transpiler + 'Helpers' : '$' + transpiler + 'Runtime';
 
     // auto-detection of paths to loader transpiler files
-    if (typeof $__curScript != 'undefined') {
-      if (!loader.paths[transpilerModule])
-        loader.paths[transpilerModule] = $__curScript.getAttribute('data-' + loader.transpiler + '-src')
-          || ($__curScript.src ? $__curScript.src.substr(0, $__curScript.src.lastIndexOf('/') + 1)
-            : loader.baseURL + (loader.baseURL.lastIndexOf('/') == loader.baseURL.length - 1 ? '' : '/')
-            ) + loader.transpiler + '.js';
-      if (!loader.paths[transpilerRuntimeModule])
-        loader.paths[transpilerRuntimeModule] = $__curScript.getAttribute('data-' + loader.transpiler + '-runtime-src') || loader.paths[transpilerModule].replace(/\.js$/, '-runtime.js');
-    }
+    var scriptBase;
+    if ($__curScript && $__curScript.src)
+      scriptBase = $__curScript.src.substr(0, $__curScript.src.lastIndexOf('/') + 1);
+    else
+      scriptBase = loader.baseURL + (loader.baseURL.lastIndexOf('/') == loader.baseURL.length - 1 ? '' : '/');
+
+    if (!loader.paths[transpilerModule])
+      loader.paths[transpilerModule] = $__curScript && $__curScript.getAttribute('data-' + loader.transpiler + '-src') || scriptBase + loader.transpiler + '.js';
+    
+    if (!loader.paths[transpilerRuntimeModule])
+      loader.paths[transpilerRuntimeModule] = $__curScript && $__curScript.getAttribute('data-' + transpilerRuntimeModule.substr(1) + '-src') || scriptBase + transpilerRuntimeModule.substr(1) + '.js';
   }
 
   // good enough ES6 detection regex - format detections not designed to be accurate, but to handle the 99% use case
@@ -904,7 +905,7 @@ function es6(loader) {
       load.metadata.format = 'es6';
 
       // dynamically load transpiler for ES6 if necessary
-      if (isBrowser && !loader.global[transpilerName])
+      if (isBrowser && !loader.global[transpiler])
         return loader['import'](transpilerModule).then(function() {
           return loaderTranslate.call(loader, load);
         });
@@ -1707,7 +1708,7 @@ function plugins(loader) {
         else
           return Promise.resolve(loader.locate(load))
           .then(function(address) {
-            return address.substr(0, address.length - 3);
+            return address.replace(/\.js$/, '');
           });
       });
     }
@@ -1733,7 +1734,7 @@ function plugins(loader) {
     var loader = this;
     if (load.metadata.plugin && load.metadata.plugin.translate)
       return Promise.resolve(load.metadata.plugin.translate.call(loader, load)).then(function(result) {
-        if (result)
+        if (typeof result == 'string')
           load.source = result;
         return loaderTranslate.call(loader, load);
       });
@@ -2074,8 +2075,7 @@ function versions(loader) {
 
     // strip the version before applying map config
     var stripVersion, stripSubPathLength;
-    var pluginIndex = name.lastIndexOf('!');
-    var versionIndex = (pluginIndex == -1 ? name : name.substr(0, pluginIndex)).lastIndexOf('@');
+    var versionIndex = name.indexOf('!') != -1 ? 0 : name.lastIndexOf('@');
     if (versionIndex > 0) {
       var parts = name.substr(versionIndex + 1, name.length - versionIndex - 1).split('/');
       stripVersion = parts[0];
@@ -2086,7 +2086,7 @@ function versions(loader) {
     // run all other normalizers first
     return Promise.resolve(loaderNormalize.call(this, name, parentName, parentAddress)).then(function(normalized) {
       
-      var index = normalized.indexOf('@');
+      var index = normalized.indexOf('!') != -1 ? 0 : normalized.indexOf('@');
 
       // if we stripped a version, and it still has no version, add it back
       if (stripVersion && (index == -1 || index == 0)) {

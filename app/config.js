@@ -1,6 +1,6 @@
 System.config({
   "baseURL": ".",
-  "transpiler": "6to5",
+  "transpiler": "babel",
   "paths": {
     "*": "*.js",
     "toc/*": "*.js",
@@ -12,6 +12,7 @@ System.config({
 System.config({
   "map": {
     "angular": "github:angular/bower-angular@1.3.12",
+    "bitwiseshiftleft/sjcl": "github:bitwiseshiftleft/sjcl@1.0.2",
     "css": "github:systemjs/plugin-css@0.1.0",
     "es6-shim": "github:paulmillr/es6-shim@0.22.1",
     "ionic": "github:driftyco/ionic-bower@1.0.0-beta.14",
@@ -34,14 +35,14 @@ System.config({
       "angular-sanitize": "github:angular/bower-angular-sanitize@1.3.12",
       "angular-ui-router": "github:angular-ui/ui-router@0.2.10"
     },
-    "github:jspm/nodelibs-process@0.1.0": {
+    "github:jspm/nodelibs-process@0.1.1": {
       "process": "npm:process@0.10.0"
     },
     "github:jspm/nodelibs-util@0.1.0": {
       "util": "npm:util@0.10.3"
     },
     "npm:formatio@1.1.1": {
-      "process": "github:jspm/nodelibs-process@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
       "samsam": "npm:samsam@1.1.2"
     },
     "npm:inherits@2.0.1": {
@@ -50,13 +51,12 @@ System.config({
     "npm:sinon@1.12.2": {
       "formatio": "npm:formatio@1.1.1",
       "lolex": "npm:lolex@1.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
       "util": "npm:util@0.10.3"
     },
     "npm:util@0.10.3": {
       "inherits": "npm:inherits@2.0.1",
-      "process": "github:jspm/nodelibs-process@0.1.0"
+      "process": "github:jspm/nodelibs-process@0.1.1"
     }
   }
 });
-
