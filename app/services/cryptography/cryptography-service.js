@@ -22,7 +22,8 @@ export default function cryptography(sjcl) {
   cryptographyService.encrypt = function encrypt(object) {
     //TODO: progressively replace with webcrypto implementation
     let plainText = JSON.stringify(object);
-
+    //TODO: save space by keeping only ct and iv in ciphertext
+    //  every other setting is default
     let cipherText = sjcl.encrypt(cryptographyService.password, plainText);
 
     return {

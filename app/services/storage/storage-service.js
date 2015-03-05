@@ -19,7 +19,7 @@ export default function storage($log, $window, remoteStorage, cryptography) {
     );
 
     let moduleFunctions = {};
-    
+
     //TODO: implement path obfuscation
     moduleFunctions.storeObject = function storeObject(path, object) {
       let encryptedObject = cryptography.encrypt(object);
