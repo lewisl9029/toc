@@ -3,6 +3,7 @@ export default function cryptography(sjcl) {
 
   cryptographyService.initialize = function initializeCryptography() {
     cryptographyService.password = 'test';
+    cryptographyService.salt = 'test1234';
   };
 
   cryptographyService.ENCRYPTED_OBJECT = {
@@ -20,23 +21,32 @@ export default function cryptography(sjcl) {
   };
 
   cryptographyService.encrypt = function encrypt(object) {
-    //TODO: progressively replace with webcrypto implementation
-    let plainText = JSON.stringify(object);
-    //TODO: save space by keeping only ct and iv in ciphertext
-    //  every other setting is default
-    let cipherText = sjcl.encrypt(cryptographyService.password, plainText);
+    //TODO: progressively replace with webcrypto implementation, AES-GCM
+    let plaintext = JSON.stringify(object);
+
+    let options = {
+      salt: cryptographyService.salt,
+      mode: 'gcm'
+    };
+
+    let ciphertext = sjcl.encrypt(
+      cryptographyService.password,
+      plaintext,
+      options
+    );
 
     return {
-      ct: cipherText
+      ct: ciphertext
     };
   };
 
   cryptographyService.decrypt = function decrypt(encryptedObject) {
-    let cipherText = encryptedObject.ct;
+    let plaintext = sjcl.decrypt(
+      cryptographyService.password,
+      encryptedObject.ct
+    );
 
-    let plainText = sjcl.decrypt(cryptographyService.password, cipherText);
-
-    return JSON.parse(plainText);
+    return JSON.parse(plaintext);
   };
 
   return cryptographyService;

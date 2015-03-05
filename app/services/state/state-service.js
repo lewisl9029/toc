@@ -9,12 +9,19 @@ export default function state(storage, R) {
   //TODO: optimize for op/s and resource usage
   //FIXME: subpaths can shadow properties on higher-level objects and vice-versa
   let updateCache = function updateCache(path, object) {
-    let pathComponents = R.pipe(R.split('/'), R.reject(R.eq('')))(path);
+    let pathComponents = R.pipe(
+      R.split('/'),
+      R.reject(R.eq(''))
+    )(path);
+
     let initializeProperty = (obj, prop) => obj[prop] ?
       obj[prop] :
       obj[prop] = {};
-    let parentComponents = R.take(pathComponents.length - 1)(pathComponents);
-    let parentObject = R.reduce(initializeProperty, cache)(parentComponents);
+
+    let parentObject = R.pipe(
+      R.take(pathComponents.length - 1),
+      R.reduce(initializeProperty, cache)
+    )(pathComponents);
 
     parentObject[R.last(pathComponents)] = object;
 
