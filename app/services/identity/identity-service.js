@@ -1,16 +1,16 @@
-import identityModel from 'services/identity/identity-model';
-
-export default function identity(state, storage) {
+export default function identity(state) {
   let identityService = {};
 
   identityService.initialize = function initializeIdentity() {
-    state.current.
+
   };
 
   identityService.createNewIdentity = function createNewIdentity(userInfo) {
-    state.current.storeObject('string', 'id', 1);
-    state.identity.storeObject('string', 'displayName', userInfo.displayName);
-    state.identity.storeObject('string', 'email', userInfo.email);
+    state.save('identity', {
+      id: '1234',
+      displayName: userInfo.displayName,
+      email: userInfo.email
+    }).then(() => console.dir(state.cache));
   };
 
   return identityService;

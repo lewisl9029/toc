@@ -40,8 +40,13 @@ export default function storage($log, $window, remoteStorage, cryptography) {
     moduleFunctions.onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
         let decryptedEvent = event;
-        decryptedEvent.newValue = cryptography.decrypt(event.newValue);
-        decryptedEvent.newValue = cryptography.decrypt(event.newValue);
+        decryptedEvent.newValue = event.newValue ?
+          cryptography.decrypt(event.newValue) :
+          event.newValue;
+        decryptedEvent.oldValue = event.oldValue ?
+          cryptography.decrypt(event.oldValue) :
+          event.oldValue;
+        handleChange(event);
       });
     };
 
@@ -54,7 +59,7 @@ export default function storage($log, $window, remoteStorage, cryptography) {
     remoteStorage.RemoteStorage.defineModule(moduleName, buildModule);
 
     return remoteStorage.remoteStorage[moduleName];
-  }
+  };
 
   let initialize = function initialize() {
     storageService.enableLog();
