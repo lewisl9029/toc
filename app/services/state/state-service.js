@@ -1,8 +1,8 @@
-export default function state() {
+export default function state(storage) {
   let stateService = {};
 
   stateService.initialize = function initializeState() {
-    state.users = {};
+    stateService.current = storage.buildModule('state');
   };
 
   return stateService;

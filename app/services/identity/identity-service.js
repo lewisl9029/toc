@@ -4,11 +4,13 @@ export default function identity(state, storage) {
   let identityService = {};
 
   identityService.initialize = function initializeIdentity() {
-    identityService.storage = storage.createModel(identityModel);
+    state.current.
   };
 
   identityService.createNewIdentity = function createNewIdentity(userInfo) {
-    state.users[1] = userInfo;
+    state.current.storeObject('string', 'id', 1);
+    state.identity.storeObject('string', 'displayName', userInfo.displayName);
+    state.identity.storeObject('string', 'email', userInfo.email);
   };
 
   return identityService;

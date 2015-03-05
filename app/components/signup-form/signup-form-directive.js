@@ -5,7 +5,7 @@ export default function tocSignupForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signupForm',
-    controller: function tocSignupFormController($log) {
+    controller: function tocSignupFormController($log, identity) {
       this.newUser = {
         displayName: '',
         email: '',
@@ -13,9 +13,7 @@ export default function tocSignupForm() {
         passwordConfirmation: ''
       };
 
-      this.createUser = function createUser(newUser) {
-        $log.info(newUser);
-      };
+      this.createUser = identity.createNewIdentity;
     }
   };
 }

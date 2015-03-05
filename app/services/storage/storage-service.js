@@ -1,4 +1,4 @@
-export default function storage($log, $window, remoteStorage) {
+export default function storage($log, $window, remoteStorage, cryptography) {
   let storageService = {};
 
   storageService.local = $window.localStorage;
@@ -7,15 +7,32 @@ export default function storage($log, $window, remoteStorage) {
 
   storageService.enableLog = remoteStorage.remoteStorage.enableLog;
 
-  storageService.claimAccess = function claimAccess(model) {
-    remoteStorage.remoteStorage.access.claim(model.name, model.accessLevel);
+  storageService.claimAccess = function claimAccess(moduleName, accessLevel) {
+    remoteStorage.remoteStorage.access.claim(moduleName, accessLevel);
   };
 
-  storageService.createModel = function defineModel(model) {
-    remoteStorage.RemoteStorage.defineModule(model.name, model.builder);
-    storageService.claimAccess(model);
+  storageService.buildModule = function buildModule(privateClient) {
+    privateClient.declareType(
+      cryptography.ENCRYPTED_OBJECT.name,
+      cryptography.ENCRYPTED_OBJECT.schema
+    );
 
-    return remoteStorage.remoteStorage[model.name];
+    let moduleFunctions = {};
+
+    moduleFunctions.save = function save() {
+
+    };
+
+    return {
+      exports: privateClient
+    };
+  };
+
+  storageService.createModule = function createModule(moduleName) {
+    remoteStorage.RemoteStorage
+      .defineModule(moduleName, storageService.buildModule);
+
+    return remoteStorage.remoteStorage[moduleName];
   };
 
   storageService.initialize = function initialize() {
