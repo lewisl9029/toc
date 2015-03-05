@@ -2,6 +2,7 @@ export default function cryptography(sjcl) {
   let cryptographyService = {};
 
   cryptographyService.initialize = function initializeCryptography() {
+    cryptographyService.password = 'test';
   };
 
   cryptographyService.ENCRYPTED_OBJECT = {
@@ -17,8 +18,6 @@ export default function cryptography(sjcl) {
       required: ['ct']
     }
   };
-
-  cryptographyService.password = 'test';
 
   cryptographyService.encrypt = function encrypt(object) {
     //TODO: progressively replace with webcrypto implementation

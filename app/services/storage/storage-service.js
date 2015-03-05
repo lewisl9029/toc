@@ -1,17 +1,20 @@
 export default function storage($log, $window, remoteStorage, cryptography) {
   let storageService = {};
 
-  storageService.local = $window.localStorage;
+  const DEFAULT_ACCESS_LEVEL = 'rw';
 
-  storageService.connect = remoteStorage.remoteStorage.connect;
+  // let local = $window.localStorage;
+  //
+  // let connect = remoteStorage.remoteStorage.connect;
 
-  storageService.enableLog = remoteStorage.remoteStorage.enableLog;
+  let enableLog = remoteStorage.remoteStorage.enableLog;
 
-  storageService.claimAccess = function claimAccess(moduleName, accessLevel) {
-    remoteStorage.remoteStorage.access.claim(moduleName, accessLevel);
-  };
+  let claimAccess =
+    function claimAccess(moduleName, accessLevel = DEFAULT_ACCESS_LEVEL) {
+      remoteStorage.remoteStorage.access.claim(moduleName, accessLevel);
+    };
 
-  storageService.buildModule = function buildModule(privateClient) {
+  let buildModule = function buildModule(privateClient) {
     privateClient.declareType(
       cryptography.ENCRYPTED_OBJECT.name,
       cryptography.ENCRYPTED_OBJECT.schema
@@ -19,25 +22,43 @@ export default function storage($log, $window, remoteStorage, cryptography) {
 
     let moduleFunctions = {};
 
-    moduleFunctions.save = function save() {
-      
+    moduleFunctions.storeObject = function storeObject(path, object) {
+      let encryptedObject = cryptography.encrypt(object);
+
+      return privateClient.storeObject(
+        cryptography.ENCRYPTED_OBJECT.name,
+        path,
+        encryptedObject
+      );
+    };
+
+    moduleFunctions.getObject = function getObject(path) {
+      let decryptObject = object => cryptography.decrypt(object);
+
+      return privateClient.getObject(path)
+        .then(decryptObject);
     };
 
     return {
-      exports: privateClient
+      exports: moduleFunctions
     };
   };
 
-  storageService.createModule = function createModule(moduleName) {
-    remoteStorage.RemoteStorage
-      .defineModule(moduleName, storageService.buildModule);
+  let createModule = function createModule(moduleName) {
+    remoteStorage.RemoteStorage.defineModule(moduleName, buildModule);
 
     return remoteStorage.remoteStorage[moduleName];
-  };
+  }
 
-  storageService.initialize = function initialize() {
+  let initialize = function initialize() {
     storageService.enableLog();
   };
+
+  storageService.claimAccess = claimAccess;
+  storageService.buildModule = buildModule;
+  storageService.createModule = createModule;
+  storageService.enableLog = enableLog;
+  storageService.initialize = initialize;
 
   return storageService;
 }
