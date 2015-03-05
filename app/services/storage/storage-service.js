@@ -20,7 +20,7 @@ export default function storage($log, $window, remoteStorage, cryptography) {
     let moduleFunctions = {};
 
     moduleFunctions.save = function save() {
-
+      
     };
 
     return {

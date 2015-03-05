@@ -10,37 +10,33 @@ export default function cryptography(sjcl) {
     schema: {
       type: 'object',
       properties: {
-        iv: {
-          type: 'string'
-        },
         ct: {
           type: 'string'
         }
       },
-      required: ['iv', 'ct']
+      required: ['ct']
     }
   };
 
   cryptographyService.password = 'test';
 
   cryptographyService.encrypt = function encrypt(object) {
-    //TODO: progressively replace with window.crypto.getRandomValues
-    let initializationVector = sjcl.prng();
-    let cypherText = sjcl.encrypt(object);
+    //TODO: progressively replace with webcrypto implementation
+    let plainText = JSON.stringify(object);
+
+    let cipherText = sjcl.encrypt(cryptographyService.password, plainText);
 
     return {
-      iv: initializationVector,
-      ct: cypherText
+      ct: cipherText
     };
   };
 
   cryptographyService.decrypt = function decrypt(encryptedObject) {
-    let initializationVector = encryptedObject.iv;
-    let cypherText = encryptedObject.ct;
+    let cipherText = encryptedObject.ct;
 
-    let plainText = sjcl.decrypt(cypherText, initializationVector);
+    let plainText = sjcl.decrypt(cryptographyService.password, cipherText);
 
-    return plainText;
+    return JSON.parse(plainText);
   };
 
   return cryptographyService;
