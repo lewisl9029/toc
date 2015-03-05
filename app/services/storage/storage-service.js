@@ -21,7 +21,7 @@ export default function storage($log, $window, remoteStorage, cryptography) {
     );
 
     let moduleFunctions = {};
-
+    //TODO: implement path obfuscation
     moduleFunctions.storeObject = function storeObject(path, object) {
       let encryptedObject = cryptography.encrypt(object);
 
@@ -33,10 +33,16 @@ export default function storage($log, $window, remoteStorage, cryptography) {
     };
 
     moduleFunctions.getObject = function getObject(path) {
-      let decryptObject = object => cryptography.decrypt(object);
-
       return privateClient.getObject(path)
-        .then(decryptObject);
+        .then(cryptography.decrypt);
+    };
+
+    moduleFunctions.onChange = function onChange(handleChange) {
+      privateClient.on('change', function handleStorageChange(event) {
+        let decryptedEvent = event;
+        decryptedEvent.newValue = cryptography.decrypt(event.newValue);
+        decryptedEvent.newValue = cryptography.decrypt(event.newValue);
+      });
     };
 
     return {
