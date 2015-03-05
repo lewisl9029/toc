@@ -1,6 +1,4 @@
 export default function storage($log, $window, remoteStorage, cryptography) {
-  let storageService = {};
-
   const DEFAULT_ACCESS_LEVEL = 'rw';
 
   // let local = $window.localStorage;
@@ -21,6 +19,7 @@ export default function storage($log, $window, remoteStorage, cryptography) {
     );
 
     let moduleFunctions = {};
+    
     //TODO: implement path obfuscation
     moduleFunctions.storeObject = function storeObject(path, object) {
       let encryptedObject = cryptography.encrypt(object);
@@ -62,14 +61,14 @@ export default function storage($log, $window, remoteStorage, cryptography) {
   };
 
   let initialize = function initialize() {
-    storageService.enableLog();
+    enableLog();
   };
 
-  storageService.claimAccess = claimAccess;
-  storageService.buildModule = buildModule;
-  storageService.createModule = createModule;
-  storageService.enableLog = enableLog;
-  storageService.initialize = initialize;
-
-  return storageService;
+  return {
+    claimAccess: claimAccess,
+    buildModule: buildModule,
+    createModule: createModule,
+    enableLog: enableLog,
+    initialize: initialize
+  };
 }

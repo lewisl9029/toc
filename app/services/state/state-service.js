@@ -1,6 +1,5 @@
 export default function state(storage, R) {
-  let stateService = {};
-
+  //TODO: apply new formatting to existing modules
   const STORAGE_MODULE_NAME = 'toc-state';
 
   let store = storage.createModule(STORAGE_MODULE_NAME);
@@ -43,11 +42,11 @@ export default function state(storage, R) {
     store.onChange(handleChange);
   };
 
-  stateService.STORAGE_MODULE_NAME = STORAGE_MODULE_NAME;
-  stateService.store = store;
-  stateService.cache = cache;
-  stateService.save = save;
-  stateService.initialize = initialize;
-
-  return stateService;
+  return {
+    STORAGE_MODULE_NAME: STORAGE_MODULE_NAME,
+    store: store,
+    cache: cache,
+    save: save,
+    initialize: initialize
+  };
 }
