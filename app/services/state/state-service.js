@@ -7,6 +7,7 @@ export default function state(storage, R) {
 
   let cache = {};
 
+  //TODO: optimize for op/s and resource usage
   //FIXME: subpaths can shadow properties on higher-level objects and vice-versa
   let updateCache = function updateCache(path, object) {
     let pathComponents = R.pipe(R.split('/'), R.reject(R.eq('')))(path);
