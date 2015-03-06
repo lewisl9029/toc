@@ -1,12 +1,7 @@
 export default function cryptography(sjcl) {
-  let cryptographyService = {};
+  let credentials = {};
 
-  cryptographyService.initialize = function initializeCryptography() {
-    cryptographyService.password = 'test';
-    cryptographyService.salt = 'test1234';
-  };
-
-  cryptographyService.ENCRYPTED_OBJECT = {
+  let ENCRYPTED_OBJECT = {
     name: 'tocEncryptedObject',
     //TODO: use JSON Schema URI for versioning
     schema: {
@@ -20,17 +15,17 @@ export default function cryptography(sjcl) {
     }
   };
 
-  cryptographyService.encrypt = function encrypt(object) {
-    //TODO: progressively replace with webcrypto implementation, AES-GCM
+  let encrypt = function encrypt(object) {
+    //TODO: progressively replace with webcrypto implementation
     let plaintext = JSON.stringify(object);
 
     let options = {
-      salt: cryptographyService.salt,
+      salt: credentials.salt,
       mode: 'gcm'
     };
 
     let ciphertext = sjcl.encrypt(
-      cryptographyService.password,
+      credentials.password,
       plaintext,
       options
     );
@@ -40,14 +35,25 @@ export default function cryptography(sjcl) {
     };
   };
 
-  cryptographyService.decrypt = function decrypt(encryptedObject) {
+  let decrypt = function decrypt(encryptedObject) {
     let plaintext = sjcl.decrypt(
-      cryptographyService.password,
+      credentials.password,
       encryptedObject.ct
     );
 
     return JSON.parse(plaintext);
   };
 
-  return cryptographyService;
+  let initialize = function initializeCryptography() {
+    //TODO: initialize with user specific credentials on login
+    credentials.password = 'test';
+    credentials.salt = 'test1234';
+  };
+
+  return {
+    ENCRYPTED_OBJECT: ENCRYPTED_OBJECT,
+    encrypt: encrypt,
+    decrypt: decrypt,
+    initialize: initialize,
+  };
 }

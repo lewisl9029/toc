@@ -2,6 +2,7 @@ export default function state(storage, R) {
   //TODO: apply new formatting to existing modules
   const STORAGE_MODULE_NAME = 'toc-state';
 
+  //TODO: create separate state module for each user
   let store = storage.createModule(STORAGE_MODULE_NAME);
 
   let cache = {};
