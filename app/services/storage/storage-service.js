@@ -1,8 +1,8 @@
 export default function storage($log, $window, remoteStorage, cryptography) {
   const DEFAULT_ACCESS_LEVEL = 'rw';
 
-  // let local = $window.localStorage;
-  //
+  let local = $window.localStorage;
+
   // let connect = remoteStorage.remoteStorage.connect;
 
   let enableLog = remoteStorage.remoteStorage.enableLog;
@@ -65,6 +65,7 @@ export default function storage($log, $window, remoteStorage, cryptography) {
   };
 
   return {
+    local: local,
     claimAccess: claimAccess,
     buildModule: buildModule,
     createModule: createModule,

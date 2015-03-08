@@ -1,15 +1,14 @@
 export default function state(storage, R) {
   //TODO: apply new formatting to existing modules
-  const STORAGE_MODULE_NAME = 'toc-state';
+  const STORAGE_MODULE_PREFIX = 'toc-state-';
 
-  //TODO: create separate state module for each user
-  let store = storage.createModule(STORAGE_MODULE_NAME);
-
-  let cache = {};
+  let store;
+  let tree;
+  let storageModuleName;
 
   //TODO: optimize for op/s and resource usage
   //FIXME: subpaths can shadow properties on higher-level objects and vice-versa
-  let updateCache = function updateCache(path, object) {
+  let updateTree = function updateTree(path, object) {
     let pathComponents = R.pipe(
       R.split('/'),
       R.reject(R.eq(''))
@@ -21,7 +20,7 @@ export default function state(storage, R) {
 
     let parentObject = R.pipe(
       R.take(pathComponents.length - 1),
-      R.reduce(initializeProperty, cache)
+      R.reduce(initializeProperty, tree)
     )(pathComponents);
 
     parentObject[R.last(pathComponents)] = object;
@@ -32,7 +31,7 @@ export default function state(storage, R) {
   let save = function saveState(path, object) {
     //TODO: wrap promises with $q.when to tie into digest cycle
     return store.storeObject(path, object).then(
-      () => updateCache(path, object)
+      () => updateTree(path, object)
     );
   };
 
@@ -41,19 +40,21 @@ export default function state(storage, R) {
       return event.newValue;
     }
 
-    updateCache(event.relativePath, event.newValue);
-    console.dir(cache);
+    updateTree(event.relativePath, event.newValue);
+    console.dir(tree);
   };
 
-  let initialize = function initializeState() {
-    storage.claimAccess(STORAGE_MODULE_NAME);
+  let initialize = function initializeState(userId) {
+    //TODO: create separate state module for each user
+    storageModuleName = STORAGE_MODULE_PREFIX + userId;
+    store = storage.createModule(storageModuleName);
+    tree = {};
+    storage.claimAccess(storageModuleName);
     store.onChange(handleChange);
   };
 
   return {
-    STORAGE_MODULE_NAME: STORAGE_MODULE_NAME,
-    store: store,
-    cache: cache,
+    tree: tree,
     save: save,
     initialize: initialize
   };

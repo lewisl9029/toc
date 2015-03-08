@@ -1,5 +1,5 @@
 export default function cryptography(sjcl) {
-  let credentials = {};
+  let credentials;
 
   let ENCRYPTED_OBJECT = {
     name: 'tocEncryptedObject',
@@ -44,10 +44,11 @@ export default function cryptography(sjcl) {
     return JSON.parse(plaintext);
   };
 
-  let initialize = function initializeCryptography() {
-    //TODO: initialize with user specific credentials on login
-    credentials.password = 'test';
-    credentials.salt = 'test1234';
+  let initialize = function initializeCryptography(userCredentials) {
+    credentials = {
+      salt: credentials.id,
+      password: credentials.password
+    };
   };
 
   return {
