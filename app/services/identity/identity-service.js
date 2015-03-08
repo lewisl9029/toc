@@ -1,5 +1,6 @@
 export default function identity(state, R, storage, cryptography) {
-  const USER_KEY_PREFIX = 'toc-users-';
+  const USER_KEY_PREFIX = 'toc-user-';
+  const USER_INDEX_KEY = 'toc-users';
 
   //TODO: refactor local users into state.local
   let localUsers = {};
@@ -19,11 +20,12 @@ export default function identity(state, R, storage, cryptography) {
       password: userInfo.password
     };
 
+    localUsers[userId] = sanitizedUserInfo;
     storage.local.setItem(
       USER_KEY_PREFIX + userId,
       JSON.stringify(sanitizedUserInfo)
     );
-    localUsers[userId] = sanitizedUserInfo;
+    storage.local.setItem(USER_INDEX_KEY, R.keys(localUsers));
 
     state.initialize(userId);
     cryptography.initialize(userCredentials);
@@ -37,15 +39,18 @@ export default function identity(state, R, storage, cryptography) {
   };
 
   let initialize = function initializeIdentity() {
+    let userIndex = JSON.parse(storage.getItem(USER_INDEX_KEY));
+    if (userIndex === null) {
+      return;
+    }
+
     let existingUsers = R.pipe(
-      R.map(index => storage.local.key(index)),
-      R.filter(key => key.startsWith(USER_KEY_PREFIX)),
-      R.map(userKey => [
-        userKey.slice(USER_KEY_PREFIX.length),
-        JSON.parse(storage.local.getItem(userKey))
+      R.map(userId => [
+        USER_KEY_PREFIX + userId,
+        JSON.parse(storage.local.getItem(USER_KEY_PREFIX + userId))
       ],
       R.fromPairs
-    )(R.range(0, storage.local.length));
+    )(userIndex);
 
     Object.assign(localUsers, existingUsers);
   };

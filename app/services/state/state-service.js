@@ -54,7 +54,6 @@ export default function state(storage, R) {
     //TODO: create separate state module for each user
     storageModuleName = STORAGE_MODULE_PREFIX + userId;
     store = storage.createModule(storageModuleName);
-    tree = {};
     storage.claimAccess(storageModuleName);
     store.onChange(handleChange);
   };

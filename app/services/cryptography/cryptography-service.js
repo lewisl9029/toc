@@ -52,9 +52,9 @@ export default function cryptography(sjcl) {
   };
 
   return {
-    ENCRYPTED_OBJECT: ENCRYPTED_OBJECT,
-    encrypt: encrypt,
-    decrypt: decrypt,
-    initialize: initialize,
+    ENCRYPTED_OBJECT,
+    encrypt,
+    decrypt,
+    initialize
   };
 }

@@ -65,11 +65,9 @@ export default function storage($log, $window, remoteStorage, cryptography) {
   };
 
   return {
-    local: local,
-    claimAccess: claimAccess,
-    buildModule: buildModule,
-    createModule: createModule,
-    enableLog: enableLog,
-    initialize: initialize
+    local,
+    claimAccess,
+    createModule,
+    initialize
   };
 }
