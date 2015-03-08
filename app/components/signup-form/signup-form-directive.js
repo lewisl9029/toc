@@ -13,7 +13,7 @@ export default function tocSignupForm() {
         passwordConfirmation: ''
       };
 
-      this.createUser = identity.createNewIdentity;
+      this.createUser = identity.create;
     }
   };
 }

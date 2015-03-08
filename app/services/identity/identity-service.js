@@ -1,9 +1,12 @@
-export default function identity(state, storage, cryptography) {
-  const USERS_KEY = 'toc-local-users';
+export default function identity(state, R, storage, cryptography) {
+  const USER_KEY_PREFIX = 'toc-users-';
 
-  let createNewIdentity = function createNewIdentity(userInfo) {
+  //TODO: refactor local users into state.local
+  let localUsers = {};
+
+  let create = function createIdentity(userInfo) {
     //TODO: replace with telehash id generation
-    let userId = Date.now();
+    let userId = Date.now().toString();
 
     let sanitizedUserInfo = {
       id: userId,
@@ -16,28 +19,40 @@ export default function identity(state, storage, cryptography) {
       password: userInfo.password
     };
 
-    let localUsers = JSON.parse(storage.local.getItem(USERS_KEY));
-
-    if (localUsers === null) {
-      localUsers = {};
-    }
-
+    storage.local.setItem(
+      USER_KEY_PREFIX + userId,
+      JSON.stringify(sanitizedUserInfo)
+    );
     localUsers[userId] = sanitizedUserInfo;
-
-    storage.local.setItem(USERS_KEY, JSON.stringify(localUsers));
 
     state.initialize(userId);
     cryptography.initialize(userCredentials);
 
     state.save('identity', sanitizedUserInfo)
-      .then(() => console.dir(state.cache));
+      .then(() => console.dir(state.tree));
+  };
+
+  let authenticate = function authenticateIdentity(userInfo) {
+
   };
 
   let initialize = function initializeIdentity() {
+    let existingUsers = R.pipe(
+      R.map(index => storage.local.key(index)),
+      R.filter(key => key.startsWith(USER_KEY_PREFIX)),
+      R.map(userKey => [
+        userKey.slice(USER_KEY_PREFIX.length),
+        JSON.parse(storage.local.getItem(userKey))
+      ],
+      R.fromPairs
+    )(R.range(0, storage.local.length));
+
+    Object.assign(localUsers, existingUsers);
   };
 
   return {
-    createNewIdentity: createNewIdentity,
-    initialize: initialize
+    create,
+    authenticate,
+    initialize
   };
 }

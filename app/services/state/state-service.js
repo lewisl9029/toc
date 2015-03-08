@@ -3,8 +3,10 @@ export default function state(storage, R) {
   const STORAGE_MODULE_PREFIX = 'toc-state-';
 
   let store;
-  let tree;
+  let tree = {};
   let storageModuleName;
+
+  //TODO: eventually replace with baobab tree
 
   //TODO: optimize for op/s and resource usage
   //FIXME: subpaths can shadow properties on higher-level objects and vice-versa
@@ -44,6 +46,10 @@ export default function state(storage, R) {
     console.dir(tree);
   };
 
+  let reset = function resetState() {
+
+  };
+
   let initialize = function initializeState(userId) {
     //TODO: create separate state module for each user
     storageModuleName = STORAGE_MODULE_PREFIX + userId;
@@ -54,8 +60,8 @@ export default function state(storage, R) {
   };
 
   return {
-    tree: tree,
-    save: save,
-    initialize: initialize
+    tree,
+    save,
+    initialize
   };
 }

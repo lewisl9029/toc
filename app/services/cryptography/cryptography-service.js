@@ -20,7 +20,7 @@ export default function cryptography(sjcl) {
     let plaintext = JSON.stringify(object);
 
     let options = {
-      salt: credentials.salt,
+      salt: credentials.id,
       mode: 'gcm'
     };
 
@@ -46,8 +46,8 @@ export default function cryptography(sjcl) {
 
   let initialize = function initializeCryptography(userCredentials) {
     credentials = {
-      salt: credentials.id,
-      password: credentials.password
+      id: userCredentials.id,
+      password: userCredentials.password
     };
   };
 
