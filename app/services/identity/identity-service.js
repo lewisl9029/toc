@@ -21,11 +21,8 @@ export default function identity(state, R, storage, cryptography) {
     };
 
     localUsers[userId] = sanitizedUserInfo;
-    storage.local.setItem(
-      USER_KEY_PREFIX + userId,
-      JSON.stringify(sanitizedUserInfo)
-    );
-    storage.local.setItem(USER_INDEX_KEY, JSON.stringify(R.keys(localUsers)));
+    storage.local.storeObject(USER_KEY_PREFIX + userId, sanitizedUserInfo);
+    storage.local.storeObject(USER_INDEX_KEY, R.keys(localUsers));
 
     state.initialize(userId);
     cryptography.initialize(userCredentials);
@@ -39,7 +36,7 @@ export default function identity(state, R, storage, cryptography) {
   };
 
   let initialize = function initializeIdentity() {
-    let userIndex = JSON.parse(storage.local.getItem(USER_INDEX_KEY));
+    let userIndex = storage.local.getObject(USER_INDEX_KEY);
     if (userIndex === null) {
       return;
     }
@@ -47,7 +44,7 @@ export default function identity(state, R, storage, cryptography) {
     let existingUsers = R.pipe(
       R.map(userId => [
         userId,
-        JSON.parse(storage.local.getItem(USER_KEY_PREFIX + userId))
+        storage.local.getObject(USER_KEY_PREFIX + userId)
       ]),
       R.fromPairs
     )(userIndex);

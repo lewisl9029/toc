@@ -1,7 +1,14 @@
 export default function storage($log, $window, remoteStorage, cryptography) {
   const DEFAULT_ACCESS_LEVEL = 'rw';
 
-  let local = $window.localStorage;
+  let local = {
+    getObject: function getObjectLocal(path) {
+      return JSON.parse($window.localStorage.getItem(path));
+    },
+    storeObject: function storeObjectLocal(path, object) {
+      return $window.localStorage.setItem(path, JSON.stringify(object));
+    }
+  };
 
   // let connect = remoteStorage.remoteStorage.connect;
 
