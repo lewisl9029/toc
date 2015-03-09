@@ -7,7 +7,7 @@ export default function configWelcome($stateProvider) {
     views: {
       'content': {
         template: template,
-        controller: controller.name + ' as vm'
+        controller: controller.name + ' as welcomeView'
       }
     }
   });

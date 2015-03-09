@@ -60,6 +60,14 @@ export default function state(storage, R) {
     store = storage.createModule(storageModuleName);
     storage.claimAccess(storageModuleName);
     store.onChange(handleChange);
+    // store.storeObject('identity/test', 'test')
+    // .then(()=>{
+    //   var test = store.getAll('').then(objects => {
+    //     return objects;
+    //   });
+    // })
+
+    //TODO: load all keys into tree
   };
 
   return {

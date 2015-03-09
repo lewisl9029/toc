@@ -1,7 +1,7 @@
 export default function cryptography(sjcl) {
   let credentials;
 
-  let ENCRYPTED_OBJECT = {
+  const ENCRYPTED_OBJECT = {
     name: 'tocEncryptedObject',
     //TODO: use JSON Schema URI for versioning
     schema: {
@@ -13,6 +13,22 @@ export default function cryptography(sjcl) {
       },
       required: ['ct']
     }
+  };
+
+  const KEY_STRENGTH = 128;
+
+  let getHmac = function getHmac(message) {
+    //implemented similarly as in sjcl convenience function .encrypt
+    let key = sjcl.misc.cachedPbkdf2(
+      credentials.password,
+      {salt: credentials.id}
+    ).key;
+
+    let derivedKey = key.slice(0, KEY_STRENGTH/32);
+
+    let hmac = (new sjcl.misc.hmac(derivedKey)).mac(message);
+
+    return sjcl.codec.hex.fromBits(hmac);
   };
 
   let encrypt = function encrypt(object) {
@@ -53,6 +69,7 @@ export default function cryptography(sjcl) {
 
   return {
     ENCRYPTED_OBJECT,
+    getHmac,
     encrypt,
     decrypt,
     initialize

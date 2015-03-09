@@ -7,7 +7,8 @@ export default function identity(state, R, storage, cryptography) {
 
   let create = function createIdentity(userInfo) {
     //TODO: replace with telehash id generation
-    let userId = Date.now().toString();
+    //TODO: open issue for why sjcl trims salt by 1 char
+    let userId = Date.now().toString().substr(1);
 
     let sanitizedUserInfo = {
       id: userId,
@@ -20,19 +21,36 @@ export default function identity(state, R, storage, cryptography) {
       password: userInfo.password
     };
 
+    state.initialize(userId);
+    cryptography.initialize(userCredentials);
+
+    sanitizedUserInfo.challenge = cryptography.encrypt(userId);
+
     localUsers[userId] = sanitizedUserInfo;
     storage.local.storeObject(USER_KEY_PREFIX + userId, sanitizedUserInfo);
     storage.local.storeObject(USER_INDEX_KEY, R.keys(localUsers));
-
-    state.initialize(userId);
-    cryptography.initialize(userCredentials);
 
     state.save('identity', sanitizedUserInfo)
       .then(() => console.dir(state.tree)); //DEBUG
   };
 
-  let authenticate = function authenticateIdentity(userInfo) {
+  let authenticate = function authenticateIdentity(userCredentials) {
+    let challenge = localUsers[userCredentials.id].challenge;
+    cryptography.initialize(userCredentials);
 
+    let authResult = false;
+    try {
+      authResult = cryptography.decrypt(challenge) === userCredentials.id;
+    }
+    catch(error) {
+      console.error(error);
+    }
+    finally {
+      console.log(authResult);
+      // TODO: initialize state
+      state.initialize(userCredentials.id);
+      return authResult;
+    }
   };
 
   let initialize = function initializeIdentity() {

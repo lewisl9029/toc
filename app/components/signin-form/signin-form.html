@@ -2,16 +2,23 @@
   <div class="item item-divider item-calm">
     Welcome Back!
   </div>
+  <!-- TODO: make user list scrollable -->
   <ion-radio class="item item-avatar"
     ng-repeat="(id, user) in signinForm.users track by user.id"
-    ng-model="signinForm.selectedUser" ng-value="{{id}}"
+    ng-model="signinForm.selectedUser" ng-value="'{{id}}'"
     icon="ion-checkmark">
-    <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="Avatar for {{user.email}}" />
+    <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07711c08d50?d=identicon" alt="Avatar for {{user.email}}" />
     <h2>{{user.displayName}}</h2>
     <p>{{user.id}}</p>
   </ion-radio>
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Password</span>
+    <input type="password" placeholder="Password"
+      ng-model="signinForm.password">
+  </label>
   <div class="item item-divider button-bar">
-    <button class="button button-balanced">
+    <button class="button button-balanced"
+      ng-click="signinForm.signIn()">
       Sign In
     </button>
   </div>

@@ -30,17 +30,24 @@ export default function storage($log, $window, remoteStorage, cryptography) {
     //TODO: figure out how to do path obfuscation with non-constant iv
     moduleFunctions.storeObject = function storeObject(path, object) {
       let encryptedObject = cryptography.encrypt(object);
+      let pathHmac = cryptography.getHmac(path);
 
       return privateClient.storeObject(
         cryptography.ENCRYPTED_OBJECT.name,
-        path,
+        pathHmac,
         encryptedObject
       );
     };
 
     moduleFunctions.getObject = function getObject(path) {
-      return privateClient.getObject(path)
+      let pathHmac = cryptography.getHmac(path);
+
+      return privateClient.getObject(pathHmac)
         .then(cryptography.decrypt);
+    };
+
+    moduleFunctions.getAll = function getAll(path) {
+      return privateClient.getAll(path);
     };
 
     moduleFunctions.onChange = function onChange(handleChange) {
