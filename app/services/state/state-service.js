@@ -46,12 +46,16 @@ export default function state(storage, R) {
     console.dir(tree);
   };
 
+  let remove = function removeState(path) {
+
+  };
+
   let reset = function resetState() {
 
   };
 
   let initialize = function initializeState(userId) {
-    //TODO: create separate state module for each user
+    //TODO: reset state tree
     storageModuleName = STORAGE_MODULE_PREFIX + userId;
     store = storage.createModule(storageModuleName);
     storage.claimAccess(storageModuleName);

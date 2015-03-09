@@ -61,7 +61,7 @@ export default function storage($log, $window, remoteStorage, cryptography) {
   };
 
   let initialize = function initialize() {
-    enableLog();
+    // enableLog();
   };
 
   return {
