@@ -2,11 +2,11 @@
   <div class="item item-divider item-calm">
     Welcome {{signupForm.newUser.displayName || 'New User'}}!
   </div>
-  <div class="item item-avatar">
+  <label class="item item-avatar">
     <img src="http://www.gravatar.com/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="New User 1" />
     <h2>{{signupForm.newUser.displayName || 'New User'}}</h2>
-    <p>newuserid1</p>
-  </div>
+    <p>ID</p>
+  </label>
   <label class="item item-input item-floating-label">
     <span class="input-label">Display Name</span>
     <input type="text" placeholder="Display Name"
@@ -27,8 +27,10 @@
     <input type="password" placeholder="Confirm Password"
       ng-model="signupForm.newUser.passwordConfirmation">
   </label>
-  <button class="item button button-full button-balanced"
-    ng-click="signupForm.createUser(signupForm.newUser)">
-    Create User
-  </button>
+  <div class="item item-divider button-bar">
+    <button class="button button-balanced"
+      ng-click="signupForm.createUser(signupForm.newUser)">
+      Create Account
+    </button>
+  </div>
 </div>

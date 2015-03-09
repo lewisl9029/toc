@@ -39,11 +39,11 @@ export default function state(storage, R) {
 
   let handleChange = function handleStateChange(event) {
     if (event.oldValue === event.newValue) {
-      return event.newValue;
+      return;
     }
 
     updateTree(event.relativePath, event.newValue);
-    console.dir(tree);
+    console.dir(tree); //DEBUG
   };
 
   let remove = function removeState(path) {

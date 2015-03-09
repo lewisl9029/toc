@@ -28,7 +28,7 @@ export default function identity(state, R, storage, cryptography) {
     cryptography.initialize(userCredentials);
 
     state.save('identity', sanitizedUserInfo)
-      .then(() => console.dir(state.tree));
+      .then(() => console.dir(state.tree)); //DEBUG
   };
 
   let authenticate = function authenticateIdentity(userInfo) {
@@ -53,6 +53,7 @@ export default function identity(state, R, storage, cryptography) {
   };
 
   return {
+    localUsers,
     create,
     authenticate,
     initialize

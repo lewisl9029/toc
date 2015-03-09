@@ -1,6 +1,9 @@
 import template from 'app.html!text';
 
-export default function configApp($stateProvider, $urlRouterProvider) {
+export default function configApp($stateProvider, $urlRouterProvider,
+  $ionicConfigProvider) {
+  $ionicConfigProvider.tabs.position('bottom');
+
   $stateProvider.state('app', {
     url: '/app',
     abstract: true,

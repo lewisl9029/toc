@@ -5,7 +5,7 @@ export default function tocSignupForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signupForm',
-    controller: function tocSignupFormController($log, identity) {
+    controller: function SignupFormController(identity) {
       this.newUser = {
         displayName: '',
         email: '',
