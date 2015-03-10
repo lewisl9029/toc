@@ -48,7 +48,7 @@
       "es6-shim": "github:paulmillr/es6-shim@0.22.1",
       "ionic": "1.0.0-beta.14",
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
-      "ramda": "github:ramda/ramda@0.8.0",
+      "ramda/ramda": "github:ramda/ramda@^0.11.0",
       "remotestorage.js": "github:remotestorage/remotestorage.js@0.11.1",
       "remotestorage.js@0.11.1": "github:remotestorage/remotestorage.js@0.11.1",
       "scut": "github:davidtheclark/scut@^1.0.2",
