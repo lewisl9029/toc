@@ -1,0 +1,1 @@
+module.exports = require("github:remotestorage/remotestorage.js@0.11.2/release/0.11.2/remotestorage");

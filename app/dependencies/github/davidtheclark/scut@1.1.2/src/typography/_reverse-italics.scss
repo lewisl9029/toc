@@ -1,0 +1,21 @@
+@mixin scut-reverse-italics (
+  $elements: false
+) {
+
+  $element-list: em, cite, i;
+  @each $el in $elements {
+    @if type_of($el) == 'string' {
+      $element-list: append($element-list, unquote($el), comma);
+    }
+  }
+
+  font-style: italic;
+  #{$element-list} {
+    font-style: normal;
+  }
+
+}
+
+%scut-reverse-italics {
+  @include scut-reverse-italics;
+}
