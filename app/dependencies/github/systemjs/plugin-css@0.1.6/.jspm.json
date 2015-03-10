@@ -1,0 +1,12 @@
+{
+  "main": "css",
+  "registry": "jspm",
+  "jspm": {
+    "registry": "jspm"
+  },
+  "dependencies": {
+    "clean-css": "npm:clean-css@~3.0.10",
+    "fs": "^0.1.1",
+    "path": "^0.1.0"
+  }
+}
