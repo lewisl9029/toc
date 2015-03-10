@@ -10,6 +10,7 @@ System.config({
 
 System.config({
   "map": {
+    "Yomguithereal/baobab": "github:Yomguithereal/baobab@0.3.2",
     "angular": "github:angular/bower-angular@1.3.14",
     "bitwiseshiftleft/sjcl": "github:bitwiseshiftleft/sjcl@1.0.2",
     "css": "github:systemjs/plugin-css@0.1.6",

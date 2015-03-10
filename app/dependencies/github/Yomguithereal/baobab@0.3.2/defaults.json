@@ -1,0 +1,12 @@
+{
+  "autoCommit": true,
+  "asynchronous": true,
+  "clone": false,
+  "cloningFunction": null,
+  "cursorSingletons": true,
+  "maxHistory": 0,
+  "mixins": [],
+  "shiftReferences": false,
+  "typology": null,
+  "validate": null
+}

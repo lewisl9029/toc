@@ -42,6 +42,7 @@
       "packages": "app/dependencies"
     },
     "dependencies": {
+      "Yomguithereal/baobab": "github:Yomguithereal/baobab@^0.3.2",
       "angular": "github:angular/bower-angular@^1.3.8",
       "bitwiseshiftleft/sjcl": "github:bitwiseshiftleft/sjcl@^1.0.2",
       "css": "github:systemjs/plugin-css@^0.1.0",
