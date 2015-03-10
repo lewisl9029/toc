@@ -1,5 +1,12 @@
 export default function cryptography(sjcl) {
+  //TODO: progressively replace with webcrypto implementation
   let credentials;
+
+  // for encryption + authentication with a single key
+  const AES_ENCRYPTION_MODE = 'gcm';
+
+  // default key strength used by sjcl.encrypt
+  const AES_KEY_STRENGTH = 128;
 
   const ENCRYPTED_OBJECT = {
     name: 'tocEncryptedObject',
@@ -15,30 +22,23 @@ export default function cryptography(sjcl) {
     }
   };
 
-  const KEY_STRENGTH = 128;
+  let getHmac = function getHmac(object) {
+    let plaintext = JSON.stringify(object);
 
-  let getHmac = function getHmac(message) {
-    //implemented similarly as in sjcl convenience function .encrypt
-    let key = sjcl.misc.cachedPbkdf2(
+    let derivedKey = sjcl.misc.cachedPbkdf2(
       credentials.password,
       {salt: credentials.id}
     ).key;
 
-    let derivedKey = key.slice(0, KEY_STRENGTH/32);
+    let hmac = (new sjcl.misc.hmac(derivedKey)).mac(plaintext);
 
-    let hmac = (new sjcl.misc.hmac(derivedKey)).mac(message);
-
-    return sjcl.codec.hex.fromBits(hmac);
+    // iv cannot be longer than 4 bytes for sjcl?
+    // see source for sjcl.encrypt
+    return hmac.slice(0, AES_KEY_STRENGTH/32);
   };
 
-  let encrypt = function encrypt(object) {
-    //TODO: progressively replace with webcrypto implementation
+  let encryptBase = function encryptBase(object, options) {
     let plaintext = JSON.stringify(object);
-
-    let options = {
-      salt: credentials.id,
-      mode: 'gcm'
-    };
 
     let ciphertext = sjcl.encrypt(
       credentials.password,
@@ -49,6 +49,25 @@ export default function cryptography(sjcl) {
     return {
       ct: ciphertext
     };
+  };
+
+  let encryptDeterministic = function encryptDeterministic(object) {
+    let options = {
+      salt: credentials.id,
+      mode: AES_ENCRYPTION_MODE,
+      iv: getHmac(object)
+    };
+
+    return encryptBase(object, options);
+  };
+
+  let encrypt = function encrypt(object) {
+    let options = {
+      salt: credentials.id,
+      mode: AES_ENCRYPTION_MODE
+    };
+
+    return encryptBase(object, options);
   };
 
   let decrypt = function decrypt(encryptedObject) {
@@ -69,7 +88,7 @@ export default function cryptography(sjcl) {
 
   return {
     ENCRYPTED_OBJECT,
-    getHmac,
+    encryptDeterministic,
     encrypt,
     decrypt,
     initialize

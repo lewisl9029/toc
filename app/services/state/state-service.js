@@ -62,9 +62,10 @@ export default function state(storage, R) {
     store.onChange(handleChange);
     // store.storeObject('identity/test', 'test')
     // .then(()=>{
-    //   var test = store.getAll('').then(objects => {
-    //     return objects;
-    //   });
+    var test = store.getAllObjects()
+      .then(objects => {
+        console.dir(objects);
+      });
     // })
 
     //TODO: load all keys into tree

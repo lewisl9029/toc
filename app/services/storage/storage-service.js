@@ -1,4 +1,4 @@
-export default function storage($log, $window, remoteStorage, cryptography) {
+export default function storage(R, $window, remoteStorage, cryptography) {
   const DEFAULT_ACCESS_LEVEL = 'rw';
 
   let local = {
@@ -27,31 +27,41 @@ export default function storage($log, $window, remoteStorage, cryptography) {
 
     let moduleFunctions = {};
 
-    //TODO: figure out how to do path obfuscation with non-constant iv
     moduleFunctions.storeObject = function storeObject(path, object) {
       let encryptedObject = cryptography.encrypt(object);
-      let pathHmac = cryptography.getHmac(path);
+      let encryptedPath = cryptography.encryptDeterministic(path).ct;
 
       return privateClient.storeObject(
         cryptography.ENCRYPTED_OBJECT.name,
-        pathHmac,
+        encryptedPath,
         encryptedObject
       );
     };
 
     moduleFunctions.getObject = function getObject(path) {
-      let pathHmac = cryptography.getHmac(path);
+      let encryptedPath = cryptography.encryptDeterministic(path).ct;
 
-      return privateClient.getObject(pathHmac)
+      return privateClient.getObject(encryptedPath)
         .then(cryptography.decrypt);
     };
 
-    moduleFunctions.getAll = function getAll(path) {
-      return privateClient.getAll(path);
+    moduleFunctions.getAllObjects = function getAllObjects() {
+      //all encrypted paths are under root
+      let path = '';
+
+      return privateClient.getAll(path)
+        .then(encryptedObjects => R.pipe(
+          R.toPairs,
+          R.map(encryptedPathObjectPair => [
+            cryptography.decrypt({ct: encryptedPathObjectPair[0]}),
+            cryptography.decrypt(encryptedPathObjectPair[1])
+          ])
+        )(encryptedObjects));
     };
 
     moduleFunctions.onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
+        //
         let decryptedEvent = event;
         decryptedEvent.newValue = event.newValue ?
           cryptography.decrypt(event.newValue) :
