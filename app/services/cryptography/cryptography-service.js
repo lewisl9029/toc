@@ -1,5 +1,6 @@
 export default function cryptography(sjcl) {
   //TODO: progressively replace with webcrypto implementation
+
   let credentials;
 
   // for encryption + authentication with a single key
@@ -22,12 +23,24 @@ export default function cryptography(sjcl) {
     }
   };
 
+  let checkCredentials = function checkCredentials(credentials) {
+    if (credentials) {
+      return;
+    }
+
+    throw 'cryptography: mising credentials';
+  };
+
   let getHmac = function getHmac(object) {
     let plaintext = JSON.stringify(object);
 
+    let options = {
+      salt: credentials.id
+    };
+
     let derivedKey = sjcl.misc.cachedPbkdf2(
       credentials.password,
-      {salt: credentials.id}
+      options
     ).key;
 
     let hmac = (new sjcl.misc.hmac(derivedKey)).mac(plaintext);
@@ -52,6 +65,8 @@ export default function cryptography(sjcl) {
   };
 
   let encryptDeterministic = function encryptDeterministic(object) {
+    checkCredentials(credentials);
+
     let options = {
       salt: credentials.id,
       mode: AES_ENCRYPTION_MODE,
@@ -62,6 +77,8 @@ export default function cryptography(sjcl) {
   };
 
   let encrypt = function encrypt(object) {
+    checkCredentials(credentials);
+
     let options = {
       salt: credentials.id,
       mode: AES_ENCRYPTION_MODE
@@ -71,6 +88,8 @@ export default function cryptography(sjcl) {
   };
 
   let decrypt = function decrypt(encryptedObject) {
+    checkCredentials(credentials);
+
     let plaintext = sjcl.decrypt(
       credentials.password,
       encryptedObject.ct
@@ -80,6 +99,9 @@ export default function cryptography(sjcl) {
   };
 
   let initialize = function initializeCryptography(userCredentials) {
+    // only piece of mutable local state in the app
+    // credentials shouldn't be stored in state trees
+    //   because trees are versioned and sent with bug reports, etc
     credentials = {
       id: userCredentials.id,
       password: userCredentials.password

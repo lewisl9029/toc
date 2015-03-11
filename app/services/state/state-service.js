@@ -1,9 +1,18 @@
-export default function state(storage, R) {
+export default function state(storage, R, Baobab) {
   //TODO: apply new formatting to existing modules
   const STORAGE_MODULE_PREFIX = 'toc-state-';
 
   let store;
-  let tree = {};
+
+  // local application state stored in-memory only
+  let transientTree = new Baobab({});
+
+  // local application state persisted in local storage
+  let persistentTree = new Baobab({});
+
+  // remote application state persisted in indexeddb with remotestorage
+  let synchronizedTree = new Baobab({});
+
   let storageModuleName;
 
   //TODO: eventually replace with baobab tree
@@ -30,14 +39,14 @@ export default function state(storage, R) {
     return object;
   };
 
-  let save = function saveState(path, object) {
+  let saveSynchronizedState = function saveState(path, object) {
     //TODO: wrap promises with $q.when to tie into digest cycle
     return store.storeObject(path, object).then(
       () => updateTree(path, object)
     );
   };
 
-  let handleChange = function handleStateChange(event) {
+  let handleSynchronizedChange = function handleSynchronizedChange(event) {
     if (event.oldValue === event.newValue) {
       return;
     }
@@ -54,7 +63,7 @@ export default function state(storage, R) {
 
   };
 
-  let initialize = function initializeState(userId) {
+  let initializeRemote = function initializeRemoteState(userId) {
     //TODO: reset state tree
     storageModuleName = STORAGE_MODULE_PREFIX + userId;
     store = storage.createModule(storageModuleName);
@@ -72,7 +81,9 @@ export default function state(storage, R) {
   };
 
   return {
-    tree,
+    transient,
+    persistent,
+    synchronized,
     save,
     initialize
   };
