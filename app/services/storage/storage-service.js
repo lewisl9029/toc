@@ -1,12 +1,23 @@
-export default function storage(R, $window, remoteStorage, cryptography) {
+export default function storage($window, $q, remoteStorage, cryptography, R) {
   const DEFAULT_ACCESS_LEVEL = 'rw';
 
+  let getStorageKey = R.join('.');
+
   let local = {
-    getObject: function getObjectLocal(path) {
-      return JSON.parse($window.localStorage.getItem(path));
+    getObject: function getObjectLocal(key) {
+      let object = JSON.parse($window.localStorage.getItem(key));
+      return $q.when(object);
     },
-    storeObject: function storeObjectLocal(path, object) {
-      return $window.localStorage.setItem(path, JSON.stringify(object));
+    getObjectSync: function getObjectSyncLocal(key) {
+      return JSON.parse($window.localStorage.getItem(key));
+    },
+    storeObject: function storeObjectLocal(key, object) {
+      $window.localStorage.setItem(key, JSON.stringify(object));
+      return $q.when(object);
+    },
+    storeObjectSync: function storeObjectLocalSync(key, object) {
+      $window.localStorage.setItem(key, JSON.stringify(object));
+      return object;
     }
   };
 
@@ -25,56 +36,65 @@ export default function storage(R, $window, remoteStorage, cryptography) {
       cryptography.ENCRYPTED_OBJECT.schema
     );
 
-    let moduleFunctions = {};
-
-    moduleFunctions.storeObject = function storeObject(path, object) {
+    let storeObject = function storeObject(key, object) {
       let encryptedObject = cryptography.encrypt(object);
-      let encryptedPath = cryptography.encryptDeterministic(path).ct;
+      let encryptedKey = cryptography.encryptDeterministic(key).ct;
 
-      return privateClient.storeObject(
+      return $q.when(privateClient.storeObject(
         cryptography.ENCRYPTED_OBJECT.name,
-        encryptedPath,
+        encryptedKey,
         encryptedObject
-      );
+      )).then(() => object);
     };
 
-    moduleFunctions.getObject = function getObject(path) {
-      let encryptedPath = cryptography.encryptDeterministic(path).ct;
+    let getObject = function getObject(key) {
+      let encryptedKey = cryptography.encryptDeterministic(key).ct;
 
-      return privateClient.getObject(encryptedPath)
+      return $q.when(privateClient.getObject(encryptedKey))
         .then(cryptography.decrypt);
     };
 
-    moduleFunctions.getAllObjects = function getAllObjects() {
+    let getAllObjects = function getAllObjects() {
       //all encrypted paths are under root
-      let path = '';
+      let key = '';
 
-      return privateClient.getAll(path)
+      return privateClient.getAll(key)
         .then(encryptedObjects => R.pipe(
           R.toPairs,
-          R.map(encryptedPathObjectPair => [
-            cryptography.decrypt({ct: encryptedPathObjectPair[0]}),
-            cryptography.decrypt(encryptedPathObjectPair[1])
+          R.map(encryptedKeyObjectPair => [
+            cryptography.decrypt(encryptedKeyObjectPair[0]),
+            cryptography.decrypt(encryptedKeyObjectPair[1])
           ])
         )(encryptedObjects));
     };
 
-    moduleFunctions.onChange = function onChange(handleChange) {
+    let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
-        //
-        let decryptedEvent = event;
+        let decryptedEvent = Object.assign({}, event);
+
+        decryptedEvent.relativePath = event.relativePath ?
+          cryptography.decrypt(event.relativePath) :
+          event.relativePath;
+
         decryptedEvent.newValue = event.newValue ?
           cryptography.decrypt(event.newValue) :
           event.newValue;
+
         decryptedEvent.oldValue = event.oldValue ?
           cryptography.decrypt(event.oldValue) :
           event.oldValue;
-        handleChange(event);
+
+        handleChange(decryptedEvent);
       });
     };
 
     return {
-      exports: moduleFunctions
+      exports: {
+        storeObject,
+        getObject,
+        getAllObjects,
+        onChange
+      }
     };
   };
 
@@ -90,6 +110,7 @@ export default function storage(R, $window, remoteStorage, cryptography) {
 
   return {
     local,
+    getStorageKey,
     claimAccess,
     createModule,
     initialize

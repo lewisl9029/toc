@@ -1,6 +1,5 @@
 export default function cryptography(sjcl) {
   //TODO: progressively replace with webcrypto implementation
-
   let credentials;
 
   // for encryption + authentication with a single key
@@ -23,15 +22,16 @@ export default function cryptography(sjcl) {
     }
   };
 
-  let checkCredentials = function checkCredentials(credentials) {
-    if (credentials) {
-      return;
-    }
+  let checkCredentials =
+    function checkCredentials(credentials) {
+      if (credentials.id && credentials.password) {
+        return;
+      }
 
-    throw 'cryptography: mising credentials';
-  };
+      throw 'cryptography: mising credentials';
+    };
 
-  let getHmac = function getHmac(object) {
+  let getHmac = function getHmac(object, credentials = credentials) {
     let plaintext = JSON.stringify(object);
 
     let options = {
@@ -50,33 +50,35 @@ export default function cryptography(sjcl) {
     return hmac.slice(0, AES_KEY_STRENGTH/32);
   };
 
-  let encryptBase = function encryptBase(object, options) {
-    let plaintext = JSON.stringify(object);
+  let encryptBase =
+    function encryptBase(object, options, credentials = credentials) {
+      let plaintext = JSON.stringify(object);
 
-    let ciphertext = sjcl.encrypt(
-      credentials.password,
-      plaintext,
-      options
-    );
+      let ciphertext = sjcl.encrypt(
+        credentials.password,
+        plaintext,
+        options
+      );
 
-    return {
-      ct: ciphertext
-    };
-  };
-
-  let encryptDeterministic = function encryptDeterministic(object) {
-    checkCredentials(credentials);
-
-    let options = {
-      salt: credentials.id,
-      mode: AES_ENCRYPTION_MODE,
-      iv: getHmac(object)
+      return {
+        ct: ciphertext
+      };
     };
 
-    return encryptBase(object, options);
-  };
+  let encryptDeterministic =
+    function encryptDeterministic(object, credentials = credentials) {
+      checkCredentials(credentials);
 
-  let encrypt = function encrypt(object) {
+      let options = {
+        salt: credentials.id,
+        mode: AES_ENCRYPTION_MODE,
+        iv: getHmac(object)
+      };
+
+      return encryptBase(object, options);
+    };
+
+  let encrypt = function encrypt(object, credentials = credentials) {
     checkCredentials(credentials);
 
     let options = {
@@ -87,25 +89,22 @@ export default function cryptography(sjcl) {
     return encryptBase(object, options);
   };
 
-  let decrypt = function decrypt(encryptedObject) {
+  let decrypt = function decrypt(encryptedObject, credentials = credentials) {
     checkCredentials(credentials);
+
+    let ciphertext = encryptedObject.ct || encryptedObject;
 
     let plaintext = sjcl.decrypt(
       credentials.password,
-      encryptedObject.ct
+      ciphertext
     );
 
     return JSON.parse(plaintext);
   };
 
   let initialize = function initializeCryptography(userCredentials) {
-    // only piece of mutable local state in the app
-    // credentials shouldn't be stored in state trees
-    //   because trees are versioned and sent with bug reports, etc
-    credentials = {
-      id: userCredentials.id,
-      password: userCredentials.password
-    };
+    // mutable local state because it's not suited for storage in state trees
+    credentials = userCredentials;
   };
 
   return {

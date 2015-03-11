@@ -1,6 +1,6 @@
 export default function identity(state, R, storage, cryptography) {
+  const IDENTITY_PATH = ['identity'];
   const USER_KEY_PREFIX = 'toc-user-';
-  const USER_INDEX_KEY = 'toc-users';
 
   //TODO: refactor local users into state.local
   let localUsers = {};
@@ -10,27 +10,26 @@ export default function identity(state, R, storage, cryptography) {
     //TODO: open issue for why sjcl trims salt by 1 char
     let userId = Date.now().toString().substr(1);
 
-    let sanitizedUserInfo = {
-      id: userId,
-      displayName: userInfo.displayName,
-      email: userInfo.email
-    };
-
     let userCredentials = {
       id: userId,
       password: userInfo.password
     };
 
-    state.initialize(userId);
-    cryptography.initialize(userCredentials);
+    let sanitizedUserInfo = {
+      id: userId,
+      displayName: userInfo.displayName,
+      email: userInfo.email,
+      challenge: cryptography.encrypt(userId, userCredentials)
+    };
 
-    sanitizedUserInfo.challenge = cryptography.encrypt(userId);
+    // state.initialize(userId);
+    // cryptography.initialize(userCredentials);
 
     localUsers[userId] = sanitizedUserInfo;
     storage.local.storeObject(USER_KEY_PREFIX + userId, sanitizedUserInfo);
-    storage.local.storeObject(USER_INDEX_KEY, R.keys(localUsers));
 
-    state.save('identity', sanitizedUserInfo)
+    let identity = state.get('identity')
+    identity.save(['info'], sanitizedUserInfo)
       .then(() => console.dir(state.tree)); //DEBUG
   };
 
@@ -54,24 +53,11 @@ export default function identity(state, R, storage, cryptography) {
   };
 
   let initialize = function initializeIdentity() {
-    let userIndex = storage.local.getObject(USER_INDEX_KEY);
-    if (userIndex === null) {
-      return;
-    }
-
-    let existingUsers = R.pipe(
-      R.map(userId => [
-        userId,
-        storage.local.getObject(USER_KEY_PREFIX + userId)
-      ]),
-      R.fromPairs
-    )(userIndex);
-
-    Object.assign(localUsers, existingUsers);
+    let identityPersistent = state.persistent.tree.select(IDENTITY_PATH);
+    let identitySynchronized = state.synchronized.tree.select(IDENTITY_PATH);
   };
 
   return {
-    localUsers,
     create,
     authenticate,
     initialize
