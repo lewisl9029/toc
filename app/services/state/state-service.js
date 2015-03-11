@@ -1,7 +1,7 @@
 export default function state($q, storage, R, Baobab) {
   const STORAGE_MODULE_PREFIX = 'toc-state-';
 
-  let getStatePath = R.split('.');
+  let getStatePath = R.split(storage.KEY_SEPARATOR);
 
   let stateService = {};
 
@@ -51,7 +51,7 @@ export default function state($q, storage, R, Baobab) {
   // };
   //TODO: implement versioning of state tree schema
   // perform migration and/or prompt for app update in initialization methods
-  let initializePersistent = function initializePersistent() {
+  let initializePersistent = function initializePersistent(userId) {
     let store = storage.local;
 
     stateService.persistent.store = store;

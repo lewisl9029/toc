@@ -1,24 +1,11 @@
 export default function storage($window, $q, remoteStorage, cryptography, R) {
   const DEFAULT_ACCESS_LEVEL = 'rw';
+  const KEY_SEPARATOR = '.';
 
-  let getStorageKey = R.join('.');
+  let getStorageKey = R.join(KEY_SEPARATOR);
 
   let local = {
-    getObject: function getObjectLocal(key) {
-      let object = JSON.parse($window.localStorage.getItem(key));
-      return $q.when(object);
-    },
-    getObjectSync: function getObjectSyncLocal(key) {
-      return JSON.parse($window.localStorage.getItem(key));
-    },
-    storeObject: function storeObjectLocal(key, object) {
-      $window.localStorage.setItem(key, JSON.stringify(object));
-      return $q.when(object);
-    },
-    storeObjectSync: function storeObjectLocalSync(key, object) {
-      $window.localStorage.setItem(key, JSON.stringify(object));
-      return object;
-    }
+
   };
 
   // let connect = remoteStorage.remoteStorage.connect;
@@ -98,7 +85,38 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
     };
   };
 
-  let createModule = function createModule(moduleName) {
+  let createLocal = function createLocal(moduleName = '') {
+    const KEY_PREFIX = moduleName ? moduleName + KEY_SEPARATOR : moduleName;
+
+    let getObject = function getObjectLocal(key) {
+      let object = JSON.parse($window.localStorage.getItem(KEY_PREFIX + key));
+      return $q.when(object);
+    };
+
+    let getObjectSync = function getObjectSyncLocal(key) {
+      return JSON.parse($window.localStorage.getItem(KEY_PREFIX + key));
+    };
+
+    let storeObject = function storeObjectLocal(key, object) {
+      $window.localStorage.setItem(KEY_PREFIX + key, JSON.stringify(object));
+      return $q.when(object);
+    };
+
+    let storeObjectSync = function storeObjectLocalSync(key, object) {
+      $window.localStorage.setItem(KEY_PREFIX + key, JSON.stringify(object));
+      return object;
+    };
+
+    let getAllObjects = function getAllObjects() {
+      R.map(key =>
+        [key, getObjectSync(key)]
+      )(Object.keys($window.localStorage));
+    };
+
+    return remoteStorage.remoteStorage[moduleName];
+  };
+
+  let createRemote = function createRemote(moduleName) {
     remoteStorage.RemoteStorage.defineModule(moduleName, buildModule);
 
     return remoteStorage.remoteStorage[moduleName];
@@ -109,10 +127,11 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
   };
 
   return {
-    local,
+    KEY_SEPARATOR,
     getStorageKey,
     claimAccess,
-    createModule,
+    createLocal,
+    createRemote,
     initialize
   };
 }
