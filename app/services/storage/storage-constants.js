@@ -1,8 +1,0 @@
-const STORAGE_CONSTANTS = {};
-
-STORAGE_CONSTANTS.ACCESS_LEVELS = {
-  READ: 'r',
-  FULL: 'rw'
-};
-
-export default STORAGE_CONSTANTS;

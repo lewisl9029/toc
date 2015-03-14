@@ -32,6 +32,8 @@ export default function cryptography(sjcl) {
     };
 
   let getHmac = function getHmac(object, credentials = credentials) {
+    checkCredentials(credentials);
+
     let plaintext = JSON.stringify(object);
 
     let options = {
@@ -65,6 +67,8 @@ export default function cryptography(sjcl) {
       };
     };
 
+  // using the synthetic initialization vector (SIV) variant of AES
+  // will need an audit of the implementation
   let encryptDeterministic =
     function encryptDeterministic(object, credentials = credentials) {
       checkCredentials(credentials);
@@ -109,6 +113,7 @@ export default function cryptography(sjcl) {
 
   return {
     ENCRYPTED_OBJECT,
+    getHmac,
     encryptDeterministic,
     encrypt,
     decrypt,

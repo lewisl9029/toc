@@ -5,14 +5,14 @@ export default function tocSigninForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signinForm',
-    controller: function SigninFormController(identity) {
-      this.users = identity.localUsers;
+    controller: function SigninFormController(state, identity) {
+      this.users = state.persistent.tree.select;
       //TODO: store last signin time and use for default selected user
       this.selectedUser = Object.keys(identity.localUsers)[0];
       this.password = '';
 
       this.signIn = function() {
-        identity.authenticate({
+        let authResult = identity.authenticate({
           id: this.selectedUser,
           password: this.password
         });

@@ -5,7 +5,7 @@ export default function tocSignupForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signupForm',
-    controller: function SignupFormController(identity) {
+    controller: function SignupFormController($state, identity) {
       this.newUser = {
         displayName: '',
         email: '',
@@ -13,7 +13,10 @@ export default function tocSignupForm() {
         passwordConfirmation: ''
       };
 
-      this.createUser = identity.create;
+      this.createUser = function createUser(userInfo) {
+        identity.create(userInfo)
+          .then(() => $state.go('app.home'));
+      };
     }
   };
 }

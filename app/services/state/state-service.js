@@ -1,6 +1,4 @@
 export default function state($q, storage, R, Baobab) {
-  const STORAGE_MODULE_PREFIX = 'toc-state-';
-
   let getStatePath = R.split(storage.KEY_SEPARATOR);
 
   let stateService = {};
@@ -19,6 +17,8 @@ export default function state($q, storage, R, Baobab) {
   stateService.synchronized = {
     tree: new Baobab({})
   };
+
+  //TODO: create schema object and keep up to date for each tree
 
   let saveTransient = function saveTransient(cursor, path, object) {
     return $q.when(cursor.set(path, object));
@@ -51,36 +51,33 @@ export default function state($q, storage, R, Baobab) {
   // };
   //TODO: implement versioning of state tree schema
   // perform migration and/or prompt for app update in initialization methods
-  let initializePersistent = function initializePersistent(userId) {
-    let store = storage.local;
 
-    stateService.persistent.store = store;
-
-    R.forEach(key =>
-      stateService.persistent.tree.set(
-        getStatePath(key),
-        store.getObjectSync(key)
-      )
-    )(Object.keys(store));
-  };
-
-  let initializeSynchronized = function initializeSynchronized(userId) {
-    //TODO: reset state tree before loading keys
-    //TODO: figure out how to remove modules for logging out
-    let storageModuleName = STORAGE_MODULE_PREFIX + userId;
-    let store = storage.createModule(storageModuleName);
-    storage.claimAccess(storageModuleName);
-    store.onChange(handleChangeSynchronized);
-
-    stateService.synchronized.store = store;
+  let initializeStore = function initializeStore(state, store) {
+    state.store = store;
 
     store.getAllObjects()
       .then(R.forEach(keyObjectPair =>
-        stateService.synchronized.tree.set(
+        state.tree.set(
           getStatePath(keyObjectPair[0]),
           keyObjectPair[1]
         )
       ));
+  };
+
+  let initializePersistent = function initializePersistent(moduleName) {
+    let store = storage.createLocal(moduleName);
+
+    initializeStore(stateService.persistent, store);
+  };
+
+  let initializeSynchronized = function initializeSynchronized(moduleName) {
+    //TODO: reset state tree before loading keys
+    //TODO: figure out how to remove modules for logging out
+    let store = storage.createRemote(moduleName);
+    storage.claimAccess(moduleName);
+    store.onChange(handleChangeSynchronized);
+
+    initializeStore(stateService.synchronized, store);
   };
 
   stateService.persistent.initialize = initializePersistent;
@@ -93,7 +90,7 @@ export default function state($q, storage, R, Baobab) {
   ]);
 
   let save = function save(cursor, path, object) {
-    let state = TREE_TO_STATE[cursor.root];
+    let state = TREE_TO_STATE.get(cursor.root);
     return state.save(cursor, path, object, state.store);
   };
 

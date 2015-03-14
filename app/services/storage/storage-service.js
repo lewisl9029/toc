@@ -1,5 +1,6 @@
 export default function storage($window, $q, remoteStorage, cryptography, R) {
   const DEFAULT_ACCESS_LEVEL = 'rw';
+  const STORAGE_MODULE_PREFIX = 'toc-state-';
   const KEY_SEPARATOR = '.';
 
   let getStorageKey = R.join(KEY_SEPARATOR);
@@ -14,7 +15,8 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
 
   let claimAccess =
     function claimAccess(moduleName, accessLevel = DEFAULT_ACCESS_LEVEL) {
-      remoteStorage.remoteStorage.access.claim(moduleName, accessLevel);
+      remoteStorage.remoteStorage.access
+        .claim(STORAGE_MODULE_PREFIX + moduleName, accessLevel);
     };
 
   let buildModule = function buildModule(privateClient) {
@@ -85,8 +87,8 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
     };
   };
 
-  let createLocal = function createLocal(moduleName = '') {
-    const KEY_PREFIX = moduleName ? moduleName + KEY_SEPARATOR : moduleName;
+  let createLocal = function createLocal(moduleName = 'global') {
+    const KEY_PREFIX = STORAGE_MODULE_PREFIX + moduleName + KEY_SEPARATOR;
 
     let getObject = function getObjectLocal(key) {
       let object = JSON.parse($window.localStorage.getItem(KEY_PREFIX + key));
@@ -95,6 +97,18 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
 
     let getObjectSync = function getObjectSyncLocal(key) {
       return JSON.parse($window.localStorage.getItem(KEY_PREFIX + key));
+    };
+
+    let getAllObjects = function getAllObjects() {
+      let objects = R.pipe(
+        R.filter(key => key.startsWith(KEY_PREFIX)),
+        R.map(key => [
+          key.substr(KEY_PREFIX.length),
+          getObjectSync(key.substr(KEY_PREFIX.length))
+        ])
+      )(Object.keys($window.localStorage));
+
+      return $q.when(objects);
     };
 
     let storeObject = function storeObjectLocal(key, object) {
@@ -107,19 +121,20 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
       return object;
     };
 
-    let getAllObjects = function getAllObjects() {
-      R.map(key =>
-        [key, getObjectSync(key)]
-      )(Object.keys($window.localStorage));
+    return {
+      getObject,
+      getObjectSync,
+      getAllObjects,
+      storeObject,
+      storeObjectSync
     };
-
-    return remoteStorage.remoteStorage[moduleName];
   };
 
   let createRemote = function createRemote(moduleName) {
-    remoteStorage.RemoteStorage.defineModule(moduleName, buildModule);
+    remoteStorage.RemoteStorage
+      .defineModule(STORAGE_MODULE_PREFIX + moduleName, buildModule);
 
-    return remoteStorage.remoteStorage[moduleName];
+    return remoteStorage.remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
   };
 
   let initialize = function initialize() {
