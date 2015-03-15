@@ -2,22 +2,25 @@
   <div class="item item-divider item-calm">
     Welcome Back!
   </div>
-  <div class="item item-avatar">
-    <img src="http://www.gravatar.com/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="New User 1" />
-    <h2>New User 1</h2>
-    <p>newuserid1</p>
+  <!-- TODO: make user list scrollable -->
+  <ion-radio class="item item-avatar"
+    ng-repeat="(id, user) in signinForm.users track by id"
+    ng-model="signinForm.selectedUser" ng-value="'{{id}}'"
+    icon="ion-checkmark">
+    <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07711c08d50?d=identicon" alt="Avatar for {{user.userInfo.email}}" />
+    <h2>{{user.userInfo.displayName}}</h2>
+    <p>{{user.userInfo.id}}</p>
+  </ion-radio>
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Password</span>
+    <input type="password" placeholder="Password"
+      ng-model="signinForm.password">
+  </label>
+  <div class="item item-divider button-bar">
+    <button class="button button-balanced"
+      ng-click="signinForm.signIn()">
+      Sign In
+    </button>
   </div>
-  <div class="item item-avatar">
-    <img src="http://www.gravatar.com/avatar/205e460b479e2123456ec07710c08d50?d=identicon" alt="Existing User 1" />
-    <h2>Existing User 1</h2>
-    <p>existinguserid1</p>
-  </div>
-  <div class="item item-avatar">
-    <img src="http://www.gravatar.com/avatar/205e460b12345123456ec07710c08d50?d=identicon" alt="Existing User 2" />
-    <h2>Existing User 2</h2>
-    <p>existinguserid2</p>
-  </div>
-  <button class="item button button-full button-balanced">
-    Sign In
-  </button>
+
 </div>

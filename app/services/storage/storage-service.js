@@ -1,26 +1,153 @@
-export default function storage($log, $window, remoteStorage) {
-  let storageService = {};
+export default function storage($window, $q, remoteStorage, cryptography, R) {
+  const DEFAULT_ACCESS_LEVEL = 'rw';
+  const STORAGE_MODULE_PREFIX = 'toc-state-';
+  const KEY_SEPARATOR = '.';
 
-  storageService.local = $window.localStorage;
+  let getStorageKey = R.join(KEY_SEPARATOR);
 
-  storageService.connect = remoteStorage.remoteStorage.connect;
+  let local = {
 
-  storageService.enableLog = remoteStorage.remoteStorage.enableLog;
-
-  storageService.claimAccess = function claimAccess(model) {
-    remoteStorage.remoteStorage.access.claim(model.name, model.accessLevel);
   };
 
-  storageService.createModel = function defineModel(model) {
-    remoteStorage.RemoteStorage.defineModule(model.name, model.builder);
-    storageService.claimAccess(model);
+  // let connect = remoteStorage.remoteStorage.connect;
 
-    return remoteStorage.remoteStorage[model.name];
+  let enableLog = remoteStorage.remoteStorage.enableLog;
+
+  let claimAccess =
+    function claimAccess(moduleName, accessLevel = DEFAULT_ACCESS_LEVEL) {
+      remoteStorage.remoteStorage.access
+        .claim(STORAGE_MODULE_PREFIX + moduleName, accessLevel);
+    };
+
+  let buildModule = function buildModule(privateClient) {
+    privateClient.declareType(
+      cryptography.ENCRYPTED_OBJECT.name,
+      cryptography.ENCRYPTED_OBJECT.schema
+    );
+
+    let storeObject = function storeObject(key, object) {
+      let encryptedObject = cryptography.encrypt(object);
+      let encryptedKey = cryptography.encryptDeterministic(key).ct;
+
+      return $q.when(privateClient.storeObject(
+        cryptography.ENCRYPTED_OBJECT.name,
+        encryptedKey,
+        encryptedObject
+      )).then(() => object);
+    };
+
+    let getObject = function getObject(key) {
+      let encryptedKey = cryptography.encryptDeterministic(key).ct;
+
+      return $q.when(privateClient.getObject(encryptedKey))
+        .then(cryptography.decrypt);
+    };
+
+    let getAllObjects = function getAllObjects() {
+      //all encrypted paths are under root
+      let key = '';
+
+      return privateClient.getAll(key)
+        .then(encryptedObjects => R.pipe(
+          R.toPairs,
+          R.map(encryptedKeyObjectPair => [
+            cryptography.decrypt(encryptedKeyObjectPair[0]),
+            cryptography.decrypt(encryptedKeyObjectPair[1])
+          ])
+        )(encryptedObjects));
+    };
+
+    let onChange = function onChange(handleChange) {
+      privateClient.on('change', function handleStorageChange(event) {
+        let decryptedEvent = Object.assign({}, event);
+
+        decryptedEvent.relativePath = event.relativePath ?
+          cryptography.decrypt(event.relativePath) :
+          event.relativePath;
+
+        decryptedEvent.newValue = event.newValue ?
+          cryptography.decrypt(event.newValue) :
+          event.newValue;
+
+        decryptedEvent.oldValue = event.oldValue ?
+          cryptography.decrypt(event.oldValue) :
+          event.oldValue;
+
+        handleChange(decryptedEvent);
+      });
+    };
+
+    return {
+      exports: {
+        storeObject,
+        getObject,
+        getAllObjects,
+        onChange
+      }
+    };
   };
 
-  storageService.initialize = function initialize() {
-    storageService.enableLog();
+  let createLocal = function createLocal(moduleName = 'global') {
+    const KEY_PREFIX = STORAGE_MODULE_PREFIX + moduleName + KEY_SEPARATOR;
+
+    let getObject = function getObjectLocal(key) {
+      let object = JSON.parse($window.localStorage.getItem(KEY_PREFIX + key));
+      return $q.when(object);
+    };
+
+    let getObjectSync = function getObjectSyncLocal(key) {
+      return JSON.parse($window.localStorage.getItem(KEY_PREFIX + key));
+    };
+
+    let getAllObjects = function getAllObjects() {
+      let objects = R.pipe(
+        R.keys,
+        R.filter(key => key.startsWith(KEY_PREFIX)),
+        R.map(key => [
+          key.substr(KEY_PREFIX.length),
+          getObjectSync(key.substr(KEY_PREFIX.length))
+        ])
+      )($window.localStorage);
+
+      return $q.when(objects);
+    };
+
+    let storeObject = function storeObjectLocal(key, object) {
+      $window.localStorage.setItem(KEY_PREFIX + key, JSON.stringify(object));
+      return $q.when(object);
+    };
+
+    let storeObjectSync = function storeObjectLocalSync(key, object) {
+      $window.localStorage.setItem(KEY_PREFIX + key, JSON.stringify(object));
+      return object;
+    };
+
+    return {
+      getObject,
+      getObjectSync,
+      getAllObjects,
+      storeObject,
+      storeObjectSync
+    };
   };
 
-  return storageService;
+  let createRemote = function createRemote(moduleName) {
+    remoteStorage.RemoteStorage
+      .defineModule(STORAGE_MODULE_PREFIX + moduleName, buildModule);
+
+    return remoteStorage.remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
+  };
+
+  let initialize = function initialize() {
+    // enableLog();
+  };
+
+  return {
+    KEY_SEPARATOR,
+    getStorageKey,
+    claimAccess,
+    createLocal,
+    createRemote,
+    initialize
+  };
 }

@@ -1,5 +1,8 @@
 <ion-view view-title="Home">
+  <ion-nav-bar class="bar-positive">
+    <toc-header></toc-header>
+  </ion-nav-bar>
   <ion-content>
-    <toc-signin-form></toc-signin-form>
+    Hi {{homeView.currentUser.userInfo.displayName}}!
   </ion-content>
 </ion-view>

@@ -54,7 +54,7 @@ gulp.task('watch', function watch() {
 gulp.task('serve', function serve() {
   var serveCommand = argv.prod ?
     'http-server www -p 8100' :
-    'ionic serve --lab --address=localhost -i 8101';
+    'ionic serve --lab --address=$(hostname -i) -i 8101';
   return gulp.src('')
     .pipe(shell(serveCommand));
 });

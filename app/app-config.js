@@ -1,6 +1,9 @@
 import template from 'app.html!text';
 
-export default function configApp($stateProvider, $urlRouterProvider) {
+export default function configApp($stateProvider, $urlRouterProvider,
+  $ionicConfigProvider) {
+  $ionicConfigProvider.tabs.position('bottom');
+
   $stateProvider.state('app', {
     url: '/app',
     abstract: true,
@@ -14,5 +17,5 @@ export default function configApp($stateProvider, $urlRouterProvider) {
   //   url: '/'
   // });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/home');
+  $urlRouterProvider.otherwise('/app/welcome');
 }

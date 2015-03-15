@@ -5,3 +5,10 @@
   <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
   </button>
 </ion-nav-buttons>
+
+<ion-nav-buttons side="right">
+  <!-- hide when signed out, not yet because it makes debugging harder -->
+  <button ng-click="header.signOut()"
+    class="button button-icon button-clear ion-log-out">
+  </button>
+</ion-nav-buttons>

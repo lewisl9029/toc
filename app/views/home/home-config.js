@@ -7,7 +7,7 @@ export default function configHome($stateProvider) {
     views: {
       'content': {
         template: template,
-        controller: controller.name + ' as vm'
+        controller: controller.name + ' as homeView'
       }
     }
   });
