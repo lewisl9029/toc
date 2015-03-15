@@ -29,12 +29,12 @@ export default function cryptography(sjcl) {
   };
 
   let unescapeCiphertext = function unescapeCiphertext(ciphertext) {
-    return ciphertext.replace(/./g, '/');
+    return ciphertext.replace(/\./g, '/');
   };
 
   let checkCredentials =
     function checkCredentials(credentials) {
-      if (credentials.id && credentials.password) {
+      if (credentials && credentials.id && credentials.password) {
         return;
       }
 

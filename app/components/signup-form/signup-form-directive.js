@@ -15,7 +15,7 @@ export default function tocSignupForm() {
 
       this.createUser = function createUser(userInfo) {
         identity.create(userInfo)
-          // .then(() => $state.go('app.home'));
+          .then(() => $state.go('app.home'));
       };
     }
   };

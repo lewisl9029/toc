@@ -5,26 +5,27 @@ export default function tocSigninForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signinForm',
-    controller: function SigninFormController(state, identity) {
-      let usersCursor = state.persistent.tree.select(identity.IDENTITY_PATH);
+    controller: function SigninFormController($state, state, identity) {
+      let localUsersCursor = identity.IDENTITY_CURSORS.persistent;
 
-      this.users = usersCursor.get() || {};
+      this.users = localUsersCursor.get() || {};
       //TODO: store last signin time and use for default selected user
       this.selectedUser = Object.keys(this.users)[0];
       this.password = '';
 
       this.signIn = function() {
-        let authResult = identity.authenticate({
+        identity.authenticate({
           id: this.selectedUser,
           password: this.password
-        });
+        })
+        .then(() => $state.go('app.home'));
       };
 
       this.create = identity.create;
 
       //FIXME: dangling listener, refactor into service
-      usersCursor.on('update', () => {
-        this.users = usersCursor.get();
+      localUsersCursor.on('update', () => {
+        this.users = localUsersCursor.get();
       });
     }
   };

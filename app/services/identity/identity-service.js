@@ -1,5 +1,9 @@
-export default function identity(state, R, storage, cryptography) {
+export default function identity($q, state, R, storage, cryptography) {
   const IDENTITY_PATH = ['identity'];
+  const IDENTITY_CURSORS = {
+    persistent: state.persistent.tree.select(IDENTITY_PATH),
+    synchronized: state.synchronized.tree.select(IDENTITY_PATH)
+  };
 
   let create = function createIdentity(userInfo) {
     //TODO: replace with telehash id generation
@@ -16,60 +20,42 @@ export default function identity(state, R, storage, cryptography) {
       challenge: cryptography.encrypt(userCredentials.id, userCredentials)
     };
 
-    let identityCursorPersistent = state.persistent.tree
-      .select(IDENTITY_PATH);
-
     return state.save(
-      identityCursorPersistent,
+      IDENTITY_CURSORS.persistent,
       [persistentUserInfo.id, 'userInfo'],
       persistentUserInfo
     ).then(() => {
       cryptography.initialize(userCredentials);
       state.synchronized.initialize(persistentUserInfo.id);
-      let identityCursorSynchronized = state.synchronized.tree
-        .select(identity.IDENTITY_PATH);
 
       state.save(
-        identityCursorSynchronized,
+        IDENTITY_CURSORS.synchronized,
         ['userInfo'],
         persistentUserInfo
       );
     });
-
-    // state.initialize(userId);
-    // cryptography.initialize(userCredentials);
-
-    // localUsers[userId] = sanitizedUserInfo;
-    // storage.local.storeObject(USER_KEY_PREFIX + userId, sanitizedUserInfo);
-    //
-    // let identity = state.get('identity')
-    // identity.save(['info'], sanitizedUserInfo)
-    //   .then(() => console.dir(state.tree)); //DEBUG
   };
 
   let authenticate = function authenticateIdentity(userCredentials) {
-    let challenge = state.persistent.tree
-      .get(R.append(userCredentials.id)(IDENTITY_PATH)).challenge;
+    let challenge = IDENTITY_CURSORS.persistent
+      .get([userCredentials.id, 'userInfo']).challenge;
 
-    let authResult = false;
     try {
-      authResult =
-        cryptography.decrypt(challenge, userCredentials) ===
-          userCredentials.id;
+      cryptography.decrypt(challenge, userCredentials);
     }
     catch(error) {
-      console.log(error);
+      return $q.reject('Authentication failed');
     }
-    finally {
-      return authResult;
-    }
+
+    cryptography.initialize(userCredentials);
+    return state.synchronized.initialize(userCredentials.id);
   };
 
   let initialize = function initializeIdentity() {
   };
 
   return {
-    IDENTITY_PATH,
+    IDENTITY_CURSORS,
     create,
     authenticate,
     initialize

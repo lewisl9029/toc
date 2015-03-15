@@ -53,7 +53,7 @@ export default function state($q, storage, R, Baobab) {
   let initializeStore = function initializeStore(state, store) {
     state.store = store;
 
-    store.getAllObjects()
+    return store.getAllObjects()
       .then((keyObjectPairs) => {
         R.forEach(keyObjectPair =>
           state.tree.select(getStatePath(keyObjectPair[0]))
@@ -66,7 +66,7 @@ export default function state($q, storage, R, Baobab) {
   let initializePersistent = function initializePersistent(moduleName) {
     let store = storage.createLocal(moduleName);
 
-    initializeStore(stateService.persistent, store);
+    return initializeStore(stateService.persistent, store);
   };
 
   let initializeSynchronized = function initializeSynchronized(moduleName) {
@@ -76,7 +76,7 @@ export default function state($q, storage, R, Baobab) {
     storage.claimAccess(moduleName);
     store.onChange(handleChangeSynchronized);
 
-    initializeStore(stateService.synchronized, store);
+    return initializeStore(stateService.synchronized, store);
   };
 
   stateService.persistent.initialize = initializePersistent;
