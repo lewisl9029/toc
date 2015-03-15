@@ -1,6 +1,7 @@
 export default function cryptography(sjcl) {
   //TODO: progressively replace with webcrypto implementation
-  let credentials;
+  //TODO: add user setting to disable encryption
+  let cachedCredentials;
 
   // for encryption + authentication with a single key
   const AES_ENCRYPTION_MODE = 'gcm';
@@ -22,6 +23,15 @@ export default function cryptography(sjcl) {
     }
   };
 
+  // replaces forwardslash in base64 string for use in paths for indexeddb
+  let escapeCiphertext = function escapeCiphertext(ciphertext) {
+    return ciphertext.replace(/\//g, '.');
+  };
+
+  let unescapeCiphertext = function unescapeCiphertext(ciphertext) {
+    return ciphertext.replace(/./g, '/');
+  };
+
   let checkCredentials =
     function checkCredentials(credentials) {
       if (credentials.id && credentials.password) {
@@ -31,7 +41,7 @@ export default function cryptography(sjcl) {
       throw 'cryptography: mising credentials';
     };
 
-  let getHmac = function getHmac(object, credentials = credentials) {
+  let getHmac = function getHmac(object, credentials = cachedCredentials) {
     checkCredentials(credentials);
 
     let plaintext = JSON.stringify(object);
@@ -53,7 +63,7 @@ export default function cryptography(sjcl) {
   };
 
   let encryptBase =
-    function encryptBase(object, options, credentials = credentials) {
+    function encryptBase(object, options, credentials = cachedCredentials) {
       let plaintext = JSON.stringify(object);
 
       let ciphertext = sjcl.encrypt(
@@ -63,14 +73,14 @@ export default function cryptography(sjcl) {
       );
 
       return {
-        ct: ciphertext
+        ct: escapeCiphertext(ciphertext)
       };
     };
 
   // using the synthetic initialization vector (SIV) variant of AES
   // will need an audit of the implementation
   let encryptDeterministic =
-    function encryptDeterministic(object, credentials = credentials) {
+    function encryptDeterministic(object, credentials = cachedCredentials) {
       checkCredentials(credentials);
 
       let options = {
@@ -79,10 +89,10 @@ export default function cryptography(sjcl) {
         iv: getHmac(object)
       };
 
-      return encryptBase(object, options);
+      return encryptBase(object, options, credentials);
     };
 
-  let encrypt = function encrypt(object, credentials = credentials) {
+  let encrypt = function encrypt(object, credentials = cachedCredentials) {
     checkCredentials(credentials);
 
     let options = {
@@ -90,25 +100,26 @@ export default function cryptography(sjcl) {
       mode: AES_ENCRYPTION_MODE
     };
 
-    return encryptBase(object, options);
+    return encryptBase(object, options, credentials);
   };
 
-  let decrypt = function decrypt(encryptedObject, credentials = credentials) {
-    checkCredentials(credentials);
+  let decrypt =
+    function decrypt(encryptedObject, credentials = cachedCredentials) {
+      checkCredentials(credentials);
 
-    let ciphertext = encryptedObject.ct || encryptedObject;
+      let ciphertext = encryptedObject.ct || encryptedObject;
 
-    let plaintext = sjcl.decrypt(
-      credentials.password,
-      ciphertext
-    );
+      let plaintext = sjcl.decrypt(
+        credentials.password,
+        unescapeCiphertext(ciphertext)
+      );
 
-    return JSON.parse(plaintext);
-  };
+      return JSON.parse(plaintext);
+    };
 
   let initialize = function initializeCryptography(userCredentials) {
     // mutable local state because it's not suited for storage in state trees
-    credentials = userCredentials;
+    cachedCredentials = userCredentials;
   };
 
   return {

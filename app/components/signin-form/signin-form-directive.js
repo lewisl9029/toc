@@ -6,9 +6,11 @@ export default function tocSigninForm() {
     template: template,
     controllerAs: 'signinForm',
     controller: function SigninFormController(state, identity) {
-      this.users = state.persistent.tree.select;
+      let usersCursor = state.persistent.tree.select(identity.IDENTITY_PATH);
+
+      this.users = usersCursor.get() || {};
       //TODO: store last signin time and use for default selected user
-      this.selectedUser = Object.keys(identity.localUsers)[0];
+      this.selectedUser = Object.keys(this.users)[0];
       this.password = '';
 
       this.signIn = function() {
@@ -17,6 +19,13 @@ export default function tocSigninForm() {
           password: this.password
         });
       };
+
+      this.create = identity.create;
+
+      //FIXME: dangling listener, refactor into service
+      usersCursor.on('update', () => {
+        this.users = usersCursor.get();
+      });
     }
   };
 }

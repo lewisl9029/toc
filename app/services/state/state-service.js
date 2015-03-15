@@ -21,7 +21,7 @@ export default function state($q, storage, R, Baobab) {
   //TODO: create schema object and keep up to date for each tree
 
   let saveTransient = function saveTransient(cursor, path, object) {
-    return $q.when(cursor.set(path, object));
+    return $q.when(cursor.select(path).edit(object));
   };
 
   let savePersistent =
@@ -29,7 +29,7 @@ export default function state($q, storage, R, Baobab) {
       let storageKey = storage.getStorageKey(R.concat(cursor.path, path));
 
       return store.storeObject(storageKey, object)
-        .then(object => cursor.set(path, object));
+        .then(object => cursor.select(path).edit(object));
     };
 
   stateService.transient.save = saveTransient;
@@ -41,10 +41,8 @@ export default function state($q, storage, R, Baobab) {
       return;
     }
 
-    stateService.synchronized.tree.set(
-      getStatePath(event.relativePath),
-      event.newValue
-    );
+    stateService.synchronized.tree.select(getStatePath(event.relativePath))
+      .edit(event.newValue);
   };
 
   // let initializeTransient = function initializeTransient() {
@@ -56,12 +54,13 @@ export default function state($q, storage, R, Baobab) {
     state.store = store;
 
     store.getAllObjects()
-      .then(R.forEach(keyObjectPair =>
-        state.tree.set(
-          getStatePath(keyObjectPair[0]),
-          keyObjectPair[1]
-        )
-      ));
+      .then((keyObjectPairs) => {
+        R.forEach(keyObjectPair =>
+          state.tree.select(getStatePath(keyObjectPair[0]))
+            .edit(keyObjectPair[1])
+        )(keyObjectPairs);
+        state.tree.commit();
+      });
   };
 
   let initializePersistent = function initializePersistent(moduleName) {

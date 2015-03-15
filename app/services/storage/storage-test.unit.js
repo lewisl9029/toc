@@ -1,5 +1,4 @@
 import storage from './storage-service';
-import STORAGE_CONSTANTS from './storage-constants';
 
 import mockRemoteStorage from
   'libraries/remote-storage/remote-storage-test.mock';
@@ -8,7 +7,6 @@ describe('storage service', function() {
   it('should return storage module after model creation', function() {
     let mockStorageModel = {};
     mockStorageModel.name = 'test';
-    mockStorageModel.accessLevel = STORAGE_CONSTANTS.ACCESS_LEVELS.READ;
     mockStorageModel.builder = function mockModelBuilder() {
       return undefined;
     };

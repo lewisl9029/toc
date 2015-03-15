@@ -1,4 +1,4 @@
-export default function runApp(identity, $ionicPlatform) {
+export default function runApp(state, $ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default
     // Remove this to show the accessory bar above the keyboard for form inputs
@@ -11,5 +11,5 @@ export default function runApp(identity, $ionicPlatform) {
     }
   });
 
-  identity.initialize();
+  state.initialize();
 }

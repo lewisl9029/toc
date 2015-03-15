@@ -1,3 +1,2 @@
-export default function HomeController(contacts) {
-  this.contacts = contacts;
+export default function HomeController() {
 }

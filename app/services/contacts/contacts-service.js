@@ -1,5 +1,3 @@
-import contactsModel from 'services/contacts/contacts-model';
-
 export default function contacts(storage) {
   let contactsService = {};
 

@@ -17,7 +17,7 @@ export default function identity(state, R, storage, cryptography) {
     };
 
     let identityCursorPersistent = state.persistent.tree
-      .select(identity.IDENTITY_PATH);
+      .select(IDENTITY_PATH);
 
     return state.save(
       identityCursorPersistent,
@@ -33,7 +33,7 @@ export default function identity(state, R, storage, cryptography) {
         identityCursorSynchronized,
         ['userInfo'],
         persistentUserInfo
-      )
+      );
     });
 
     // state.initialize(userId);

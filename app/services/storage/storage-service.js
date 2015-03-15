@@ -101,12 +101,13 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
 
     let getAllObjects = function getAllObjects() {
       let objects = R.pipe(
+        R.keys,
         R.filter(key => key.startsWith(KEY_PREFIX)),
         R.map(key => [
           key.substr(KEY_PREFIX.length),
           getObjectSync(key.substr(KEY_PREFIX.length))
         ])
-      )(Object.keys($window.localStorage));
+      )($window.localStorage);
 
       return $q.when(objects);
     };
