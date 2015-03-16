@@ -17,7 +17,7 @@ System.config({
     "moment": "npm:moment@2.9.0",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "ramda": "npm:ramda@0.11.0",
-    "remotestorage/remotestorage.js": "github:remotestorage/remotestorage.js@0.11.2",
+    "remotestoragejs": "npm:remotestoragejs@0.11.2",
     "scut": "npm:scut@1.1.2",
     "sinon": "npm:sinon@1.13.0",
     "sjcl": "npm:sjcl@1.0.2",

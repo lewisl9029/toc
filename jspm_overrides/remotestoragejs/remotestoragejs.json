@@ -1,0 +1,6 @@
+{
+  "registry": "jspm",
+  "main": "release/0.11.2/remotestorage",
+  "format": "global",
+  "dependencies": {}
+}
