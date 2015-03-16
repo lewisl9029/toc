@@ -47,7 +47,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
       //all encrypted paths are under root
       let key = '';
 
-      return privateClient.getAll(key)
+      return $q.when(privateClient.getAll(key))
         .then(encryptedObjects => R.pipe(
           R.toPairs,
           R.map(encryptedKeyObjectPair => [

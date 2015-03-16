@@ -5,7 +5,7 @@ export default function tocSigninForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signinForm',
-    controller: function SigninFormController($state, state, identity) {
+    controller: function SigninFormController($state, identity) {
       let localUsersCursor = identity.IDENTITY_CURSORS.persistent;
 
       this.users = localUsersCursor.get() || {};
