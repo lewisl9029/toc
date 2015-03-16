@@ -1,0 +1,75 @@
+{
+  "name": "public-encrypt",
+  "version": "2.0.0",
+  "description": "browserify version of publicEncrypt & privateDecrypt",
+  "main": "browser.js",
+  "browser": "browser.js",
+  "scripts": {
+    "test": "node test/index.js | tspec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crypto-browserify/publicEncrypt.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/crypto-browserify/publicEncrypt/issues"
+  },
+  "homepage": "https://github.com/crypto-browserify/publicEncrypt",
+  "devDependencies": {
+    "tape": "^3.0.3",
+    "tap-spec": "^2.1.2"
+  },
+  "gitHead": "51e36739287358dd4e9d9272bfe1bed8ccb580eb",
+  "_id": "public-encrypt@2.0.0",
+  "_shasum": "9e49010bf021d33f6597c77abd939612a82767fc",
+  "_from": ".",
+  "_npmVersion": "2.1.10",
+  "_nodeVersion": "0.10.36",
+  "_npmUser": {
+    "name": "cwmma",
+    "email": "calvin.metcalf@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "cwmma",
+      "email": "calvin.metcalf@gmail.com"
+    },
+    {
+      "name": "dcousens",
+      "email": "email@dcousens.com"
+    },
+    {
+      "name": "dominictarr",
+      "email": "dominic.tarr@gmail.com"
+    },
+    {
+      "name": "jprichardson",
+      "email": "jprichardson@gmail.com"
+    },
+    {
+      "name": "indutny",
+      "email": "fedor@indutny.com"
+    }
+  ],
+  "dist": {
+    "shasum": "9e49010bf021d33f6597c77abd939612a82767fc",
+    "tarball": "http://registry.npmjs.org/public-encrypt/-/public-encrypt-2.0.0.tgz"
+  },
+  "jspm": {},
+  "registry": "npm",
+  "format": "cjs",
+  "ignore": [
+    "node_modules"
+  ],
+  "dependencies": {
+    "bn.js": "bn.js@^1.0.0",
+    "browserify-rsa": "browserify-rsa@^2.0.0",
+    "create-hash": "create-hash@^1.1.0",
+    "parse-asn1": "parse-asn1@^3.0.0",
+    "randombytes": "randombytes@^2.0.1",
+    "buffer": "github:jspm/nodelibs-buffer@^0.1.0",
+    "crypto": "github:jspm/nodelibs-crypto@^0.1.0"
+  }
+}

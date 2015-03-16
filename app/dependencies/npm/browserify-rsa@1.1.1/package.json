@@ -1,0 +1,23 @@
+{
+  "name": "browserify-rsa",
+  "version": "1.1.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js | tspec"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bn.js": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:calvinmetcalf/browserify-rsa.git"
+  },
+  "devDependencies": {
+    "tap-spec": "^2.1.2",
+    "tape": "^3.0.3",
+    "parse-asn1": "^1.2.0"
+  }
+}
