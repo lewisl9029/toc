@@ -1,0 +1,69 @@
+{
+  "name": "typology",
+  "version": "0.3.1",
+  "description": "A data validation library for Node.js and the browser.",
+  "main": "typology.js",
+  "scripts": {
+    "test": "gulp lint test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jacomyal/typology.git"
+  },
+  "keywords": [
+    "data",
+    "validation"
+  ],
+  "authors": [
+    "Yomguithereal",
+    "jacomyal"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jacomyal/typology/issues"
+  },
+  "homepage": "https://github.com/jacomyal/typology",
+  "devDependencies": {
+    "gulp": "^3.8.9",
+    "gulp-gjslint": "^0.1.4",
+    "gulp-header": "^1.2.2",
+    "gulp-jshint": "^1.8.6",
+    "gulp-mocha": "^1.1.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.0.1",
+    "jshint-stylish": "^1.0.0",
+    "lodash": "^2.4.1"
+  },
+  "gitHead": "e8fb4e46d1fc6eceb06a51e745665a7b0cffc721",
+  "_id": "typology@0.3.1",
+  "_shasum": "76d1ecc7acb424ae14b86f433073228db1c1b3f7",
+  "_from": ".",
+  "_npmVersion": "1.4.28",
+  "_npmUser": {
+    "name": "jacomyal",
+    "email": "alexis.jacomy@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "jacomyal",
+      "email": "alexis.jacomy@gmail.com"
+    },
+    {
+      "name": "yomguithereal",
+      "email": "kropotkinepiotr@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "76d1ecc7acb424ae14b86f433073228db1c1b3f7",
+    "tarball": "http://registry.npmjs.org/typology/-/typology-0.3.1.tgz"
+  },
+  "jspm": {},
+  "registry": "npm",
+  "format": "cjs",
+  "ignore": [
+    "node_modules"
+  ],
+  "dependencies": {
+    "systemjs-json": "github:systemjs/plugin-json@^0.1.0"
+  }
+}

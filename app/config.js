@@ -10,8 +10,8 @@ System.config({
 
 System.config({
   "map": {
-    "Yomguithereal/baobab": "github:Yomguithereal/baobab@0.3.2",
     "angular": "github:angular/bower-angular@1.3.14",
+    "baobab": "npm:baobab@0.4.0",
     "bitwiseshiftleft/sjcl": "github:bitwiseshiftleft/sjcl@1.0.2",
     "css": "github:systemjs/plugin-css@0.1.6",
     "davidtheclark/scut": "github:davidtheclark/scut@1.1.2",
@@ -87,6 +87,10 @@ System.config({
     },
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
+    },
+    "npm:baobab@0.4.0": {
+      "emmett": "npm:emmett@2.1.2",
+      "typology": "npm:typology@0.3.1"
     },
     "npm:buffer@3.1.0": {
       "base64-js": "npm:base64-js@0.0.8",
@@ -168,6 +172,9 @@ System.config({
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
     },
+    "npm:typology@0.3.1": {
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
+    },
     "npm:url@0.10.3": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "punycode": "npm:punycode@1.3.2",
@@ -180,4 +187,3 @@ System.config({
     }
   }
 });
-
