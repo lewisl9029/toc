@@ -13,12 +13,12 @@ System.config({
     "angular": "github:angular/bower-angular@1.3.14",
     "baobab": "npm:baobab@0.4.0",
     "css": "github:systemjs/plugin-css@0.1.6",
-    "davidtheclark/scut": "github:davidtheclark/scut@1.1.2",
     "ionic": "github:driftyco/ionic-bower@1.0.0-rc.0",
     "moment": "npm:moment@2.9.0",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
-    "ramda/ramda": "github:ramda/ramda@0.11.0",
+    "ramda": "npm:ramda@0.11.0",
     "remotestorage/remotestorage.js": "github:remotestorage/remotestorage.js@0.11.2",
+    "scut": "npm:scut@1.1.2",
     "sinon": "npm:sinon@1.13.0",
     "sjcl": "npm:sjcl@1.0.2",
     "text": "github:systemjs/plugin-text@0.0.2",
@@ -144,11 +144,6 @@ System.config({
       "inherits": "npm:inherits@2.0.1",
       "parse-asn1": "npm:parse-asn1@2.0.0",
       "stream": "github:jspm/nodelibs-stream@0.1.0"
-    },
-    "npm:buffer@3.1.0": {
-      "base64-js": "npm:base64-js@0.0.8",
-      "ieee754": "npm:ieee754@1.1.4",
-      "is-array": "npm:is-array@1.0.1"
     },
     "npm:buffer@3.1.1": {
       "base64-js": "npm:base64-js@0.0.8",
@@ -293,6 +288,9 @@ System.config({
       "randombytes": "npm:randombytes@2.0.1"
     },
     "npm:punycode@1.3.2": {
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:ramda@0.11.0": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:randombytes@2.0.1": {
