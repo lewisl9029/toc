@@ -1,0 +1,20 @@
+{
+  "name": "parse-asn1",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/calvinmetcalf/parse-asn1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "asn1.js": "^1.0.0",
+    "asn1.js-rfc3280": "^1.0.0",
+    "pemstrip": "0.0.1"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "pemstrip",
+  "version": "0.0.1",
+  "description": "Strips PKI artifacts down to plain base64-encoded strings, and bundles them back up.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apatil/pemstrip"
+  },
+  "keywords": [
+    "pem",
+    "pki",
+    "rsa",
+    "private",
+    "key",
+    "public",
+    "key",
+    "base64"
+  ],
+  "author": "Anand Patil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apatil/pemstrip/issues"
+  },
+  "homepage": "https://github.com/apatil/pemstrip"
+}

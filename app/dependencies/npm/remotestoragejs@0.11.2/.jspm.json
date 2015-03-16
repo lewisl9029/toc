@@ -1,0 +1,67 @@
+{
+  "name": "remotestoragejs",
+  "description": "JavaScript library for integrating remoteStorage",
+  "version": "0.11.2",
+  "private": false,
+  "license": "MIT",
+  "main": "release/0.11.2/remotestorage",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/remotestorage/remotestorage.js.git"
+  },
+  "homepage": "http://remotestorage.io",
+  "devDependencies": {
+    "jaribu": "0.x.x",
+    "uglify-js": "^2.4.16"
+  },
+  "scripts": {
+    "test": "node_modules/jaribu/bin/jaribu"
+  },
+  "gitHead": "9b9131c3cfd034bc5b19976aca729c21c44c1b3e",
+  "bugs": {
+    "url": "https://github.com/remotestorage/remotestorage.js/issues"
+  },
+  "_id": "remotestoragejs@0.11.2",
+  "_shasum": "bcf4b8d82c32454be36dad77f636dcb3ebaf7c9c",
+  "_from": ".",
+  "_npmVersion": "2.5.0",
+  "_nodeVersion": "0.10.36",
+  "_npmUser": {
+    "name": "skddc",
+    "email": "sebastian@kip.pe"
+  },
+  "maintainers": [
+    {
+      "name": "silverbucket",
+      "email": "nick@silverbucket.net"
+    },
+    {
+      "name": "michielbdejong",
+      "email": "michiel@unhosted.org"
+    },
+    {
+      "name": "galfert",
+      "email": "garret.alfert@gmail.com"
+    },
+    {
+      "name": "skddc",
+      "email": "sebastian@kip.pe"
+    }
+  ],
+  "dist": {
+    "shasum": "bcf4b8d82c32454be36dad77f636dcb3ebaf7c9c",
+    "tarball": "http://registry.npmjs.org/remotestoragejs/-/remotestoragejs-0.11.2.tgz"
+  },
+  "jspm": {
+    "registry": "jspm",
+    "main": "release/0.11.2/remotestorage",
+    "format": "global",
+    "dependencies": {}
+  },
+  "registry": "jspm",
+  "format": "global",
+  "ignore": [
+    "node_modules"
+  ],
+  "dependencies": {}
+}

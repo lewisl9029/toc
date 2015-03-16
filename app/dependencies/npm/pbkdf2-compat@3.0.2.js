@@ -1,0 +1,1 @@
+module.exports = require("npm:pbkdf2-compat@3.0.2/browser");

@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-import sjcl from 'bitwiseshiftleft/sjcl';
+import sjcl from 'sjcl';
 
 export default angular.module('toc.libraries.sjcl', [])
   .factory('sjcl', () => sjcl);
