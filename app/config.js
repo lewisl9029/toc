@@ -16,6 +16,7 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.6",
     "davidtheclark/scut": "github:davidtheclark/scut@1.1.2",
     "ionic": "github:driftyco/ionic-bower@1.0.0-rc.0",
+    "moment": "npm:moment@2.9.0",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "ramda/ramda": "github:ramda/ramda@0.11.0",
     "remotestorage/remotestorage.js": "github:remotestorage/remotestorage.js@0.11.2",
@@ -132,6 +133,9 @@ System.config({
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
+    "npm:moment@2.9.0": {
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
     "npm:os-browserify@0.1.2": {
       "os": "github:jspm/nodelibs-os@0.1.0"
     },
@@ -187,3 +191,4 @@ System.config({
     }
   }
 });
+
