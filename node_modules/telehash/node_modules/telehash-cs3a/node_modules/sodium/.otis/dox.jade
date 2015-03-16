@@ -1,0 +1,66 @@
+mixin tag-section(section_name)
+  .dox_tag_title= section_name
+
+mixin tag-stuff(tag)
+  .dox_tag_detail
+    if tag.name
+      span.name= tag.name
+    each type in (tag.types || [])
+      span.dox_type= type
+    if tag.description
+      span.description!= md(tag.description, true)
+    if tag.visibility
+      span.dox_type= tag.visibility 
+    if tag.url
+      a(href=tag.url)= (tag.title || tag.url)
+    if tag.local
+      span.dox_type= tag.local 
+
+.dox
+  .summary!= md(description.summary)
+  .body!= md(description.body)
+
+  if tags.length
+    - var hasParams = false, hasReturn = false, hasType = false;    
+
+    .details
+
+      each tag in tags
+        case tag.type
+
+          when "module"
+            h1= tag.moduleName 
+
+          when "param"
+            if !hasParams
+              - hasParams = true;                                       
+              mixin tag-section("Params")
+            mixin tag-stuff(tag)
+
+          when "return"
+            if !hasReturn
+              - hasReturn = true;                                       
+              mixin tag-section("Return")
+            mixin tag-stuff(tag)
+
+          when "type"
+            if !hasType
+              - hasType = true;                                         
+              mixin tag-section("Type")
+            mixin tag-stuff(tag)
+
+          when "api"
+            mixin tag-section("API")
+            mixin tag-stuff(tag)
+
+          when "see"
+            mixin tag-section("See")
+            mixin tag-stuff(tag)
+
+          default
+            - type = tag.type.charAt(0).toUpperCase() + tag.type.slice(1)
+            mixin tag-section(type)
+            mixin tag-stuff(tag)
+
+
+
