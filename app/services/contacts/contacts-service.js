@@ -1,4 +1,4 @@
-export default function contacts(storage) {
+export default function contacts(state) {
   let contactsService = {};
 
   contactsService.initialize = function initializeContacts() {
