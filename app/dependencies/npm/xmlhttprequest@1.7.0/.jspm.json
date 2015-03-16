@@ -1,0 +1,63 @@
+{
+  "name": "xmlhttprequest",
+  "description": "XMLHttpRequest for Node",
+  "version": "1.7.0",
+  "author": {
+    "name": "Dan DeFelippi",
+    "url": "http://driverdan.com"
+  },
+  "keywords": [
+    "xhr",
+    "ajax"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://creativecommons.org/licenses/MIT/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/driverdan/node-XMLHttpRequest.git"
+  },
+  "bugs": {
+    "url": "http://github.com/driverdan/node-XMLHttpRequest/issues"
+  },
+  "engines": {
+    "node": ">=0.4.0"
+  },
+  "main": "./lib/XMLHttpRequest.js",
+  "homepage": "https://github.com/driverdan/node-XMLHttpRequest",
+  "_id": "xmlhttprequest@1.7.0",
+  "dist": {
+    "shasum": "dc697a8df0258afacad526c1c296b1bdd12c4ab3",
+    "tarball": "http://registry.npmjs.org/xmlhttprequest/-/xmlhttprequest-1.7.0.tgz"
+  },
+  "_from": ".",
+  "_npmVersion": "1.4.3",
+  "_npmUser": {
+    "name": "driverdan",
+    "email": "dan@driverdan.com"
+  },
+  "maintainers": [
+    {
+      "name": "driverdan",
+      "email": "dan@driverdan.com"
+    }
+  ],
+  "jspm": {},
+  "registry": "npm",
+  "format": "cjs",
+  "ignore": [
+    "node_modules"
+  ],
+  "dependencies": {
+    "url": "github:jspm/nodelibs-url@^0.1.0",
+    "child_process": "github:jspm/nodelibs-child_process@^0.1.0",
+    "fs": "github:jspm/nodelibs-fs@^0.1.0",
+    "http": "github:jspm/nodelibs-http@^1.7.0",
+    "https": "github:jspm/nodelibs-https@^0.1.0",
+    "buffer": "github:jspm/nodelibs-buffer@^0.1.0",
+    "process": "github:jspm/nodelibs-process@^0.1.0"
+  }
+}

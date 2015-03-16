@@ -1,0 +1,15 @@
+RS Feedback
+
+ and while i'm here, i might as well ask about the reason i was looking for a sync() function: if i have two clients connected to a remotestorage server and one writes a value, i see the sync happen on the other one, but there's no 'change' notification.  i can repro this using the "caching strategies" sample app.  am i doing or expecting something wrong?
+
+ i will admit that i find the RS API pretty difficult to understand.  everything i do is based on guessing from examples
+
+ i think one thing that would help a great deal is a highest-level doc that just explains the concepts
+
+ntucker_> one thing that would probably help is a timeline of the lifetimes of the various objects involved in a module (privateClient, publicClient, the function you pass to defineModule, and the object you return from that function)
+
+ntucker_> btw, yesterday when i looked after ignoring remotestorage for a few months was the first time i'd seen any of this schema stuff.  is that new?  i don't see any docs on it either
+
+<ntucker_> i didn't even know it existed until i ran across it in the modules repository
+
+<ntucker_> btw, what do you guys who work on remotestorage use for a server?  i was using restore but i had some trouble getting it to run recently and i switched to just using the in-memory store in the starter kit for now

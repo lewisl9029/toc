@@ -1,0 +1,1 @@
+module.exports = require("npm:webfinger.js@2.1.4/src/webfinger");

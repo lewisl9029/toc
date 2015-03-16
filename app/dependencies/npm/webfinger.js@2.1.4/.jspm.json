@@ -1,0 +1,70 @@
+{
+  "name": "webfinger.js",
+  "version": "2.1.4",
+  "description": "a simple webfinger record lookup library",
+  "license": "LGPL",
+  "private": false,
+  "keywords": [
+    "webfinger",
+    "webfist",
+    "discovery",
+    "hostmeta",
+    "jrd",
+    "finger",
+    "useraddress",
+    "lookup"
+  ],
+  "main": "./src/webfinger.js",
+  "author": {
+    "name": "Nick Jennings",
+    "email": "nick@silverbucket.net"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "jaribu": "^0.2.2",
+    "minify": "^1.3.0"
+  },
+  "scripts": {
+    "test": "jaribu"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/silverbucket/webfinger.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/silverbucket/webfinger.js/issues"
+  },
+  "homepage": "https://github.com/silverbucket/webfinger.js",
+  "gitHead": "b888139f13c9a00f7d3f0611912ce61bebb5bfbb",
+  "_id": "webfinger.js@2.1.4",
+  "_shasum": "724afe7609219269dcb11ad31685192e4ac38321",
+  "_from": ".",
+  "_npmVersion": "2.1.9",
+  "_nodeVersion": "0.10.33",
+  "_npmUser": {
+    "name": "silverbucket",
+    "email": "nick@silverbucket.net"
+  },
+  "maintainers": [
+    {
+      "name": "silverbucket",
+      "email": "nick@silverbucket.net"
+    }
+  ],
+  "dist": {
+    "shasum": "724afe7609219269dcb11ad31685192e4ac38321",
+    "tarball": "http://registry.npmjs.org/webfinger.js/-/webfinger.js-2.1.4.tgz"
+  },
+  "jspm": {},
+  "registry": "npm",
+  "format": "cjs",
+  "ignore": [
+    "node_modules"
+  ],
+  "dependencies": {
+    "xmlhttprequest": "xmlhttprequest@^1.6.0",
+    "fs": "github:jspm/nodelibs-fs@^0.1.0",
+    "systemjs-json": "github:systemjs/plugin-json@^0.1.0",
+    "process": "github:jspm/nodelibs-process@^0.1.0"
+  }
+}

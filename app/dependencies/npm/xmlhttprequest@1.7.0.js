@@ -1,0 +1,1 @@
+module.exports = require("npm:xmlhttprequest@1.7.0/lib/XMLHttpRequest");

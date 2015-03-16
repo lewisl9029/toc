@@ -18,7 +18,7 @@ System.config({
     "ionic": "github:driftyco/ionic-bower@1.0.0-rc.0",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "ramda/ramda": "github:ramda/ramda@0.11.0",
-    "remotestorage/remotestorage.js": "github:remotestorage/remotestorage.js@0.11.2",
+    "remotestoragejs": "npm:remotestoragejs@0.11.2",
     "sinon": "npm:sinon@1.13.0",
     "text": "github:systemjs/plugin-text@0.0.2",
     "github:angular-ui/ui-router@0.2.13": {
@@ -40,7 +40,7 @@ System.config({
       "assert": "npm:assert@1.3.0"
     },
     "github:jspm/nodelibs-buffer@0.1.0": {
-      "buffer": "npm:buffer@3.1.0"
+      "buffer": "npm:buffer@3.1.1"
     },
     "github:jspm/nodelibs-events@0.1.0": {
       "events-browserify": "npm:events-browserify@0.0.1"
@@ -64,6 +64,9 @@ System.config({
     },
     "github:jspm/nodelibs-process@0.1.1": {
       "process": "npm:process@0.10.1"
+    },
+    "github:jspm/nodelibs-querystring@0.1.0": {
+      "querystring": "npm:querystring@0.2.0"
     },
     "github:jspm/nodelibs-stream@0.1.0": {
       "stream-browserify": "npm:stream-browserify@1.0.0"
@@ -92,7 +95,15 @@ System.config({
       "emmett": "npm:emmett@2.1.2",
       "typology": "npm:typology@0.3.1"
     },
+    "npm:bluebird@2.9.14": {
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
     "npm:buffer@3.1.0": {
+      "base64-js": "npm:base64-js@0.0.8",
+      "ieee754": "npm:ieee754@1.1.4",
+      "is-array": "npm:is-array@1.0.1"
+    },
+    "npm:buffer@3.1.1": {
       "base64-js": "npm:base64-js@0.0.8",
       "ieee754": "npm:ieee754@1.1.4",
       "is-array": "npm:is-array@1.0.1"
@@ -152,6 +163,18 @@ System.config({
       "string_decoder": "npm:string_decoder@0.10.31",
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
+    "npm:remotestoragejs@0.11.2": {
+      "bluebird": "npm:bluebird@2.9.14",
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "fs": "github:jspm/nodelibs-fs@0.1.1",
+      "http": "github:jspm/nodelibs-http@1.7.1",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "querystring": "github:jspm/nodelibs-querystring@0.1.0",
+      "tv4": "npm:tv4@1.1.9",
+      "webfinger.js": "npm:webfinger.js@2.1.4",
+      "xhr2": "npm:xhr2@0.0.7"
+    },
     "npm:sinon@1.13.0": {
       "formatio": "npm:formatio@1.1.1",
       "lolex": "npm:lolex@1.1.0",
@@ -172,6 +195,9 @@ System.config({
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
     },
+    "npm:tv4@1.1.9": {
+      "fs": "github:jspm/nodelibs-fs@0.1.1"
+    },
     "npm:typology@0.3.1": {
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
@@ -184,6 +210,30 @@ System.config({
     "npm:util@0.10.3": {
       "inherits": "npm:inherits@2.0.1",
       "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:webfinger.js@2.1.4": {
+      "fs": "github:jspm/nodelibs-fs@0.1.1",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0",
+      "xmlhttprequest": "npm:xmlhttprequest@1.7.0"
+    },
+    "npm:xhr2@0.0.7": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "http": "github:jspm/nodelibs-http@1.7.1",
+      "https": "github:jspm/nodelibs-https@0.1.0",
+      "os": "github:jspm/nodelibs-os@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "url": "github:jspm/nodelibs-url@0.1.0"
+    },
+    "npm:xmlhttprequest@1.7.0": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "child_process": "github:jspm/nodelibs-child_process@0.1.0",
+      "fs": "github:jspm/nodelibs-fs@0.1.1",
+      "http": "github:jspm/nodelibs-http@1.7.1",
+      "https": "github:jspm/nodelibs-https@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "url": "github:jspm/nodelibs-url@0.1.0"
     }
   }
 });
+

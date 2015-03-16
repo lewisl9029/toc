@@ -50,7 +50,7 @@
       "ionic": "github:driftyco/ionic-bower@1.0.0-rc.0",
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
       "ramda/ramda": "github:ramda/ramda@^0.11.0",
-      "remotestorage/remotestorage.js": "github:remotestorage/remotestorage.js@^0.11.2",
+      "remotestoragejs": "npm:remotestoragejs@^0.11.2",
       "sinon": "npm:sinon@^1.12.2",
       "text": "github:systemjs/plugin-text@^0.0.2"
     }
