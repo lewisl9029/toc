@@ -1,0 +1,37 @@
+{
+  "name": "typology",
+  "version": "0.3.1",
+  "description": "A data validation library for Node.js and the browser.",
+  "main": "typology.js",
+  "scripts": {
+    "test": "gulp lint test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jacomyal/typology.git"
+  },
+  "keywords": [
+    "data",
+    "validation"
+  ],
+  "authors": [
+    "Yomguithereal",
+    "jacomyal"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jacomyal/typology/issues"
+  },
+  "homepage": "https://github.com/jacomyal/typology",
+  "devDependencies": {
+    "gulp": "^3.8.9",
+    "gulp-gjslint": "^0.1.4",
+    "gulp-header": "^1.2.2",
+    "gulp-jshint": "^1.8.6",
+    "gulp-mocha": "^1.1.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.0.1",
+    "jshint-stylish": "^1.0.0",
+    "lodash": "^2.4.1"
+  }
+}

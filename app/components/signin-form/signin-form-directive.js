@@ -21,8 +21,6 @@ export default function tocSigninForm() {
         .then(() => $state.go('app.home'));
       };
 
-      this.create = identity.create;
-
       //FIXME: dangling listener, refactor into service
       localUsersCursor.on('update', () => {
         this.users = localUsersCursor.get();
