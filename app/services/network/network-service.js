@@ -34,6 +34,8 @@ export default function network($q, state, telehash) {
       };
 
       activeSession = telehashSession;
+      //DEBUG
+      window.tocSession = activeSession;
 
       return sessionInfo;
     });
