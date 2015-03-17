@@ -17,7 +17,7 @@ export default function network($q, $log, state, telehash) {
   let initialize = function initializeNetwork(keypair = {}) {
     let deferredSession = $q.defer();
 
-    telehash.init(keypair,
+    telehash.init({id: keypair},
       function initializeTelehash(error, telehashSession) {
         if (error) {
           return deferredSession.reject(error);
