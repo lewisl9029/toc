@@ -41,34 +41,62 @@ export default function network($q, $log, state, telehash) {
     });
   };
 
-  let handleMessage = function handleMessage(error, packet, channel, callback) {
-    if (error) {
-      return $log.error(error);
-    }
+  let handleMessage =
+    function handleMessage(error, packet, channel, callback) {
+      if (error) {
+        return $log.error(error);
+      }
 
-    //FIXME: get date from packet instead
-    let message = {
-      id: Date.now().toString(),
-      content: packet.js.m
+      //FIXME: get date from packet instead
+      let message = {
+        id: Date.now().toString(),
+        sender: packet.js.s,
+        content: packet.js.m
+      };
+
+      let messageCursor = state.synchronized.tree
+        .select(['messages', message.id]);
+
+      //TODO: implement toast on new message arrival
+      state.save(messageCursor, message)
+        .catch($log.error);
     };
-
-    let messageCursor = state.synchronized.tree
-      .select(['messages', message.id]);
-
-    //TODO: implement toast on new message arrival
-    state.save(messageCursor, message)
-      .catch($log.error);
-  };
   //TODO: implement channel creation as follows:
   // direct message channel id = sorted(sender, receiver)
   // group message channel id = channelname-creatorhashname
-  let listen = function listen(channelName, handlePacket,
-    session = activeSession) {
-    checkSession(session);
+  let listen =
+    function listen(channel, handlePacket, session = activeSession) {
+      checkSession(session);
 
-    session.listen(channelName, handlePacket);
-  };
+      session.listen(channel.id, handlePacket);
+    };
 
+  let handleAcknowledgement =
+    function handleAcknowledgement(error, packet, channel, callback) {
+      if (error) {
+        return $log.error(error);
+      }
+
+      let message = {
+        id: Date.now().toString(),
+        sender: packet.js.s,
+        content: packet.js.m
+      };
+
+      let messageCursor = state.synchronized.tree
+        .select(['messages', message.id]);
+
+      state.save(messageCursor, message)
+        .catch($log.error);
+    };
+
+  let send =
+    function send(channel, payload, handlePacket = handleAcknowledgement,
+      session = activeSession) {
+      checkSession(session);
+
+      session.start(channel.participants[0], channel.id, payload, handlePacket);
+    };
 
   return {
     NETWORK_CURSORS,
