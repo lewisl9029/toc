@@ -51,6 +51,7 @@ export default function network($q, $log, state, telehash) {
       if (error) {
         return $log.error(error);
       }
+
       callback(true);
       channel.send();
 
@@ -84,6 +85,8 @@ export default function network($q, $log, state, telehash) {
       if (error) {
         return $log.error(error);
       }
+
+      callback(true);
 
       let message = {
         id: Date.now().toString(),

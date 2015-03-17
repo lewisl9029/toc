@@ -23,7 +23,10 @@ export default function state($q, storage, R, Baobab) {
       let storageKey = storage.getStorageKey(R.concat(cursor.path, path));
 
       return store.storeObject(storageKey, object)
-        .then(object => cursor.select(path).edit(object));
+        .then(object => {
+          cursor.select(path).edit(object)
+          return object;
+        });
     };
 
   stateService.persistent.save = savePersistent;
