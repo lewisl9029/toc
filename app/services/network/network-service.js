@@ -14,10 +14,15 @@ export default function network($q, $log, state, telehash) {
     throw 'network: no active session';
   };
 
-  let initialize = function initializeNetwork(keypair = {}) {
+  let initialize = function initializeNetwork(keypair) {
     let deferredSession = $q.defer();
 
-    telehash.init({id: keypair},
+    let telehashKeypair = {};
+    if (keypair) {
+      telehashKeypair.id = keypair;
+    }
+
+    telehash.init(telehashKeypair,
       function initializeTelehash(error, telehashSession) {
         if (error) {
           return deferredSession.reject(error);
