@@ -56,10 +56,10 @@ export default function network($q, $log, state, telehash) {
       };
 
       let messageCursor = state.synchronized.tree
-        .select(['messages', message.id]);
+        .select(['messages']);
 
       //TODO: implement toast on new message arrival
-      state.save(messageCursor, message)
+      state.save(messageCursor, [message.id], message)
         .then($log.info)
         .catch($log.error);
     };
@@ -86,9 +86,9 @@ export default function network($q, $log, state, telehash) {
       };
 
       let messageCursor = state.synchronized.tree
-        .select(['messages', message.id]);
+        .select(['messages']);
 
-      state.save(messageCursor, message)
+      state.save(messageCursor, [message.id], message)
         .then($log.info)
         .catch($log.error);
     };
