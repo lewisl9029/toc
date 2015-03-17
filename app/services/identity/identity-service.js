@@ -1,4 +1,4 @@
-export default function identity($q, state, R, storage, cryptography) {
+export default function identity($q, state, R, network, cryptography) {
   const IDENTITY_PATH = ['identity'];
   const IDENTITY_CURSORS = {
     persistent: state.persistent.tree.select(IDENTITY_PATH),
@@ -8,32 +8,45 @@ export default function identity($q, state, R, storage, cryptography) {
   let create = function createIdentity(userInfo) {
     //TODO: replace with telehash id generation
     //TODO: open issue for why sjcl trims salt by 1 char
+    // id: Date.now().toString().substr(1),
     let userCredentials = {
-      id: Date.now().toString().substr(1),
+      id: undefined,
       password: userInfo.password
     };
 
     let persistentUserInfo = {
-      id: userCredentials.id,
+      id: undefined,
       displayName: userInfo.displayName,
       email: userInfo.email,
-      challenge: cryptography.encrypt(userCredentials.id, userCredentials)
+      challenge: undefined
     };
 
-    return state.save(
+    let sessionInfo;
+
+    return network.initialize().then((newSessionInfo) => {
+      sessionInfo = newSessionInfo;
+      userCredentials.id = sessionInfo.id;
+      persistentUserInfo.id = sessionInfo.id;
+      persistentUserInfo.challenge =
+        cryptography.encrypt(userCredentials.id, userCredentials);
+    }).then(() => state.save(
       IDENTITY_CURSORS.persistent,
       [persistentUserInfo.id, 'userInfo'],
       persistentUserInfo
-    ).then(() => {
+    )).then(() => {
+      //TODO: need to initialize with primary userId to connect to module
+      // possibly add another remotestorage module that stores users's ids
       cryptography.initialize(userCredentials);
-      state.synchronized.initialize(persistentUserInfo.id);
-
-      state.save(
-        IDENTITY_CURSORS.synchronized,
-        ['userInfo'],
-        persistentUserInfo
-      );
-    });
+      return state.synchronized.initialize(persistentUserInfo.id);
+    }).then(() => state.save(
+      IDENTITY_CURSORS.synchronized,
+      ['userInfo'],
+      persistentUserInfo
+    )).then(() => state.save(
+      network.NETWORK_CURSORS.synchronized,
+      ['sessions', sessionInfo.id, 'sessionInfo'],
+      sessionInfo
+    ));
   };
 
   let authenticate = function authenticateIdentity(userCredentials) {

@@ -4,9 +4,7 @@ export default function state($q, storage, R, Baobab) {
   let stateService = {};
 
   // local application state persisted in-memory only
-  stateService.transient = {
-    tree: new Baobab({})
-  };
+  stateService.transient = {};
 
   // local application state persisted in localStorage
   stateService.persistent = {
@@ -20,10 +18,6 @@ export default function state($q, storage, R, Baobab) {
 
   //TODO: create schema object and keep up to date for each tree
 
-  let saveTransient = function saveTransient(cursor, path, object) {
-    return $q.when(cursor.select(path).edit(object));
-  };
-
   let savePersistent =
     function savePersistent(cursor, path, object, store) {
       let storageKey = storage.getStorageKey(R.concat(cursor.path, path));
@@ -32,7 +26,6 @@ export default function state($q, storage, R, Baobab) {
         .then(object => cursor.select(path).edit(object));
     };
 
-  stateService.transient.save = saveTransient;
   stateService.persistent.save = savePersistent;
   stateService.synchronized.save = savePersistent;
 
@@ -83,7 +76,6 @@ export default function state($q, storage, R, Baobab) {
   stateService.synchronized.initialize = initializeSynchronized;
 
   const TREE_TO_STATE = new Map([
-    [stateService.transient.tree, stateService.transient],
     [stateService.persistent.tree, stateService.persistent],
     [stateService.synchronized.tree, stateService.synchronized]
   ]);
