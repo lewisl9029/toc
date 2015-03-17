@@ -50,7 +50,6 @@ export default function network($q, $log, state, telehash) {
       //FIXME: get date from packet instead
       let message = {
         id: Date.now().toString(),
-        sender: packet.js.s,
         content: packet.js.m
       };
 
@@ -59,13 +58,15 @@ export default function network($q, $log, state, telehash) {
 
       //TODO: implement toast on new message arrival
       state.save(messageCursor, message)
+        .then($log.info)
         .catch($log.error);
     };
   //TODO: implement channel creation as follows:
   // direct message channel id = sorted(sender, receiver)
   // group message channel id = channelname-creatorhashname
   let listen =
-    function listen(channel, handlePacket, session = activeSession) {
+    function listen(channel, handlePacket = handleMessage,
+      session = activeSession) {
       checkSession(session);
 
       session.listen(channel.id, handlePacket);
@@ -87,6 +88,7 @@ export default function network($q, $log, state, telehash) {
         .select(['messages', message.id]);
 
       state.save(messageCursor, message)
+        .then($log.info)
         .catch($log.error);
     };
 
@@ -95,11 +97,13 @@ export default function network($q, $log, state, telehash) {
       session = activeSession) {
       checkSession(session);
 
-      session.start(channel.participants[0], channel.id, payload, handlePacket);
+      session.start(channel.contacts[0], channel.id, payload, handlePacket);
     };
 
   return {
     NETWORK_CURSORS,
+    listen,
+    send,
     initialize
   };
 }

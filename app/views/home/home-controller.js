@@ -1,4 +1,4 @@
-export default function HomeController(state, identity) {
+export default function HomeController(state, identity, network) {
   let currentUserCursor = identity.IDENTITY_CURSORS.synchronized;
 
   this.currentUser = currentUserCursor.get();
@@ -6,4 +6,11 @@ export default function HomeController(state, identity) {
   currentUserCursor.on('update', () => {
     this.currentUser = currentUserCursor.get();
   });
+
+  this.listen = () => network.listen({id: 'test'});
+
+  this.send = () => network.send({
+    id: 'test',
+    contacts: [this.contactId]
+  }, {m: this.message});
 }
