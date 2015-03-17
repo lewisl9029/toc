@@ -12,7 +12,8 @@ export default function runApp($state, $rootScope, state, $ionicPlatform) {
   });
 
   state.initialize();
-
+  // go to welcome on startup, temporary measure until remember-me implemented
+  $state.go('app.welcome');
   // redirect to app.welcome if identity has not been initialized
   $rootScope.$on('$stateChangeStart', function(event, toState) {
     if (toState.name === 'app.welcome') {
