@@ -12,5 +12,5 @@ export default function HomeController(state, identity, network) {
   this.send = () => network.send({
     id: 'test',
     contacts: [this.contactId]
-  }, {m: this.message});
+  }, {js:{m: this.message}});
 }
