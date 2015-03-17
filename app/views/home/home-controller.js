@@ -7,10 +7,10 @@ export default function HomeController(state, identity, network) {
     this.currentUser = currentUserCursor.get();
   });
 
-  this.listen = () => network.listen({id: 'test'});
+  this.listen = () => network.listen({id: 'toc-test'});
 
   this.send = () => network.send({
-    id: 'test',
+    id: 'toc-test',
     contacts: [this.contactId]
   }, {js:{m: this.message}});
 }

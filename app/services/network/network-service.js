@@ -47,6 +47,7 @@ export default function network($q, $log, state, telehash) {
         return $log.error(error);
       }
       callback(true);
+      channel.send();
 
       //FIXME: get date from packet instead
       let message = {
