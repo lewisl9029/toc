@@ -1,4 +1,4 @@
-export default function runApp(state, $ionicPlatform) {
+export default function runApp($state, $rootScope, state, $ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default
     // Remove this to show the accessory bar above the keyboard for form inputs
@@ -12,4 +12,17 @@ export default function runApp(state, $ionicPlatform) {
   });
 
   state.initialize();
+
+  // redirect to app.welcome if identity has not been initialized
+  $rootScope.$on('$stateChangeStart', function(event, toState) {
+    if (toState.name === 'app.welcome') {
+      return;
+    }
+
+    if (state.synchronized.tree.get('identity')) {
+      return;
+    }
+
+    $state.go('app.welcome');
+  });
 }
