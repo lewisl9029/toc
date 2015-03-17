@@ -4,5 +4,15 @@
   </ion-nav-bar>
   <ion-content>
     Hi {{homeView.currentUser.userInfo.displayName}}!
+    <br>
+    Your ID is:
+    <input type="text" ng-value="homeView.currentUser.userInfo.id">
+    Contact ID:
+    <input type="text" ng-model="homeView.contactId">
+    <button ng-click="homeView.listen()">Listen</button>
+    <br>
+    Message:
+    <input type="text" ng-model="homeView.message">
+    <button ng-click="homeView.send()">Send</button>
   </ion-content>
 </ion-view>
