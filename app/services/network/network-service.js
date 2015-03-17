@@ -80,7 +80,6 @@ export default function network($q, $log, state, telehash) {
 
       let message = {
         id: Date.now().toString(),
-        sender: packet.js.s,
         content: packet.js.m
       };
 
