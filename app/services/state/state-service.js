@@ -76,7 +76,6 @@ export default function state($q, storage, R, Baobab) {
   stateService.synchronized.initialize = initializeSynchronized;
 
   const TREE_TO_STATE = new Map([
-    [stateService.transient.tree, stateService.transient],
     [stateService.persistent.tree, stateService.persistent],
     [stateService.synchronized.tree, stateService.synchronized]
   ]);
