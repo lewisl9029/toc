@@ -35,7 +35,7 @@ export default function identity($q, state, R, network, channels,
         sessionInfo = newSessionInfo;
         userCredentials.id = sessionInfo.id;
         persistentUserInfo.id = sessionInfo.id;
-        userInfo.id = sessionInfo.id;
+        newUserInfo.id = sessionInfo.id;
         persistentUserInfo.challenge =
           cryptography.encrypt(userCredentials.id, userCredentials);
       }).then(() => state.save(
