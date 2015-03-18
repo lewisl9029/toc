@@ -100,13 +100,13 @@ export default function network($q, $log, state, telehash) {
         .then($log.info)
         .catch($log.error);
     };
-
+  //TODO: refactor to include contact argument
   let send =
     function send(channel, payload, handlePacket = handleAcknowledgement,
       session = activeSession) {
       checkSession(session);
 
-      session.start(channel.contacts[0], channel.id, payload, handlePacket);
+      session.start(channel.contactIds[0], channel.id, payload, handlePacket);
     };
 
   return {

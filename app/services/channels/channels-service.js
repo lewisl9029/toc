@@ -3,8 +3,8 @@ export default function channels($q, state, network, identity) {
   const CHANNELS_CURSORS = {
     synchronized: state.synchronized.tree.select(CHANNELS_PATH)
   };
-  const CHANNEL_NAME_PREFIX = 'toc-';
-  const INVITE_CHANNEL_NAME = CHANNEL_NAME_PREFIX + 'invite';
+  const CHANNEL_ID_PREFIX = 'toc-';
+  const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
 
   let generateContactChannelId = function generateContactChannelId(contactId) {
     let userId = identity.IDENTITY_CURSORS.synchronized.get('userInfo').id;
@@ -13,7 +13,7 @@ export default function channels($q, state, network, identity) {
       userId + '-' + contactId :
       contactId + '-' + userId;
 
-    return CHANNEL_NAME_PREFIX + channelId;
+    return CHANNEL_ID_PREFIX + channelId;
   };
 
   let generateGroupChannelId = function generateGroupChannelId(channelName) {
@@ -21,7 +21,7 @@ export default function channels($q, state, network, identity) {
 
     let channelId = userId + channelName;
 
-    return CHANNEL_NAME_PREFIX + channelId;
+    return CHANNEL_ID_PREFIX + channelId;
   };
 
   let createContactChannel = function createContactChannel(contactId) {
@@ -32,15 +32,16 @@ export default function channels($q, state, network, identity) {
       contactIds: [contactId]
     };
 
-    return state.save(
-        CHANNELS_CURSORS.synchronized,
-        [channelId, 'channelInfo'],
-        channel
-      ).then(() => network.listen(channel));
+    return channel;
+    // state.save(
+    //     CHANNELS_CURSORS.synchronized,
+    //     [channelId, 'channelInfo'],
+    //     channel
+    //   ).then(() => network.listen(channel));
   };
 
   let initialize = function initialzeChannels() {
-    return network.listen({id: INVITE_CHANNEL_NAME});
+    return network.listen({id: INVITE_CHANNEL_ID});
   };
 
   return {

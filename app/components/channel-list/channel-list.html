@@ -1,0 +1,8 @@
+<ion-list>
+  <ion-item class="item item-avatar"
+    ng-repeat="(id, channel) in channelList.channels track by id">
+    <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07711c08d50?d=identicon" alt="Avatar for {{channelList.contacts[channel.contactIds[0]].userInfo.email}}" />
+    <h2>{{channelList.contacts[channel.contactIds[0]].userInfo.displayName}}</h2>
+    <p>{{channelList.contacts[channel.contactIds[0]].userInfo.id}}</p>
+  </ion-item>
+</ion-list>
