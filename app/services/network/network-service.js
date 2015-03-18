@@ -4,6 +4,9 @@ export default function network($q, $log, state, telehash) {
     synchronized: state.synchronized.tree.select(NETWORK_PATH)
   };
 
+  const CHANNEL_ID_PREFIX = 'toc-';
+  const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
+
   let activeSession;
 
   let checkSession = function checkSession(session) {
@@ -14,36 +17,31 @@ export default function network($q, $log, state, telehash) {
     throw 'network: no active session';
   };
 
-  let initialize = function initializeNetwork(keypair) {
-    let deferredSession = $q.defer();
+  let generateContactChannelId =
+    function generateContactChannelId(userId, contactId) {
+      let channelId = userId > contactId ?
+        userId + '-' + contactId :
+        contactId + '-' + userId;
 
-    let telehashKeypair = {};
-    if (keypair) {
-      telehashKeypair.id = keypair;
-    }
+      return CHANNEL_ID_PREFIX + channelId;
+    };
 
-    telehash.init(telehashKeypair,
-      function initializeTelehash(error, telehashSession) {
-        if (error) {
-          return deferredSession.reject(error);
-        }
+  let generateGroupChannelId =
+    function generateGroupChannelId(userId, channelName) {
+      let channelId = userId + channelName;
 
-        return deferredSession.resolve(telehashSession);
-      }
-    );
+      return CHANNEL_ID_PREFIX + channelId;
+    };
 
-    return deferredSession.promise.then((telehashSession) => {
-      let sessionInfo = {
-        id: telehashSession.hashname,
-        keypair: telehashSession.id
-      };
+  let createContactChannel = function createContactChannel(userId, contactId) {
+    let channelId = generateContactChannelId(userId, contactId);
 
-      activeSession = telehashSession;
-      //DEBUG
-      window.tocSession = activeSession;
+    let channel = {
+      id: channelId,
+      contactIds: [contactId]
+    };
 
-      return sessionInfo;
-    });
+    return channel;
   };
 
   let handleMessage =
@@ -54,6 +52,14 @@ export default function network($q, $log, state, telehash) {
 
       callback(true);
       channel.send();
+
+      if (packet.js.i) {
+        let invite = {
+          userInfo: packet.js.i
+        };
+
+        let contactChannel = state.synchronized.tree.select(['channels'])
+      };
 
       //FIXME: get date from packet instead
       let message = {
@@ -92,18 +98,6 @@ export default function network($q, $log, state, telehash) {
       }
 
       callback(true);
-
-      let message = {
-        id: Date.now().toString(),
-        content: packet.js
-      };
-
-      let messageCursor = state.synchronized.tree
-        .select(['messages']);
-
-      state.save(messageCursor, [message.id], message)
-        .then($log.info)
-        .catch($log.error);
     };
   //TODO: refactor to include contact argument
   let send =
@@ -124,8 +118,44 @@ export default function network($q, $log, state, telehash) {
       return $q.when();
     };
 
+  let initialize = function initializeNetwork(keypair) {
+    let deferredSession = $q.defer();
+
+    let telehashKeypair = {};
+    if (keypair) {
+      telehashKeypair.id = keypair;
+    }
+
+    telehash.init(telehashKeypair,
+      function initializeTelehash(error, telehashSession) {
+        if (error) {
+          return deferredSession.reject(error);
+        }
+
+        return deferredSession.resolve(telehashSession);
+      }
+    );
+
+    return deferredSession.promise.then((telehashSession) => {
+      let sessionInfo = {
+        id: telehashSession.hashname,
+        keypair: telehashSession.id
+      };
+
+      activeSession = telehashSession;
+      //DEBUG
+      window.tocSession = activeSession;
+
+      listen({id: INVITE_CHANNEL_ID});
+
+      return sessionInfo;
+    });
+  };
+
   return {
     NETWORK_CURSORS,
+    INVITE_CHANNEL_ID,
+    createContactChannel,
     listen,
     send,
     initialize

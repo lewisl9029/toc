@@ -1,5 +1,4 @@
-export default function identity($q, state, R, network, channels,
-  cryptography) {
+export default function identity($q, state, R, network, cryptography) {
   const IDENTITY_PATH = ['identity'];
   const IDENTITY_CURSORS = {
     persistent: state.persistent.tree.select(IDENTITY_PATH),
@@ -55,7 +54,7 @@ export default function identity($q, state, R, network, channels,
         network.NETWORK_CURSORS.synchronized,
         ['sessions', sessionInfo.id, 'sessionInfo'],
         sessionInfo
-      )).then(() => channels.initialize());
+      ));
   };
 
   let authenticate = function authenticateIdentity(userCredentials) {
@@ -75,7 +74,7 @@ export default function identity($q, state, R, network, channels,
         ['sessions', userCredentials.id, 'sessionInfo']
       )).then((sessionInfo) =>
         network.initialize(sessionInfo.keypair
-      )).then(() => channels.initialize());
+      ));
   };
 
   let initialize = function initializeIdentity() {

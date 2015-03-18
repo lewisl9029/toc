@@ -1,4 +1,4 @@
-export default function contacts($log, state, network, identity, channels) {
+export default function contacts($log, state, network, identity) {
   const CONTACTS_PATH = ['contacts'];
   const CONTACTS_CURSORS = {
     synchronized: state.synchronized.tree.select(CONTACTS_PATH)
@@ -6,10 +6,10 @@ export default function contacts($log, state, network, identity, channels) {
 
   let invite = function inviteContact(contactId) {
     let userInfo = identity.IDENTITY_CURSORS.synchronized.get('userInfo');
-    let contactChannel = channels.createContactChannel(userInfo.id, contactId);
+    let contactChannel = network.createContactChannel(userInfo.id, contactId);
 
     let inviteChannel = {
-      id: channels.INVITE_CHANNEL_ID,
+      id: network.INVITE_CHANNEL_ID,
       contactIds: contactChannel.contactIds
     };
 
@@ -25,8 +25,8 @@ export default function contacts($log, state, network, identity, channels) {
         [contactId, 'userInfo'],
         contact
       )).then(() => state.save(
-        channels.CHANNELS_CURSORS.synchronized,
-        [contactChannel.id, 'channelInfo'],
+        network.NETWORK_CURSORS.synchronized,
+        ['channels', contactChannel.id, 'channelInfo'],
         contactChannel
       )).then(() => network.listen(contactChannel))
       .catch($log.error);

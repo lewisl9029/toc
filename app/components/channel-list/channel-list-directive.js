@@ -5,9 +5,10 @@ export default function tocChannelList() {
     restrict: 'E',
     template: template,
     controllerAs: 'channelList',
-    controller: function ChannelListController(contacts, channels) {
+    controller: function ChannelListController(contacts, network) {
       //TODO: optimize by pulling cursors into service
-      let channelsCursor = channels.CHANNELS_CURSORS.synchronized;
+      let channelsCursor =
+        network.NETWORK_CURSORS.synchronized.select(['channels']);
       let contactsCursor = contacts.CONTACTS_CURSORS.synchronized;
 
       this.channels = channelsCursor.get();
