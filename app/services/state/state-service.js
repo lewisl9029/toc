@@ -1,4 +1,4 @@
-export default function state($q, storage, R, Baobab) {
+export default function state($rootScope, $q, storage, R, Baobab) {
   let getStatePath = R.split(storage.KEY_SEPARATOR);
 
   let stateService = {};
@@ -15,6 +15,13 @@ export default function state($q, storage, R, Baobab) {
   stateService.synchronized = {
     tree: new Baobab({})
   };
+
+  stateService.persistent.tree.on('update',
+    () => setTimeout(() => $rootScope.$apply())
+  );
+  stateService.synchronized.tree.on('update',
+    () => setTimeout(() => $rootScope.$apply())
+  );
 
   //TODO: create schema object and keep up to date for each tree
 
