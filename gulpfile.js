@@ -44,6 +44,9 @@ var paths = {
     basePaths.dev + 'components/**/*.html',
     basePaths.dev + 'views/**/*.html',
     basePaths.dev + '*.html'
+  ],
+  asset: [
+    basePaths.dev + 'assets/**'
   ]
 };
 
@@ -80,7 +83,7 @@ gulp.task('clean-package', function clean(done) {
 gulp.task('build', function build(done) {
   return runSequence(
     'clean-build',
-    ['build-js', 'build-html'],
+    ['build-js', 'build-html', 'build-asset'],
     done
   );
 });
@@ -115,6 +118,7 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
   return gulp.src([
       basePaths.dev + 'dependencies/es6-module-loader.src.js',
       basePaths.dev + 'dependencies/system.src.js',
+      basePaths.dev + 'dependencies/babel-polyfill.js',
       basePaths.dev + 'config.js',
       basePaths.dev + 'initialize.js',
     ], {
@@ -127,12 +131,21 @@ gulp.task('build-jspm', ['build-sass'], function buildJspm() {
   return gulp.src('')
     .pipe(shell([
       'jspm bundle app ' + basePaths.prod +
-        'app.js --minify --skip-source-maps --no-mangle'
+        'app.js --skip-source-maps'
+        //FIXME: minifying takes forever with the bundled telehash library
+        // 'app.js --minify --skip-source-maps --no-mangle'
     ]));
 });
 
 gulp.task('build-html', function buildHtml() {
   return gulp.src(basePaths.dev + 'index.html')
+    .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('build-asset', function buildAsset() {
+  return gulp.src(basePaths.dev + 'assets/**', {
+      base: basePaths.dev
+    })
     .pipe(gulp.dest(basePaths.prod));
 });
 
