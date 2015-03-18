@@ -58,7 +58,7 @@ export default function network($q, $log, state, telehash) {
       //FIXME: get date from packet instead
       let message = {
         id: Date.now().toString(),
-        content: packet.js.m
+        content: packet.js
       };
 
       let messageCursor = state.synchronized.tree
@@ -75,9 +75,14 @@ export default function network($q, $log, state, telehash) {
   let listen =
     function listen(channel, handlePacket = handleMessage,
       session = activeSession) {
-      checkSession(session);
+      try {
+        checkSession(session);
+        session.listen(channel.id, handlePacket);
+      } catch(error) {
+        return $q.reject(error);
+      }
 
-      session.listen(channel.id, handlePacket);
+      return $q.when();
     };
 
   let handleAcknowledgement =
@@ -90,7 +95,7 @@ export default function network($q, $log, state, telehash) {
 
       let message = {
         id: Date.now().toString(),
-        content: packet.js.m
+        content: packet.js
       };
 
       let messageCursor = state.synchronized.tree
@@ -104,9 +109,19 @@ export default function network($q, $log, state, telehash) {
   let send =
     function send(channel, payload, handlePacket = handleAcknowledgement,
       session = activeSession) {
-      checkSession(session);
+      try {
+        checkSession(session);
+        session.start(
+          channel.contactIds[0],
+          channel.id,
+          payload,
+          handlePacket
+        );
+      } catch(error) {
+        return $q.reject(error);
+      }
 
-      session.start(channel.contactIds[0], channel.id, payload, handlePacket);
+      return $q.when();
     };
 
   return {

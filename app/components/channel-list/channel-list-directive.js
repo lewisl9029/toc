@@ -13,6 +13,9 @@ export default function tocChannelList() {
       this.channels = channelsCursor.get();
       this.contacts = contactsCursor.get();
 
+      this.inviteId = '';
+      this.invite = contacts.invite;
+
       channelsCursor.on('update', () => {
         this.channels = channelsCursor.get();
       });

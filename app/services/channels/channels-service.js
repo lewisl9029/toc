@@ -1,4 +1,4 @@
-export default function channels($q, state, network, identity) {
+export default function channels($q, state, network) {
   const CHANNELS_PATH = ['channels'];
   const CHANNELS_CURSORS = {
     synchronized: state.synchronized.tree.select(CHANNELS_PATH)
@@ -6,26 +6,24 @@ export default function channels($q, state, network, identity) {
   const CHANNEL_ID_PREFIX = 'toc-';
   const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
 
-  let generateContactChannelId = function generateContactChannelId(contactId) {
-    let userId = identity.IDENTITY_CURSORS.synchronized.get('userInfo').id;
+  let generateContactChannelId =
+    function generateContactChannelId(userId, contactId) {
+      let channelId = userId > contactId ?
+        userId + '-' + contactId :
+        contactId + '-' + userId;
 
-    let channelId = userId > contactId ?
-      userId + '-' + contactId :
-      contactId + '-' + userId;
+      return CHANNEL_ID_PREFIX + channelId;
+    };
 
-    return CHANNEL_ID_PREFIX + channelId;
-  };
+  let generateGroupChannelId =
+    function generateGroupChannelId(userId, channelName) {
+      let channelId = userId + channelName;
 
-  let generateGroupChannelId = function generateGroupChannelId(channelName) {
-    let userId = identity.IDENTITY_CURSORS.synchronized.get('userInfo').id;
+      return CHANNEL_ID_PREFIX + channelId;
+    };
 
-    let channelId = userId + channelName;
-
-    return CHANNEL_ID_PREFIX + channelId;
-  };
-
-  let createContactChannel = function createContactChannel(contactId) {
-    let channelId = generateContactChannelId(contactId);
+  let createContactChannel = function createContactChannel(userId, contactId) {
+    let channelId = generateContactChannelId(userId, contactId);
 
     let channel = {
       id: channelId,
@@ -33,11 +31,6 @@ export default function channels($q, state, network, identity) {
     };
 
     return channel;
-    // state.save(
-    //     CHANNELS_CURSORS.synchronized,
-    //     [channelId, 'channelInfo'],
-    //     channel
-    //   ).then(() => network.listen(channel));
   };
 
   let initialize = function initialzeChannels() {
@@ -45,6 +38,7 @@ export default function channels($q, state, network, identity) {
   };
 
   return {
+    CHANNELS_CURSORS,
     createContactChannel,
     initialize
   };
