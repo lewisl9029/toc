@@ -21,6 +21,12 @@ export default function identity($q, state, R, network, cryptography) {
       challenge: undefined
     };
 
+    let newUserInfo = {
+      id: undefined,
+      displayName: userInfo.displayName,
+      email: userInfo.email
+    };
+
     let sessionInfo;
 
     return network.initialize()
@@ -28,6 +34,7 @@ export default function identity($q, state, R, network, cryptography) {
         sessionInfo = newSessionInfo;
         userCredentials.id = sessionInfo.id;
         persistentUserInfo.id = sessionInfo.id;
+        newUserInfo.id = sessionInfo.id;
         persistentUserInfo.challenge =
           cryptography.encrypt(userCredentials.id, userCredentials);
       }).then(() => state.save(
@@ -42,7 +49,7 @@ export default function identity($q, state, R, network, cryptography) {
       }).then(() => state.save(
         IDENTITY_CURSORS.synchronized,
         ['userInfo'],
-        persistentUserInfo
+        newUserInfo
       )).then(() => state.save(
         network.NETWORK_CURSORS.synchronized,
         ['sessions', sessionInfo.id, 'sessionInfo'],
@@ -65,7 +72,9 @@ export default function identity($q, state, R, network, cryptography) {
     return state.synchronized.initialize(userCredentials.id)
       .then(() => network.NETWORK_CURSORS.synchronized.get(
         ['sessions', userCredentials.id, 'sessionInfo']
-      )).then((sessionInfo) => network.initialize(sessionInfo.keypair));
+      )).then((sessionInfo) =>
+        network.initialize(sessionInfo.keypair
+      ));
   };
 
   let initialize = function initializeIdentity() {

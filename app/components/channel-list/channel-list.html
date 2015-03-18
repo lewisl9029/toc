@@ -1,0 +1,31 @@
+<ion-list>
+  <div class="item item-divider">
+    Contacts
+  </div>
+  <div class="item item-input-inset">
+    <label class="item-input-wrapper">
+      <input type="text" placeholder="Contact ID"
+        ng-model="channelList.inviteId">
+    </label>
+    <button class="button button-small button-balanced"
+      ng-click="channelList.invite(channelList.inviteId)">
+      <i class="icon ion-plus"></i>
+    </button>
+  </div>
+  <ion-item class="item item-avatar"
+    ng-repeat="(id, channel) in channelList.channels track by id"
+    ng-class="{'item-button-right': channel.channelInfo.pendingAccept}">
+    <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07711c08d50?d=identicon" alt="Avatar for {{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email}}" />
+    <h2>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.displayName}}</h2>
+    <p>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id}}</p>
+    <div class="buttons" ng-if="channel.channelInfo.pendingAccept">
+      <button class="button button-positive button-small"
+        ng-click="channelList.invite(channel.channelInfo.contactIds[0])">
+        <i class="icon ion-checkmark"></i>
+      </button>
+      <button class="button button-assertive button-small">
+        <i class="icon ion-close"></i>
+      </button>
+    </div>
+  </ion-item>
+</ion-list>
