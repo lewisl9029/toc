@@ -54,26 +54,38 @@ export default function network($q, $log, state, telehash) {
       channel.send();
 
       if (packet.js.i) {
-        let invite = {
-          userInfo: packet.js.i
-        };
+        let contactInfo = packet.js.i;
 
-        let contactChannel = state.synchronized.tree.select(['channels'])
+        let userId =
+          state.synchronized.tree.select(['identity', 'userInfo']).get().id;
+
+        let channel = createContactChannel(userId, contactInfo.id);
+        channel.accepted = false;
+
+        return state.save(
+          NETWORK_CURSORS.synchronized,
+          ['channels', channel.id, 'channelInfo'],
+          channel
+        ).then(() => state.save(
+          state.synchronized.tree.select(['contacts']),
+          [contactInfo.id, 'userInfo'],
+          contactInfo
+        ));
       };
 
-      //FIXME: get date from packet instead
-      let message = {
-        id: Date.now().toString(),
-        content: packet.js
-      };
-
-      let messageCursor = state.synchronized.tree
-        .select(['messages']);
-
-      //TODO: implement toast on new message arrival
-      state.save(messageCursor, [message.id], message)
-        .then($log.info)
-        .catch($log.error);
+      // //FIXME: get date from packet instead
+      // let message = {
+      //   id: Date.now().toString(),
+      //   content: packet.js
+      // };
+      //
+      // let messageCursor = state.synchronized.tree
+      //   .select(['messages']);
+      //
+      // //TODO: implement toast on new message arrival
+      // state.save(messageCursor, [message.id], message)
+      //   .then($log.info)
+      //   .catch($log.error);
     };
   //TODO: implement channel creation as follows:
   // direct message channel id = sorted(sender, receiver)
@@ -118,6 +130,19 @@ export default function network($q, $log, state, telehash) {
       return $q.when();
     };
 
+  let sendInvite = function sendInvite(contactId, userInfo) {
+    let inviteChannel = {
+      id: INVITE_CHANNEL_ID,
+      contactIds: [contactId]
+    };
+
+    let payload = {
+      i: userInfo
+    };
+
+    return send(inviteChannel, payload);
+  };
+
   let initialize = function initializeNetwork(keypair) {
     let deferredSession = $q.defer();
 
@@ -158,6 +183,7 @@ export default function network($q, $log, state, telehash) {
     createContactChannel,
     listen,
     send,
+    sendInvite,
     initialize
   };
 }

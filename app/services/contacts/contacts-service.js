@@ -8,18 +8,13 @@ export default function contacts($log, state, network, identity) {
     let userInfo = identity.IDENTITY_CURSORS.synchronized.get('userInfo');
     let contactChannel = network.createContactChannel(userInfo.id, contactId);
 
-    let inviteChannel = {
-      id: network.INVITE_CHANNEL_ID,
-      contactIds: contactChannel.contactIds
-    };
-
     let contact = {
       id: contactId,
       displayName: 'Invite Pending',
       email: 'unknown-user@toc-messenger.io'
     };
 
-    return network.send(inviteChannel, userInfo)
+    return network.sendInvite(contactId, userInfo)
       .then(() => state.save(
         CONTACTS_CURSORS.synchronized,
         [contactId, 'userInfo'],
@@ -28,8 +23,7 @@ export default function contacts($log, state, network, identity) {
         network.NETWORK_CURSORS.synchronized,
         ['channels', contactChannel.id, 'channelInfo'],
         contactChannel
-      )).then(() => network.listen(contactChannel))
-      .catch($log.error);
+      )).then(() => network.listen(contactChannel));
   };
 
   let initialize = function initilizeContacts() {
