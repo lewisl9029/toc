@@ -22,7 +22,7 @@ export default function identity($q, state, R, network, channels,
       challenge: undefined
     };
 
-    let userInfo = {
+    let newUserInfo = {
       id: undefined,
       displayName: userInfo.displayName,
       email: userInfo.email
@@ -50,12 +50,12 @@ export default function identity($q, state, R, network, channels,
       }).then(() => state.save(
         IDENTITY_CURSORS.synchronized,
         ['userInfo'],
-        userInfo
+        newUserInfo
       )).then(() => state.save(
         network.NETWORK_CURSORS.synchronized,
         ['sessions', sessionInfo.id, 'sessionInfo'],
         sessionInfo
-      )).then(() => channels.initialize());;
+      )).then(() => channels.initialize());
   };
 
   let authenticate = function authenticateIdentity(userCredentials) {
