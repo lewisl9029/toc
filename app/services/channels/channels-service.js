@@ -39,6 +39,7 @@ export default function channels($q, state, network) {
 
   return {
     CHANNELS_CURSORS,
+    INVITE_CHANNEL_ID,
     createContactChannel,
     initialize
   };

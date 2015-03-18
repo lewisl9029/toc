@@ -19,7 +19,7 @@ export default function contacts($log, state, network, identity, channels) {
       email: 'unknown-user@toc-messenger.io'
     };
 
-    return network.send(contactChannel, userInfo)
+    return network.send(inviteChannel, userInfo)
       .then(() => state.save(
         CONTACTS_CURSORS.synchronized,
         [contactId, 'userInfo'],
