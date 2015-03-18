@@ -114,7 +114,7 @@ export default function network($q, $log, state, telehash) {
         session.start(
           channel.contactIds[0],
           channel.id,
-          payload,
+          {js: payload},
           handlePacket
         );
       } catch(error) {
