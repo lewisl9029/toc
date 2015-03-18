@@ -8,7 +8,10 @@ export default function contacts($log, state, network, identity) {
     let userInfo = identity.IDENTITY_CURSORS.synchronized.get('userInfo');
     let contactChannel = network.createContactChannel(userInfo.id, contactId);
 
-    let contact = {
+    let existingContact = CONTACTS_CURSORS.synchronized
+      .get([contactId, 'userInfo']);
+
+    let contact = existingContact || {
       id: contactId,
       displayName: 'Invite Pending',
       email: 'unknown-user@toc-messenger.io'

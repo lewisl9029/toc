@@ -20,7 +20,7 @@
     <p>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id}}</p>
     <div class="buttons" ng-if="channel.channelInfo.pendingAccept">
       <button class="button button-positive button-small"
-        ng-click="channelList.invite(channel.channelInfo.id)">
+        ng-click="channelList.invite(channel.channelInfo.contactIds[0])">
         <i class="icon ion-checkmark"></i>
       </button>
       <button class="button button-assertive button-small">
