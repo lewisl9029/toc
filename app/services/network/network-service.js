@@ -60,7 +60,11 @@ export default function network($q, $log, state, telehash) {
           state.synchronized.tree.select(['identity', 'userInfo']).get().id;
 
         let channel = createContactChannel(userId, contactInfo.id);
-        channel.accepted = false;
+
+        let existingChannel = NETWORK_CURSORS.synchronized
+          .get(['channels', channel.id, 'channelInfo']);
+
+        channel.pendingAccept = !existingChannel;
 
         return state.save(
           NETWORK_CURSORS.synchronized,
