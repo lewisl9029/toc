@@ -197,7 +197,7 @@ export default function network($q, $log, $interval, R, state, telehash) {
         return;
       }
 
-      sendStatus(channelInfo.channelInfo.contactIds[0], 1)
+      sendStatus(channelInfo.contactIds[0], 1)
         .catch((error) => $log.error(error));
     }
 
