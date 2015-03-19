@@ -93,7 +93,7 @@ export default function network($q, $log, $interval, R, state, telehash) {
     let message = {
       id: messageId,
       //TODO: find main contact userId from sender userId
-      contactId: contactId,
+      sender: contactId,
       time: sentTime,
       content: messagePayload
     };
@@ -105,97 +105,48 @@ export default function network($q, $log, $interval, R, state, telehash) {
     );
   };
 
-  let handlePayload =
-    function handlePayload(error, packet, channel, callback) {
-      if (error) {
-        return $log.error(error);
-      }
-
-      callback(true);
-      channel.send();
-
-      if (packet.js.i) {
-        return handleInvite(packet.js.i);
-      } else if (packet.js.s) {
-        return handleStatus(packet.js.s, packet.from.hashname);
-      } else if (packet.js.m) {
-        return handleMessage(
-          packet.js.m,
-          packet.from.sentAt,
-          packet.from.hashname,
-          channel.type.substr(1) //remove leading underscore
-        );
-      } else {
-        return $q.reject(
-          'Unrecognized packet format: ' + JSON.stringify(packet.js)
-        );
-      }
-
-      // //FIXME: get date from packet instead
-      // let message = {
-      //   id: Date.now().toString(),
-      //   content: packet.js
-      // };
-      //
-      // let messageCursor = state.synchronized.tree
-      //   .select(['messages']);
-      //
-      // //TODO: implement toast on new message arrival
-      // state.save(messageCursor, [message.id], message)
-      //   .then($log.info)
-      //   .catch($log.error);
-    };
-  //TODO: implement channel creation as follows:
-  // direct message channel id = sorted(sender, receiver)
-  // group message channel id = channelname-creatorhashname
-  let listen =
-    function listen(channelInfo, handlePacket = handlePayload,
-      session = activeSession) {
-      try {
-        checkSession(session);
-        session.listen(channelInfo.id, handlePacket);
-      } catch(error) {
-        return $q.reject(error);
-      }
-
-      return $q.when();
-    };
-
-  let handleAcknowledgement =
-    function handleAcknowledgement(error, packet, channel, callback) {
-      if (error) {
-        if (error !== 'timeout') {
-          throw error;
+  let listen = function listen(channelInfo, session = activeSession) {
+    let handlePacket = (error, packet, channel, callback) => {
+      let handledPacket = () => {
+        if (error) {
+          return $q.reject(error);
         }
 
-        return state.save(
-          state.synchronized.tree.select(['contacts']),
-          [packet.from.hashname, 'statusId'],
-          0
-        );
+        callback(true);
+        channel.send({js: {a: packet.from.sentAt}});
+
+        if (packet.js.i) {
+          return handleInvite(packet.js.i);
+        } else if (packet.js.s) {
+          return handleStatus(packet.js.s, packet.from.hashname);
+        } else if (packet.js.m) {
+          //TODO: implement toast on new message arrival
+          return handleMessage(
+            packet.js.m,
+            packet.from.sentAt,
+            packet.from.hashname,
+            channel.type.substr(1) //remove leading underscore
+          );
+        } else {
+          return $q.reject(
+            'Unrecognized packet format: ' + JSON.stringify(packet.js)
+          );
+        }
       }
 
-      callback(true);
-      return $q.when();
+      return handledPacket().catch($log.error);
     };
-  //TODO: refactor to include contact argument
-  let send =
-    function send(channelInfo, payload, handlePacket = handleAcknowledgement,
-      session = activeSession) {
-      try {
-        checkSession(session);
-        session.start(
-          channelInfo.contactIds[0],
-          channelInfo.id,
-          {js: payload},
-          handlePacket
-        );
-      } catch(error) {
-        return $q.reject(error);
-      }
 
-      return $q.when();
-    };
+    let listenResult;
+    try {
+      checkSession(session);
+      listenResult = session.listen(channelInfo.id, handlePacket);
+    } catch(error) {
+      return $q.reject(error);
+    }
+
+    return $q.when(listenResult);
+  };
 
   let sendInvite = function sendInvite(contactId, userInfo) {
     let inviteChannel = {
@@ -219,7 +170,17 @@ export default function network($q, $log, $interval, R, state, telehash) {
       s: statusId
     };
 
-    return send(contactChannel, payload);
+    return send(contactChannel, payload).catch((error) => {
+      if (error !== 'timeout') {
+        return $log.error(error);
+      }
+
+      return state.save(
+        state.synchronized.tree.select(['contacts']),
+        [contactId, 'statusId'],
+        0
+      );
+    });
   };
 
   let sendMessage = function sendMessage(channelInfo, message) {
@@ -227,16 +188,67 @@ export default function network($q, $log, $interval, R, state, telehash) {
       m: message
     };
 
-    return send(channelInfo, payload);
+    return send(channelInfo, payload).then((acknowledgement) => {
+      let sentTime = acknowledgement;
+
+      let userId =
+        state.synchronized.tree.select(['identity', 'userInfo']).get().id;
+      let messageId = sentTime + '-' + userId;
+
+      let message = {
+        id: messageId,
+        //TODO: find main contact userId from sender userId
+        sender: userId,
+        time: sentTime,
+        content: message
+      };
+
+      return state.save(
+        NETWORK_CURSORS.synchronized.select(
+          ['channels', channelInfo.id, 'messages']
+        ),
+        [messageId],
+        message
+      );
+    });
   };
 
-  let initializeChannel = function initializeChannel(channelInfo) {
-    listen(channelInfo);
-    let sendStatusUpdate = () => {
-      sendStatus(channelInfo.contactIds[0], 1)
-        .catch($log.error);
+  let send =
+    function send(channelInfo, payload, session = activeSession) {
+      let sentMessage = $q.defer();
+
+      let handleAcknowledgement = (error, packet, channel, callback) => {
+        if (error) {
+          return sentMessage.reject(error);
+        }
+
+        callback(true);
+        return sentMessage.resolve(packet.js.a);
+      };
+
+      try {
+        checkSession(session);
+        session.start(
+          channelInfo.contactIds[0],
+          channelInfo.id,
+          {js: payload},
+          handleAcknowledgement
+        );
+      } catch(error) {
+        return sentMessage.reject(error);
+      }
+
+      return sentMessage.promise;
     };
 
+  let initializeChannel = function initializeChannel(channelInfo) {
+    let listenResult = listen(channelInfo);
+
+    if (channelInfo.contactIds.length !== 1) {
+      return listenResult;
+    }
+
+    let sendStatusUpdate = () => sendStatus(channelInfo.contactIds[0], 1);
     return $interval(sendStatusUpdate, 5000);
   };
 

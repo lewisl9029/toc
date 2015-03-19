@@ -8,16 +8,20 @@ export default function tocMessageList() {
       channelId: '@'
     },
     controllerAs: 'messageList',
-    controller: function MessageListController($scope, $state, contacts,
-      network) {
+    controller: function MessageListController($scope, $state, identity,
+      contacts, network) {
       let channelsCursor = network.NETWORK_CURSORS.synchronized
         .select('channels');
+      let contactsCursor = contacts.CONTACTS_CURSORS.synchronized;
+      let identityCursor = identity.IDENTITY_CURSORS.synchronized;
 
       let messagesCursor = channelsCursor.select([
         $scope.channelId,
         'messages'
       ]);
 
+      this.contacts = contactsCursor.get();
+      this.userId = identityCursor.get(['userInfo']).id;
       // this.messages = {
       //   6: {content: '1234'},
       //   5: {content: '1234'},
