@@ -201,13 +201,9 @@ export default function network($q, $log, $interval, R, state, telehash) {
   let initializeChannel = function initializeChannel(channelInfo) {
     listen(channelInfo);
     let sendStatusUpdate = () => {
-      if (channelInfo.pendingHandshake) {
-        return $log.info('skipping status update. handshake pending');
-      }
-
       sendStatus(channelInfo.contactIds[0], 1)
         .catch($log.error);
-    }
+    };
 
     return $interval(sendStatusUpdate, 5000);
   };

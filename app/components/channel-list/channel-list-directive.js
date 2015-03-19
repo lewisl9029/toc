@@ -5,7 +5,7 @@ export default function tocChannelList() {
     restrict: 'E',
     template: template,
     controllerAs: 'channelList',
-    controller: function ChannelListController(contacts, network) {
+    controller: function ChannelListController($state, contacts, network) {
       //TODO: optimize by pulling cursors into service
       let channelsCursor =
         network.NETWORK_CURSORS.synchronized.select(['channels']);
