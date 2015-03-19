@@ -86,8 +86,8 @@ export default function network($q, $log, $interval, R, state, telehash) {
     );
   };
 
-  let handlePacket =
-    function handlePacket(error, packet, channel, callback) {
+  let handlePayload =
+    function handlePayload(error, packet, channel, callback) {
       if (error) {
         return $log.error(error);
       }
@@ -125,7 +125,7 @@ export default function network($q, $log, $interval, R, state, telehash) {
   // direct message channel id = sorted(sender, receiver)
   // group message channel id = channelname-creatorhashname
   let listen =
-    function listen(channel, handlePacket = handlePacket,
+    function listen(channel, handlePacket = handlePayload,
       session = activeSession) {
       try {
         checkSession(session);
@@ -148,7 +148,7 @@ export default function network($q, $log, $interval, R, state, telehash) {
     };
   //TODO: refactor to include contact argument
   let send =
-    function send(channel, payload, handlePacket = handleAcknowledgement,
+    function send(channelInfo, payload, handlePacket = handleAcknowledgement,
       session = activeSession) {
       try {
         checkSession(session);
@@ -190,11 +190,16 @@ export default function network($q, $log, $interval, R, state, telehash) {
     return send(contactChannel, payload);
   };
 
-  let initializeChannel = function initializeChannel(channel) {
-    listen(channel);
-    let sendStatusUpdate = () =>
-      sendStatus(channel.channelInfo.contactIds[0], 1)
+  let initializeChannel = function initializeChannel(channelInfo) {
+    listen(channelInfo);
+    let sendStatusUpdate = () => {
+      if (channelInfo.pendingHandshake) {
+        return;
+      }
+
+      sendStatus(channelInfo.channelInfo.contactIds[0], 1)
         .catch((error) => $log.error(error));
+    }
 
     return $interval(sendStatusUpdate, 15000);
   };
@@ -229,9 +234,13 @@ export default function network($q, $log, $interval, R, state, telehash) {
 
       listen({id: INVITE_CHANNEL_ID});
 
-      let channels = R.values(NETWORK_CURSORS.synchronized.get(['channels']));
+      let channels = NETWORK_CURSORS.synchronized.get(['channels']);
 
-      R.forEach(initializeChannel)(channels);
+      R.pipe(
+        R.values,
+        R.map(R.prop('channelInfo')),
+        R.forEach(initializeChannel)
+      )(channels);
 
       return sessionInfo;
     });
