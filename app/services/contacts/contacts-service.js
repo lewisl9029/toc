@@ -26,7 +26,7 @@ export default function contacts($log, state, network, identity) {
         network.NETWORK_CURSORS.synchronized,
         ['channels', contactChannel.id, 'channelInfo'],
         contactChannel
-      )).then(() => network.initializeChannel(channel));
+      )).then(() => network.initializeChannel(contactChannel));
   };
 
   let initialize = function initilizeContacts() {
