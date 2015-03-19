@@ -99,7 +99,7 @@ export default function network($q, $log, $interval, R, state, telehash) {
     };
 
     return state.save(
-      NETWORK_CURSORS.select(['channels', channelId, 'messages']),
+      NETWORK_CURSORS.synchronized.select(['channels', channelId, 'messages']),
       [messageId],
       message
     );

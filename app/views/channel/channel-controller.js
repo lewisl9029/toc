@@ -1,4 +1,4 @@
-export default function ChannelController($stateParams, state, contacts,
+export default function ChannelController($log, $stateParams, state, contacts,
   network) {
   this.channelId = $stateParams.channelId;
 
@@ -11,7 +11,11 @@ export default function ChannelController($stateParams, state, contacts,
     ).userInfo.displayName;
 
   this.message = '';
-  this.send = (message) => {
-    return network.sendMessage(channelCursor.get('channelInfo'), message);
+  this.send = () => {
+    return network.sendMessage(
+        channelCursor.get([this.channelId, 'channelInfo']),
+        this.message
+      )
+      .catch($log.error);
   };
 }
