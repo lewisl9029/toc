@@ -125,11 +125,11 @@ export default function network($q, $log, $interval, R, state, telehash) {
   // direct message channel id = sorted(sender, receiver)
   // group message channel id = channelname-creatorhashname
   let listen =
-    function listen(channel, handlePacket = handlePayload,
+    function listen(channelInfo, handlePacket = handlePayload,
       session = activeSession) {
       try {
         checkSession(session);
-        session.listen(channel.id, handlePacket);
+        session.listen(channelInfo.id, handlePacket);
       } catch(error) {
         return $q.reject(error);
       }
@@ -153,8 +153,8 @@ export default function network($q, $log, $interval, R, state, telehash) {
       try {
         checkSession(session);
         session.start(
-          channel.contactIds[0],
-          channel.id,
+          channelInfo.contactIds[0],
+          channelInfo.id,
           {js: payload},
           handlePacket
         );
@@ -194,11 +194,11 @@ export default function network($q, $log, $interval, R, state, telehash) {
     listen(channelInfo);
     let sendStatusUpdate = () => {
       if (channelInfo.pendingHandshake) {
-        return;
+        return $log.info('skipping status update. handshake pending');
       }
 
       sendStatus(channelInfo.contactIds[0], 1)
-        .catch((error) => $log.error(error));
+        .catch($log.error);
     }
 
     return $interval(sendStatusUpdate, 15000);

@@ -22,11 +22,14 @@ export default function contacts($log, state, network, identity) {
         CONTACTS_CURSORS.synchronized,
         [contactId, 'userInfo'],
         contact
-      )).then(() => state.save(
+      ))
+      .then(() => state.save(
         network.NETWORK_CURSORS.synchronized,
         ['channels', contactChannel.id, 'channelInfo'],
         contactChannel
-      )).then(() => network.initializeChannel(contactChannel));
+      ))
+      .then(() => network.initializeChannel(contactChannel))
+      .catch($log.error);
   };
 
   let initialize = function initilizeContacts() {
