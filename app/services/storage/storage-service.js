@@ -1,4 +1,6 @@
 export default function storage($window, $q, remoteStorage, cryptography, R) {
+  //FIXME: storage usage is extremely high due to really long keys + storing
+  // crypto settings with each item/key
   const DEFAULT_ACCESS_LEVEL = 'rw';
   const STORAGE_MODULE_PREFIX = 'toc-state-';
   const KEY_SEPARATOR = '.';
