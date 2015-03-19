@@ -86,91 +86,94 @@ export default function network($q, $log, $interval, R, state, telehash) {
     );
   };
 
-  let handlePayload =
-    function handlePayload(error, packet, channel, callback) {
-      if (error) {
-        return $log.error(error);
-      }
+  let handleMessage = function handleMessage(messagePayload, sentTime,
+    contactId, channelId) {
+    let messageId = sentTime + '-' + contactId;
 
-      callback(true);
-      channel.send();
-
-      if (packet.js.i) {
-        return handleInvite(packet.js.i);
-      } else if (packet.js.s) {
-        return handleStatus(packet.js.s, packet.from.hashname);
-      } else if (packet.js.m) {
-        return handleMessage(packet.js.m);
-      } else {
-        return $q.reject(
-          'Unrecognized packet format: ' + JSON.stringify(packet.js)
-        );
-      }
-
-      // //FIXME: get date from packet instead
-      // let message = {
-      //   id: Date.now().toString(),
-      //   content: packet.js
-      // };
-      //
-      // let messageCursor = state.synchronized.tree
-      //   .select(['messages']);
-      //
-      // //TODO: implement toast on new message arrival
-      // state.save(messageCursor, [message.id], message)
-      //   .then($log.info)
-      //   .catch($log.error);
-    };
-  //TODO: implement channel creation as follows:
-  // direct message channel id = sorted(sender, receiver)
-  // group message channel id = channelname-creatorhashname
-  let listen =
-    function listen(channelInfo, handlePacket = handlePayload,
-      session = activeSession) {
-      try {
-        checkSession(session);
-        session.listen(channelInfo.id, handlePacket);
-      } catch(error) {
-        return $q.reject(error);
-      }
-
-      return $q.when();
+    let message = {
+      id: messageId,
+      //TODO: find main contact userId from sender userId
+      sender: contactId,
+      time: sentTime,
+      content: messagePayload
     };
 
-  let handleAcknowledgement =
-    function handleAcknowledgement(error, packet, channel, callback) {
-      if (error) {
-        if (error !== 'timeout') {
-          throw error;
+    return state.save(
+      NETWORK_CURSORS.synchronized.select(['channels', channelId, 'messages']),
+      [messageId],
+      message
+    );
+  };
+
+  let listen = function listen(channelInfo, session = activeSession) {
+    let handlePacket = (error, packet, channel, callback) => {
+      let handledPacket = () => {
+        if (error) {
+          return $q.reject(error);
         }
 
-        return state.save(
-          state.synchronized.tree.select(['contacts']),
-          [packet.from.hashname, 'statusId'],
-          0
-        );
+        callback(true);
+        channel.send({js: {a: packet.from.sentAt}});
+
+        if (packet.js.i) {
+          return handleInvite(packet.js.i);
+        } else if (packet.js.s) {
+          return handleStatus(packet.js.s, packet.from.hashname);
+        } else if (packet.js.m) {
+          //TODO: implement toast on new message arrival
+          return handleMessage(
+            packet.js.m,
+            packet.from.sentAt,
+            packet.from.hashname,
+            channel.type.substr(1) //remove leading underscore
+          );
+        } else {
+          return $q.reject(
+            'Unrecognized packet format: ' + JSON.stringify(packet.js)
+          );
+        }
       }
 
-      callback(true);
-      return $q.when();
+      return handledPacket().catch($log.error);
     };
-  //TODO: refactor to include contact argument
+
+    let listenResult;
+    try {
+      checkSession(session);
+      listenResult = session.listen(channelInfo.id, handlePacket);
+    } catch(error) {
+      return $q.reject(error);
+    }
+
+    return $q.when(listenResult);
+  };
+
   let send =
-    function send(channelInfo, payload, handlePacket = handleAcknowledgement,
-      session = activeSession) {
+    function send(channelInfo, payload, session = activeSession) {
+      let sentMessage = $q.defer();
+
+      let handleAcknowledgement = (error, packet, channel, callback) => {
+        if (error) {
+          return sentMessage.reject(error);
+        }
+
+        callback(true);
+        return sentMessage.resolve(packet.js.a);
+      };
+
       try {
         checkSession(session);
         session.start(
           channelInfo.contactIds[0],
           channelInfo.id,
           {js: payload},
-          handlePacket
+          handleAcknowledgement
         );
       } catch(error) {
-        return $q.reject(error);
+        return sentMessage.reject(error);
       }
 
-      return $q.when();
+      return sentMessage.promise;
     };
 
   let sendInvite = function sendInvite(contactId, userInfo) {
@@ -195,20 +198,59 @@ export default function network($q, $log, $interval, R, state, telehash) {
       s: statusId
     };
 
-    return send(contactChannel, payload);
+    return send(contactChannel, payload).catch((error) => {
+      if (error !== 'timeout') {
+        return $log.error(error);
+      }
+
+      return state.save(
+        state.synchronized.tree.select(['contacts']),
+        [contactId, 'statusId'],
+        0
+      );
+    });
+  };
+
+  let sendMessage = function sendMessage(channelInfo, messageContent) {
+    let payload = {
+      m: messageContent
+    };
+
+    let handleMessageAck = (acknowledgement) => {
+      let sentTime = acknowledgement;
+
+      let userId =
+        state.synchronized.tree.select(['identity', 'userInfo']).get().id;
+      let messageId = sentTime + '-' + userId;
+
+      let message = {
+        id: messageId,
+        //TODO: find main contact userId from sender userId
+        sender: userId,
+        time: sentTime,
+        content: messageContent
+      };
+
+      return state.save(
+        NETWORK_CURSORS.synchronized.select(
+          ['channels', channelInfo.id, 'messages']
+        ),
+        [messageId],
+        message
+      );
+    };
+
+    return send(channelInfo, payload).then(handleMessageAck);
   };
 
   let initializeChannel = function initializeChannel(channelInfo) {
-    listen(channelInfo);
-    let sendStatusUpdate = () => {
-      if (channelInfo.pendingHandshake) {
-        return $log.info('skipping status update. handshake pending');
-      }
+    let listenResult = listen(channelInfo);
 
-      sendStatus(channelInfo.contactIds[0], 1)
-        .catch($log.error);
+    if (channelInfo.contactIds.length !== 1) {
+      return listenResult;
     }
 
+    let sendStatusUpdate = () => sendStatus(channelInfo.contactIds[0], 1);
     return $interval(sendStatusUpdate, 5000);
   };
 
@@ -262,6 +304,7 @@ export default function network($q, $log, $interval, R, state, telehash) {
     send,
     sendInvite,
     sendStatus,
+    sendMessage,
     initializeChannel,
     initialize
   };

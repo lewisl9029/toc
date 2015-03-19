@@ -1,0 +1,16 @@
+<ion-view view-title="{{channelView.title}}">
+  <ion-nav-bar class="bar-positive">
+    <toc-header></toc-header>
+  </ion-nav-bar>
+  <ion-content>
+    <toc-message-list channel-id="{{channelView.channelId}}"></toc-message-list>
+  </ion-content>
+  <div class="bar bar-footer bar-calm item-input-inset">
+    <label class="item-input-wrapper">
+      <input type="text" placeholder="Message" ng-model="channelView.message">
+    </label>
+    <button class="button button-clear" ng-click="channelView.send()">
+      <i class="icon ion-paper-airplane"></i>
+    </button>
+  </div>
+</ion-view>
