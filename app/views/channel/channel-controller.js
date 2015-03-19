@@ -5,10 +5,13 @@ export default function ChannelController($log, $stateParams, state, contacts,
   let channelCursor = network.NETWORK_CURSORS.synchronized
     .select('channels');
 
-  this.title = contacts.CONTACTS_CURSORS.synchronized
-    .get(
-      channelCursor.get([this.channelId, 'channelInfo', 'contactIds'])[0]
-    ).userInfo.displayName;
+  let contactCursor = contacts.CONTACTS_CURSORS.synchronized;
+
+  this.contact = contactCursor.get(
+    channelCursor.get([this.channelId, 'channelInfo', 'contactIds'])[0]
+  );
+
+  this.title = this.contact.userInfo.displayName;
 
   this.message = '';
   this.send = () => {
@@ -18,4 +21,10 @@ export default function ChannelController($log, $stateParams, state, contacts,
       )
       .catch($log.error);
   };
+
+  contactCursor.on('change', () => {
+    this.contact = contactCursor.get(
+      channelCursor.get([this.channelId, 'channelInfo', 'contactIds'])[0]
+    );
+  });
 }

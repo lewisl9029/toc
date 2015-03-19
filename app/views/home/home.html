@@ -2,17 +2,25 @@
   <ion-nav-bar class="bar-positive">
     <toc-header></toc-header>
   </ion-nav-bar>
-  <ion-content>
-    Hi {{homeView.currentUser.userInfo.displayName}}!
-    <br>
-    Your ID is:
-    <input type="text" ng-value="homeView.currentUser.userInfo.id">
-    Contact ID:
-    <input type="text" ng-model="homeView.contactId">
-    <button ng-click="homeView.listen()">Listen</button>
-    <br>
-    Message:
-    <input type="text" ng-model="homeView.message">
-    <button ng-click="homeView.send()">Send</button>
+
+  <div class="bar bar-subheader item-input-inset">
+    <div class="row">
+      <div class="col-10 balanced-bg">
+      </div>
+      <label class="col-60 item-input-wrapper">
+        <i class="icon ion-email placeholder-icon"></i>
+        <input type="text" placeholder="Email"
+          value="{{homeView.currentUser.userInfo.email}}" readonly>
+      </label>
+      <label class="col-30 item-input-wrapper">
+        <i class="icon ion-android-person placeholder-icon"></i>
+        <input type="text" placeholder="ID"
+          value="{{homeView.currentUser.userInfo.id}}" readonly>
+      </label>
+    </div>
+  </div>
+
+  <ion-content class="has-subheader">
+
   </ion-content>
 </ion-view>

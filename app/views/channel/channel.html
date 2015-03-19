@@ -2,7 +2,27 @@
   <ion-nav-bar class="bar-positive">
     <toc-header></toc-header>
   </ion-nav-bar>
-  <ion-content class="has-footer">
+  <div class="bar bar-subheader item-input-inset">
+    <div class="row">
+      <div class="col-10" ng-class="{
+        'dark-bg': channelView.contact.statusId === 0,
+        'balanced-bg': channelView.contact.statusId === 1,
+        'stable-bg': channelView.contact.statusId === undefined
+      }"></div>
+      <label class="col-60 item-input-wrapper">
+        <i class="icon ion-email placeholder-icon"></i>
+        <input type="text" placeholder="Email"
+          value="{{channelView.contact.userInfo.email}}" readonly>
+      </label>
+      <label class="col-30 item-input-wrapper">
+        <i class="icon ion-android-person placeholder-icon"></i>
+        <input type="text" placeholder="ID"
+          value="{{channelView.contact.userInfo.id}}" readonly>
+      </label>
+    </div>
+  </div>
+
+  <ion-content class="has-subheader has-footer">
     <toc-message-list channel-id="{{channelView.channelId}}"></toc-message-list>
   </ion-content>
   <div class="bar bar-footer bar-calm item-input-inset">
