@@ -140,7 +140,15 @@ export default function network($q, $log, $interval, R, state, telehash) {
   let handleAcknowledgement =
     function handleAcknowledgement(error, packet, channel, callback) {
       if (error) {
-        return $q.reject(error);
+        if (error !== 'timeout') {
+          throw error;
+        }
+
+        return state.save(
+          state.synchronized.tree.select(['contacts']),
+          [packet.from.hashname, 'statusId'],
+          0
+        );
       }
 
       callback(true);
