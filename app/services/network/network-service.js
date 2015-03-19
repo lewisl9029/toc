@@ -148,6 +148,34 @@ export default function network($q, $log, $interval, R, state, telehash) {
     return $q.when(listenResult);
   };
 
+  let send =
+    function send(channelInfo, payload, session = activeSession) {
+      let sentMessage = $q.defer();
+
+      let handleAcknowledgement = (error, packet, channel, callback) => {
+        if (error) {
+          return sentMessage.reject(error);
+        }
+
+        callback(true);
+        return sentMessage.resolve(packet.js.a);
+      };
+
+      try {
+        checkSession(session);
+        session.start(
+          channelInfo.contactIds[0],
+          channelInfo.id,
+          {js: payload},
+          handleAcknowledgement
+        );
+      } catch(error) {
+        return sentMessage.reject(error);
+      }
+
+      return sentMessage.promise;
+    };
+
   let sendInvite = function sendInvite(contactId, userInfo) {
     let inviteChannel = {
       id: INVITE_CHANNEL_ID,
@@ -183,12 +211,12 @@ export default function network($q, $log, $interval, R, state, telehash) {
     });
   };
 
-  let sendMessage = function sendMessage(channelInfo, message) {
+  let sendMessage = function sendMessage(channelInfo, messageContent) {
     let payload = {
-      m: message
+      m: messageContent
     };
 
-    return send(channelInfo, payload).then((acknowledgement) => {
+    let handleMessageAck = (acknowledgement) => {
       let sentTime = acknowledgement;
 
       let userId =
@@ -200,7 +228,7 @@ export default function network($q, $log, $interval, R, state, telehash) {
         //TODO: find main contact userId from sender userId
         sender: userId,
         time: sentTime,
-        content: message
+        content: messageContent
       };
 
       return state.save(
@@ -210,36 +238,10 @@ export default function network($q, $log, $interval, R, state, telehash) {
         [messageId],
         message
       );
-    });
-  };
-
-  let send =
-    function send(channelInfo, payload, session = activeSession) {
-      let sentMessage = $q.defer();
-
-      let handleAcknowledgement = (error, packet, channel, callback) => {
-        if (error) {
-          return sentMessage.reject(error);
-        }
-
-        callback(true);
-        return sentMessage.resolve(packet.js.a);
-      };
-
-      try {
-        checkSession(session);
-        session.start(
-          channelInfo.contactIds[0],
-          channelInfo.id,
-          {js: payload},
-          handleAcknowledgement
-        );
-      } catch(error) {
-        return sentMessage.reject(error);
-      }
-
-      return sentMessage.promise;
     };
+
+    return send(channelInfo, payload).then(handleMessageAck);
+  };
 
   let initializeChannel = function initializeChannel(channelInfo) {
     let listenResult = listen(channelInfo);

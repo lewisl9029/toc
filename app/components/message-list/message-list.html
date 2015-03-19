@@ -4,7 +4,11 @@
     'item-balanced': message.sender !== messageList.userId,
     'item-calm': message.sender === messageList.userId
   }">
-    {{messageList.contacts[message.sender].userInfo.displayName}} said:
+    {{
+      message.sender === messageList.userId ?
+      'You' :
+      messageList.contacts[message.sender].userInfo.displayName
+    }} said:
   </div>
   <div class="item item-text-wrap">
     {{message.time | date : 'short'}} : {{message.content}}
