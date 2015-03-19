@@ -86,6 +86,25 @@ export default function network($q, $log, $interval, R, state, telehash) {
     );
   };
 
+  let handleMessage = function handleMessage(messagePayload, sentTime,
+    contactId, channelId) {
+    let messageId = sentTime + '-' + contactId;
+
+    let message = {
+      id: messageId,
+      //TODO: find main contact userId from sender userId
+      contactId: contactId,
+      time: sentTime,
+      content: messagePayload
+    };
+
+    return state.save(
+      NETWORK_CURSORS.select(['channels', channelId, 'messages']),
+      [messageId],
+      message
+    );
+  };
+
   let handlePayload =
     function handlePayload(error, packet, channel, callback) {
       if (error) {
@@ -100,7 +119,8 @@ export default function network($q, $log, $interval, R, state, telehash) {
       } else if (packet.js.s) {
         return handleStatus(packet.js.s, packet.from.hashname);
       } else if (packet.js.m) {
-        return handleMessage(packet.js.m);
+        return handleMessage(packet.js.m, packet.from.sentAt,
+          packet.from.hashname, channel.name);
       } else {
         return $q.reject(
           'Unrecognized packet format: ' + JSON.stringify(packet.js)
@@ -198,6 +218,14 @@ export default function network($q, $log, $interval, R, state, telehash) {
     return send(contactChannel, payload);
   };
 
+  let sendMessage = function sendMessage(channelInfo, message) {
+    let payload = {
+      m: message
+    };
+
+    return send(channelInfo, payload);
+  };
+
   let initializeChannel = function initializeChannel(channelInfo) {
     listen(channelInfo);
     let sendStatusUpdate = () => {
@@ -258,6 +286,7 @@ export default function network($q, $log, $interval, R, state, telehash) {
     send,
     sendInvite,
     sendStatus,
+    sendMessage,
     initializeChannel,
     initialize
   };
