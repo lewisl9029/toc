@@ -1,4 +1,4 @@
-export default function network($q, $log, state, telehash) {
+export default function network($q, $log, $interval, R, state, telehash) {
   const NETWORK_PATH = ['network'];
   const NETWORK_CURSORS = {
     synchronized: state.synchronized.tree.select(NETWORK_PATH)
@@ -44,8 +44,50 @@ export default function network($q, $log, state, telehash) {
     return channel;
   };
 
-  let handleMessage =
-    function handleMessage(error, packet, channel, callback) {
+  let handleInvite = function handleInvite(invitePayload) {
+    let contactInfo = invitePayload;
+
+    let userId =
+      state.synchronized.tree.select(['identity', 'userInfo']).get().id;
+
+    let channel = createContactChannel(userId, contactInfo.id);
+
+    let existingChannel = NETWORK_CURSORS.synchronized
+      .get(['channels', channel.id, 'channelInfo']);
+
+    let statusId = 1; //online
+
+    channel.pendingHandshake = !existingChannel;
+
+    return state.save(
+        NETWORK_CURSORS.synchronized,
+        ['channels', channel.id, 'channelInfo'],
+        channel
+      )
+      .then(() => state.save(
+        state.synchronized.tree.select(['contacts']),
+        [contactInfo.id, 'userInfo'],
+        contactInfo
+      ))
+      .then(() => state.save(
+        state.synchronized.tree.select(['contacts']),
+        [contactInfo.id, 'statusId'],
+        statusId
+      ));
+  };
+
+  let handleStatus = function handleStatus(statusPayload, contactId) {
+    let statusId = statusPayload;
+
+    return state.save(
+      state.synchronized.tree.select(['contacts']),
+      [contactId, 'statusId'],
+      statusId
+    );
+  };
+
+  let handlePayload =
+    function handlePayload(error, packet, channel, callback) {
       if (error) {
         return $log.error(error);
       }
@@ -54,28 +96,16 @@ export default function network($q, $log, state, telehash) {
       channel.send();
 
       if (packet.js.i) {
-        let contactInfo = packet.js.i;
-
-        let userId =
-          state.synchronized.tree.select(['identity', 'userInfo']).get().id;
-
-        let channel = createContactChannel(userId, contactInfo.id);
-
-        let existingChannel = NETWORK_CURSORS.synchronized
-          .get(['channels', channel.id, 'channelInfo']);
-
-        channel.pendingAccept = !existingChannel;
-
-        return state.save(
-          NETWORK_CURSORS.synchronized,
-          ['channels', channel.id, 'channelInfo'],
-          channel
-        ).then(() => state.save(
-          state.synchronized.tree.select(['contacts']),
-          [contactInfo.id, 'userInfo'],
-          contactInfo
-        ));
-      };
+        return handleInvite(packet.js.i);
+      } else if (packet.js.s) {
+        return handleStatus(packet.js.s, packet.from.hashname);
+      } else if (packet.js.m) {
+        return handleMessage(packet.js.m);
+      } else {
+        return $q.reject(
+          'Unrecognized packet format: ' + JSON.stringify(packet.js)
+        );
+      }
 
       // //FIXME: get date from packet instead
       // let message = {
@@ -95,11 +125,11 @@ export default function network($q, $log, state, telehash) {
   // direct message channel id = sorted(sender, receiver)
   // group message channel id = channelname-creatorhashname
   let listen =
-    function listen(channel, handlePacket = handleMessage,
+    function listen(channelInfo, handlePacket = handlePayload,
       session = activeSession) {
       try {
         checkSession(session);
-        session.listen(channel.id, handlePacket);
+        session.listen(channelInfo.id, handlePacket);
       } catch(error) {
         return $q.reject(error);
       }
@@ -110,20 +140,29 @@ export default function network($q, $log, state, telehash) {
   let handleAcknowledgement =
     function handleAcknowledgement(error, packet, channel, callback) {
       if (error) {
-        return $log.error(error);
+        if (error !== 'timeout') {
+          throw error;
+        }
+
+        return state.save(
+          state.synchronized.tree.select(['contacts']),
+          [packet.from.hashname, 'statusId'],
+          0
+        );
       }
 
       callback(true);
+      return $q.when();
     };
   //TODO: refactor to include contact argument
   let send =
-    function send(channel, payload, handlePacket = handleAcknowledgement,
+    function send(channelInfo, payload, handlePacket = handleAcknowledgement,
       session = activeSession) {
       try {
         checkSession(session);
         session.start(
-          channel.contactIds[0],
-          channel.id,
+          channelInfo.contactIds[0],
+          channelInfo.id,
           {js: payload},
           handlePacket
         );
@@ -145,6 +184,32 @@ export default function network($q, $log, state, telehash) {
     };
 
     return send(inviteChannel, payload);
+  };
+
+  let sendStatus = function sendStatus(contactId, statusId) {
+    let userId =
+      state.synchronized.tree.select(['identity', 'userInfo']).get().id;
+    let contactChannel = createContactChannel(userId, contactId);
+
+    let payload = {
+      s: statusId
+    };
+
+    return send(contactChannel, payload);
+  };
+
+  let initializeChannel = function initializeChannel(channelInfo) {
+    listen(channelInfo);
+    let sendStatusUpdate = () => {
+      if (channelInfo.pendingHandshake) {
+        return $log.info('skipping status update. handshake pending');
+      }
+
+      sendStatus(channelInfo.contactIds[0], 1)
+        .catch($log.error);
+    }
+
+    return $interval(sendStatusUpdate, 5000);
   };
 
   let initialize = function initializeNetwork(keypair) {
@@ -177,6 +242,14 @@ export default function network($q, $log, state, telehash) {
 
       listen({id: INVITE_CHANNEL_ID});
 
+      let channels = NETWORK_CURSORS.synchronized.get(['channels']);
+
+      R.pipe(
+        R.values,
+        R.map(R.prop('channelInfo')),
+        R.forEach(initializeChannel)
+      )(channels);
+
       return sessionInfo;
     });
   };
@@ -188,6 +261,8 @@ export default function network($q, $log, state, telehash) {
     listen,
     send,
     sendInvite,
+    sendStatus,
+    initializeChannel,
     initialize
   };
 }
