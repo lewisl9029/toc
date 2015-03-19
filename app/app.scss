@@ -30,3 +30,7 @@ $button-border-radius: 0 !default;
 // App imports
 @import 'views/views';
 @import 'components/components';
+
+.item-input-wrapper {
+  border-radius: 0;
+}
