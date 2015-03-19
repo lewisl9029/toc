@@ -1,8 +1,7 @@
 <ion-side-menus enable-menu-with-back-views="true">
   <ion-side-menu-content>
-    <ion-nav-bar class="bar-positive">
-      <!-- FIXME: title positioning wrong on android:
-        https://github.com/driftyco/ionic/issues/3064 -->
+    <!-- workaround for issue https://github.com/driftyco/ionic/issues/3064 -->
+    <ion-nav-bar class="bar-positive" align-title="center">
       <toc-header></toc-header>
     </ion-nav-bar>
     <ion-nav-view name="content"></ion-nav-view>
