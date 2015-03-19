@@ -7,7 +7,7 @@
       <input type="text" placeholder="Contact ID"
         ng-model="channelList.inviteId">
     </label>
-    <button class="button button-small button-balanced"
+    <button class="button button-clear button-balanced"
       ng-click="channelList.invite(channelList.inviteId)">
       <i class="icon ion-plus"></i>
     </button>
@@ -28,11 +28,11 @@
       <h2>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.displayName}}</h2>
       <p>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id}}</p>
       <div class="buttons" ng-if="channel.channelInfo.pendingHandshake">
-        <button class="button button-positive button-small"
+        <button class="button button-positive button-clear"
           ng-click="channelList.invite(channel.channelInfo.contactIds[0])">
           <i class="icon ion-checkmark"></i>
         </button>
-        <button class="button button-assertive button-small">
+        <button class="button button-assertive button-clear">
           <i class="icon ion-close"></i>
         </button>
       </div>
