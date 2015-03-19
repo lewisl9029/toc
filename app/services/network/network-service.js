@@ -119,8 +119,12 @@ export default function network($q, $log, $interval, R, state, telehash) {
       } else if (packet.js.s) {
         return handleStatus(packet.js.s, packet.from.hashname);
       } else if (packet.js.m) {
-        return handleMessage(packet.js.m, packet.from.sentAt,
-          packet.from.hashname, channel.name);
+        return handleMessage(
+          packet.js.m,
+          packet.from.sentAt,
+          packet.from.hashname,
+          channel.type.substr(1) //remove leading underscore
+        );
       } else {
         return $q.reject(
           'Unrecognized packet format: ' + JSON.stringify(packet.js)
