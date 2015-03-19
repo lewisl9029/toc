@@ -209,7 +209,7 @@ export default function network($q, $log, $interval, R, state, telehash) {
         .catch($log.error);
     }
 
-    return $interval(sendStatusUpdate, 15000);
+    return $interval(sendStatusUpdate, 5000);
   };
 
   let initialize = function initializeNetwork(keypair) {
