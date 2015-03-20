@@ -5,7 +5,7 @@ export default function tocSigninForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signinForm',
-    controller: function SigninFormController($state, identity) {
+    controller: function SigninFormController($state, identity, toastr) {
       let localUsersCursor = identity.IDENTITY_CURSORS.persistent;
 
       this.users = localUsersCursor.get() || {};
@@ -18,6 +18,7 @@ export default function tocSigninForm() {
           id: this.selectedUser,
           password: this.password
         })
+        .then(() => toastr.success('test', 'toastr'))
         .then(() => $state.go('app.home'));
       };
 
