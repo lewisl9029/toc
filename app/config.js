@@ -11,6 +11,7 @@ System.config({
 System.config({
   "map": {
     "angular": "github:angular/bower-angular@1.3.14",
+    "angular-toastr": "npm:angular-toastr@1.0.2",
     "baobab": "npm:baobab@0.4.0",
     "css": "github:systemjs/plugin-css@0.1.6",
     "ionic": "github:driftyco/ionic-bower@1.0.0-rc.0",
