@@ -78,6 +78,16 @@ export default function identity($q, state, R, network, cryptography) {
 
     cryptography.initialize(userCredentials);
     return state.synchronized.initialize(userCredentials.id)
+      .then(() => {
+        let contactsCursor = state.synchronized.tree.select(['contacts']);
+
+        R.pipe(
+          R.keys,
+          R.forEach((contactId) =>
+            contactsCursor.select([contactId, 'statusId']).edit(0)
+          )
+        )(contactsCursor.get());
+      })
       .then(() => network.NETWORK_CURSORS.synchronized.get(
         ['sessions', userCredentials.id, 'sessionInfo']
       ))

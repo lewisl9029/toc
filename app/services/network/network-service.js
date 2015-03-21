@@ -180,7 +180,7 @@ export default function network($q, $interval, R, state, telehash,
           handleAcknowledgement
         );
       } catch(error) {
-        return sentMessage.reject(error);
+        sentMessage.reject(error);
       }
 
       return sentMessage.promise;
