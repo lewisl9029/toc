@@ -79,6 +79,15 @@ export default function network($q, $log, $interval, R, state, telehash) {
   let handleStatus = function handleStatus(statusPayload, contactId) {
     let statusId = statusPayload;
 
+    let contactCursor = state.synchronized.tree
+      .select(['contacts', contactId]);
+
+    let currentContactStatus = contactCursor.get(['statusId']);
+
+    if (currentContactStatus === statusId) {
+      return $q.when();
+    }
+
     return state.save(
       state.synchronized.tree.select(['contacts']),
       [contactId, 'statusId'],
@@ -198,17 +207,30 @@ export default function network($q, $log, $interval, R, state, telehash) {
       s: statusId
     };
 
-    return send(contactChannel, payload).catch((error) => {
-      if (error !== 'timeout') {
-        return $log.error(error);
-      }
+    let contactCursor = state.synchronized.tree
+      .select(['contacts', contactId]);
 
-      return state.save(
-        state.synchronized.tree.select(['contacts']),
-        [contactId, 'statusId'],
-        0
-      );
-    });
+    let previousContactStatus = contactCursor.get(['statusId']);
+
+    return send(contactChannel, payload)
+      .catch((error) => {
+        if (error !== 'timeout') {
+          return $q.reject(error);
+        }
+        // do not change status back to offline if contact was already offline
+        // or if contact status has been updated since message was sent
+        let currentContactStatus = contactCursor.get(['statusId']);
+        if (currentContactStatus === 0 ||
+          currentContactStatus !== previousContactStatus) {
+          return $q.when();
+        }
+
+        return state.save(
+          state.synchronized.tree.select(['contacts']),
+          [contactId, 'statusId'],
+          0
+        );
+      });
   };
 
   let sendMessage = function sendMessage(channelInfo, messageContent) {
@@ -251,7 +273,8 @@ export default function network($q, $log, $interval, R, state, telehash) {
     }
 
     let sendStatusUpdate = () => sendStatus(channelInfo.contactIds[0], 1);
-    return $interval(sendStatusUpdate, 5000);
+    sendStatusUpdate();
+    return $interval(sendStatusUpdate, 15000);
   };
 
   let initialize = function initializeNetwork(keypair) {
