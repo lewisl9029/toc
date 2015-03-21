@@ -301,7 +301,13 @@ export default function network($q, $interval, R, state, telehash,
     }
 
     let sendStatusUpdate = () => sendStatus(channelInfo.contactIds[0], 1)
-      .catch((error) => notification.error(error, 'Status Update Error'));
+      .catch((error) => {
+        if (error === 'timeout') {
+          return $q.when();
+        }
+
+        return notification.error(error, 'Status Update Error');
+      });
 
     sendStatusUpdate();
     return $interval(sendStatusUpdate, 15000);
@@ -315,15 +321,19 @@ export default function network($q, $interval, R, state, telehash,
       telehashKeypair.id = keypair;
     }
 
-    telehash.init(telehashKeypair,
-      function initializeTelehash(error, telehashSession) {
-        if (error) {
-          return deferredSession.reject(error);
-        }
+    try {
+      telehash.init(telehashKeypair,
+        function initializeTelehash(error, telehashSession) {
+          if (error) {
+            return deferredSession.reject(error);
+          }
 
-        return deferredSession.resolve(telehashSession);
-      }
-    );
+          return deferredSession.resolve(telehashSession);
+        }
+      );
+    } catch(error) {
+      return $q.reject(error);
+    }
 
     return deferredSession.promise.then((telehashSession) => {
       let sessionInfo = {
