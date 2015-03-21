@@ -1,0 +1,1 @@
+module.exports = require("npm:qr-encode@0.3.0/lib/qr-encode");
