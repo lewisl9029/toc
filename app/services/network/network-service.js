@@ -1,4 +1,5 @@
-export default function network($q, $log, $interval, R, state, telehash) {
+export default function network($q, $interval, R, state, telehash,
+  notification) {
   const NETWORK_PATH = ['network'];
   const NETWORK_CURSORS = {
     synchronized: state.synchronized.tree.select(NETWORK_PATH)
@@ -141,9 +142,9 @@ export default function network($q, $log, $interval, R, state, telehash) {
             'Unrecognized packet format: ' + JSON.stringify(packet.js)
           );
         }
-      }
+      };
 
-      return handledPacket().catch($log.error);
+      return handledPacket();
     };
 
     let listenResult;
@@ -292,13 +293,16 @@ export default function network($q, $log, $interval, R, state, telehash) {
   };
 
   let initializeChannel = function initializeChannel(channelInfo) {
-    let listenResult = listen(channelInfo);
+    let listenResult = listen(channelInfo)
+      .catch((error) => notification.error(error, 'Network Listen Error'));
 
     if (channelInfo.contactIds.length !== 1) {
       return listenResult;
     }
 
-    let sendStatusUpdate = () => sendStatus(channelInfo.contactIds[0], 1);
+    let sendStatusUpdate = () => sendStatus(channelInfo.contactIds[0], 1)
+      .catch((error) => notification.error(error, 'Status Update Error'));
+
     sendStatusUpdate();
     return $interval(sendStatusUpdate, 15000);
   };

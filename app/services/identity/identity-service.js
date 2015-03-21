@@ -35,8 +35,12 @@ export default function identity($q, state, R, network, cryptography) {
         userCredentials.id = sessionInfo.id;
         persistentUserInfo.id = sessionInfo.id;
         newUserInfo.id = sessionInfo.id;
-        persistentUserInfo.challenge =
-          cryptography.encrypt(userCredentials.id, userCredentials);
+        try {
+          persistentUserInfo.challenge =
+            cryptography.encrypt(userCredentials.id, userCredentials);
+        } catch(error) {
+          return $q.reject(error);
+        }
       })
       .then(() => state.save(
         IDENTITY_CURSORS.persistent,

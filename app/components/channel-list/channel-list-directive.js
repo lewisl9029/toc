@@ -6,7 +6,7 @@ export default function tocChannelList() {
     template: template,
     controllerAs: 'channelList',
     controller: function ChannelListController($state, contacts, network,
-      identity) {
+      identity, notification) {
       //TODO: optimize by pulling cursors into service
       let channelsCursor =
         network.NETWORK_CURSORS.synchronized.select(['channels']);
@@ -22,9 +22,7 @@ export default function tocChannelList() {
       this.inviteId = '';
       this.invite = (contactId) => {
         return contacts.invite(contactId)
-          .catch((error) => {
-
-          });
+          .catch((error) => notification.error(error, 'Contact Invite Error'));
       };
 
       channelsCursor.on('update', () => {

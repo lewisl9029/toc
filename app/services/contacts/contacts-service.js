@@ -1,4 +1,4 @@
-export default function contacts($log, state, network, identity) {
+export default function contacts($q, state, network, identity) {
   const CONTACTS_PATH = ['contacts'];
   const CONTACTS_CURSORS = {
     synchronized: state.synchronized.tree.select(CONTACTS_PATH)
@@ -39,8 +39,7 @@ export default function contacts($log, state, network, identity) {
         ['channels', contactChannel.id, 'channelInfo'],
         contactChannel
       ))
-      .then(() => network.initializeChannel(contactChannel))
-      .catch($log.error);
+      .then(() => network.initializeChannel(contactChannel));
   };
 
   let initialize = function initilizeContacts() {

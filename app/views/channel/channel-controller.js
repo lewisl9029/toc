@@ -1,5 +1,5 @@
-export default function ChannelController($log, $stateParams, state, contacts,
-  network) {
+export default function ChannelController($q, $stateParams, state, contacts,
+  network, notification) {
   this.channelId = $stateParams.channelId;
 
   let channelCursor = network.NETWORK_CURSORS.synchronized
@@ -30,7 +30,7 @@ export default function ChannelController($log, $stateParams, state, contacts,
     };
 
     return recursivelySendMessage()
-      .catch($log.error);
+      .catch((error) => notification.error(error, 'Message Delivery Error'));
   };
 
   contactCursor.on('change', () => {
