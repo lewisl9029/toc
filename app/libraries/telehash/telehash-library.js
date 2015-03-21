@@ -8814,7 +8814,7 @@
   };
 
   PeerConnectionHandler.prototype.send = function(data) {
-    if (!this._channel || this._channel.readyState !== 'open') return handler.DEBUG && console.log("dropping data, no open channel");
+    if (!this._channel || this._channel.readyState !== 'open') return this.DEBUG && console.log("dropping data, no open channel");
     this._channel.send(data);
   };
 
