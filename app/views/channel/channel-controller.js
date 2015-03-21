@@ -15,10 +15,21 @@ export default function ChannelController($log, $stateParams, state, contacts,
 
   this.message = '';
   this.send = () => {
-    return network.sendMessage(
-        channelCursor.get([this.channelId, 'channelInfo']),
-        this.message
-      )
+    let recursivelySendMessage = () => {
+      return network.sendMessage(
+          channelCursor.get([this.channelId, 'channelInfo']),
+          this.message
+        )
+        .catch((error) => {
+          if (error !== 'timeout') {
+            return $q.reject(error);
+          }
+
+          return recursivelySendMessage();
+        });
+    };
+
+    return recursivelySendMessage()
       .catch($log.error);
   };
 

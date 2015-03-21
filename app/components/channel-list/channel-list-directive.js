@@ -23,7 +23,7 @@ export default function tocChannelList() {
       this.invite = (contactId) => {
         return contacts.invite(contactId)
           .catch((error) => {
-            
+
           });
       };
 

@@ -185,6 +185,30 @@ export default function network($q, $log, $interval, R, state, telehash) {
       return sentMessage.promise;
     };
 
+  let handleSendTimeout =
+    function handleSendTimeout(error, contactId, contactStatusId) {
+      if (error !== 'timeout') {
+        return $q.reject(error);
+      }
+
+      let contactCursor = state.synchronized.tree
+        .select(['contacts', contactId]);
+
+      // do not change status back to offline if contact was already offline
+      // or if contact status has been updated since message was sent
+      let currentContactStatusId = contactCursor.get(['statusId']);
+      if (currentContactStatusId === 0 ||
+        currentContactStatusId !== contactStatusId) {
+        return $q.reject(error);
+      }
+
+      return state.save(
+        state.synchronized.tree.select(['contacts']),
+        [contactId, 'statusId'],
+        0
+      );
+    };
+
   let sendInvite = function sendInvite(contactId, userInfo) {
     let inviteChannel = {
       id: INVITE_CHANNEL_ID,
@@ -210,31 +234,16 @@ export default function network($q, $log, $interval, R, state, telehash) {
     let contactCursor = state.synchronized.tree
       .select(['contacts', contactId]);
 
-    let previousContactStatus = contactCursor.get(['statusId']);
+    let previousContactStatusId = contactCursor.get(['statusId']);
 
-    if (previousContactStatus === undefined) {
+    if (previousContactStatusId === undefined) {
       return $q.when();
     }
 
     return send(contactChannel, payload)
-      .catch((error) => {
-        if (error !== 'timeout') {
-          return $q.reject(error);
-        }
-        // do not change status back to offline if contact was already offline
-        // or if contact status has been updated since message was sent
-        let currentContactStatus = contactCursor.get(['statusId']);
-        if (currentContactStatus === 0 ||
-          currentContactStatus !== previousContactStatus) {
-          return $q.when();
-        }
-
-        return state.save(
-          state.synchronized.tree.select(['contacts']),
-          [contactId, 'statusId'],
-          0
-        );
-      });
+      .catch((error) =>
+        handleSendTimeout(error, contactId, previousContactStatusId)
+      );
   };
 
   let sendMessage = function sendMessage(channelInfo, messageContent) {
@@ -266,7 +275,20 @@ export default function network($q, $log, $interval, R, state, telehash) {
       );
     };
 
-    return send(channelInfo, payload).then(handleMessageAck);
+    let contactId = channelInfo.contactIds[0];
+
+    let previousContactStatusId = state.synchronized.tree
+      .select(['contacts', contactId]).get(['statusId']);
+
+    if (previousContactStatusId === undefined) {
+      return $q.when();
+    }
+
+    return send(channelInfo, payload)
+      .then(handleMessageAck)
+      .catch((error) =>
+        handleSendTimeout(error, contactId, previousContactStatusId)
+      );
   };
 
   let initializeChannel = function initializeChannel(channelInfo) {
