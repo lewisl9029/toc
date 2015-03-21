@@ -1,4 +1,4 @@
-export default function network($q, $interval, R, state, telehash,
+export default function network($q, $window, $interval, R, state, telehash,
   notification) {
   const NETWORK_PATH = ['network'];
   const NETWORK_CURSORS = {
@@ -125,11 +125,13 @@ export default function network($q, $interval, R, state, telehash,
         callback(true);
         channel.send({js: {a: packet.from.sentAt}});
 
-        if (packet.js.i) {
+        if (packet.js.a !== undefined) {
+          return $q.when();
+        } else if (packet.js.i !== undefined) {
           return handleInvite(packet.js.i);
-        } else if (packet.js.s) {
+        } else if (packet.js.s !== undefined) {
           return handleStatus(packet.js.s, packet.from.hashname);
-        } else if (packet.js.m) {
+        } else if (packet.js.m !== undefined) {
           //TODO: implement toast on new message arrival
           return handleMessage(
             packet.js.m,
@@ -167,7 +169,14 @@ export default function network($q, $interval, R, state, telehash,
         }
 
         callback(true);
-        return sentMessage.resolve(packet.js.a);
+        let acknowledgement = packet.js.a;
+        if (acknowledgement) {
+          return sentMessage.resolve(acknowledgement);
+        } else {
+          console.log(packet.js);
+          channel.send({js: {a: packet.from.sentAt}});
+          return sentMessage.resolve(packet.from.sentAt);
+        }
       };
 
       try {
@@ -353,6 +362,15 @@ export default function network($q, $interval, R, state, telehash,
         R.map(R.prop('channelInfo')),
         R.forEach(initializeChannel)
       )(channels);
+
+      $window.onbeforeunload = () => {
+        let contactsCursor = state.synchronized.tree.select(['contacts']);
+
+        R.pipe(
+          R.keys,
+          R.forEach((contactId) => sendStatus(contactId, 0))
+        )(contactsCursor.get());
+      };
 
       return sessionInfo;
     });
