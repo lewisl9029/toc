@@ -18,7 +18,6 @@ export default function tocSigninForm() {
           id: this.selectedUser,
           password: this.password
         })
-        .then(() => toastr.success('test', 'toastr'))
         .then(() => $state.go('app.home'));
       };
 
