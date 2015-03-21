@@ -144,18 +144,17 @@ export default function network($q, $interval, R, state, telehash,
         }
       };
 
-      return handledPacket();
+      return handledPacket()
+        .catch((error) => notification.error(error, 'Network Listen Error'));
     };
 
-    let listenResult;
     try {
       checkSession(session);
-      listenResult = session.listen(channelInfo.id, handlePacket);
+      let listenResult = session.listen(channelInfo.id, handlePacket);
+      return $q.when(listenResult);
     } catch(error) {
       return $q.reject(error);
     }
-
-    return $q.when(listenResult);
   };
 
   let send =
