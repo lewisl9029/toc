@@ -13,6 +13,7 @@
     "app/views/**/*",
     "app/*",
     "!app/components/**/*.scss",
+    "!app/libraries/**/*.scss",
     "!app/views/**/*.scss",
     "!app/*.scss",
     "!app/services/**/*-test.unit.js"

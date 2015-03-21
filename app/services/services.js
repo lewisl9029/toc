@@ -4,6 +4,7 @@ import angular from 'angular';
 import contacts from './contacts/contacts';
 import identity from './identity/identity';
 import network from './network/network';
+import notification from './notification/notification';
 import storage from './storage/storage';
 import cryptography from './cryptography/cryptography';
 import state from './state/state';
@@ -14,6 +15,7 @@ export default angular.module('toc.services', [
   contacts.name,
   identity.name,
   network.name,
+  notification.name,
   storage.name,
   cryptography.name,
   state.name,

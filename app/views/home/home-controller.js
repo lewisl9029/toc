@@ -6,11 +6,4 @@ export default function HomeController(state, identity, network) {
   currentUserCursor.on('update', () => {
     this.currentUser = currentUserCursor.get();
   });
-
-  this.listen = () => network.listen({id: 'toc-test'});
-
-  this.send = () => network.send({
-    id: 'toc-test',
-    contactIds: [this.contactId]
-  }, {m: this.message});
 }

@@ -1,4 +1,4 @@
-export default function cryptography(sjcl) {
+export default function cryptography($q, sjcl) {
   //TODO: progressively replace with webcrypto implementation
   //TODO: add user setting to disable encryption
   let cachedCredentials;

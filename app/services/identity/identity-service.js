@@ -35,22 +35,30 @@ export default function identity($q, state, R, network, cryptography) {
         userCredentials.id = sessionInfo.id;
         persistentUserInfo.id = sessionInfo.id;
         newUserInfo.id = sessionInfo.id;
-        persistentUserInfo.challenge =
-          cryptography.encrypt(userCredentials.id, userCredentials);
-      }).then(() => state.save(
+        try {
+          persistentUserInfo.challenge =
+            cryptography.encrypt(userCredentials.id, userCredentials);
+        } catch(error) {
+          return $q.reject(error);
+        }
+      })
+      .then(() => state.save(
         IDENTITY_CURSORS.persistent,
         [persistentUserInfo.id, 'userInfo'],
         persistentUserInfo
-      )).then(() => {
+      ))
+      .then(() => {
         //TODO: need to initialize with primary userId to connect to module
         // possibly add another remotestorage module that stores users's ids
         cryptography.initialize(userCredentials);
         return state.synchronized.initialize(persistentUserInfo.id);
-      }).then(() => state.save(
+      })
+      .then(() => state.save(
         IDENTITY_CURSORS.synchronized,
         ['userInfo'],
         newUserInfo
-      )).then(() => state.save(
+      ))
+      .then(() => state.save(
         network.NETWORK_CURSORS.synchronized,
         ['sessions', sessionInfo.id, 'sessionInfo'],
         sessionInfo
@@ -65,16 +73,17 @@ export default function identity($q, state, R, network, cryptography) {
       cryptography.decrypt(challenge, userCredentials);
     }
     catch(error) {
-      return $q.reject('Authentication failed');
+      return $q.reject('Wrong password.');
     }
 
     cryptography.initialize(userCredentials);
     return state.synchronized.initialize(userCredentials.id)
       .then(() => network.NETWORK_CURSORS.synchronized.get(
         ['sessions', userCredentials.id, 'sessionInfo']
-      )).then((sessionInfo) =>
-        network.initialize(sessionInfo.keypair
-      ));
+      ))
+      .then((sessionInfo) =>
+        network.initialize(sessionInfo.keypair)
+      );
   };
 
   let initialize = function initializeIdentity() {

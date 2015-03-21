@@ -28,6 +28,7 @@ var basePaths = {
 var paths = {
   sass: [
     basePaths.dev + 'components/**/*.scss',
+    basePaths.dev + 'libraries/**/*.scss',
     basePaths.dev + 'views/**/*.scss',
     basePaths.dev + 'app.scss',
     basePaths.dev + 'initialize.scss'
