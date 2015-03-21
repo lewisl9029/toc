@@ -17,7 +17,18 @@ export default function contacts($log, state, network, identity) {
       email: 'unknown-user@toc-messenger.io'
     };
 
-    return network.sendInvite(contactId, userInfo)
+    let recursivelySendInvite = () => {
+      return network.sendInvite(contactId, userInfo)
+        .catch((error) => {
+          if (error !== 'timeout') {
+            return $q.reject(error);
+          }
+
+          return recursivelySendInvite();
+        });
+    };
+
+    return recursivelySendInvite()
       .then(() => state.save(
         CONTACTS_CURSORS.synchronized,
         [contactId, 'userInfo'],

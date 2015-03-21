@@ -212,6 +212,10 @@ export default function network($q, $log, $interval, R, state, telehash) {
 
     let previousContactStatus = contactCursor.get(['statusId']);
 
+    if (previousContactStatus === undefined) {
+      return $q.when();
+    }
+
     return send(contactChannel, payload)
       .catch((error) => {
         if (error !== 'timeout') {
