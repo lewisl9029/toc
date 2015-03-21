@@ -4,9 +4,11 @@ export default function tocQrImage(qrEncode) {
   return {
     restrict: 'E',
     template: template,
-    link: function linkQrImage(scope, element) {
+    link: function linkQrImage(scope, element, attrs) {
+      //TODO: persist qr code dataURI
+      let data = attrs.data;
+      let dataURI = qrEncode(data, {type: 7, size: 9, level: 'H'});
       let qrImage = new Image();
-      let dataURI = qrEncode('test', {type: 5, size: 8, level: 'H'});
       qrImage.src = dataURI;
       element[0].appendChild(qrImage);
     }

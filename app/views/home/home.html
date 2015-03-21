@@ -21,6 +21,14 @@
   </div>
 
   <ion-content class="has-subheader">
-    <toc-qr-image></toc-qr-image>
+    <div class="card">
+      <div class="item item-divider item-calm">
+        QR Code ID
+      </div>
+      <div class="item item-image toc-qr-image-container">
+        <toc-qr-image data="{{homeView.currentUser.userInfo.id}}">
+        </toc-qr-image>
+      </div>
+    </div>
   </ion-content>
 </ion-view>
