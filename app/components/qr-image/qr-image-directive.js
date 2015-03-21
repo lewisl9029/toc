@@ -1,9 +1,6 @@
-import template from './qr-image.html!text';
-
 export default function tocQrImage(qrEncode, notification) {
   return {
     restrict: 'E',
-    template: template,
     link: function linkQrImage(scope, element, attrs) {
       //TODO: persist qr code dataURI
       try {

@@ -13,16 +13,19 @@
   <div class="item item-divider">
     Contacts
   </div>
-  <div class="item item-input-inset">
-    <label class="item-input-wrapper">
-      <input type="text" placeholder="Contact ID"
-        ng-model="channelList.inviteId">
-    </label>
-    <button class="button button-clear button-balanced"
-      ng-click="channelList.invite(channelList.inviteId)">
-      <i class="icon ion-plus"></i>
-    </button>
-  </div>
+
+  <form name="toc-contact-invite-form">
+    <div class="item item-input-inset">
+      <label class="item-input-wrapper">
+        <input type="text" placeholder="Contact ID"
+          ng-model="channelList.inviteId">
+      </label>
+      <button type="submit" class="button button-clear button-balanced"
+        ng-click="channelList.invite(channelList.inviteId)">
+        <i class="icon ion-plus"></i>
+      </button>
+    </div>
+  </form>
   <div ng-repeat="(id, channel) in channelList.channels track by id"
     ui-sref="app.channel({channelId: id})" menu-close>
     <div class="row" ng-class="{

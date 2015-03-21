@@ -1,37 +1,39 @@
-<div class="card list">
-  <div class="item item-divider item-calm">
-    Welcome {{signupForm.newUser.displayName || 'New User'}}!
+<form name="toc-signup-form">
+  <div class="card list">
+    <div class="item item-divider item-calm">
+      Welcome {{signupForm.newUser.displayName || 'New User'}}!
+    </div>
+    <label class="item item-avatar">
+      <!-- TODO: create directive for libravatar icon -->
+      <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="New User 1" />
+      <h2>{{signupForm.newUser.displayName || 'New User'}}</h2>
+      <p>ID</p>
+    </label>
+    <label class="item item-input item-floating-label">
+      <span class="input-label">Display Name</span>
+      <input type="text" placeholder="Display Name"
+        ng-model="signupForm.newUser.displayName" toc-auto-focus>
+    </label>
+    <label class="item item-input item-floating-label">
+      <span class="input-label">Email</span>
+      <input type="text" placeholder="Email"
+        ng-model="signupForm.newUser.email">
+    </label>
+    <label class="item item-input item-floating-label">
+      <span class="input-label">Password</span>
+      <input type="password" placeholder="Password"
+        ng-model="signupForm.newUser.password">
+    </label>
+    <label class="item item-input item-floating-label">
+      <span class="input-label">Confirm Password</span>
+      <input type="password" placeholder="Confirm Password"
+        ng-model="signupForm.newUser.passwordConfirmation">
+    </label>
+    <div class="item item-divider button-bar">
+      <button type="submit" class="button button-balanced"
+        ng-click="signupForm.createUser(signupForm.newUser)">
+        Create Account
+      </button>
+    </div>
   </div>
-  <label class="item item-avatar">
-    <!-- TODO: create directive for libravatar icon -->
-    <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="New User 1" />
-    <h2>{{signupForm.newUser.displayName || 'New User'}}</h2>
-    <p>ID</p>
-  </label>
-  <label class="item item-input item-floating-label">
-    <span class="input-label">Display Name</span>
-    <input type="text" placeholder="Display Name"
-      ng-model="signupForm.newUser.displayName">
-  </label>
-  <label class="item item-input item-floating-label">
-    <span class="input-label">Email</span>
-    <input type="text" placeholder="Email"
-      ng-model="signupForm.newUser.email">
-  </label>
-  <label class="item item-input item-floating-label">
-    <span class="input-label">Password</span>
-    <input type="password" placeholder="Password"
-      ng-model="signupForm.newUser.password">
-  </label>
-  <label class="item item-input item-floating-label">
-    <span class="input-label">Confirm Password</span>
-    <input type="password" placeholder="Confirm Password"
-      ng-model="signupForm.newUser.passwordConfirmation">
-  </label>
-  <div class="item item-divider button-bar">
-    <button class="button button-balanced"
-      ng-click="signupForm.createUser(signupForm.newUser)">
-      Create Account
-    </button>
-  </div>
-</div>
+</form>
