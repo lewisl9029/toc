@@ -20,7 +20,12 @@ export default function tocChannelList() {
       this.contacts = contactsCursor.get();
 
       this.inviteId = '';
-      this.invite = contacts.invite;
+      this.invite = (contactId) => {
+        return contacts.invite(contactId)
+          .catch((error) => {
+            
+          });
+      };
 
       channelsCursor.on('update', () => {
         this.channels = channelsCursor.get();
