@@ -5,7 +5,7 @@
   Writable.WritableState = WritableState;
   var util = require("core-util-is");
   util.inherits = require("inherits");
-  var Stream = require('stream/index');
+  var Stream = require('stream-browserify/index');
   util.inherits(Writable, Stream);
   function WriteReq(chunk, encoding, cb) {
     this.chunk = chunk;

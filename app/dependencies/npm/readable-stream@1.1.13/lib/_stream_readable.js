@@ -9,7 +9,7 @@
     EE.listenerCount = function(emitter, type) {
       return emitter.listeners(type).length;
     };
-  var Stream = require('stream/index');
+  var Stream = require('stream-browserify/index');
   var util = require("core-util-is");
   util.inherits = require("inherits");
   var StringDecoder;

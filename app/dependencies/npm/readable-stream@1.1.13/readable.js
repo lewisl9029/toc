@@ -1,6 +1,6 @@
 /* */ 
 exports = module.exports = require("./lib/_stream_readable");
-exports.Stream = require('stream/index');
+exports.Stream = require('stream-browserify/index');
 exports.Readable = exports;
 exports.Writable = require("./lib/_stream_writable");
 exports.Duplex = require("./lib/_stream_duplex");

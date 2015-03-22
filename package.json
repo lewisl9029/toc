@@ -46,7 +46,7 @@
       "angular-toastr": "npm:angular-toastr@^1.0.2",
       "baobab": "npm:baobab@^0.4.0",
       "css": "github:systemjs/plugin-css@^0.1.0",
-      "ionic": "github:driftyco/ionic-bower@1.0.0-rc.0",
+      "ionic": "github:driftyco/ionic-bower@1.0.0-rc.1",
       "moment": "npm:moment@^2.9.0",
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
       "qr-encode": "npm:qr-encode@^0.3.0",
