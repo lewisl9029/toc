@@ -8,12 +8,12 @@ export default function state($rootScope, $q, storage, R, Baobab) {
 
   // local application state persisted in localStorage
   stateService.persistent = {
-    tree: new Baobab({})
+    tree: new Baobab({}, {shiftReferences: true})
   };
 
   // shared user application state persisted in indexedDB with remoteStorage
   stateService.synchronized = {
-    tree: new Baobab({})
+    tree: new Baobab({}, {shiftReferences: true})
   };
 
   stateService.persistent.tree.on('update',
