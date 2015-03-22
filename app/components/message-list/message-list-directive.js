@@ -38,13 +38,7 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
 
       this.contacts = contactsCursor.get();
       this.userId = identityCursor.get(['userInfo']).id;
-      // this.messages = {
-      //   6: {content: '1234'},
-      //   5: {content: '1234'},
-      //   4: {content: '1234'},
-      //   3: {content: '1234'},
-      //   2: {content: '1234'},
-      // };
+
       this.messages = messagesCursor.get();
 
       messagesCursor.on('update', () => {
