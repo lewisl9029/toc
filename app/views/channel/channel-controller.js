@@ -20,9 +20,6 @@ export default function ChannelController($q, $stateParams, state, contacts,
           channelCursor.get([this.channelId, 'channelInfo']),
           this.message
         )
-        .then(() => {
-          this.message = '';
-        })
         .catch((error) => {
           if (error !== 'timeout') {
             return $q.reject(error);
@@ -33,6 +30,9 @@ export default function ChannelController($q, $stateParams, state, contacts,
     };
 
     return recursivelySendMessage()
+      .then(() => {
+        this.message = '';
+      })
       .catch((error) => notification.error(error, 'Message Delivery Error'));
   };
 
