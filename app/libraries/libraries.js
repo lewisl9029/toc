@@ -1,6 +1,7 @@
 import angular from 'angular';
 
 import Baobab from './baobab/baobab';
+import Mprogress from './mprogress/mprogress';
 import angularToastr from './angular-toastr/angular-toastr';
 import moment from './moment/moment';
 import ramda from './ramda/ramda';
@@ -12,6 +13,7 @@ import telehash from './telehash/telehash';
 export default angular.module('toc.libraries', [
   angularToastr.name,
   Baobab.name,
+  Mprogress.name,
   moment.name,
   ramda.name,
   remoteStorage.name,

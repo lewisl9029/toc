@@ -90,6 +90,7 @@
 }
 @-moz-keyframes querying {
   0% {
+    //TODO: override translateX with translate3d without messing up animation
     -webkit-transform: translateX(100%) scale3d(0.7, 1, 1);
     -moz-transform: translateX(100%) scale3d(0.7, 1, 1);
     -ms-transform: translateX(100%) scale3d(0.7, 1, 1);
