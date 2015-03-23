@@ -4,6 +4,7 @@
   var loadingIndicator;
   var loadingStartTime;
   var queryAnimationTime = 2800;
+  var fadeoutAnimationTime = 1500;
 
   var loadingScreen = document.getElementsByClassName('loading-screen')[0];
 
@@ -28,6 +29,10 @@
       setTimeout(function() {
         loadingIndicator.end();
         loadingScreen.className += ' fadeout-loading-screen';
+
+        setTimeout(function() {
+          loadingScreen.parentNode.removeChild(loadingScreen);
+        }, fadeoutAnimationTime);
       }, queryAnimationTime - queryElapsedTime);
     })
     .catch(console.onerror);
