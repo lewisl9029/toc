@@ -1,0 +1,6 @@
+{
+  "registry": "jspm",
+  "main": "build/js/mprogress",
+  "format": "global",
+  "dependencies": {}
+}
