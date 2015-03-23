@@ -13,10 +13,16 @@ export default function tocSignupForm() {
         passwordConfirmation: ''
       };
 
+      this.signupInProgress;
+
       this.createUser = function createUser(userInfo) {
+        this.signupInProgress = true;
         identity.create(userInfo)
           .then(() => $state.go('app.home'))
-          .catch((error) => notification.error(error, 'User Creation Error'));
+          .catch((error) => notification.error(error, 'User Creation Error'))
+          .then(() => {
+            this.signupInProgress = false;
+          });
       };
     }
   };

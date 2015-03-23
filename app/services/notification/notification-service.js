@@ -1,6 +1,7 @@
 export default function notification($q, angularToastr) {
   let createToastrAsync = function createToastrPromise(toastrFunction) {
-    return (message, title) => $q.when(toastrFunction(message, title));
+    return (message, title) =>
+      $q.when(toastrFunction(message.message || message, title));
   };
 
   return {

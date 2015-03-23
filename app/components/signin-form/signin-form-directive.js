@@ -15,7 +15,7 @@ export default function tocSigninForm() {
       this.selectedUser = Object.keys(this.users)[0];
       this.password = '';
 
-      this.signIn = function() {
+      this.signIn = function signIn() {
         this.usersSigninInProgress[this.selectedUser] = true;
 
         return identity.authenticate({
