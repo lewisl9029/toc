@@ -30,6 +30,9 @@ export default function ChannelController($q, $stateParams, state, contacts,
     };
 
     return recursivelySendMessage()
+      .then(() => {
+        this.message = '';
+      })
       .catch((error) => notification.error(error, 'Message Delivery Error'));
   };
 
