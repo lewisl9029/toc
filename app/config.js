@@ -16,6 +16,7 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.6",
     "ionic": "github:driftyco/ionic-bower@1.0.0-rc.1",
     "moment": "npm:moment@2.9.0",
+    "mprogress": "npm:mprogress@0.1.1",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "qr-encode": "npm:qr-encode@0.3.0",
     "ramda": "npm:ramda@0.11.0",
