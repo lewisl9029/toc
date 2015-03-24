@@ -28,12 +28,14 @@ export default function ChannelController($q, $stateParams, state, contacts,
           return recursivelySendMessage();
         });
     };
-
-    return recursivelySendMessage()
+    this.sending = recursivelySendMessage()
       .then(() => {
         this.message = '';
+        return $q.when();
       })
       .catch((error) => notification.error(error, 'Message Delivery Error'));
+
+    return this.sending;
   };
 
   contactCursor.on('change', () => {

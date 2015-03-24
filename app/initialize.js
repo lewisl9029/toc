@@ -3,11 +3,10 @@
   // Record time here
   var loadingIndicator;
   var loadingStartTime;
-  var queryAnimationTime = 2800;
-  var fadeoutAnimationTime = 1500;
+  var QUERY_DURATION = 2800;
+  var FADEOUT_DURATION = 1500;
 
-  var loadingScreen = document.getElementsByClassName('loading-screen')[0];
-
+  var loadingScreen = document.getElementsByClassName('toc-loading-screen')[0];
 
   System.import('mprogress')
     .then(function initializeLoadingIndicator() {
@@ -24,16 +23,16 @@
       // loadingIndicator.set(0.99);
       var loadingEndTime = Date.now();
       var queryElapsedTime =
-        (loadingEndTime - loadingStartTime) % queryAnimationTime;
+        (loadingEndTime - loadingStartTime) % QUERY_DURATION;
 
       setTimeout(function() {
         loadingIndicator.end();
-        loadingScreen.className += ' fadeout-loading-screen';
+        loadingScreen.className += ' toc-fadeout-loading-screen';
 
         setTimeout(function() {
-          loadingScreen.parentNode.removeChild(loadingScreen);
-        }, fadeoutAnimationTime);
-      }, queryAnimationTime - queryElapsedTime);
+          loadingScreen.className += ' toc-non-interactive';
+        }, FADEOUT_DURATION);
+      }, QUERY_DURATION - queryElapsedTime);
     })
     .catch(console.onerror);
 })();

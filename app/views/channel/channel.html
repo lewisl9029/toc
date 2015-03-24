@@ -26,15 +26,19 @@
     <toc-message-list channel-id="{{channelView.channelId}}">
     </toc-message-list>
   </ion-content>
+  <!-- TODO: refactor into separate component -->
   <form name="toc-message-input-form">
     <div class="bar bar-footer bar-calm item-input-inset">
       <label class="item-input-wrapper">
         <input type="text" placeholder="Message"
           ng-model="channelView.message" toc-auto-focus>
       </label>
-      <button type="submit" class="button button-clear"
-        ng-click="channelView.send()">
+      <button type="submit" class="button button-clear button-sm"
+        ng-click="channelView.send()" toc-spinner-button
+        loading-promise="channelView.sending">
         <i class="icon ion-paper-airplane"></i>
+        <ion-spinner icon="ripple" class="spinner-light toc-send-spinner">
+        </ion-spinner>
       </button>
     </div>
   </form>

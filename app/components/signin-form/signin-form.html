@@ -19,8 +19,10 @@
     </label>
     <div class="item item-divider button-bar">
       <button type="submit" class="button button-balanced"
-        ng-click="signinForm.signIn()">
-        Sign In
+        ng-click="signinForm.signIn()" toc-spinner-button
+        loading-promise="signinForm.signingIn">
+        <i class="icon ion-log-in"></i>
+        <ion-spinner icon="ripple" class="spinner-light"></ion-spinner>
       </button>
     </div>
   </div>

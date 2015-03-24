@@ -34,3 +34,27 @@ $button-border-radius: 0 !default;
 .item-input-wrapper {
   border-radius: 0;
 }
+
+.button {
+  opacity: 1;
+  transition: opacity 0.75s ease-in;
+}
+
+.button[disabled] {
+  opacity: 0.8;
+  transition: opacity 0.75s ease-in;
+}
+
+.toc-hidden {
+  display: none;
+}
+
+.toc-fadein {
+  opacity: 1;
+  transition: opacity 0.75s ease-in;
+}
+
+.toc-fadeout {
+  opacity: 0;
+  transition: opacity 0.75s ease-in;
+}

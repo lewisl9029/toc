@@ -5,7 +5,7 @@ export default function tocSigninForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signinForm',
-    controller: function SigninFormController($state, identity, notification) {
+    controller: function SigninFormController($q, $state, identity, notification) {
       let localUsersCursor = identity.IDENTITY_CURSORS.persistent;
 
       this.users = localUsersCursor.get() || {};
@@ -14,12 +14,14 @@ export default function tocSigninForm() {
       this.password = '';
 
       this.signIn = function() {
-        return identity.authenticate({
+        this.signingIn = identity.authenticate({
             id: this.selectedUser,
             password: this.password
           })
           .then(() => $state.go('app.home'))
           .catch((error) => notification.error(error, 'Authentication Error'));
+
+        return this.signingIn;
       };
 
       //FIXME: dangling listener, refactor into service

@@ -1,6 +1,6 @@
 @import 'libraries/mprogress/mprogress';
 
-.loading-screen {
+.toc-loading-screen {
   background-color: #ffffff;
   height: 100%;
   left: 0;
@@ -10,9 +10,28 @@
   z-index: 3;
 }
 
-.fadeout-loading-screen {
+.toc-fadeout-loading-screen {
   opacity: 0;
   transition: opacity 1.5s ease-in; //same timing as loading indicator queryend
+}
+
+.toc-non-interactive {
+  pointer-events: none;
+}
+
+.toc-spinner-area {
+  bottom: 0;
+  height: 56px;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 56px;
+  .spinner svg {
+    height: 56px;
+    width: 56px;
+  }
 }
 
 //
