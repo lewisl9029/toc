@@ -21,7 +21,7 @@
           ng-model="channelList.inviteId">
       </label>
       <button type="submit" class="button button-clear button-balanced"
-        ng-click="channelList.invite(channelList.inviteId)">
+        ng-click="channelList.invite()">
         <i class="icon ion-plus"></i>
       </button>
     </div>
@@ -43,7 +43,8 @@
       <p>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id}}</p>
       <div class="buttons" ng-if="channel.channelInfo.pendingHandshake">
         <button class="button button-positive button-clear"
-          ng-click="channelList.invite(channel.channelInfo.contactIds[0])">
+          ng-click="channelList.acceptInvite(channel.channelInfo);
+            $event.stopPropagation()">
           <i class="icon ion-checkmark"></i>
         </button>
         <button class="button button-assertive button-clear">

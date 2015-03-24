@@ -20,9 +20,23 @@ export default function tocChannelList() {
       this.contacts = contactsCursor.get();
 
       this.inviteId = '';
-      this.invite = (contactId) => {
-        return contacts.invite(contactId)
-          .catch((error) => notification.error(error, 'Contact Invite Error'));
+      this.invite = () => {
+        this.inviting = contacts.invite(this.inviteId)
+          .catch((error) =>
+            notification.error(error, 'Contact Invite Send Error')
+          );
+        return this.inviting;
+      };
+
+      this.invitesAccepting = {};
+
+      this.acceptInvite = (channelInfo) => {
+        this.invitesAccepting[channelInfo.id] =
+          contacts.invite(channelInfo.contactIds[0])
+            .catch((error) =>
+              notification.error(error, 'Contact Invite Accept Error')
+            );
+        return this.invitesAccepting[channelInfo.id];
       };
 
       channelsCursor.on('update', () => {

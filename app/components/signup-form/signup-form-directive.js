@@ -14,9 +14,11 @@ export default function tocSignupForm() {
       };
 
       this.createUser = function createUser(userInfo) {
-        identity.create(userInfo)
+        this.signingUp = identity.create(userInfo)
           .then(() => $state.go('app.home'))
           .catch((error) => notification.error(error, 'User Creation Error'));
+
+        return this.signingUp;
       };
     }
   };
