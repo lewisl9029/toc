@@ -1,18 +1,25 @@
-<div class="card"
-  ng-repeat="message in messageList.messages track by message.id |
-    orderBy : ['logicalClock', 'id']">
-  <div class="item item-divider" ng-class="{
-    'item-balanced': message.sender !== messageList.userId,
-    'item-calm': message.sender === messageList.userId
-  }">
-    {{
-      message.sender === messageList.userId ?
-      'You' :
-      messageList.contacts[message.sender].userInfo.displayName
-    }} said at {{message.logicalClock}}:
-  </div>
-  <div class="item item-text-wrap">
-    {{message.receivedTime | date : 'short'}} :
-    {{message.content}}
+<div class="list">
+  <div ng-repeat="messageGroup in messageList.groupedMessages
+    track by messageGroup[0].id">
+    <div class="row balanced-bg"></div>
+    <div class="item item-avatar">
+      <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07711c08d50?d=identicon" alt="Avatar for  {{
+        messageGroup[0].sender === messageList.userInfo.id ?
+        messageList.userInfo.email :
+        messageList.contacts[messageGroup[0].sender].userInfo.email
+      }}" />
+      <h2>{{
+        messageGroup[0].sender === messageList.userInfo.id ?
+        'You' :
+        messageList.contacts[messageGroup[0].sender].userInfo.displayName
+      }} at {{
+        messageGroup[0].sender === messageList.userInfo.id ?
+        messageGroup[0].sentTime : messageGroup[0].receivedTime |
+        date : 'short'
+      }}</h2>
+      <p ng-repeat="message in messageGroup track by message.id">
+        {{message.content}}
+      </p>
+    </div>
   </div>
 </div>
