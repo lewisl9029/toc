@@ -29,7 +29,7 @@ export default function contacts($q, state, network, identity) {
 
           attemptCount++;
           if (attemptCount === MAX_ATTEMPTS) {
-            return $q.reject('Invite request has timed out.')
+            return $q.reject('Invite request has timed out.');
           }
 
           return recursivelySendInvite();

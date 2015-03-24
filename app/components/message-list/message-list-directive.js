@@ -37,16 +37,39 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
       ]);
 
       this.contacts = contactsCursor.get();
-      this.userId = identityCursor.get(['userInfo']).id;
+      this.userInfo = identityCursor.get(['userInfo']);
 
       let getMessageList = function getMessageList(messages) {
         return R.pipe(
           R.values,
-          R.map((message) => message.messageInfo)
+          R.map((message) => message.messageInfo),
+          R.sort((message1, message2) => {
+            if (message1.logicalClock === message2.logicalClock) {
+              return message1.id > message2.id ? 1 : -1;
+            }
+
+            return message1.logicalClock > message2.logicalClock ? 1 : -1;
+          }),
+          R.reduce((groupedMessages, message) => {
+            if (groupedMessages.length === 0) {
+              groupedMessages.push([message]);
+              return groupedMessages;
+            }
+
+            let latestGroup = groupedMessages[groupedMessages.length - 1];
+
+            if (latestGroup[0].sender === message.sender) {
+              latestGroup.push(message);
+            } else {
+              groupedMessages.push([message]);
+            }
+
+            return groupedMessages;
+          }, [])
         )(messages);
       };
 
-      this.messages = getMessageList(messagesCursor.get());
+      this.groupedMessages = getMessageList(messagesCursor.get());
 
       messagesCursor.on('update', () => {
         this.messages = getMessageList(messagesCursor.get());
