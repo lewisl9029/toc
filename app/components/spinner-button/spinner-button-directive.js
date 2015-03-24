@@ -27,9 +27,9 @@ export default function tocSpinnerButton($timeout, notification) {
           $timeout(() => {
             spinnerElement.toggleClass('toc-hidden');
             iconElement.toggleClass('toc-hidden');
-
-            spinnerElement.toggleClass('toc-fadein');
-            iconElement.toggleClass('toc-fadein');
+            //FIXME: fadein afterwards doesnt work
+            // spinnerElement.toggleClass('toc-fadein');
+            // iconElement.toggleClass('toc-fadein');
           }, SPIN_DURATION);
 
           if (spinning) {
