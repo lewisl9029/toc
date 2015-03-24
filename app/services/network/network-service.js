@@ -186,16 +186,46 @@ export default function network($q, $window, $interval, R, state, telehash,
             return $q.when();
           }
 
+          previousListenTimeout = currentListenTimeout;
           return notification.warning(
               'Resetting connection...',
               'Network Connectivity Issues'
             )
             .then(() => {
-              let sessionInfo = NETWORK_CURSORS.synchronized.get(
-                ['sessions', userCredentials.id, 'sessionInfo']
+              let userId =
+                state.synchronized.tree.select(
+                  ['identity', 'userInfo']
+                ).get().id;
+
+              let keypair = NETWORK_CURSORS.synchronized.get(
+                ['sessions', userId, 'sessionInfo', 'keypair']
               );
 
-              return initialize(sessionInfo.keypair);
+              let deferredSession = $q.defer();
+
+              let telehashKeypair = {
+                id: keypair
+              };
+
+              try {
+                telehash.init(telehashKeypair,
+                  function initializeTelehash(error, telehashSession) {
+                    if (error) {
+                      return deferredSession.reject(error);
+                    }
+
+                    return deferredSession.resolve(telehashSession);
+                  }
+                );
+              } catch(error) {
+                return $q.reject(error);
+              }
+
+              return deferredSession.promise;
+            })
+            .then((telehashSession) => {
+              activeSession = telehashSession;
+              return $q.when();
             })
             .catch((error) =>
               notification.error(error, 'Network Initialization Error')
@@ -436,8 +466,6 @@ export default function network($q, $window, $interval, R, state, telehash,
       };
 
       activeSession = telehashSession;
-      //DEBUG
-      window.tocSession = activeSession;
 
       listen({id: INVITE_CHANNEL_ID});
 
