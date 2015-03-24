@@ -96,21 +96,22 @@ export default function network($q, $window, $interval, R, state, telehash,
     );
   };
 
-  let handleMessage = function handleMessage(messagePayload, sentTime,
-    contactId, channelId) {
+  let handleMessage = function handleMessage(messageContent, logicalClock,
+    sentTime, receivedTime, contactId, channelId) {
     let messageId = sentTime + '-' + contactId;
 
     let message = {
       id: messageId,
       //TODO: find main contact userId from sender userId
       sender: contactId,
-      time: sentTime,
-      content: messagePayload
+      receivedTime: receivedTime,
+      logicalClock: logicalClock,
+      content: messageContent
     };
 
     return state.save(
       NETWORK_CURSORS.synchronized.select(['channels', channelId, 'messages']),
-      [messageId],
+      [messageId, 'messageInfo'],
       message
     );
   };
@@ -123,7 +124,10 @@ export default function network($q, $window, $interval, R, state, telehash,
         }
 
         callback(true);
-        channel.send({js: {a: packet.from.sentAt}});
+        channel.send({js: {a: {
+          s: packet.from.sentAt,
+          r: packet.from.receivedAt
+        }}});
 
         if (packet.js.a !== undefined) {
           return $q.when();
@@ -135,7 +139,9 @@ export default function network($q, $window, $interval, R, state, telehash,
           //TODO: implement toast on new message arrival
           return handleMessage(
             packet.js.m,
+            packet.js.c,
             packet.from.sentAt,
+            packet.from.receivedAt,
             packet.from.hashname,
             channel.type.substr(1) //remove leading underscore
           );
@@ -173,8 +179,10 @@ export default function network($q, $window, $interval, R, state, telehash,
         if (acknowledgement) {
           return sentMessage.resolve(acknowledgement);
         } else {
-          console.log(packet.js);
-          channel.send({js: {a: packet.from.sentAt}});
+          channel.send({js: {a: {
+            s: packet.from.sentAt,
+            r: packet.from.receivedAt
+          }}});
           return sentMessage.resolve(packet.from.sentAt);
         }
       };
@@ -255,13 +263,20 @@ export default function network($q, $window, $interval, R, state, telehash,
       );
   };
 
-  let sendMessage = function sendMessage(channelInfo, messageContent) {
+  let sendMessage = function sendMessage(channelInfo, messageContent,
+    logicalClock) {
+    if (!messageContent || !logicalClock) {
+      return $q.reject('Invalid message format.');
+    }
+
     let payload = {
-      m: messageContent
+      m: messageContent,
+      c: logicalClock
     };
 
     let handleMessageAck = (acknowledgement) => {
-      let sentTime = acknowledgement;
+      let sentTime = acknowledgement.s;
+      let receivedTime = acknowledgement.r;
 
       let userId =
         state.synchronized.tree.select(['identity', 'userInfo']).get().id;
@@ -269,9 +284,10 @@ export default function network($q, $window, $interval, R, state, telehash,
 
       let message = {
         id: messageId,
-        //TODO: find main contact userId from sender userId
+        //TODO: find main contact userId from sender userId for multi-signon
         sender: userId,
-        time: sentTime,
+        receivedTime: receivedTime,
+        logicalClock: logicalClock,
         content: messageContent
       };
 
@@ -279,7 +295,7 @@ export default function network($q, $window, $interval, R, state, telehash,
         NETWORK_CURSORS.synchronized.select(
           ['channels', channelInfo.id, 'messages']
         ),
-        [messageId],
+        [messageId, 'messageInfo'],
         message
       );
     };
