@@ -15,6 +15,8 @@ export default function ChannelController($q, $stateParams, state, contacts,
 
   this.message = '';
   this.send = () => {
+    const MAX_ATTEMPTS = 3;
+    let attemptCount = 0;
     let recursivelySendMessage = () => {
       return network.sendMessage(
           channelCursor.get([this.channelId, 'channelInfo']),
@@ -25,9 +27,15 @@ export default function ChannelController($q, $stateParams, state, contacts,
             return $q.reject(error);
           }
 
+          attemptCount++;
+          if (attemptCount === MAX_ATTEMPTS) {
+            return $q.reject('Message sending has timed out.');
+          }
+
           return recursivelySendMessage();
         });
     };
+
     this.sending = recursivelySendMessage()
       .then(() => {
         this.message = '';

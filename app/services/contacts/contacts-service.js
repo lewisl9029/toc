@@ -18,6 +18,8 @@ export default function contacts($q, state, network, identity) {
     };
 
     const MAX_ATTEMPTS = 3;
+    let attemptCount = 0;
+
     let recursivelySendInvite = () => {
       return network.sendInvite(contactId, userInfo)
         .catch((error) => {
@@ -34,7 +36,6 @@ export default function contacts($q, state, network, identity) {
         });
     };
 
-    let attemptCount = 0;
     return recursivelySendInvite()
       .then(() => state.save(
         CONTACTS_CURSORS.synchronized,
