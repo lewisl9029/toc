@@ -131,7 +131,14 @@ export default function network($q, $window, $interval, R, state, telehash,
         channelCursor,
         ['messages', messageId, 'messageInfo'],
         message
-      ));
+      ))
+      .then(() => {
+        let contactName = state.synchronized.tree.get(
+          ['contacts', contactId, 'contactInfo', 'displayName']
+        );
+
+        return notification.success(message, contactName + ' just said:');
+      });
   };
 
   let listen = function listen(channelInfo, session = activeSession) {
