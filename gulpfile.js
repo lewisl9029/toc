@@ -122,6 +122,7 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
       basePaths.dev + 'dependencies/babel-polyfill.js',
       basePaths.dev + 'config.js',
       basePaths.dev + 'initialize.js',
+      basePaths.dev + 'loading.js',
     ], {
       base: basePaths.dev
     })
