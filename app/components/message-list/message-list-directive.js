@@ -72,7 +72,7 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
       this.groupedMessages = getMessageList(messagesCursor.get());
 
       messagesCursor.on('update', () => {
-        this.messages = getMessageList(messagesCursor.get());
+        this.groupedMessages = getMessageList(messagesCursor.get());
       });
     }
   };
