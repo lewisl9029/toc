@@ -318,7 +318,8 @@ export default function network($q, $window, $interval, R, state, telehash,
       });
 
     sendStatusUpdate();
-    return $interval(sendStatusUpdate, 15000);
+    $interval(sendStatusUpdate, 15000);
+    return $q.when();
   };
 
   let initialize = function initializeNetwork(keypair) {

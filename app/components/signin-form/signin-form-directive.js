@@ -13,8 +13,6 @@ export default function tocSigninForm() {
       this.selectedUser = Object.keys(this.users)[0];
       this.password = '';
 
-      this.signingIn = $q.when();
-
       this.signIn = function() {
         this.signingIn = identity.authenticate({
             id: this.selectedUser,

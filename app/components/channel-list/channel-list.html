@@ -21,8 +21,10 @@
           ng-model="channelList.inviteId">
       </label>
       <button type="submit" class="button button-clear button-balanced"
-        ng-click="channelList.invite()">
+        ng-click="channelList.invite()" toc-spinner-button
+        loading-promise="channelList.inviting">
         <i class="icon ion-plus"></i>
+        <ion-spinner icon="ripple" class="spinner-balanced"></ion-spinner>
       </button>
     </div>
   </form>
@@ -42,10 +44,12 @@
       <h2>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.displayName}}</h2>
       <p>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id}}</p>
       <div class="buttons" ng-if="channel.channelInfo.pendingHandshake">
-        <button class="button button-positive button-clear"
+        <button class="button button-balanced button-clear"
           ng-click="channelList.acceptInvite(channel.channelInfo);
-            $event.stopPropagation()">
+            $event.stopPropagation()" toc-spinner-button
+            loading-promise="channelList.invitesAccepting[id]">
           <i class="icon ion-checkmark"></i>
+          <ion-spinner icon="ripple" class="spinner-balanced"></ion-spinner>
         </button>
         <button class="button button-assertive button-clear">
           <i class="icon ion-close"></i>
