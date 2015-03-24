@@ -134,6 +134,9 @@ export default function network($q, $window, $interval, R, state, telehash,
   };
 
   let listen = function listen(channelInfo, session = activeSession) {
+    const LISTEN_TIMEOUT_INTERVAL = 1000;
+    let previousListenTimeout;
+
     let handlePacket = (error, packet, channel, callback) => {
       let handledPacket = () => {
         if (error) {
@@ -169,7 +172,69 @@ export default function network($q, $window, $interval, R, state, telehash,
       };
 
       return handledPacket()
-        .catch((error) => notification.error(error, 'Network Listen Error'));
+        .catch((error) => {
+          if (error !== 'timeout') {
+            return notification.error(error, 'Network Listen Error');
+          }
+
+          let currentListenTimeout = Date.now();
+
+          if (!previousListenTimeout ||
+            currentListenTimeout - previousListenTimeout >=
+            LISTEN_TIMEOUT_INTERVAL) {
+            previousListenTimeout = currentListenTimeout;
+            return $q.when();
+          }
+
+          previousListenTimeout = currentListenTimeout;
+          return notification.warning(
+              'Resetting connection...',
+              'Network Connectivity Issues'
+            )
+            .then(() => {
+              let userId =
+                state.synchronized.tree.select(
+                  ['identity', 'userInfo']
+                ).get().id;
+
+              let keypair = NETWORK_CURSORS.synchronized.get(
+                ['sessions', userId, 'sessionInfo', 'keypair']
+              );
+
+              let deferredSession = $q.defer();
+
+              let telehashKeypair = {
+                id: keypair
+              };
+
+              try {
+                telehash.init(telehashKeypair,
+                  function initializeTelehash(error, telehashSession) {
+                    if (error) {
+                      return deferredSession.reject(error);
+                    }
+
+                    return deferredSession.resolve(telehashSession);
+                  }
+                );
+              } catch(error) {
+                return $q.reject(error);
+              }
+
+              return deferredSession.promise;
+            })
+            .then((telehashSession) => {
+              activeSession = telehashSession;
+              return $q.when();
+            })
+            .catch((error) =>
+              notification.error(error, 'Network Initialization Error')
+            )
+            .then(() => notification.success(
+              'Connection reset succcessful!',
+              'Network Reconnected'
+            ));
+        });
     };
 
     try {
@@ -401,8 +466,6 @@ export default function network($q, $window, $interval, R, state, telehash,
       };
 
       activeSession = telehashSession;
-      //DEBUG
-      window.tocSession = activeSession;
 
       listen({id: INVITE_CHANNEL_ID});
 
