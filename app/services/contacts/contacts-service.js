@@ -17,11 +17,19 @@ export default function contacts($q, state, network, identity) {
       email: 'unknown-user@toc-messenger.io'
     };
 
+    const MAX_ATTEMPTS = 3;
+    let attemptCount = 0;
+
     let recursivelySendInvite = () => {
       return network.sendInvite(contactId, userInfo)
         .catch((error) => {
           if (error !== 'timeout') {
             return $q.reject(error);
+          }
+
+          attemptCount++;
+          if (attemptCount === MAX_ATTEMPTS) {
+            return $q.reject('Invite request has timed out.')
           }
 
           return recursivelySendInvite();

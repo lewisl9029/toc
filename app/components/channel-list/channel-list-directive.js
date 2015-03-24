@@ -22,9 +22,14 @@ export default function tocChannelList() {
       this.inviteId = '';
       this.invite = () => {
         this.inviting = contacts.invite(this.inviteId)
+          .then(() => {
+            this.inviteId = '';
+            return $q.when();
+          })
           .catch((error) =>
             notification.error(error, 'Contact Invite Send Error')
           );
+          
         return this.inviting;
       };
 
