@@ -7,15 +7,11 @@
   var FADEOUT_DURATION = 1500;
 
   var loadingScreen = document.getElementsByClassName('toc-loading-screen')[0];
+  loadingIndicator = new Mprogress({template: 4});
+  loadingStartTime = Date.now();
+  loadingIndicator.start();
 
-  System.import('mprogress')
-    .then(function initializeLoadingIndicator() {
-      loadingIndicator = new Mprogress({template: 4});
-      loadingStartTime = Date.now();
-      loadingIndicator.start();
-
-      return System.import('app');
-    })
+  System.import('app')
     .then(function initializeApp(app) {
       app.initialize();
     })
