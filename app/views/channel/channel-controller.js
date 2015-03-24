@@ -3,12 +3,12 @@ export default function ChannelController($q, $stateParams, state, contacts,
   this.channelId = $stateParams.channelId;
 
   let channelCursor = network.NETWORK_CURSORS.synchronized
-    .select('channels');
+    .select(['channels', this.channelId]);
 
   let contactCursor = contacts.CONTACTS_CURSORS.synchronized;
 
   this.contact = contactCursor.get(
-    channelCursor.get([this.channelId, 'channelInfo', 'contactIds'])[0]
+    channelCursor.get(['channelInfo', 'contactIds'])[0]
   );
 
   this.title = this.contact.userInfo.displayName;
@@ -18,10 +18,23 @@ export default function ChannelController($q, $stateParams, state, contacts,
     const MAX_ATTEMPTS = 3;
     let attemptCount = 0;
     let recursivelySendMessage = () => {
+      let logicalClock = channelCursor.get(['logicalClock']);
+
       return network.sendMessage(
-          channelCursor.get([this.channelId, 'channelInfo']),
-          this.message
+          channelCursor.get(['channelInfo']),
+          this.message,
+          logicalClock + 1
         )
+        .then(() => {
+          let currentLogicalClock = channelCursor
+            .get(['logicalClock']);
+
+          return state.save(
+            channelCursor,
+            ['logicalClock'],
+            currentLogicalClock + 1
+          );
+        })
         .catch((error) => {
           if (error !== 'timeout') {
             return $q.reject(error);
@@ -48,7 +61,7 @@ export default function ChannelController($q, $stateParams, state, contacts,
 
   contactCursor.on('change', () => {
     this.contact = contactCursor.get(
-      channelCursor.get([this.channelId, 'channelInfo', 'contactIds'])[0]
+      channelCursor.get(['channelInfo', 'contactIds'])[0]
     );
   });
 }

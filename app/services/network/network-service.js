@@ -101,22 +101,36 @@ export default function network($q, $window, $interval, R, state, telehash,
     let messageId = sentTime + '-' + contactId;
 
     let messageContent = messagePayload.c;
-    let logicalClock = messagePayload.l;
+    let receivedLogicalClock = messagePayload.l;
 
     let message = {
       id: messageId,
       //TODO: find main contact userId from sender userId
       sender: contactId,
       receivedTime: receivedTime,
-      logicalClock: logicalClock,
+      logicalClock: receivedLogicalClock,
       content: messageContent
     };
 
-    return state.save(
-      NETWORK_CURSORS.synchronized.select(['channels', channelId, 'messages']),
-      [messageId, 'messageInfo'],
-      message
+    let channelCursor = NETWORK_CURSORS.synchronized.select(
+      ['channels', channelId]
     );
+
+    let existingLogicalClock = channelCursor.get('logicalClock');
+
+    let currentLogicalClock = receivedLogicalClock >= existingLogicalClock ?
+      receivedLogicalClock : existingLogicalClock;
+
+    return state.save(
+        channelCursor,
+        ['logicalClock'],
+        currentLogicalClock + 1
+      )
+      .then(() => state.save(
+        channelCursor,
+        ['messages', messageId, 'messageInfo'],
+        message
+      ));
   };
 
   let listen = function listen(channelInfo, session = activeSession) {
@@ -339,7 +353,20 @@ export default function network($q, $window, $interval, R, state, telehash,
 
     sendStatusUpdate();
     $interval(sendStatusUpdate, 15000);
-    return $q.when();
+
+    let channelCursor = state.synchronized.tree.select([
+      'channels', channelInfo.id
+    ]);
+
+    let logicalClock = channelCursor.get('logicalClock');
+
+    if (logicalClock) {
+      return $q.when();
+    }
+
+    logicalClock = 0;
+
+    return state.save(channelCursor, ['logicalClock'], logicalClock);
   };
 
   let initialize = function initializeNetwork(keypair) {
