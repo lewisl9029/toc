@@ -25,7 +25,7 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
     },
     controllerAs: 'messageList',
     controller: function MessageListController($scope, $state, identity,
-      contacts, network) {
+      contacts, network, R) {
       let channelsCursor = network.NETWORK_CURSORS.synchronized
         .select('channels');
       let contactsCursor = contacts.CONTACTS_CURSORS.synchronized;
@@ -39,10 +39,17 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
       this.contacts = contactsCursor.get();
       this.userId = identityCursor.get(['userInfo']).id;
 
-      this.messages = messagesCursor.get();
+      let getMessageList = function getMessageList(messages) {
+        return R.pipe(
+          R.values,
+          R.map((message) => message.messageInfo)
+        )(messages);
+      };
+
+      this.messages = getMessageList(messagesCursor.get());
 
       messagesCursor.on('update', () => {
-        this.messages = messagesCursor.get();
+        this.messages = getMessageList(messagesCursor.get());
       });
     }
   };
