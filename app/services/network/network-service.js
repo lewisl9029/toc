@@ -134,6 +134,9 @@ export default function network($q, $window, $interval, R, state, telehash,
   };
 
   let listen = function listen(channelInfo, session = activeSession) {
+    const LISTEN_TIMEOUT_INTERVAL = 1000;
+    let previousListenTimeout;
+
     let handlePacket = (error, packet, channel, callback) => {
       let handledPacket = () => {
         if (error) {
@@ -169,7 +172,39 @@ export default function network($q, $window, $interval, R, state, telehash,
       };
 
       return handledPacket()
-        .catch((error) => notification.error(error, 'Network Listen Error'));
+        .catch((error) => {
+          if (error !== 'timeout') {
+            return notification.error(error, 'Network Listen Error');
+          }
+
+          let currentListenTimeout = Date.now();
+
+          if (!previousListenTimeout ||
+            currentListenTimeout - previousListenTimeout >=
+            LISTEN_TIMEOUT_INTERVAL) {
+            previousListenTimeout = currentListenTimeout;
+            return $q.when();
+          }
+
+          return notification.warning(
+              'Resetting connection...',
+              'Network Connectivity Issues'
+            )
+            .then(() => {
+              let sessionInfo = NETWORK_CURSORS.synchronized.get(
+                ['sessions', userCredentials.id, 'sessionInfo']
+              );
+
+              return initialize(sessionInfo.keypair);
+            })
+            .catch((error) =>
+              notification.error(error, 'Network Initialization Error')
+            )
+            .then(() => notification.success(
+              'Connection reset succcessful!',
+              'Network Reconnected'
+            ));
+        });
     };
 
     try {
