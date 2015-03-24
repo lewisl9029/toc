@@ -5,7 +5,7 @@ export default function tocChannelList() {
     restrict: 'E',
     template: template,
     controllerAs: 'channelList',
-    controller: function ChannelListController($state, contacts, network,
+    controller: function ChannelListController($q, $state, contacts, network,
       identity, notification) {
       //TODO: optimize by pulling cursors into service
       let channelsCursor =
@@ -29,7 +29,7 @@ export default function tocChannelList() {
           .catch((error) =>
             notification.error(error, 'Contact Invite Send Error')
           );
-          
+
         return this.inviting;
       };
 

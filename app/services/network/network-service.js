@@ -143,7 +143,7 @@ export default function network($q, $window, $interval, R, state, telehash,
         callback(true);
         channel.send({js: {a: {
           s: packet.from.sentAt,
-          r: packet.from.receivedAt
+          r: packet.from.recvAt
         }}});
 
         if (packet.js.a !== undefined) {
@@ -157,7 +157,7 @@ export default function network($q, $window, $interval, R, state, telehash,
           return handleMessage(
             packet.js.m,
             packet.from.sentAt,
-            packet.from.receivedAt,
+            packet.from.recvAt,
             packet.from.hashname,
             channel.type.substr(1) //remove leading underscore
           );
@@ -197,7 +197,7 @@ export default function network($q, $window, $interval, R, state, telehash,
         } else {
           channel.send({js: {a: {
             s: packet.from.sentAt,
-            r: packet.from.receivedAt
+            r: packet.from.recvAt
           }}});
           return sentMessage.resolve(packet.from.sentAt);
         }
@@ -335,38 +335,41 @@ export default function network($q, $window, $interval, R, state, telehash,
   };
 
   let initializeChannel = function initializeChannel(channelInfo) {
-    let listenResult = listen(channelInfo)
-      .catch((error) => notification.error(error, 'Network Listen Error'));
-
     if (channelInfo.contactIds.length !== 1) {
-      return listenResult;
+      return $q.reject('Group chat not supported yet.');
     }
 
-    let sendStatusUpdate = () => sendStatus(channelInfo.contactIds[0], 1)
-      .catch((error) => {
-        if (error === 'timeout') {
+    return listen(channelInfo)
+      .catch((error) => notification.error(error, 'Network Listen Error'))
+      .then(() => {
+        let sendStatusUpdate = () => sendStatus(channelInfo.contactIds[0], 1)
+          .catch((error) => {
+            if (error === 'timeout') {
+              return $q.when();
+            }
+
+            return notification.error(error, 'Status Update Error');
+          });
+
+        sendStatusUpdate();
+        $interval(sendStatusUpdate, 15000);
+
+        return $q.when();
+      })
+      .then(() => {
+        let channelCursor = NETWORK_CURSORS.synchronized.select([
+          'channels', channelInfo.id
+        ]);
+
+        let logicalClock = channelCursor.get('logicalClock');
+
+        if (logicalClock) {
           return $q.when();
         }
 
-        return notification.error(error, 'Status Update Error');
+        logicalClock = 0;
+        return state.save(channelCursor, ['logicalClock'], logicalClock);
       });
-
-    sendStatusUpdate();
-    $interval(sendStatusUpdate, 15000);
-
-    let channelCursor = state.synchronized.tree.select([
-      'channels', channelInfo.id
-    ]);
-
-    let logicalClock = channelCursor.get('logicalClock');
-
-    if (logicalClock) {
-      return $q.when();
-    }
-
-    logicalClock = 0;
-
-    return state.save(channelCursor, ['logicalClock'], logicalClock);
   };
 
   let initialize = function initializeNetwork(keypair) {

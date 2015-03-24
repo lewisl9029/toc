@@ -1,16 +1,17 @@
 <div class="card"
   ng-repeat="(id, message) in messageList.messages track by id">
   <div class="item item-divider" ng-class="{
-    'item-balanced': message.sender !== messageList.userId,
-    'item-calm': message.sender === messageList.userId
+    'item-balanced': message.messageInfo.sender !== messageList.userId,
+    'item-calm': message.messageInfo.sender === messageList.userId
   }">
     {{
-      message.sender === messageList.userId ?
+      message.messageInfo.sender === messageList.userId ?
       'You' :
-      messageList.contacts[message.sender].userInfo.displayName
-    }} said:
+      messageList.contacts[message.messageInfo.sender].userInfo.displayName
+    }} said at {{message.messageInfo.logicalClock}}:
   </div>
   <div class="item item-text-wrap">
-    {{message.time | date : 'short'}} : {{message.content}}
+    {{message.messageInfo.receivedTime | date : 'short'}} :
+    {{message.messageInfo.content}}
   </div>
 </div>
