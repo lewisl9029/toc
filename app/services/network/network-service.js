@@ -96,9 +96,12 @@ export default function network($q, $window, $interval, R, state, telehash,
     );
   };
 
-  let handleMessage = function handleMessage(messageContent, logicalClock,
-    sentTime, receivedTime, contactId, channelId) {
+  let handleMessage = function handleMessage(messagePayload, sentTime,
+    receivedTime, contactId, channelId) {
     let messageId = sentTime + '-' + contactId;
+
+    let messageContent = messagePayload.c;
+    let logicalClock = messagePayload.l;
 
     let message = {
       id: messageId,
@@ -139,7 +142,6 @@ export default function network($q, $window, $interval, R, state, telehash,
           //TODO: implement toast on new message arrival
           return handleMessage(
             packet.js.m,
-            packet.js.c,
             packet.from.sentAt,
             packet.from.receivedAt,
             packet.from.hashname,
@@ -270,8 +272,10 @@ export default function network($q, $window, $interval, R, state, telehash,
     }
 
     let payload = {
-      m: messageContent,
-      c: logicalClock
+      m: {
+        c: messageContent,
+        l: logicalClock
+      }
     };
 
     let handleMessageAck = (acknowledgement) => {
