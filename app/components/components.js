@@ -5,6 +5,7 @@ import autoFocus from './auto-focus/auto-focus';
 import channelList from './channel-list/channel-list';
 import messageList from './message-list/message-list';
 import qrImage from './qr-image/qr-image';
+import spinnerButton from './spinner-button/spinner-button';
 import signupForm from './signup-form/signup-form';
 import signinForm from './signin-form/signin-form';
 
@@ -14,6 +15,7 @@ export default angular.module('toc.components', [
   channelList.name,
   messageList.name,
   qrImage.name,
+  spinnerButton.name,
   signupForm.name,
   signinForm.name
 ]);

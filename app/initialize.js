@@ -3,8 +3,8 @@
   // Record time here
   var loadingIndicator;
   var loadingStartTime;
-  var QUERY_ANIMATION_TIME = 2800;
-  var FADEOUT_ANIMATION_TIME = 1500;
+  var QUERY_DURATION = 2800;
+  var FADEOUT_DURATION = 1500;
 
   var loadingScreen = document.getElementsByClassName('toc-loading-screen')[0];
 
@@ -23,7 +23,7 @@
       // loadingIndicator.set(0.99);
       var loadingEndTime = Date.now();
       var queryElapsedTime =
-        (loadingEndTime - loadingStartTime) % QUERY_ANIMATION_TIME;
+        (loadingEndTime - loadingStartTime) % QUERY_DURATION;
 
       setTimeout(function() {
         loadingIndicator.end();
@@ -31,8 +31,8 @@
 
         setTimeout(function() {
           loadingScreen.className += ' toc-non-interactive';
-        }, FADEOUT_ANIMATION_TIME);
-      }, QUERY_ANIMATION_TIME - queryElapsedTime);
+        }, FADEOUT_DURATION);
+      }, QUERY_DURATION - queryElapsedTime);
     })
     .catch(console.onerror);
 })();
