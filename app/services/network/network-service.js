@@ -108,6 +108,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       //TODO: find main contact userId from sender userId
       sender: contactId,
       receivedTime: receivedTime,
+      sentTime: sentTime,
       logicalClock: receivedLogicalClock,
       content: messageContent
     };
@@ -305,6 +306,7 @@ export default function network($q, $window, $interval, R, state, telehash,
         //TODO: find main contact userId from sender userId for multi-signon
         sender: userId,
         receivedTime: receivedTime,
+        sentTime: sentTime,
         logicalClock: logicalClock,
         content: messageContent
       };

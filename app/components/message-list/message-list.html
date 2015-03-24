@@ -12,7 +12,8 @@
     }} said at {{message.logicalClock}}:
   </div>
   <div class="item item-text-wrap">
-    {{message.receivedTime | date : 'short'}} :
+    {{message.sender === messageList.userId ?
+      message.sentTime : message.receivedTime | date : 'short'}} :
     {{message.content}}
   </div>
 </div>
