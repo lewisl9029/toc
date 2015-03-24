@@ -59,7 +59,7 @@ export default function ChannelController($q, $stateParams, state, contacts,
     return this.sending;
   };
 
-  contactCursor.on('change', () => {
+  contactCursor.on('update', () => {
     this.contact = contactCursor.get(
       channelCursor.get(['channelInfo', 'contactIds'])[0]
     );
