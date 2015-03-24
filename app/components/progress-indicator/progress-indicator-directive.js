@@ -29,30 +29,7 @@ export default function tocProgressIndicator(Mprogress, notification) {
         var QUERY_ANIMATION_TIME = 2800;
 
         attr.$observe('inProgress', (newValue) => {
-          if (newValue === '') {
-            return;
-          }
 
-          if (newValue === 'true') {
-            progressStartTime = Date.now();
-            progressIndicator.start();
-            return;
-          }
-
-          if (newValue === 'false') {
-            if (scope.progressType !== 'query') {
-              progressIndicator.end();
-              return;
-            }
-
-            let progressEndTime = Date.now();
-            let queryElapsedTime =
-              (progressEndTime - progressStartTime) % QUERY_ANIMATION_TIME;
-
-            setTimeout(() => {
-              progressIndicator.end();
-            }, QUERY_ANIMATION_TIME - queryElapsedTime);
-          }
         });
       } catch (error) {
         notification.error(error, 'Progress Indicator Error');

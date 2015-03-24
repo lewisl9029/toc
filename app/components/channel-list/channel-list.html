@@ -15,13 +15,16 @@
   </div>
 
   <form name="toc-contact-invite-form">
-    <div class="item item-input-inset">
+    <div class="item item-input-inset"
+      id="toc-contact-invite-form" toc-progress-indicator
+      in-progress="{{channelList.inviteInProgress}}"
+      element-id="toc-contact-invite-form" progress-type="query">
       <label class="item-input-wrapper">
         <input type="text" placeholder="Contact ID"
           ng-model="channelList.inviteId">
       </label>
       <button type="submit" class="button button-clear button-balanced"
-        ng-click="channelList.invite(channelList.inviteId)">
+        ng-click="channelList.invite()">
         <i class="icon ion-plus"></i>
       </button>
     </div>
@@ -35,7 +38,10 @@
         channelList.contacts[channel.channelInfo.contactIds[0]].statusId === 1,
       'stable-bg':
         channelList.contacts[channel.channelInfo.contactIds[0]].statusId === undefined
-      }"></div>
+      }"
+      id="toc-channel-{{id}}" toc-progress-indicator in-progress="{{channelList.invitesAcceptanceInProgress[id]}}"
+      element-id="toc-channel-{{id}}" progress-type="query">
+    </div>
     <ion-item class="item item-avatar"
       ng-class="{'item-button-right': channel.channelInfo.pendingHandshake}">
       <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07711c08d50?d=identicon" alt="Avatar for {{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email}}" />
@@ -43,7 +49,8 @@
       <p>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id}}</p>
       <div class="buttons" ng-if="channel.channelInfo.pendingHandshake">
         <button class="button button-positive button-clear"
-          ng-click="channelList.invite(channel.channelInfo.contactIds[0])">
+          ng-click="channelList.acceptInvite(channel.channelInfo);
+            $event.stopPropagation()">
           <i class="icon ion-checkmark"></i>
         </button>
         <button class="button button-assertive button-clear">
