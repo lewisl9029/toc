@@ -7,9 +7,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
 
   let getStorageKey = R.join(KEY_SEPARATOR);
 
-  let local = {
-
-  };
+  let local = {};
 
   // let connect = remoteStorage.remoteStorage.connect;
 
