@@ -25,6 +25,7 @@
         date : 'short'
       }}</h2>
       <p ng-repeat="message in messageGroup track by message.id"
+        class="toc-message"
         ng-class="{'toc-unread-message': !message.isRead}">
         {{message.content}}
       </p>

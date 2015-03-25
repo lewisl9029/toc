@@ -1,3 +1,8 @@
-.toc-unread-message {
-  font-weight: bold;
+.toc-message {
+  white-space: inherit;
+  overflow: inherit;
+  text-overflow: inherit;
+  &.toc-unread-message {
+    font-weight: bold;
+  }
 }
