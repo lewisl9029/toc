@@ -42,26 +42,32 @@ export default function tocMessageList(network, state, R,
       let getMessageList = function getMessageList(messages) {
         return R.pipe(
           R.values,
-          R.map((message) => message.messageInfo),
           R.sort((message1, message2) => {
-            if (message1.logicalClock === message2.logicalClock) {
-              return message1.id > message2.id ? 1 : -1;
+            if (message1.messageInfo.logicalClock ===
+              message2.messageInfo.logicalClock) {
+              return message1.messageInfo.id > message2.messageInfo.id ?
+                1 : -1;
             }
 
-            return message1.logicalClock > message2.logicalClock ? 1 : -1;
+            return message1.messageInfo.logicalClock >
+              message2.messageInfo.logicalClock ?
+              1 : -1;
           }),
           R.reduce((groupedMessages, message) => {
+            let messageVm = message.messageInfo;
+            messageVm.isRead = message.isRead;
+
             if (groupedMessages.length === 0) {
-              groupedMessages.push([message]);
+              groupedMessages.push([messageVm]);
               return groupedMessages;
             }
 
             let latestGroup = groupedMessages[groupedMessages.length - 1];
 
-            if (latestGroup[0].sender === message.sender) {
-              latestGroup.push(message);
+            if (latestGroup[0].sender === messageVm.sender) {
+              latestGroup.push(messageVm);
             } else {
-              groupedMessages.push([message]);
+              groupedMessages.push([messageVm]);
             }
 
             return groupedMessages;
@@ -75,6 +81,7 @@ export default function tocMessageList(network, state, R,
         this.groupedMessages = getMessageList(messagesCursor.get());
       });
 
+      //TODO: write a more performant version of this
       $interval(() => {
         let scrollView = $ionicScrollDelegate.getScrollView();
 
@@ -94,7 +101,9 @@ export default function tocMessageList(network, state, R,
 
         R.pipe(
           R.values,
-          R.filter(R.pipe(R.prop('isRead'), R.not)),
+          //FIXME: figure out why R.not doesnt work here
+          // R.filter(R.pipe(R.prop('isRead'), R.not),
+          R.filter(R.pipe(R.prop('isRead'), (bool) => !bool)),
           R.forEach((message) => state.save(
             messagesCursor,
             [message.messageInfo.id, 'isRead'],
@@ -106,7 +115,7 @@ export default function tocMessageList(network, state, R,
           return;
         }
         state.save(channelsCursor, [$scope.channelId, 'viewingLatest'], true);
-      }, 1000);
+      }, 3000);
     }
   };
 }
