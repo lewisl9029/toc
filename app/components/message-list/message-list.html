@@ -6,7 +6,11 @@
       'calm-bg': messageGroup[0].sender === messageList.userInfo.id
     }"></div>
     <div class="item item-avatar">
-      <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07711c08d50?d=identicon" alt="Avatar for  {{
+      <img src="http://cdn.libravatar.org/avatar/{{
+        messageGroup[0].sender === messageList.userInfo.id ?
+        messageList.userInfo.id :
+        messageList.contacts[messageGroup[0].sender].userInfo.id | limitTo:32
+      }}?d=identicon" alt="Avatar for  {{
         messageGroup[0].sender === messageList.userInfo.id ?
         messageList.userInfo.email :
         messageList.contacts[messageGroup[0].sender].userInfo.email

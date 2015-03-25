@@ -8,7 +8,7 @@
       ng-repeat="(id, user) in signinForm.users track by id"
       ng-model="signinForm.selectedUser" ng-value="'{{id}}'"
       icon="ion-checkmark">
-      <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07711c08d50?d=identicon" alt="Avatar for {{user.userInfo.email}}" />
+      <img src="http://cdn.libravatar.org/avatar/{{user.userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{user.userInfo.email}}" />
       <h2>{{user.userInfo.displayName}}</h2>
       <p>{{user.userInfo.id}}</p>
     </ion-radio>
