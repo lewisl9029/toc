@@ -7,12 +7,6 @@ export default function ChannelController($q, $stateParams, state, contacts,
 
   let contactCursor = contacts.CONTACTS_CURSORS.synchronized;
 
-  state.save(
-    network.NETWORK_CURSORS.synchronized,
-    ['activeChannelId'],
-    this.channelId
-  );
-
   this.contact = contactCursor.get(
     channelCursor.get(['channelInfo', 'contactIds'])[0]
   );

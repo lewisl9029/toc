@@ -2,7 +2,8 @@
   <div class="item item-divider item-calm">
     You
   </div>
-  <div ui-sref="app.home" menu-close>
+  <div ng-click="this.channelId !== 'home' ?
+    channelList.goToHome() : undefined" menu-close>
     <div class="row balanced-bg"></div>
     <ion-item class="item item-avatar">
       <img src="http://cdn.libravatar.org/avatar/{{channelList.userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{channelList.userInfo.email}}" />
@@ -45,7 +46,8 @@
     </div>
   </form>
   <div ng-repeat="(id, channel) in channelList.channels track by id"
-    ui-sref="app.channel({channelId: id})" menu-close>
+    ng-click="channelList.channelId !== id ?
+      channelList.goToChannel(id) : undefined" menu-close>
     <div class="row" ng-class="{
       'dark-bg':
         channelList.contacts[channel.channelInfo.contactIds[0]].statusId === 0,
