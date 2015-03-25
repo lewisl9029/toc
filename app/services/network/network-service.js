@@ -58,7 +58,7 @@ export default function network($q, $window, $interval, R, state, telehash,
 
     let statusId = 1; //online
 
-    channel.pendingHandshake = !existingChannel;
+    channel.pendingAccept = !existingChannel;
 
     return state.save(
         NETWORK_CURSORS.synchronized,
@@ -133,11 +133,21 @@ export default function network($q, $window, $interval, R, state, telehash,
         message
       ))
       .then(() => {
+        let activeChannelId =
+          NETWORK_CURSORS.synchronized.get(['activeChannelId']);
+        if (activeChannelId === channelId &&
+          channelCursor.get(['viewingLatest'])) {
+          return $q.when();
+        }
+
         let contactName = state.synchronized.tree.get(
-          ['contacts', contactId, 'contactInfo', 'displayName']
+          ['contacts', contactId, 'userInfo', 'displayName']
         );
 
-        return notification.success(message, contactName + ' just said:');
+        return notification.success(
+          message.content,
+          contactName + ' just said:'
+        );
       });
   };
 

@@ -1,6 +1,7 @@
 import template from './message-list.html!text';
 
-export default function tocMessageList(network, $ionicScrollDelegate) {
+export default function tocMessageList(network, state, R,
+  $ionicScrollDelegate) {
   return {
     restrict: 'E',
     template: template,
@@ -25,16 +26,15 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
     },
     controllerAs: 'messageList',
     controller: function MessageListController($scope, $state, identity,
-      contacts, network, R) {
+      contacts, $interval) {
       let channelsCursor = network.NETWORK_CURSORS.synchronized
         .select('channels');
+
       let contactsCursor = contacts.CONTACTS_CURSORS.synchronized;
       let identityCursor = identity.IDENTITY_CURSORS.synchronized;
 
-      let messagesCursor = channelsCursor.select([
-        $scope.channelId,
-        'messages'
-      ]);
+      let messagesCursor = network.NETWORK_CURSORS.synchronized
+        .select(['channels', $scope.channelId, 'messages']);
 
       this.contacts = contactsCursor.get();
       this.userInfo = identityCursor.get(['userInfo']);
@@ -74,6 +74,39 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
       messagesCursor.on('update', () => {
         this.groupedMessages = getMessageList(messagesCursor.get());
       });
+
+      $interval(() => {
+        let scrollView = $ionicScrollDelegate.getScrollView();
+
+        if (scrollView.__scrollTop !== scrollView.__maxScrollTop) {
+          if (!channelsCursor.get([$scope.channelId, 'viewingLatest'])) {
+            return;
+          }
+
+          return state.save(
+            channelsCursor,
+            [$scope.channelId, 'viewingLatest'],
+            false
+          );
+        }
+
+        let messages = messagesCursor.get();
+
+        R.pipe(
+          R.values,
+          R.filter(R.pipe(R.prop('isRead'), R.not)),
+          R.forEach((message) => state.save(
+            messagesCursor,
+            [message.messageInfo.id, 'isRead'],
+            true
+          ))
+        )(messages);
+
+        if (channelsCursor.get([$scope.channelId, 'viewingLatest'])) {
+          return;
+        }
+        state.save(channelsCursor, [$scope.channelId, 'viewingLatest'], true);
+      }, 1000);
     }
   };
 }
