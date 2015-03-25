@@ -22,6 +22,20 @@ export default function tocMessageList(network, state, R,
         }
 
         $ionicScrollDelegate.scrollBottom(true);
+
+        let messages = messagesCursor.get();
+
+        R.pipe(
+          R.values,
+          //FIXME: figure out why R.not doesnt work here
+          // R.filter(R.pipe(R.prop('isRead'), R.not),
+          R.filter(R.pipe(R.prop('isRead'), (bool) => !bool)),
+          R.forEach((message) => state.save(
+            messagesCursor,
+            [message.messageInfo.id, 'isRead'],
+            true
+          ))
+        )(messages);
       });
     },
     controllerAs: 'messageList',
