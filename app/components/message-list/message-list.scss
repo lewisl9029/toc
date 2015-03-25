@@ -1,7 +1,7 @@
-.toc-message {
-  white-space: inherit;
-  overflow: inherit;
-  text-overflow: inherit;
+p.toc-message {
+  white-space: initial;
+  overflow: initial;
+  text-overflow: initial;
   &.toc-unread-message {
     font-weight: bold;
   }
