@@ -1,0 +1,8 @@
+p.toc-message {
+  white-space: initial;
+  overflow: initial;
+  text-overflow: initial;
+  &.toc-unread-message {
+    font-weight: bold;
+  }
+}

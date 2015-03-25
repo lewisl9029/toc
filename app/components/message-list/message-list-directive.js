@@ -1,6 +1,7 @@
 import template from './message-list.html!text';
 
-export default function tocMessageList(network, $ionicScrollDelegate) {
+export default function tocMessageList(network, state, R,
+  $ionicScrollDelegate) {
   return {
     restrict: 'E',
     template: template,
@@ -21,20 +22,33 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
         }
 
         $ionicScrollDelegate.scrollBottom(true);
+
+        let messages = messagesCursor.get();
+
+        R.pipe(
+          R.values,
+          //FIXME: figure out why R.not doesnt work here
+          // R.filter(R.pipe(R.prop('isRead'), R.not),
+          R.filter(R.pipe(R.prop('isRead'), (bool) => !bool)),
+          R.forEach((message) => state.save(
+            messagesCursor,
+            [message.messageInfo.id, 'isRead'],
+            true
+          ))
+        )(messages);
       });
     },
     controllerAs: 'messageList',
     controller: function MessageListController($scope, $state, identity,
-      contacts, network, R) {
+      contacts, $interval) {
       let channelsCursor = network.NETWORK_CURSORS.synchronized
         .select('channels');
+
       let contactsCursor = contacts.CONTACTS_CURSORS.synchronized;
       let identityCursor = identity.IDENTITY_CURSORS.synchronized;
 
-      let messagesCursor = channelsCursor.select([
-        $scope.channelId,
-        'messages'
-      ]);
+      let messagesCursor = network.NETWORK_CURSORS.synchronized
+        .select(['channels', $scope.channelId, 'messages']);
 
       this.contacts = contactsCursor.get();
       this.userInfo = identityCursor.get(['userInfo']);
@@ -42,26 +56,32 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
       let getMessageList = function getMessageList(messages) {
         return R.pipe(
           R.values,
-          R.map((message) => message.messageInfo),
           R.sort((message1, message2) => {
-            if (message1.logicalClock === message2.logicalClock) {
-              return message1.id > message2.id ? 1 : -1;
+            if (message1.messageInfo.logicalClock ===
+              message2.messageInfo.logicalClock) {
+              return message1.messageInfo.id > message2.messageInfo.id ?
+                1 : -1;
             }
 
-            return message1.logicalClock > message2.logicalClock ? 1 : -1;
+            return message1.messageInfo.logicalClock >
+              message2.messageInfo.logicalClock ?
+              1 : -1;
           }),
           R.reduce((groupedMessages, message) => {
+            let messageVm = message.messageInfo;
+            messageVm.isRead = message.isRead;
+
             if (groupedMessages.length === 0) {
-              groupedMessages.push([message]);
+              groupedMessages.push([messageVm]);
               return groupedMessages;
             }
 
             let latestGroup = groupedMessages[groupedMessages.length - 1];
 
-            if (latestGroup[0].sender === message.sender) {
-              latestGroup.push(message);
+            if (latestGroup[0].sender === messageVm.sender) {
+              latestGroup.push(messageVm);
             } else {
-              groupedMessages.push([message]);
+              groupedMessages.push([messageVm]);
             }
 
             return groupedMessages;
@@ -74,6 +94,42 @@ export default function tocMessageList(network, $ionicScrollDelegate) {
       messagesCursor.on('update', () => {
         this.groupedMessages = getMessageList(messagesCursor.get());
       });
+
+      //TODO: write a more performant version of this
+      $interval(() => {
+        let scrollView = $ionicScrollDelegate.getScrollView();
+
+        if (scrollView.__scrollTop !== scrollView.__maxScrollTop) {
+          if (!channelsCursor.get([$scope.channelId, 'viewingLatest'])) {
+            return;
+          }
+
+          return state.save(
+            channelsCursor,
+            [$scope.channelId, 'viewingLatest'],
+            false
+          );
+        }
+
+        let messages = messagesCursor.get();
+
+        R.pipe(
+          R.values,
+          //FIXME: figure out why R.not doesnt work here
+          // R.filter(R.pipe(R.prop('isRead'), R.not),
+          R.filter(R.pipe(R.prop('isRead'), (bool) => !bool)),
+          R.forEach((message) => state.save(
+            messagesCursor,
+            [message.messageInfo.id, 'isRead'],
+            true
+          ))
+        )(messages);
+
+        if (channelsCursor.get([$scope.channelId, 'viewingLatest'])) {
+          return;
+        }
+        state.save(channelsCursor, [$scope.channelId, 'viewingLatest'], true);
+      }, 3000);
     }
   };
 }

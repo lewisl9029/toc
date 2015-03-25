@@ -55,11 +55,11 @@
         channelList.contacts[channel.channelInfo.contactIds[0]].statusId === undefined
       }"></div>
     <ion-item class="item item-avatar"
-      ng-class="{'item-button-right': channel.channelInfo.pendingHandshake}">
+      ng-class="{'item-button-right': channel.channelInfo.pendingAccept}">
       <img src="http://cdn.libravatar.org/avatar/{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email}}" />
       <h2>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.displayName}}</h2>
       <p>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id}}</p>
-      <div class="buttons" ng-if="channel.channelInfo.pendingHandshake">
+      <div class="buttons" ng-if="channel.channelInfo.pendingAccept">
         <!-- FIXME: spinner not showing here -->
         <button class="button button-balanced button-clear"
           ng-click="channelList.acceptInvite(channel.channelInfo);
