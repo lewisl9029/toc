@@ -7,9 +7,7 @@
   var FADEOUT_DURATION = 1500;
 
   var loadingScreen = document.getElementsByClassName('toc-loading-screen')[0];
-  loadingIndicator = new Mprogress({template: 4});
   loadingStartTime = Date.now();
-  loadingIndicator.start();
 
   System.import('app')
     .then(function initializeApp(app) {
@@ -22,7 +20,6 @@
         (loadingEndTime - loadingStartTime) % QUERY_DURATION;
 
       setTimeout(function() {
-        loadingIndicator.end();
         loadingScreen.className += ' toc-fadeout-loading-screen';
 
         setTimeout(function() {
