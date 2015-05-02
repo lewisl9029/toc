@@ -31,7 +31,12 @@ export default function state($rootScope, $q, storage, R, Baobab) {
 
       return store.storeObject(storageKey, object)
         .then(object => {
-          cursor.set(path, object)
+          if (cursor.get() === undefined) {
+            cursor.tree.set(cursor.path, {});
+            cursor.tree.commit();
+          }
+
+          cursor.set(path, object);
           return object;
         });
     };
