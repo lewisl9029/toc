@@ -58,12 +58,11 @@
     "shasum": "582efc30561166f89855fcdc945b686919848b62",
     "tarball": "http://registry.npmjs.org/browserify-aes/-/browserify-aes-1.0.0.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "create-hash": "create-hash@^1.1.0",
     "inherits": "inherits@^2.0.1",

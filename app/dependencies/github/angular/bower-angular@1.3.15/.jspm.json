@@ -34,5 +34,6 @@
     "angular": {
       "exports": "angular"
     }
-  }
+  },
+  "registry": "github"
 }

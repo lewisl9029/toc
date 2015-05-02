@@ -34,9 +34,6 @@
     "example",
     "node_modules"
   ],
-  "jspm": {
-    "registry": "npm"
-  },
   "format": "cjs",
   "dependencies": {
     "Base64": "Base64@~0.2.0",

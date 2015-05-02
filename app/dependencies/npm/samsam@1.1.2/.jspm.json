@@ -64,11 +64,10 @@
     "shasum": "bec11fdc83a9fda063401210e40176c3024d1567",
     "tarball": "http://registry.npmjs.org/samsam/-/samsam-1.1.2.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {}
 }

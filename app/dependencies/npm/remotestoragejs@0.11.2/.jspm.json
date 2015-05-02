@@ -52,6 +52,7 @@
     "shasum": "bcf4b8d82c32454be36dad77f636dcb3ebaf7c9c",
     "tarball": "http://registry.npmjs.org/remotestoragejs/-/remotestoragejs-0.11.2.tgz"
   },
+  "directories": {},
   "jspm": {
     "registry": "jspm",
     "main": "release/0.11.2/remotestorage",
@@ -60,8 +61,5 @@
   },
   "registry": "jspm",
   "format": "global",
-  "ignore": [
-    "node_modules"
-  ],
   "dependencies": {}
 }

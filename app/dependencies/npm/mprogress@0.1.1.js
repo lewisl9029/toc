@@ -1,1 +1,0 @@
-module.exports = require("npm:mprogress@0.1.1/build/js/mprogress");

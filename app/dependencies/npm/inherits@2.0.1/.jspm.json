@@ -52,8 +52,8 @@
     "test.js",
     "node_modules"
   ],
-  "registry": "npm",
   "format": "cjs",
+  "registry": "npm",
   "dependencies": {
     "util": "github:jspm/nodelibs-util@^0.1.0"
   }

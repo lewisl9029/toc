@@ -61,12 +61,11 @@
     "shasum": "29843e9c191ba412ab001bc55ac8b8b9ae54b670",
     "tarball": "http://registry.npmjs.org/create-hmac/-/create-hmac-1.1.3.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "create-hash": "create-hash@^1.1.0",
     "inherits": "inherits@^2.0.1",

@@ -67,11 +67,10 @@
     "shasum": "e3ec65200d4ad531d359aabdb6d3ec812699a30b",
     "tarball": "http://registry.npmjs.org/ieee754/-/ieee754-1.1.4.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {}
 }

@@ -50,11 +50,10 @@
     "shasum": "0db4cbf96f8f23b742f5bcb9d1aa7a9994a05e83",
     "tarball": "http://registry.npmjs.org/bn.js/-/bn.js-1.3.0.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {}
 }

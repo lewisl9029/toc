@@ -65,12 +65,11 @@
     "shasum": "13be8fc4ad657278408cd796b554a93e586ed66a",
     "tarball": "http://registry.npmjs.org/diffie-hellman/-/diffie-hellman-3.0.1.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "bn.js": "bn.js@^1.0.0",
     "miller-rabin": "miller-rabin@^1.1.2",

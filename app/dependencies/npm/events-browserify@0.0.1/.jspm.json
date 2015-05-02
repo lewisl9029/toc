@@ -38,12 +38,11 @@
     }
   ],
   "deprecated": "use events module instead (also on npm)",
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "process": "github:jspm/nodelibs-process@^0.1.0"
   }

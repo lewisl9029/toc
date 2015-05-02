@@ -39,12 +39,11 @@
       "email": "mail@substack.net"
     }
   ],
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "http": "github:jspm/nodelibs-http@^1.7.0"
   }

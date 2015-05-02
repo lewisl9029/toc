@@ -47,11 +47,10 @@
     "shasum": "842457cc51cfed72dc775afeeafb8c6034372725",
     "tarball": "http://registry.npmjs.org/process/-/process-0.10.1.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {}
 }

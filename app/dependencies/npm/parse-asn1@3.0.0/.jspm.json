@@ -55,12 +55,11 @@
     "shasum": "36ea30eb2ad99084e738e92801647910cdbf1ee4",
     "tarball": "http://registry.npmjs.org/parse-asn1/-/parse-asn1-3.0.0.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "asn1.js": "asn1.js@^1.0.0",
     "browserify-aes": "browserify-aes@^1.0.0",

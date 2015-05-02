@@ -71,7 +71,7 @@
     "bench",
     "node_modules"
   ],
-  "registry": "npm",
   "format": "cjs",
+  "registry": "npm",
   "dependencies": {}
 }

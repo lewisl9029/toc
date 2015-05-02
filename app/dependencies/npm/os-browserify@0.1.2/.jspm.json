@@ -33,12 +33,11 @@
       "email": "drewyoung1@gmail.com"
     }
   ],
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "os": "github:jspm/nodelibs-os@^0.1.0"
   }

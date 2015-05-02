@@ -1,1 +1,0 @@
-module.exports = require("npm:sha.js@2.3.6/index");

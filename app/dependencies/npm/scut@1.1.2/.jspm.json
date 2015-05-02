@@ -52,11 +52,10 @@
     "shasum": "31413f77246dc2ae034aa7161c6d72400f38fb29",
     "tarball": "http://registry.npmjs.org/scut/-/scut-1.1.2.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {}
 }

@@ -64,12 +64,11 @@
     "shasum": "59a11dbd3af8de5acbc8d005b624ccf7136f2a78",
     "tarball": "http://registry.npmjs.org/create-ecdh/-/create-ecdh-2.0.0.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "bn.js": "bn.js@^1.0.0",
     "elliptic": "elliptic@^1.0.0",

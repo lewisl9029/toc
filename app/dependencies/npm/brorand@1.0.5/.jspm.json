@@ -48,11 +48,10 @@
     "shasum": "07b54ca30286abd1718a0e2a830803efdc9bfa04",
     "tarball": "http://registry.npmjs.org/brorand/-/brorand-1.0.5.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {}
 }

@@ -75,11 +75,11 @@
     "stream": "stream-browserify/index",
     "util": "@empty"
   },
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "core-util-is": "core-util-is@~1.0.0",
     "inherits": "inherits@~2.0.1",
