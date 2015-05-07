@@ -84,7 +84,7 @@ export default function identity($q, state, R, network, cryptography) {
         R.pipe(
           R.keys,
           R.forEach((contactId) =>
-            contactsCursor.select([contactId, 'statusId']).edit(0)
+            contactsCursor.set([contactId, 'statusId'], 0)
           )
         )(contactsCursor.get());
       })

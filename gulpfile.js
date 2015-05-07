@@ -20,6 +20,8 @@ var del = require('del');
 var basePaths = {
   dev: './app/',
   prod: './www/',
+  mobile: './mobile/',
+  bundle: './bundle/',
   platforms: './platforms/',
   plugins: './plugins/',
   engine: './engine/'
@@ -71,12 +73,35 @@ gulp.task('clean-build', function clean(done) {
   ], done);
 });
 
-gulp.task('clean-package', function clean(done) {
+gulp.task('clean-package', function cleanPackage(done) {
   return del([
     basePaths.platforms + '**',
     basePaths.plugins + '**',
-    basePaths.engine + '**'
+    basePaths.engine + '**',
+    basePaths.mobile + '**'
   ], done);
+});
+
+gulp.task('bundle', function bundle(){
+  return gulp.src('')
+    .pipe(shell(
+      'rm -rf ' + basePaths.platforms + 'build'
+    ))
+    .pipe(shell(
+      'rm -rf ' + basePaths.platforms + 'android/cordova-plugin-crosswalk-webview/toc520592-xwalk_core_library/build'
+    ))
+    .pipe(shell(
+      'mkdir -p ' + basePaths.bundle
+    ))
+    .pipe(shell(
+      'tar czf ' + basePaths.bundle + 'toc-platforms.tar.gz platforms'
+    ))
+    .pipe(shell(
+      'tar czf ' + basePaths.bundle + 'toc-plugins.tar.gz plugins'
+    ))
+    .pipe(shell(
+      'tar czf ' + basePaths.bundle + 'toc-engine.tar.gz engine'
+    ));
 });
 
 //TODO: add node-webkit build steps
@@ -92,12 +117,13 @@ gulp.task('build', function build(done) {
 gulp.task('package', ['clean-package'], function package() {
   return gulp.src('')
     .pipe(shell(
-      'cp -rf ' + process.env.TOC_BUILD_DEPS_PATH + '/* .'
+      'cp -rf ' + process.env.TOC_BUNDLE_PATH + '/* .'
     ))
     .pipe(shell('ionic build android'))
     .pipe(shell(
       'cp ' + basePaths.platforms +
-        'android/build/outputs/apk/android-armv7-debug.apk ' + basePaths.prod
+        'android/build/outputs/apk/{android-armv7-debug.apk,android-x86-debug.apk} ' +
+        basePaths.mobile
     ));
 });
 

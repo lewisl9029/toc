@@ -97,9 +97,16 @@
     }
   },
   "cordovaPlugins": [
-    "./engine/cordova-crosswalk-engine-c0.6.1",
-    "org.apache.cordova.device",
     "com.ionic.keyboard",
-    "org.apache.cordova.console"
+    "cordova-plugin-device",
+    "cordova-plugin-console",
+    "./engine/cordova-crosswalk-engine-c0.7.1",
+    "org.apache.cordova.splashscreen"
+  ],
+  "cordovaPlatforms": [
+    {
+      "platform": "android",
+      "locator": "./engine/cordova-android-c0.6.1/"
+    }
   ]
 }
