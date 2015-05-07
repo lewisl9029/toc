@@ -19,16 +19,20 @@
         messageGroup[0].sender === messageList.userInfo.id ?
         'You' :
         messageList.contacts[messageGroup[0].sender].userInfo.displayName
-      }} at {{
-        messageGroup[0].sender === messageList.userInfo.id ?
-        messageGroup[0].sentTime : messageGroup[0].receivedTime |
-        date : 'short'
       }}</h2>
-      <p ng-repeat="message in messageGroup track by message.id"
-        class="toc-message"
+      <div class="row toc-message" ng-repeat="message in messageGroup track by message.id"
         ng-class="{'toc-unread-message': !message.isRead}">
-        {{message.content}}
-      </p>
+        <p class="col toc-message-content">
+          {{message.content}}
+        </p>
+        <p class="col col-20 toc-message-timestamp">
+          {{
+            message.sender === messageList.userInfo.id ?
+            message.sentTime : message.receivedTime |
+            date : 'shortTime'
+          }}
+        </p>
+      </div>
     </div>
   </div>
 </div>

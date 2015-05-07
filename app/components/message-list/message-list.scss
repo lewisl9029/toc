@@ -1,8 +1,18 @@
 p.toc-message {
-  white-space: initial;
-  overflow: initial;
-  text-overflow: initial;
   &.toc-unread-message {
     font-weight: bold;
   }
+}
+
+p.toc-message-content {
+  white-space: normal;
+  overflow: initial;
+  text-overflow: initial;
+  padding: 0px;
+
+}
+
+p.toc-message-timestamp {
+  padding: 0px;
+  text-align: right;
 }
