@@ -120,9 +120,10 @@ gulp.task('package', ['clean-package'], function package() {
       'cp -rf ' + process.env.TOC_BUNDLE_PATH + '/* .'
     ))
     .pipe(shell('ionic build android'))
+    .pipe(shell('mkdir -p ' + basePaths.mobile))
     .pipe(shell(
       'cp ' + basePaths.platforms +
-        'android/build/outputs/apk/{android-armv7-debug.apk,android-x86-debug.apk} ' +
+        'android/build/outputs/apk/android-armv7-debug.apk ' +
         basePaths.mobile
     ));
 });
