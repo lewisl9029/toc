@@ -1,8 +1,5 @@
 {
   "registry": "npm",
-  "jspm": {
-    "registry": "npm"
-  },
   "format": "cjs",
   "ignore": [
     "node_modules"

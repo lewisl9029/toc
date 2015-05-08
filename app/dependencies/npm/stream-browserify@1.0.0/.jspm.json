@@ -64,12 +64,11 @@
       "email": "mail@substack.net"
     }
   ],
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "inherits": "inherits@~2.0.1",
     "readable-stream": "readable-stream@^1.0.27-1",

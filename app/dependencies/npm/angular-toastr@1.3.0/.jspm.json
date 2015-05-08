@@ -1,0 +1,62 @@
+{
+  "name": "angular-toastr",
+  "version": "1.3.0",
+  "author": {
+    "name": "Jesus Rodriguez",
+    "email": "Foxandxss@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Foxandxss/angular-toastr.git"
+  },
+  "main": "dist/angular-toastr.tpls.js",
+  "keywords": [
+    "angularjs",
+    "toastr",
+    "popup"
+  ],
+  "devDependencies": {
+    "del": "^1.1.1",
+    "gulp": "^3.8.10",
+    "gulp-angular-templatecache": "^1.5.0",
+    "gulp-concat": "^2.4.3",
+    "gulp-jshint": "^1.9.0",
+    "gulp-less": "^3.0.2",
+    "gulp-minify-css": "^1.0.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.0.2",
+    "jshint-stylish": "^1.0.0"
+  },
+  "gitHead": "74d4fc86afda86ac8d146799918db855306685cc",
+  "description": "[![Code Climate](https://codeclimate.com/github/Foxandxss/angular-toastr.png)](https://codeclimate.com/github/Foxandxss/angular-toastr) [![Build Status](https://travis-ci.org/Foxandxss/angular-toastr.svg?branch=master)](https://travis-ci.org/Foxandxss/ang",
+  "bugs": {
+    "url": "https://github.com/Foxandxss/angular-toastr/issues"
+  },
+  "homepage": "https://github.com/Foxandxss/angular-toastr#readme",
+  "_id": "angular-toastr@1.3.0",
+  "scripts": {},
+  "_shasum": "304c480cf7b5610fa0e98cfd6dd809ac8fcdd803",
+  "_from": ".",
+  "_npmVersion": "2.8.3",
+  "_nodeVersion": "1.8.1",
+  "_npmUser": {
+    "name": "foxandxss",
+    "email": "Foxandxss@gmail.com"
+  },
+  "dist": {
+    "shasum": "304c480cf7b5610fa0e98cfd6dd809ac8fcdd803",
+    "tarball": "http://registry.npmjs.org/angular-toastr/-/angular-toastr-1.3.0.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "foxandxss",
+      "email": "Foxandxss@gmail.com"
+    }
+  ],
+  "format": "cjs",
+  "ignore": [
+    "node_modules"
+  ],
+  "registry": "npm",
+  "dependencies": {}
+}

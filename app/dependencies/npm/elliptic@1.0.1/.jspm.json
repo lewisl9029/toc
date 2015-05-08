@@ -49,12 +49,11 @@
     "shasum": "d180376b66a17d74995c837796362ac4d22aefe3",
     "tarball": "http://registry.npmjs.org/elliptic/-/elliptic-1.0.1.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "bn.js": "bn.js@^1.0.0",
     "brorand": "brorand@^1.0.1",

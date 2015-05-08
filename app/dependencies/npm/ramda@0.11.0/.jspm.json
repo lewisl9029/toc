@@ -110,12 +110,11 @@
     "shasum": "bd23d986c6ce3f30481d7a7e61ba4f3bfefb909e",
     "tarball": "http://registry.npmjs.org/ramda/-/ramda-0.11.0.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "process": "github:jspm/nodelibs-process@^0.1.0"
   }

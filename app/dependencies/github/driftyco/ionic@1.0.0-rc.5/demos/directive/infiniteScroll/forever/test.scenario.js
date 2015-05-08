@@ -1,0 +1,5 @@
+/* */ 
+---
+name: forever
+component: ionInfiniteScroll
+---

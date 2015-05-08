@@ -1,5 +1,5 @@
 import angular from 'angular';
-import 'ionic';
+import 'driftyco/ionic';
 import 'app.css!';
 
 import services from './services/services';

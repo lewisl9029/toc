@@ -45,13 +45,12 @@
       "email": "shtylman@gmail.com"
     }
   ],
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
   "map": {},
+  "registry": "npm",
   "dependencies": {
     "inherits": "inherits@2.0.1",
     "process": "github:jspm/nodelibs-process@^0.1.0"

@@ -61,12 +61,11 @@
     "shasum": "15fd251d56e58848840f3d5864a5cfbb259114c7",
     "tarball": "http://registry.npmjs.org/ripemd160/-/ripemd160-1.0.0.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "buffer": "github:jspm/nodelibs-buffer@^0.1.0",
     "process": "github:jspm/nodelibs-process@^0.1.0"

@@ -51,11 +51,10 @@
       "email": "christian@cjohansen.no"
     }
   ],
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {}
 }

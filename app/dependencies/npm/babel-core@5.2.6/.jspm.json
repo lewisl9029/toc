@@ -1,0 +1,96 @@
+{
+  "name": "babel-core",
+  "description": "Turn ES6 code into readable vanilla ES5 with source maps",
+  "version": "5.2.6",
+  "author": {
+    "name": "Sebastian McKenzie",
+    "email": "sebmck@gmail.com"
+  },
+  "homepage": "https://babeljs.io/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel"
+  },
+  "main": "browser.js",
+  "browser": {
+    "./lib/babel/api/register/node.js": "./lib/babel/api/register/browser.js"
+  },
+  "keywords": [
+    "harmony",
+    "classes",
+    "modules",
+    "let",
+    "const",
+    "var",
+    "es6",
+    "transpile",
+    "transpiler",
+    "6to5",
+    "babel"
+  ],
+  "scripts": {
+    "bench": "make bench",
+    "test": "make test"
+  },
+  "devDependencies": {
+    "babel": "5.1.13",
+    "browserify": "^9.0.8",
+    "chai": "^2.2.0",
+    "eslint": "^0.18.0",
+    "babel-eslint": "^2.0.0",
+    "esvalid": "^1.1.0",
+    "istanbul": "^0.3.5",
+    "matcha": "^0.6.0",
+    "mocha": "2.2.0",
+    "rimraf": "^2.3.2",
+    "uglify-js": "^2.4.16"
+  },
+  "gitHead": "253ea8cd18241a846fb086f7b4506391ec120931",
+  "bugs": {
+    "url": "https://github.com/babel/babel/issues"
+  },
+  "_id": "babel-core@5.2.6",
+  "_shasum": "fb40d1894871dfdf985b0972520a2d808b28c68c",
+  "_from": ".",
+  "_npmVersion": "2.7.5",
+  "_nodeVersion": "1.6.4",
+  "_npmUser": {
+    "name": "sebmck",
+    "email": "sebmck@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "sebmck",
+      "email": "sebmck@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "fb40d1894871dfdf985b0972520a2d808b28c68c",
+    "tarball": "http://registry.npmjs.org/babel-core/-/babel-core-5.2.6.tgz"
+  },
+  "directories": {},
+  "jspm": {
+    "main": "browser.js",
+    "dependencies": {},
+    "jspmNodeConversion": false,
+    "shim": {
+      "browser": {
+        "exports": "babel"
+      }
+    },
+    "map": {
+      "regenerator/runtime": "babel-runtime/regenerator/runtime"
+    }
+  },
+  "jspmNodeConversion": false,
+  "shim": {
+    "browser": {
+      "exports": "babel"
+    }
+  },
+  "map": {
+    "regenerator/runtime": "babel-runtime/regenerator/runtime"
+  },
+  "registry": "npm",
+  "dependencies": {}
+}

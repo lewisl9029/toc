@@ -37,8 +37,10 @@
         ng-click="channelView.send()" toc-spinner-button
         loading-promise="channelView.sending">
         <i class="icon ion-paper-airplane"></i>
-        <ion-spinner icon="ripple" class="spinner-light toc-send-spinner">
-        </ion-spinner>
+        <!-- FIXME: memory leak in ion-spinner.
+          see https://github.com/driftyco/ionic/issues/3583 -->
+        <!-- <ion-spinner icon="ripple" class="spinner-light toc-send-spinner">
+        </ion-spinner> -->
       </button>
     </div>
   </form>

@@ -45,12 +45,11 @@
     "shasum": "021e4d9c7705f21bbf37d03ceb58767402774c64",
     "tarball": "http://registry.npmjs.org/url/-/url-0.10.3.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "punycode": "punycode@1.3.2",
     "querystring": "querystring@0.2.0",

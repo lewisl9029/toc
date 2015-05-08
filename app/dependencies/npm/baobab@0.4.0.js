@@ -1,1 +1,0 @@
-module.exports = require("npm:baobab@0.4.0/index");

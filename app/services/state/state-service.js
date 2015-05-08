@@ -8,12 +8,12 @@ export default function state($rootScope, $q, storage, R, Baobab) {
 
   // local application state persisted in localStorage
   stateService.persistent = {
-    tree: new Baobab({}, {shiftReferences: true})
+    tree: new Baobab({})
   };
 
   // shared user application state persisted in indexedDB with remoteStorage
   stateService.synchronized = {
-    tree: new Baobab({}, {shiftReferences: true})
+    tree: new Baobab({})
   };
 
   stateService.persistent.tree.on('update',
@@ -31,7 +31,12 @@ export default function state($rootScope, $q, storage, R, Baobab) {
 
       return store.storeObject(storageKey, object)
         .then(object => {
-          cursor.select(path).edit(object)
+          if (cursor.get() === undefined) {
+            cursor.tree.set(cursor.path, {});
+            cursor.tree.commit();
+          }
+
+          cursor.set(path, object);
           return object;
         });
     };
@@ -44,8 +49,10 @@ export default function state($rootScope, $q, storage, R, Baobab) {
       return;
     }
 
-    stateService.synchronized.tree.select(getStatePath(event.relativePath))
-      .edit(event.newValue);
+    stateService.synchronized.tree.set(
+      getStatePath(event.relativePath),
+      event.newValue
+    );
   };
 
   // let initializeTransient = function initializeTransient() {
@@ -58,10 +65,10 @@ export default function state($rootScope, $q, storage, R, Baobab) {
 
     return store.getAllObjects()
       .then((keyObjectPairs) => {
-        R.forEach(keyObjectPair =>
-          state.tree.select(getStatePath(keyObjectPair[0]))
-            .edit(keyObjectPair[1])
-        )(keyObjectPairs);
+        R.forEach(keyObjectPair => state.tree.set(
+          getStatePath(keyObjectPair[0]),
+          keyObjectPair[1]
+        ))(keyObjectPairs);
         state.tree.commit();
       });
   };
@@ -91,7 +98,7 @@ export default function state($rootScope, $q, storage, R, Baobab) {
   ]);
 
   let save = function save(cursor, path, object) {
-    let state = TREE_TO_STATE.get(cursor.root);
+    let state = TREE_TO_STATE.get(cursor.tree);
     return state.save(cursor, path, object, state.store);
   };
 

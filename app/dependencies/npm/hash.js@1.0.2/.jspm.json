@@ -47,12 +47,11 @@
     "shasum": "bc7d601f4e0d05a32f3526d11fe39f7a5eb8c187",
     "tarball": "http://registry.npmjs.org/hash.js/-/hash.js-1.0.2.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "inherits": "inherits@^2.0.1"
   }

@@ -57,12 +57,11 @@
     "shasum": "18f4a9ba0dd07bdb1580bc9156091fcf90eabc6f",
     "tarball": "http://registry.npmjs.org/randombytes/-/randombytes-2.0.1.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "buffer": "github:jspm/nodelibs-buffer@^0.1.0",
     "process": "github:jspm/nodelibs-process@^0.1.0",

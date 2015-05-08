@@ -49,12 +49,11 @@
     "shasum": "5283eecc74ae5fa7709d88e3b0cd6692c817b2d2",
     "tarball": "http://registry.npmjs.org/sjcl/-/sjcl-1.0.2.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "crypto": "github:jspm/nodelibs-crypto@^0.1.0",
     "process": "github:jspm/nodelibs-process@^0.1.0"

@@ -47,12 +47,11 @@
       "email": "i@izs.me"
     }
   ],
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "buffer": "github:jspm/nodelibs-buffer@^0.1.0"
   }

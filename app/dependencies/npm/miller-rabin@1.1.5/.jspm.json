@@ -46,12 +46,11 @@
     "shasum": "41f506bed994b97e7c184a658ae107dad980526e",
     "tarball": "http://registry.npmjs.org/miller-rabin/-/miller-rabin-1.1.5.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "bn.js": "bn.js@^1.0.0",
     "brorand": "brorand@^1.0.1"

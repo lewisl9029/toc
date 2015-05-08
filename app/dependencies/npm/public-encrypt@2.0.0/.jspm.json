@@ -57,12 +57,11 @@
     "shasum": "9e49010bf021d33f6597c77abd939612a82767fc",
     "tarball": "http://registry.npmjs.org/public-encrypt/-/public-encrypt-2.0.0.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "bn.js": "bn.js@^1.0.0",
     "browserify-rsa": "browserify-rsa@^2.0.0",

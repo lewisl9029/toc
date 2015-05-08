@@ -47,12 +47,11 @@
     "shasum": "62e203bc41766c6c28c9fc84301dab1c5310fa94",
     "tarball": "http://registry.npmjs.org/string_decoder/-/string_decoder-0.10.31.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "buffer": "github:jspm/nodelibs-buffer@^0.1.0"
   }

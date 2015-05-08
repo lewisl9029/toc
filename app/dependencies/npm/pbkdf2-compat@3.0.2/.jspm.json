@@ -77,12 +77,11 @@
     "shasum": "0b207887e7d45467e9dd1027bbf1414e1f165291",
     "tarball": "http://registry.npmjs.org/pbkdf2-compat/-/pbkdf2-compat-3.0.2.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "create-hmac": "create-hmac@^1.1.2",
     "buffer": "github:jspm/nodelibs-buffer@^0.1.0",

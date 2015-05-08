@@ -1,2 +1,0 @@
-/* */ 
-var pemstrip = require('pemstrip');

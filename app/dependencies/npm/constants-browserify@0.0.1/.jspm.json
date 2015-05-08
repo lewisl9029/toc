@@ -40,12 +40,11 @@
       "email": "julian@juliangruber.com"
     }
   ],
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "systemjs-json": "github:systemjs/plugin-json@^0.1.0"
   }

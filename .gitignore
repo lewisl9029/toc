@@ -1,7 +1,9 @@
 .idea
-.vagrant
+/.vagrant
 /app/*.css
 /www
+/mobile
+/bundle
 /platforms
 /engine
 /plugins

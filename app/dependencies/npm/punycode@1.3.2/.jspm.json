@@ -75,12 +75,11 @@
     "shasum": "9653a036fb7c1ee42342f2325cceefea3926c48d",
     "tarball": "http://registry.npmjs.org/punycode/-/punycode-1.3.2.tgz"
   },
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "process": "github:jspm/nodelibs-process@^0.1.0"
   }

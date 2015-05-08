@@ -70,12 +70,11 @@
       "email": "d.wittner@gmx.de"
     }
   ],
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "samsam": "samsam@~1.1",
     "process": "github:jspm/nodelibs-process@^0.1.0"

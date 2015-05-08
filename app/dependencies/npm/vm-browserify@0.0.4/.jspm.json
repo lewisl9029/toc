@@ -61,12 +61,11 @@
       "email": "mail@substack.net"
     }
   ],
-  "jspm": {},
-  "registry": "npm",
   "format": "cjs",
   "ignore": [
     "node_modules"
   ],
+  "registry": "npm",
   "dependencies": {
     "indexof": "indexof@0.0.1"
   }
