@@ -24,6 +24,7 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.10",
     "driftyco/ionic": "github:driftyco/ionic@1.0.0-rc.5",
     "moment": "npm:moment@2.10.2",
+    "node-forge": "npm:node-forge@0.6.26",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "qr-encode": "npm:qr-encode@0.3.0",
     "ramda": "npm:ramda@0.11.0",
