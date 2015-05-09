@@ -12,6 +12,7 @@ import telehash from './telehash/telehash';
 export default angular.module('toc.libraries', [
   angularToastr.name,
   Baobab.name,
+  forge.name,
   moment.name,
   ramda.name,
   remoteStorage.name,
