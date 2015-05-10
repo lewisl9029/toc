@@ -1,10 +1,5 @@
 export default function network($q, $window, $interval, R, state, telehash,
   notification) {
-  const NETWORK_PATH = ['network'];
-  const NETWORK_CURSORS = {
-    synchronized: state.synchronized.tree.select(NETWORK_PATH)
-  };
-
   const CHANNEL_ID_PREFIX = 'toc-';
   const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
 
@@ -53,7 +48,7 @@ export default function network($q, $window, $interval, R, state, telehash,
 
     let channel = createContactChannel(userId, contactInfo.id);
 
-    let existingChannel = NETWORK_CURSORS.synchronized
+    let existingChannel = state.synchronized.cursors.network
       .get(['channels', channel.id, 'channelInfo']);
 
     let statusId = 1; //online
@@ -61,7 +56,7 @@ export default function network($q, $window, $interval, R, state, telehash,
     channel.pendingAccept = !existingChannel;
 
     return state.save(
-        NETWORK_CURSORS.synchronized,
+        state.synchronized.cursors.network,
         ['channels', channel.id, 'channelInfo'],
         channel
       )
@@ -113,7 +108,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       content: messageContent
     };
 
-    let channelCursor = NETWORK_CURSORS.synchronized.select(
+    let channelCursor = state.synchronized.cursors.network.select(
       ['channels', channelId]
     );
 
@@ -134,7 +129,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       ))
       .then(() => {
         let activeChannelId =
-          NETWORK_CURSORS.synchronized.get(['activeChannelId']);
+          state.synchronized.cursors.network.get(['activeChannelId']);
         if (activeChannelId === channelId &&
           channelCursor.get(['viewingLatest'])) {
           return $q.when();
@@ -329,7 +324,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       };
 
       return state.save(
-        NETWORK_CURSORS.synchronized.select(
+        state.synchronized.cursors.network.select(
           ['channels', channelInfo.id, 'messages']
         ),
         [messageId, 'messageInfo'],
@@ -376,7 +371,7 @@ export default function network($q, $window, $interval, R, state, telehash,
         return $q.when();
       })
       .then(() => {
-        let channelCursor = NETWORK_CURSORS.synchronized.select([
+        let channelCursor = state.synchronized.cursors.network.select([
           'channels', channelInfo.id
         ]);
 
@@ -425,7 +420,7 @@ export default function network($q, $window, $interval, R, state, telehash,
 
       listen({id: INVITE_CHANNEL_ID});
 
-      let channels = NETWORK_CURSORS.synchronized.get(['channels']);
+      let channels = state.synchronized.cursors.network.get(['channels']);
 
       R.pipe(
         R.values,
@@ -447,7 +442,6 @@ export default function network($q, $window, $interval, R, state, telehash,
   };
 
   return {
-    NETWORK_CURSORS,
     INVITE_CHANNEL_ID,
     createContactChannel,
     listen,

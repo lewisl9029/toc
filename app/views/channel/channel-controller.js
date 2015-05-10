@@ -1,11 +1,11 @@
-export default function ChannelController($q, $stateParams, state, contacts,
-  network, notification) {
+export default function ChannelController($q, $stateParams, state, network,
+  notification) {
   this.channelId = $stateParams.channelId;
 
-  let channelCursor = network.NETWORK_CURSORS.synchronized
+  let channelCursor = state.synchronized.cursors.network
     .select(['channels', this.channelId]);
 
-  let contactCursor = contacts.CONTACTS_CURSORS.synchronized;
+  let contactCursor = state.synchronized.cursors.contacts;
 
   this.contact = contactCursor.get(
     channelCursor.get(['channelInfo', 'contactIds'])[0]

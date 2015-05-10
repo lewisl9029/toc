@@ -5,19 +5,19 @@ export default function tocHeader() {
     restrict: 'E',
     template: template,
     controllerAs: 'header',
-    controller: function HeaderController($state, state, identity) {
-      let currentUserCursor = identity.IDENTITY_CURSORS.synchronized;
+    controller: function HeaderController($state, state) {
+      // let identityCursor = state.synchronized.cursors.identity;
 
-      this.currentUser = currentUserCursor.get();
+      // this.currentUser = identityCursor.get();
 
       this.signOut = function signOut() {
         //TODO: clear synchronized tree and remove remotestorage module
         $state.go('app.welcome');
       };
 
-      currentUserCursor.on('update', () => {
-        this.currentUser = currentUserCursor.get();
-      });
+      // currentUserCursor.on('update', () => {
+      //   this.currentUser = identityCursor.get();
+      // });
     }
   };
 }

@@ -5,8 +5,9 @@ export default function tocSigninForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signinForm',
-    controller: function SigninFormController($q, $state, identity, notification) {
-      let localUsersCursor = identity.IDENTITY_CURSORS.persistent;
+    controller: function SigninFormController($q, $state, state, identity,
+      notification) {
+      let localUsersCursor = state.persistent.cursors.identity;
 
       this.users = localUsersCursor.get() || {};
       //TODO: store last signin time and use for default selected user
