@@ -1,1 +1,0 @@
-module.exports = require("npm:browserify-rsa@2.0.0/index");
