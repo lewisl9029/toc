@@ -15,7 +15,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       return;
     }
 
-    throw 'network: no active session';
+    throw new Error('network: no active session');
   };
 
   let generateContactChannelId =

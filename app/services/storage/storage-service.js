@@ -27,7 +27,9 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
 
     let storeObject = function storeObject(key, object) {
       let encryptedObject = cryptography.encrypt(object);
-      let encryptedKey = cryptography.encryptDeterministic(key).ct;
+      let encryptedKey = cryptography.escapeBase64(
+        JSON.stringify(cryptography.encryptDeterministic(key))
+      );
 
       return $q.when(privateClient.storeObject(
         cryptography.ENCRYPTED_OBJECT.name,
@@ -37,7 +39,9 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
     };
 
     let getObject = function getObject(key) {
-      let encryptedKey = cryptography.encryptDeterministic(key).ct;
+      let encryptedKey = cryptography.escapeBase64(
+        JSON.stringify(cryptography.encryptDeterministic(key))
+      );
 
       return $q.when(privateClient.getObject(encryptedKey))
         .then(cryptography.decrypt);
@@ -51,7 +55,9 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
         .then(encryptedObjects => R.pipe(
           R.toPairs,
           R.map(encryptedKeyObjectPair => [
-            cryptography.decrypt(encryptedKeyObjectPair[0]),
+            cryptography.decrypt(
+              JSON.parse(cryptography.unescapeBase64(encryptedKeyObjectPair[0]))
+            ),
             cryptography.decrypt(encryptedKeyObjectPair[1])
           ])
         )(encryptedObjects));
@@ -62,7 +68,9 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
         let decryptedEvent = Object.assign({}, event);
 
         decryptedEvent.relativePath = event.relativePath ?
-          cryptography.decrypt(event.relativePath) :
+          cryptography.decrypt(
+            JSON.parse(cryptography.unescapeBase64(event.relativePath))
+          ) :
           event.relativePath;
 
         decryptedEvent.newValue = event.newValue ?
