@@ -7,6 +7,7 @@ import ramda from './ramda/ramda';
 import remoteStorage from './remote-storage/remote-storage';
 import qrEncode from './qr-encode/qr-encode';
 import sjcl from './sjcl/sjcl';
+import forge from './forge/forge';
 import telehash from './telehash/telehash';
 
 export default angular.module('toc.libraries', [

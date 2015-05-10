@@ -1,13 +1,20 @@
-export default function cryptography($q, sjcl) {
+export default function cryptography($q, sjcl, forge) {
   //TODO: progressively replace with webcrypto implementation
   //TODO: add user setting to disable encryption
   let cachedCredentials;
 
   // for encryption + authentication with a single key
-  const AES_ENCRYPTION_MODE = 'gcm';
+  const AES_ENCRYPTION_MODE = 'AES-GCM';
 
   // default key strength used by sjcl.encrypt
   const AES_KEY_STRENGTH = 128;
+
+  // From Forge docs:
+  // Note: a key size of 16 bytes will use AES-128, 24 => AES-192, 32 => AES-256
+  const PBKDF2_KEY_LENGTH = AES_KEY_STRENGTH / 8;
+
+  // may not be enough?
+  const PBKDF2_ITERATIONS = 10000;
 
   const ENCRYPTED_OBJECT = {
     name: 'tocEncryptedObject',
@@ -17,9 +24,15 @@ export default function cryptography($q, sjcl) {
       properties: {
         ct: {
           type: 'string'
+        },
+        tag: {
+          type: 'string'
+        },
+        iv: {
+          type: 'string'
         }
       },
-      required: ['ct']
+      required: ['ct', 'tag', 'iv']
     }
   };
 
@@ -34,10 +47,10 @@ export default function cryptography($q, sjcl) {
 
   let checkCredentials =
     function checkCredentials(credentials) {
-      if (credentials && credentials.id && credentials.password) {
+      if (credentials && credentials.salt && credentials.key) {
         return;
       }
-
+      //FIXME: Throw error object instead?
       throw 'cryptography: mising credentials';
     };
 
@@ -95,31 +108,72 @@ export default function cryptography($q, sjcl) {
   let encrypt = function encrypt(object, credentials = cachedCredentials) {
     checkCredentials(credentials);
 
-    let options = {
-      salt: credentials.id,
-      mode: AES_ENCRYPTION_MODE
-    };
+    let plaintext = JSON.stringify(object);
+    let iv = forge.random.getBytesSync(16);
 
-    return encryptBase(object, options, credentials);
+    let cipher = forge.cipher.createCipher(
+      AES_ENCRYPTION_MODE,
+      credentials.key
+    );
+
+    cipher.start({iv});
+    cipher.update(forge.util.createBuffer(plaintext));
+    cipher.finish();
+
+    iv = forge.util.encode64(iv);
+    let ct = forge.util.encode64(cipher.output.getBytes());
+    let tag = forge.util.encode64(cipher.mode.tag.getBytes());
+
+    return { iv, ct, tag };
   };
 
   let decrypt =
     function decrypt(encryptedObject, credentials = cachedCredentials) {
       checkCredentials(credentials);
 
-      let ciphertext = encryptedObject.ct || encryptedObject;
+      let ciphertext = forge.util.decode64(encryptedObject.ct);
+      let iv = forge.util.decode64(encryptedObject.iv);
+      let tag = forge.util.decode64(encryptedObject.tag);
 
-      let plaintext = sjcl.decrypt(
-        credentials.password,
-        unescapeCiphertext(ciphertext)
+      let decipher = forge.cipher.createDecipher(
+        AES_ENCRYPTION_MODE,
+        credentials.key
       );
 
-      return JSON.parse(plaintext);
+      decipher.start({
+        iv: forge.util.createBuffer(iv),
+        tag: forge.util.createBuffer(tag)
+      });
+
+      decipher.update(forge.util.createBuffer(ciphertext));
+
+      let result = decipher.finish();
+
+      if (!result) {
+        throw 'cryptography: decryption failed';
+      }
+
+      return JSON.parse(decipher.output.getBytes());
     };
 
+  let deriveCredentials = function deriveCredentials(userCredentials) {
+    let salt = forge.util.hexToBytes(userCredentials.id);
+    let key = forge.pkcs5.pbkdf2(
+      userCredentials.password,
+      salt,
+      PBKDF2_ITERATIONS,
+      PBKDF2_KEY_LENGTH
+    );
+
+    return { salt, key };
+  };
+
   let initialize = function initializeCryptography(userCredentials) {
-    // mutable local state because it's not suited for storage in state trees
-    cachedCredentials = userCredentials;
+    cachedCredentials = deriveCredentials(userCredentials);
+  };
+
+  let destroy = function destroyCryptography() {
+    cachedCredentials = undefined;
   };
 
   return {
@@ -128,6 +182,8 @@ export default function cryptography($q, sjcl) {
     encryptDeterministic,
     encrypt,
     decrypt,
-    initialize
+    deriveCredentials,
+    initialize,
+    destroy
   };
 }

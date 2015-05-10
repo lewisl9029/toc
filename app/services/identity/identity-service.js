@@ -36,9 +36,15 @@ export default function identity($q, state, R, network, cryptography) {
         persistentUserInfo.id = sessionInfo.id;
         newUserInfo.id = sessionInfo.id;
         try {
+          cryptography.initialize(userCredentials);
           persistentUserInfo.challenge =
-            cryptography.encrypt(userCredentials.id, userCredentials);
+            cryptography.encrypt(userCredentials.id);
+          if (cryptography.decrypt(persistentUserInfo.challenge) !==
+            userCredentials.id) {
+              throw 'identity: failed to validate challenge';
+            };
         } catch(error) {
+          cryptography.destroy();
           return $q.reject(error);
         }
       })
@@ -50,7 +56,6 @@ export default function identity($q, state, R, network, cryptography) {
       .then(() => {
         //TODO: need to initialize with primary userId to connect to module
         // possibly add another remotestorage module that stores users's ids
-        cryptography.initialize(userCredentials);
         return state.synchronized.initialize(persistentUserInfo.id);
       })
       .then(() => state.save(
