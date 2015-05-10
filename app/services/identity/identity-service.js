@@ -1,10 +1,4 @@
 export default function identity($q, state, R, network, cryptography) {
-  const IDENTITY_PATH = ['identity'];
-  const IDENTITY_CURSORS = {
-    persistent: state.persistent.tree.select(IDENTITY_PATH),
-    synchronized: state.synchronized.tree.select(IDENTITY_PATH)
-  };
-
   let create = function createIdentity(userInfo) {
     let userCredentials = {
       id: undefined,
@@ -46,7 +40,7 @@ export default function identity($q, state, R, network, cryptography) {
         }
       })
       .then(() => state.save(
-        IDENTITY_CURSORS.persistent,
+        state.persistent.cursors.identity,
         [persistentUserInfo.id, 'userInfo'],
         persistentUserInfo
       ))
@@ -54,19 +48,19 @@ export default function identity($q, state, R, network, cryptography) {
       // possibly add another remotestorage module that stores users's ids
       .then(() => state.synchronized.initialize(persistentUserInfo.id))
       .then(() => state.save(
-        IDENTITY_CURSORS.synchronized,
+        state.synchronized.cursors.identity,
         ['userInfo'],
         newUserInfo
       ))
       .then(() => state.save(
-        network.NETWORK_CURSORS.synchronized,
+        state.synchronized.cursors.network,
         ['sessions', sessionInfo.id, 'sessionInfo'],
         sessionInfo
       ));
   };
 
   let authenticate = function authenticateIdentity(userCredentials) {
-    let challenge = IDENTITY_CURSORS.persistent
+    let challenge = state.persistent.cursors.identity
       .get([userCredentials.id, 'userInfo']).challenge;
 
     try {
@@ -80,7 +74,7 @@ export default function identity($q, state, R, network, cryptography) {
 
     return state.synchronized.initialize(userCredentials.id)
       .then(() => {
-        let contactsCursor = state.synchronized.tree.select(['contacts']);
+        let contactsCursor = state.synchronized.cursors.contacts;
 
         R.pipe(
           R.keys,
@@ -89,7 +83,7 @@ export default function identity($q, state, R, network, cryptography) {
           )
         )(contactsCursor.get());
       })
-      .then(() => network.NETWORK_CURSORS.synchronized.get(
+      .then(() => state.synchronized.cursors.network.get(
         ['sessions', userCredentials.id, 'sessionInfo']
       ))
       .then((sessionInfo) =>
@@ -101,7 +95,6 @@ export default function identity($q, state, R, network, cryptography) {
   };
 
   return {
-    IDENTITY_CURSORS,
     create,
     authenticate,
     initialize

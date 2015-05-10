@@ -1,7 +1,6 @@
 import template from './message-list.html!text';
 
-export default function tocMessageList(network, state, R,
-  $ionicScrollDelegate) {
+export default function tocMessageList(state, R, $ionicScrollDelegate) {
   return {
     restrict: 'E',
     template: template,
@@ -9,7 +8,7 @@ export default function tocMessageList(network, state, R,
       channelId: '@'
     },
     link: function linkMessageList(scope) {
-      let messagesCursor = network.NETWORK_CURSORS.synchronized
+      let messagesCursor = state.synchronized.cursors.network
         .select(['channels', scope.channelId, 'messages']);
 
       $ionicScrollDelegate.scrollBottom(false);
@@ -39,15 +38,14 @@ export default function tocMessageList(network, state, R,
       });
     },
     controllerAs: 'messageList',
-    controller: function MessageListController($scope, $state, identity,
-      contacts, $interval) {
-      let channelsCursor = network.NETWORK_CURSORS.synchronized
+    controller: function MessageListController($scope, $state, $interval) {
+      let channelsCursor = state.synchronized.cursors.network
         .select('channels');
 
-      let contactsCursor = contacts.CONTACTS_CURSORS.synchronized;
-      let identityCursor = identity.IDENTITY_CURSORS.synchronized;
+      let contactsCursor = state.synchronized.cursors.contacts;
+      let identityCursor = state.synchronized.cursors.identity;
 
-      let messagesCursor = network.NETWORK_CURSORS.synchronized
+      let messagesCursor = state.synchronized.cursors.network
         .select(['channels', $scope.channelId, 'messages']);
 
       this.contacts = contactsCursor.get();

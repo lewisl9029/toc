@@ -1,14 +1,9 @@
-export default function contacts($q, state, network, identity) {
-  const CONTACTS_PATH = ['contacts'];
-  const CONTACTS_CURSORS = {
-    synchronized: state.synchronized.tree.select(CONTACTS_PATH)
-  };
-
+export default function contacts($q, state, network) {
   let invite = function inviteContact(contactId) {
-    let userInfo = identity.IDENTITY_CURSORS.synchronized.get('userInfo');
+    let userInfo = state.synchronized.cursors.identity.get('userInfo');
     let contactChannel = network.createContactChannel(userInfo.id, contactId);
 
-    let existingContact = CONTACTS_CURSORS.synchronized
+    let existingContact = state.synchronized.cursors.contacts
       .get([contactId, 'userInfo']);
 
     let contact = existingContact || {
@@ -38,12 +33,12 @@ export default function contacts($q, state, network, identity) {
 
     return recursivelySendInvite()
       .then(() => state.save(
-        CONTACTS_CURSORS.synchronized,
+        state.synchronized.cursors.contacts,
         [contactId, 'userInfo'],
         contact
       ))
       .then(() => state.save(
-        network.NETWORK_CURSORS.synchronized,
+        state.synchronized.cursors.network,
         ['channels', contactChannel.id, 'channelInfo'],
         contactChannel
       ))
@@ -55,7 +50,6 @@ export default function contacts($q, state, network, identity) {
   };
 
   return {
-    CONTACTS_CURSORS,
     invite,
     initialize
   };

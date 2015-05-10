@@ -11,9 +11,19 @@ export default function state($rootScope, $q, storage, R, Baobab) {
     tree: new Baobab({})
   };
 
+  stateService.persistent.cursors = {
+    identity: stateService.persistent.tree.select(['identity'])
+  };
+
   // shared user application state persisted in indexedDB with remoteStorage
   stateService.synchronized = {
     tree: new Baobab({})
+  };
+
+  stateService.synchronized.cursors = {
+    contacts: stateService.synchronized.tree.select(['contacts']),
+    identity: stateService.synchronized.tree.select(['identity']),
+    network: stateService.synchronized.tree.select(['network'])
   };
 
   stateService.persistent.tree.on('update',
@@ -26,8 +36,10 @@ export default function state($rootScope, $q, storage, R, Baobab) {
   //TODO: create schema object and keep up to date for each tree
 
   let savePersistent =
-    function savePersistent(cursor, path, object, store) {
-      let storageKey = storage.getStorageKey(R.concat(cursor.path, path));
+    function savePersistent(cursor, relativePath, object, store) {
+      let storageKey = storage.getStorageKey(
+        R.concat(cursor.path, relativePath)
+      );
 
       return store.storeObject(storageKey, object)
         .then(object => {
@@ -36,7 +48,7 @@ export default function state($rootScope, $q, storage, R, Baobab) {
             cursor.tree.commit();
           }
 
-          cursor.set(path, object);
+          cursor.set(relativePath, object);
           return object;
         });
     };
@@ -97,9 +109,9 @@ export default function state($rootScope, $q, storage, R, Baobab) {
     [stateService.synchronized.tree, stateService.synchronized]
   ]);
 
-  let save = function save(cursor, path, object) {
+  let save = function save(cursor, relativePath, object) {
     let state = TREE_TO_STATE.get(cursor.tree);
-    return state.save(cursor, path, object, state.store);
+    return state.save(cursor, relativePath, object, state.store);
   };
 
   let initialize = function initialize() {
