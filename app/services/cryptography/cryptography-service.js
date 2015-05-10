@@ -1,12 +1,10 @@
-export default function cryptography($q, sjcl, forge) {
-  //TODO: progressively replace with webcrypto implementation
+export default function cryptography($q, forge) {
   //TODO: add user setting to disable encryption
   let cachedCredentials;
 
   // for encryption + authentication with a single key
   const AES_ENCRYPTION_MODE = 'AES-GCM';
 
-  // default key strength used by sjcl.encrypt
   const AES_KEY_STRENGTH = 128;
 
   // From Forge docs:

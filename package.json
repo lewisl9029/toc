@@ -55,7 +55,6 @@
       "remotestoragejs": "npm:remotestoragejs@0.11.2",
       "scut": "npm:scut@^1.1.2",
       "sinon": "npm:sinon@^1.12.2",
-      "sjcl": "npm:sjcl@^1.0.2",
       "text": "github:systemjs/plugin-text@^0.0.2"
     },
     "devDependencies": {

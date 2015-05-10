@@ -1,1 +1,0 @@
-module.exports = require("npm:sjcl@1.0.2/sjcl");
