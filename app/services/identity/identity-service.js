@@ -6,9 +6,6 @@ export default function identity($q, state, R, network, cryptography) {
   };
 
   let create = function createIdentity(userInfo) {
-    //TODO: replace with telehash id generation
-    //TODO: open issue for why sjcl trims salt by 1 char
-    // id: Date.now().toString().substr(1),
     let userCredentials = {
       id: undefined,
       password: userInfo.password
@@ -36,9 +33,15 @@ export default function identity($q, state, R, network, cryptography) {
         persistentUserInfo.id = sessionInfo.id;
         newUserInfo.id = sessionInfo.id;
         try {
+          cryptography.initialize(userCredentials);
           persistentUserInfo.challenge =
-            cryptography.encrypt(userCredentials.id, userCredentials);
+            cryptography.encrypt(userCredentials.id);
+          if (cryptography.decrypt(persistentUserInfo.challenge) !==
+            userCredentials.id) {
+              throw new Error('identity: failed to validate challenge');
+            };
         } catch(error) {
+          cryptography.destroy();
           return $q.reject(error);
         }
       })
@@ -47,12 +50,9 @@ export default function identity($q, state, R, network, cryptography) {
         [persistentUserInfo.id, 'userInfo'],
         persistentUserInfo
       ))
-      .then(() => {
-        //TODO: need to initialize with primary userId to connect to module
-        // possibly add another remotestorage module that stores users's ids
-        cryptography.initialize(userCredentials);
-        return state.synchronized.initialize(persistentUserInfo.id);
-      })
+      //TODO: need to initialize with primary userId to connect to module
+      // possibly add another remotestorage module that stores users's ids
+      .then(() => state.synchronized.initialize(persistentUserInfo.id))
       .then(() => state.save(
         IDENTITY_CURSORS.synchronized,
         ['userInfo'],
@@ -70,13 +70,14 @@ export default function identity($q, state, R, network, cryptography) {
       .get([userCredentials.id, 'userInfo']).challenge;
 
     try {
-      cryptography.decrypt(challenge, userCredentials);
+      cryptography.initialize(userCredentials);
+      cryptography.decrypt(challenge);
     }
     catch(error) {
-      return $q.reject('Wrong password.');
+      cryptography.destroy();
+      return $q.reject('identity: wrong password');
     }
 
-    cryptography.initialize(userCredentials);
     return state.synchronized.initialize(userCredentials.id)
       .then(() => {
         let contactsCursor = state.synchronized.tree.select(['contacts']);
