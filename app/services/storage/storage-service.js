@@ -9,7 +9,9 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
 
   let local = {};
 
-  // let connect = remoteStorage.remoteStorage.connect;
+  let connect = function connect(email) {
+    return remoteStorage.remoteStorage.connect(email);
+  };
 
   let enableLog = remoteStorage.remoteStorage.enableLog;
 
@@ -169,6 +171,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
   return {
     KEY_SEPARATOR,
     getStorageKey,
+    connect,
     claimAccess,
     createLocal,
     createRemote,
