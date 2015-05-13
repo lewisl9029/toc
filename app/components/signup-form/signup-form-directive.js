@@ -15,6 +15,10 @@ export default function tocSignupForm() {
       };
 
       this.createUser = function createUser(userInfo) {
+        if (!userInfo.displayName) {
+          userInfo.displayName = 'Anonymous';
+        }
+
         this.signingUp = identity.create(userInfo)
           .then(() => $state.go('app.home'))
           .catch((error) => notification.error(error, 'User Creation Error'));

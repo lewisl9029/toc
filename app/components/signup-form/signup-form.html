@@ -1,32 +1,33 @@
 <form name="toc-signup-form">
   <div class="card list">
     <div class="item item-divider item-calm">
-      Welcome {{signupForm.newUser.displayName || 'New User'}}!
+      Welcome{{signupForm.newUser.displayName ?
+        ' ' + signupForm.newUser.displayName : ''}}!
     </div>
     <label class="item item-avatar">
       <!-- TODO: create directive for libravatar icon -->
       <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="New User 1" />
-      <h2>{{signupForm.newUser.displayName || 'New User'}}</h2>
-      <p>ID</p>
+      <h2>{{signupForm.newUser.displayName || 'Anonymous'}}</h2>
+      <p>Only password is required.</p>
     </label>
-    <label class="item item-input item-floating-label">
+    <label class="item item-input item-stacked-label">
       <span class="input-label">Display Name</span>
-      <input type="text" placeholder="Display Name"
+      <input type="text" placeholder="A friendly name to know you by."
         ng-model="signupForm.newUser.displayName" toc-auto-focus>
     </label>
-    <label class="item item-input item-floating-label">
-      <span class="input-label">Email</span>
-      <input type="text" placeholder="Email"
+    <label class="item item-input item-stacked-label">
+      <span class="input-label">Contact Email</span>
+      <input type="text" placeholder="Another way to reach you."
         ng-model="signupForm.newUser.email">
     </label>
-    <label class="item item-input item-floating-label">
+    <label class="item item-input item-stacked-label">
       <span class="input-label">Password</span>
-      <input type="password" placeholder="Password"
+      <input type="password" placeholder="The only key to your data."
         ng-model="signupForm.newUser.password">
     </label>
-    <label class="item item-input item-floating-label">
-      <span class="input-label">Confirm Password</span>
-      <input type="password" placeholder="Confirm Password"
+    <label class="item item-input item-stacked-label">
+      <span class="input-label">Password Confirmation</span>
+      <input type="password" placeholder="To ensure you've typed it correctly."
         ng-model="signupForm.newUser.passwordConfirmation">
     </label>
     <div class="item item-divider button-bar">

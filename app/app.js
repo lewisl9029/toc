@@ -9,6 +9,7 @@ import components from './components/components';
 
 import run from './app-run';
 import config from './app-config';
+import controller from './app-controller';
 
 let appName = 'toc';
 
@@ -20,7 +21,8 @@ export default angular.module(appName, [
     components.name
   ])
   .run(run)
-  .config(config);
+  .config(config)
+  .controller(controller.name, controller);
 
 export function initialize() {
   angular.element(document)
