@@ -1,6 +1,12 @@
-export default function layout($state) {
+export default function layout($state, R) {
   let isContactsMenuEnabled = function isContactsMenuEnabled() {
-    return !$state.is('app.welcome');
+    let menuDisabledStates = [
+      'app.welcome',
+      'app.signin',
+      'app.signup'
+    ];
+
+    return !R.any($state.includes)(menuDisabledStates);
   };
 
   return {

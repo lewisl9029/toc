@@ -62,6 +62,10 @@ export default function tocChannelList() {
         ).then(() => $state.go('app.home'));
       };
 
+      identityCursor.on('update', () => {
+        this.userInfo = identityCursor.get('userInfo');
+      });
+
       channelsCursor.on('update', () => {
         this.channels = channelsCursor.get();
       });

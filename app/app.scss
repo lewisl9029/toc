@@ -45,6 +45,23 @@ $button-border-radius: 0 !default;
   transition: opacity 0.75s ease-in;
 }
 
+.scroll,.scroll-view {
+  height: 100%;
+}
+
+.toc-flex-container {
+  @include display-flex;
+  @include flex-direction(column);
+  height: 100%;
+}
+
+.toc-flex-content {
+  @include flex(1);
+}
+
+.toc-flex-footer {
+}
+
 .toc-hidden {
   display: none;
 }

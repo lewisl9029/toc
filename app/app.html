@@ -5,7 +5,7 @@
     </ion-nav-bar>
     <ion-nav-view></ion-nav-view>
   </ion-side-menu-content>
-  <ion-side-menu side="left" expose-aside-when="large"
+  <ion-side-menu side="left" expose-aside-when="appView.isContactsMenuEnabled() ? 'large' : false"
     is-enabled="appView.isContactsMenuEnabled()">
     <ion-header-bar class="bar-positive">
       <h1 class="title">Contacts</h1>
