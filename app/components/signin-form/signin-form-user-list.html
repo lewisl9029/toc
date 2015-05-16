@@ -8,9 +8,9 @@
         <ion-scroll>
           <div class="list">
             <ion-radio class="item item-avatar"
-              ng-repeat="(id, user) in model.users track by id"
-              ng-model="model.selectedUser" ng-value="'{{id}}'"
-              ng-click="userList.hide()"
+              ng-repeat="user in model.userList track by user.userInfo.id"
+              ng-model="model.selectedUser" ng-value="'{{user.userInfo.id}}'"
+              ng-click="userListModal.hide()"
               icon="ion-checkmark">
               <img src="http://cdn.libravatar.org/avatar/{{user.userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{user.userInfo.email}}" />
               <h2>{{user.userInfo.displayName}}</h2>
@@ -30,7 +30,7 @@
         <div class="row">
           <div class="col">
             <button class="button button-block button-outline button-assertive"
-              ng-click="userList.hide()">
+              ng-click="userListModal.hide()">
               Cancel
             </button>
           </div>

@@ -17,7 +17,7 @@
           ng-model="signinForm.model.password" toc-auto-focus>
       </label>
       <ion-toggle ng-model="signinForm.model.staySignedIn"
-        toggle-class="toggle-energized">
+        toggle-class="toggle-assertive">
         Stay signed in?
       </ion-toggle>
     </div>
@@ -25,16 +25,23 @@
   <div class="toc-flex-footer">
     <div class="row">
       <div class="col">
-        <button class="button button-block button-outline button-calm">
-          Connect to a Toc Cloud Account
+        <button class="button button-block button-outline button-energized"
+          ng-click="signinForm.userListModal.show()">
+          Not you?
         </button>
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <button class="button button-block button-outline button-energized"
-          ng-click="signinForm.userList.show()">
-          Not you?
+        <button class="button button-block button-outline button-calm">
+          Connect to Toc Cloud
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button class="button button-block button-outline button-calm">
+          Create account
         </button>
       </div>
       <div class="col">
@@ -43,7 +50,7 @@
           ng-click="signinForm.signIn()" toc-spinner-button
           loading-promise="signinForm.signingIn">
           <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
-          Sign In
+          Sign in
         </button>
       </div>
     </div>

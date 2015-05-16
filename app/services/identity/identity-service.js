@@ -44,6 +44,11 @@ export default function identity($q, state, R, network, cryptography) {
         [persistentUserInfo.id, 'userInfo'],
         persistentUserInfo
       ))
+      .then(() => state.save(
+        state.persistent.cursors.identity,
+        [persistentUserInfo.id, 'latestSession'],
+        Date.now()
+      ))
       //TODO: need to initialize with primary userId to connect to module
       // possibly add another remotestorage module that stores users's ids
       .then(() => state.synchronized.initialize(persistentUserInfo.id))
@@ -72,7 +77,12 @@ export default function identity($q, state, R, network, cryptography) {
       return $q.reject('identity: wrong password');
     }
 
-    return state.synchronized.initialize(userCredentials.id)
+    return state.save(
+        state.persistent.cursors.identity,
+        [userCredentials.id, 'latestSession'],
+        Date.now()
+      )
+      .then(() => state.synchronized.initialize(userCredentials.id))
       .then(() => {
         let contactsCursor = state.synchronized.cursors.contacts;
 

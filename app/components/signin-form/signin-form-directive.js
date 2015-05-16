@@ -7,14 +7,19 @@ export default function tocSigninForm() {
     template: template,
     controllerAs: 'signinForm',
     controller: function SigninFormController($q, $state, $scope, state,
-      identity, notification, signinForm, $ionicModal) {
+      identity, notification, signinForm, R, $ionicModal) {
       this.model = signinForm;
 
       let localUsersCursor = state.persistent.cursors.identity;
 
       this.model.users = localUsersCursor.get() || {};
+      this.model.userList = R.pipe(
+        R.values,
+        R.sortBy((user) => user.latestSession ? user.latestSession * -1 : 0)
+      )(this.model.users);
+
       //TODO: store last signin time and use for default selected user
-      this.model.selectedUser = Object.keys(this.model.users)[0];
+      this.model.selectedUser = this.model.userList[0].userInfo.id;
       this.model.password = '';
 
       this.signIn = function() {
@@ -29,16 +34,20 @@ export default function tocSigninForm() {
       };
 
       $scope.model = signinForm;
-      $scope.userList = $ionicModal.fromTemplate(userListTemplate, {
+      $scope.userListModal = $ionicModal.fromTemplate(userListTemplate, {
         scope: $scope,
         animation: 'slide-in-up'
       });
 
-      this.userList = $scope.userList;
+      this.userListModal = $scope.userListModal;
 
       //FIXME: dangling listener, clean up on destroy
       localUsersCursor.on('update', () => {
         this.model.users = localUsersCursor.get();
+        this.model.userList = R.pipe(
+          R.values,
+          R.sortBy((user) => user.latestSession ? user.latestSession * -1 : 0)
+        )(this.model.users);
       });
     }
   };
