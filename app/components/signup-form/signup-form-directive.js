@@ -14,6 +14,8 @@ export default function tocSignupForm() {
         passwordConfirmation: ''
       };
 
+      this.staySignedIn = false;
+
       this.createUser = function createUser(userInfo) {
         if (!userInfo.displayName) {
           userInfo.displayName = 'Anonymous';

@@ -32,22 +32,19 @@
         <input type="password" placeholder="Have you typed it correctly?"
           ng-model="signupForm.newUser.passwordConfirmation">
       </label>
+      <ion-toggle ng-model="signupForm.staySignedIn"
+        toggle-class="toggle-assertive">
+        Stay signed in?
+      </ion-toggle>
     </div>
   </div>
 
   <div class="toc-flex-footer">
     <div class="row">
       <div class="col">
-        <button type="button"
-          class="button button-block button-outline button-calm">
-          Connect to Toc Cloud
-        </button>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
         <button type="button" ui-sref="app.signin"
-          class="button button-block button-outline button-calm">
+          class="button button-block button-outline button-calm"
+          ng-disabled="!signupForm.users">
           Sign in
         </button>
       </div>
