@@ -1,4 +1,8 @@
-<form name="toc-signin-form" class="toc-flex-container">
+<form name="toc-signin-form" class="toc-flex-container"
+  ng-submit="signinForm.signIn({
+    id: signinForm.model.selectedUser,
+    password: signinForm.model.password
+  })">
   <div class="toc-flex-content">
     <div class="list">
       <div class="item item-divider item-calm item-clear">
@@ -23,7 +27,8 @@
     </div>
     <div class="row">
       <div class="col">
-        <button class="button button-block button-outline button-royal"
+        <button type="button"
+          class="button button-block button-outline button-royal"
           ng-click="signinForm.userListModal.show()">
           Not you?
         </button>
@@ -34,14 +39,15 @@
   <div class="toc-flex-footer">
     <div class="row">
       <div class="col">
-        <button class="button button-block button-outline button-calm">
+        <button type="button"
+          class="button button-block button-outline button-calm">
           Connect to Toc Cloud
         </button>
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <button ui-sref="app.signup"
+        <button type="button" ui-sref="app.signup"
           class="button button-block button-outline button-calm">
           Create account
         </button>
@@ -49,10 +55,6 @@
       <div class="col">
         <button type="submit"
           class="button button-block button-outline button-balanced"
-          ng-click="signinForm.signIn({
-            id: signinForm.model.selectedUser,
-            password: signinForm.model.password
-          })"
           toc-spinner-button loading-promise="signinForm.signingIn">
           <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
           Sign in

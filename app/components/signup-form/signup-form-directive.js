@@ -35,7 +35,7 @@ export default function tocSignupForm() {
                   Date.now()
                 );
 
-                return state.synchronized.initialize(userInfo.id)
+                return state.synchronized.initialize(newUserInfo.id)
                   .then(() => state.save(
                     state.synchronized.cursors.identity,
                     ['userInfo'],
@@ -53,6 +53,14 @@ export default function tocSignupForm() {
 
         return this.signingUp;
       };
+
+      let localUsersCursor = state.persistent.cursors.identity;
+
+      this.users = localUsersCursor.get();
+
+      localUsersCursor.on('update', () => {
+        this.users = localUsersCursor.get();
+      });
     }
   };
 }

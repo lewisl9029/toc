@@ -95,7 +95,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
     };
   };
 
-  let createLocal = function createLocal(moduleName = 'global') {
+  let createLocal = function createLocal(moduleName = 'local') {
     const KEY_PREFIX = STORAGE_MODULE_PREFIX + moduleName + KEY_SEPARATOR;
 
     let getObject = function getObjectLocal(key) {

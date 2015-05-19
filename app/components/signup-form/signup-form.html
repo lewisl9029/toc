@@ -1,4 +1,5 @@
-<form name="toc-signup-form" class="toc-flex-container">
+<form name="toc-signup-form" class="toc-flex-container"
+  ng-submit="signupForm.createUser(signupForm.newUser)">
   <div class="toc-flex-content">
     <div class="list">
       <div class="item item-divider item-calm">
@@ -9,7 +10,7 @@
         <!-- TODO: create directive for libravatar icon -->
         <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="New User 1" />
         <h2>{{signupForm.newUser.displayName || 'Anonymous'}}</h2>
-        <p>Only password is required.</p>
+        <p>Your contact card.</p>
       </label>
       <label class="item item-input item-stacked-label">
         <span class="input-label">Display Name</span>
@@ -37,14 +38,15 @@
   <div class="toc-flex-footer">
     <div class="row">
       <div class="col">
-        <button class="button button-block button-outline button-calm">
+        <button type="button"
+          class="button button-block button-outline button-calm">
           Connect to Toc Cloud
         </button>
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <button ui-sref="app.signin"
+        <button type="button" ui-sref="app.signin"
           class="button button-block button-outline button-calm">
           Sign in
         </button>
@@ -52,9 +54,7 @@
       <div class="col">
         <button type="submit"
           class="button button-block button-outline button-balanced"
-          ng-click="signupForm.createUser(signupForm.newUser)"
-          toc-spinner-button
-          loading-promise="signupForm.signingUp">
+          toc-spinner-button loading-promise="signupForm.signingUp">
           <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
           Create account
         </button>
