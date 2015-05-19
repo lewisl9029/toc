@@ -21,16 +21,17 @@
         Stay signed in?
       </ion-toggle>
     </div>
-  </div>
-  <div class="toc-flex-footer">
     <div class="row">
       <div class="col">
-        <button class="button button-block button-outline button-energized"
+        <button class="button button-block button-outline button-royal"
           ng-click="signinForm.userListModal.show()">
           Not you?
         </button>
       </div>
     </div>
+  </div>
+
+  <div class="toc-flex-footer">
     <div class="row">
       <div class="col">
         <button class="button button-block button-outline button-calm">
@@ -40,7 +41,8 @@
     </div>
     <div class="row">
       <div class="col">
-        <button class="button button-block button-outline button-calm">
+        <button ui-sref="app.signup"
+          class="button button-block button-outline button-calm">
           Create account
         </button>
       </div>

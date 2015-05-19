@@ -15,12 +15,15 @@
         </div>
         <div class="row">
           <div class="col">
-            <button class="button button-block button-outline button-calm">
+            <button ui-sref="app.signup"
+              class="button button-block button-outline button-calm">
               Create account
             </button>
           </div>
           <div class="col">
-            <button ui-sref="app.signin" class="button button-block button-outline button-calm">
+            <button ui-sref="app.signin"
+              class="button button-block button-outline button-calm"
+              ng-disabled="!welcomeView.users">
               Sign in
             </button>
           </div>
@@ -28,20 +31,4 @@
       </div>
     </div>
   </ion-content>
-
-  <!-- <ion-tabs class="tabs-bottom tabs-striped tabs-background-light
-    tabs-color-calm">
-    <ion-tab title="Existing User">
-      <ion-header-bar class="bar-positive"></ion-header-bar>
-      <ion-content has-header="true">
-        <toc-signin-form></toc-signin-form>
-      </ion-content>
-    </ion-tab>
-    <ion-tab title="New User">
-      <ion-header-bar class="bar-positive"></ion-header-bar>
-      <ion-content class="has-header">
-        <toc-signup-form></toc-signup-form>
-      </ion-content>
-    </ion-tab>
-  </ion-tabs> -->
 </ion-view>

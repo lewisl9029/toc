@@ -16,10 +16,11 @@ export default function tocSigninForm() {
       this.model.userList = R.pipe(
         R.values,
         R.sortBy((user) => user.latestSession ? user.latestSession * -1 : 0)
-      )(this.model.users);
+      )(this.model.users) || [];
 
       //TODO: store last signin time and use for default selected user
-      this.model.selectedUser = this.model.userList[0].userInfo.id;
+      this.model.selectedUser = this.model.userList[0] ?
+        this.model.userList[0].userInfo.id : undefined;
       this.model.password = '';
 
       this.signIn = function() {
