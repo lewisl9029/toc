@@ -49,8 +49,11 @@
       <div class="col">
         <button type="submit"
           class="button button-block button-outline button-balanced"
-          ng-click="signinForm.signIn()" toc-spinner-button
-          loading-promise="signinForm.signingIn">
+          ng-click="signinForm.signIn({
+            id: signinForm.model.selectedUser,
+            password: signinForm.model.password
+          })"
+          toc-spinner-button loading-promise="signinForm.signingIn">
           <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
           Sign in
         </button>

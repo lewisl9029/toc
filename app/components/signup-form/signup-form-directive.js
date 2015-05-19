@@ -5,8 +5,8 @@ export default function tocSignupForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signupForm',
-    controller: function SignupFormController($q, $state, identity,
-      notification) {
+    controller: function SignupFormController($q, $state, state, identity,
+      network, notification) {
       this.newUser = {
         displayName: '',
         email: '',
@@ -19,7 +19,35 @@ export default function tocSignupForm() {
           userInfo.displayName = 'Anonymous';
         }
 
-        this.signingUp = identity.create(userInfo)
+        this.signingUp = network.initialize()
+          .then((sessionInfo) => {
+            return identity.create(sessionInfo, userInfo)
+              .then((newUserInfo) => {
+                state.save(
+                  state.persistent.cursors.identity,
+                  [newUserInfo.id, 'userInfo'],
+                  newUserInfo
+                );
+
+                state.save(
+                  state.persistent.cursors.identity,
+                  [newUserInfo.id, 'latestSession'],
+                  Date.now()
+                );
+
+                return state.synchronized.initialize(userInfo.id)
+                  .then(() => state.save(
+                    state.synchronized.cursors.identity,
+                    ['userInfo'],
+                    newUserInfo
+                  ));
+              })
+              .then(() => state.save(
+                state.synchronized.cursors.network,
+                ['sessions', sessionInfo.id, 'sessionInfo'],
+                sessionInfo
+              ));
+          })
           .then(() => $state.go('app.home'))
           .catch((error) => notification.error(error, 'User Creation Error'));
 
