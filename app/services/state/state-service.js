@@ -1,7 +1,9 @@
-export default function state($rootScope, $q, storage, R, Baobab) {
+export default function state($rootScope, $q, $window, storage, R, Baobab) {
   let getStatePath = R.split(storage.KEY_SEPARATOR);
 
   let stateService = {};
+
+  $window.state = stateService;
 
   // local application state persisted in-memory only
   stateService.transient = {};
@@ -50,11 +52,29 @@ export default function state($rootScope, $q, storage, R, Baobab) {
 
           cursor.set(relativePath, object);
           return object;
-        });
+        })
+        .catch((error) => notification.error(error, 'State Save Error'));
+    };
+
+  let removePersistent =
+    function removePersistent(cursor, relativePath, store) {
+      let storageKey = storage.getStorageKey(
+        R.concat(cursor.path, relativePath)
+      );
+
+      return store.removeObject(storageKey)
+        .then((key) => {
+          cursor.unset(relativePath);
+          return key;
+        })
+        .catch((error) => notification.error(error, 'State Delete Error'));
     };
 
   stateService.persistent.save = savePersistent;
   stateService.synchronized.save = savePersistent;
+
+  stateService.persistent.remove = removePersistent;
+  stateService.synchronized.remove = removePersistent;
 
   let handleChangeSynchronized = function handleChangeSynchronized(event) {
     if (event.oldValue === event.newValue) {
@@ -114,12 +134,13 @@ export default function state($rootScope, $q, storage, R, Baobab) {
     return state.save(cursor, relativePath, object, state.store);
   };
 
-  let initialize = function initialize() {
-    initializePersistent();
+  let remove = function remove(cursor, relativePath) {
+    let state = TREE_TO_STATE.get(cursor.tree);
+    return state.remove(cursor, relativePath, state.store);
   };
 
-  let remove = function removeState(path) {
-
+  let initialize = function initialize() {
+    return initializePersistent();
   };
 
   let reset = function resetState() {
@@ -127,6 +148,7 @@ export default function state($rootScope, $q, storage, R, Baobab) {
   };
 
   stateService.save = save;
+  stateService.remove = remove;
   stateService.initialize = initialize;
 
   return stateService;

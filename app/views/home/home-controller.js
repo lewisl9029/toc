@@ -1,11 +1,17 @@
 export default function HomeController(state, identity, network) {
   let currentUserCursor = state.synchronized.cursors.identity;
 
-  state.save(
-    state.synchronized.cursors.network,
-    ['activeChannelId'],
-    'home'
+  let activeChannelId = state.synchronized.cursors.network.get(
+    ['activeChannelId']
   );
+
+  if (activeChannelId !== 'home') {
+    state.save(
+      state.synchronized.cursors.network,
+      ['activeChannelId'],
+      'home'
+    );
+  }
 
   this.currentUser = currentUserCursor.get();
 

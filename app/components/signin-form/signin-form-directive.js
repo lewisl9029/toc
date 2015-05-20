@@ -25,8 +25,12 @@ export default function tocSigninForm() {
       this.model.staySignedIn = false;
 
       this.signIn = function(userCredentials) {
-        this.signingIn = identity.authenticate(userCredentials)
-          .then(() => {
+        let options = {
+          staySignedIn: this.model.staySignedIn
+        };
+
+        this.signingIn = identity.authenticate(userCredentials, options)
+          .then((userCredentials) => {
             state.save(
               state.persistent.cursors.identity,
               [userCredentials.id, 'latestSession'],

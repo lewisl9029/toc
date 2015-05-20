@@ -147,6 +147,12 @@ export default function cryptography($q, forge) {
 
   let initialize = function initializeCryptography(userCredentials) {
     cachedCredentials = deriveCredentials(userCredentials);
+    return cachedCredentials;
+  };
+
+  let restore = function restoreCryptography(savedCredentials) {
+    cachedCredentials = savedCredentials;
+    return savedCredentials;
   };
 
   let destroy = function destroyCryptography() {
@@ -163,6 +169,7 @@ export default function cryptography($q, forge) {
     decrypt,
     deriveCredentials,
     initialize,
+    restore,
     destroy
   };
 }

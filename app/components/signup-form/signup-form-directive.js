@@ -23,7 +23,11 @@ export default function tocSignupForm() {
 
         this.signingUp = network.initialize()
           .then((sessionInfo) => {
-            return identity.create(sessionInfo, userInfo)
+            let options = {
+              staySignedIn: this.staySignedIn
+            };
+
+            return identity.create(sessionInfo, userInfo, options)
               .then((newUserInfo) => {
                 state.save(
                   state.persistent.cursors.identity,

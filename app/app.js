@@ -20,8 +20,8 @@ export default angular.module(appName, [
     views.name,
     components.name
   ])
-  .run(run)
   .config(config)
+  .run(run)
   .controller(controller.name, controller);
 
 export function initialize() {
