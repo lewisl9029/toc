@@ -1,4 +1,4 @@
-export default function contacts($q, state, network) {
+export default function contacts($q, R, state, network) {
   let invite = function inviteContact(contactId) {
     let userInfo = state.synchronized.cursors.identity.get('userInfo');
     let contactChannel = network.createContactChannel(userInfo.id, contactId);
@@ -45,8 +45,17 @@ export default function contacts($q, state, network) {
       .then(() => network.initializeChannel(contactChannel));
   };
 
-  let initialize = function initilizeContacts() {
+  let initialize = function initializeContacts() {
+    let contactsCursor = state.synchronized.cursors.contacts;
 
+    R.pipe(
+      R.keys,
+      R.forEach((contactId) =>
+        contactsCursor.set([contactId, 'statusId'], 0)
+      )
+    )(contactsCursor.get());
+
+    return $q.when();
   };
 
   return {

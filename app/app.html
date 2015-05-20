@@ -1,12 +1,17 @@
-<ion-side-menus enable-menu-with-back-views="true">
+<ion-side-menus enable-menu-with-back-views="true" ng-controller="AppController as appView">
   <ion-side-menu-content>
-    <!-- workaround for issue https://github.com/driftyco/ionic/issues/3064 -->
-    <ion-nav-bar class="bar-positive" align-title="center">
+    <ion-nav-bar class="bar-positive">
       <toc-header></toc-header>
     </ion-nav-bar>
-    <ion-nav-view name="content"></ion-nav-view>
+    <ion-nav-view></ion-nav-view>
   </ion-side-menu-content>
-  <ion-side-menu side="left" expose-aside-when="large">
-    <ion-nav-view name="menu"></ion-nav-view>
+  <ion-side-menu side="left" expose-aside-when="appView.isContactsMenuEnabled() ? 'large' : false"
+    is-enabled="appView.isContactsMenuEnabled()">
+    <ion-header-bar class="bar-positive">
+      <h1 class="title">Contacts</h1>
+    </ion-header-bar>
+    <ion-content>
+      <toc-channel-list></toc-channel-list>
+    </ion-content>
   </ion-side-menu>
 </ion-side-menus>

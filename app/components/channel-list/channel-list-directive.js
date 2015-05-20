@@ -47,20 +47,40 @@ export default function tocChannelList() {
       };
 
       this.goToChannel = function goToChannel(channelId) {
-        return state.save(
-          networkCursor,
-          ['activeChannelId'],
-          channelId
-        ).then(() => $state.go('app.channel', {channelId: channelId}));
+        let activeChannelId = state.synchronized.cursors.network.get(
+          ['activeChannelId']
+        );
+
+        if (activeChannelId !== channelId) {
+          state.save(
+            state.synchronized.cursors.network,
+            ['activeChannelId'],
+            channelId
+          );
+        }
+
+        return $state.go('app.channel', {channelId: channelId});
       };
 
       this.goToHome = function goToHome() {
-        return state.save(
-          networkCursor,
-          ['activeChannelId'],
-          'home'
-        ).then(() => $state.go('app.home'));
+        let activeChannelId = state.synchronized.cursors.network.get(
+          ['activeChannelId']
+        );
+
+        if (activeChannelId !== 'home') {
+          state.save(
+            state.synchronized.cursors.network,
+            ['activeChannelId'],
+            'home'
+          );
+        }
+
+        return $state.go('app.home');
       };
+
+      identityCursor.on('update', () => {
+        this.userInfo = identityCursor.get('userInfo');
+      });
 
       channelsCursor.on('update', () => {
         this.channels = channelsCursor.get();

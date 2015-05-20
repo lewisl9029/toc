@@ -1,7 +1,12 @@
 <ion-nav-buttons side="left">
-  <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+  <button class="button button-icon button-clear ion-navicon"
+    menu-toggle="left" ng-if="header.isContactsMenuEnabled()">
   </button>
 </ion-nav-buttons>
+<ion-nav-back-button class="button-clear"
+  ng-hide="header.isContactsMenuEnabled()">
+  <i class="icon ion-ios-arrow-back"></i> Back
+</ion-nav-back-button>
 
 <ion-nav-buttons side="right">
   <!-- TODO: implement proper logout functionality-->

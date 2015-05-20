@@ -1,42 +1,61 @@
-<form name="toc-signup-form">
-  <div class="card list">
-    <div class="item item-divider item-calm">
-      Welcome {{signupForm.newUser.displayName || 'New User'}}!
+<form name="toc-signup-form" class="toc-flex-container"
+  ng-submit="signupForm.createUser(signupForm.newUser)">
+  <div class="toc-flex-content">
+    <div class="list">
+      <div class="item item-divider item-calm">
+        Welcome{{signupForm.newUser.displayName ?
+          ' ' + signupForm.newUser.displayName : ''}}!
+      </div>
+      <label class="item item-avatar">
+        <!-- TODO: create directive for libravatar icon -->
+        <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="New User 1" />
+        <h2>{{signupForm.newUser.displayName || 'Anonymous'}}</h2>
+        <p>Your contact card.</p>
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Display Name</span>
+        <input type="text" placeholder="A friendly name to know you by."
+          ng-model="signupForm.newUser.displayName" toc-auto-focus>
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Contact Email</span>
+        <input type="text" placeholder="Another way to reach you."
+          ng-model="signupForm.newUser.email">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Password</span>
+        <input type="password" placeholder="The only key to your data."
+          ng-model="signupForm.newUser.password">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Password Confirmation</span>
+        <input type="password" placeholder="Have you typed it correctly?"
+          ng-model="signupForm.newUser.passwordConfirmation">
+      </label>
+      <ion-toggle ng-model="signupForm.staySignedIn"
+        toggle-class="toggle-assertive">
+        Stay signed in?
+      </ion-toggle>
     </div>
-    <label class="item item-avatar">
-      <!-- TODO: create directive for libravatar icon -->
-      <img src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="New User 1" />
-      <h2>{{signupForm.newUser.displayName || 'New User'}}</h2>
-      <p>ID</p>
-    </label>
-    <label class="item item-input item-floating-label">
-      <span class="input-label">Display Name</span>
-      <input type="text" placeholder="Display Name"
-        ng-model="signupForm.newUser.displayName" toc-auto-focus>
-    </label>
-    <label class="item item-input item-floating-label">
-      <span class="input-label">Email</span>
-      <input type="text" placeholder="Email"
-        ng-model="signupForm.newUser.email">
-    </label>
-    <label class="item item-input item-floating-label">
-      <span class="input-label">Password</span>
-      <input type="password" placeholder="Password"
-        ng-model="signupForm.newUser.password">
-    </label>
-    <label class="item item-input item-floating-label">
-      <span class="input-label">Confirm Password</span>
-      <input type="password" placeholder="Confirm Password"
-        ng-model="signupForm.newUser.passwordConfirmation">
-    </label>
-    <div class="item item-divider button-bar">
-      <button type="submit" class="button button-balanced"
-        ng-click="signupForm.createUser(signupForm.newUser)"
-        toc-spinner-button
-        loading-promise="signupForm.signingUp">
-        <i class="icon ion-log-in"></i>
-        <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
-      </button>
+  </div>
+
+  <div class="toc-flex-footer">
+    <div class="row">
+      <div class="col">
+        <button type="button" ui-sref="app.signin"
+          class="button button-block button-outline button-calm"
+          ng-disabled="!signupForm.users">
+          Sign in
+        </button>
+      </div>
+      <div class="col">
+        <button type="submit"
+          class="button button-block button-outline button-balanced"
+          toc-spinner-button loading-promise="signupForm.signingUp">
+          <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
+          Create account
+        </button>
+      </div>
     </div>
   </div>
 </form>

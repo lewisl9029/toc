@@ -1,70 +1,46 @@
-export default function identity($q, state, R, network, cryptography) {
-  let create = function createIdentity(userInfo) {
+export default function identity($q, state, R, cryptography) {
+  let create = function createIdentity(sessionInfo, userInfo, options) {
     let userCredentials = {
-      id: undefined,
+      id: sessionInfo.id,
       password: userInfo.password
     };
 
-    let persistentUserInfo = {
-      id: undefined,
-      displayName: userInfo.displayName,
-      email: userInfo.email,
-      challenge: undefined
-    };
-
     let newUserInfo = {
-      id: undefined,
+      id: sessionInfo.id,
       displayName: userInfo.displayName,
       email: userInfo.email
     };
 
-    let sessionInfo;
+    let savedCredentials;
 
-    return network.initialize()
-      .then((newSessionInfo) => {
-        sessionInfo = newSessionInfo;
-        userCredentials.id = sessionInfo.id;
-        persistentUserInfo.id = sessionInfo.id;
-        newUserInfo.id = sessionInfo.id;
-        try {
-          cryptography.initialize(userCredentials);
-          persistentUserInfo.challenge =
-            cryptography.encrypt(userCredentials.id);
-          if (cryptography.decrypt(persistentUserInfo.challenge) !==
-            userCredentials.id) {
-              throw new Error('identity: failed to validate challenge');
-            };
-        } catch(error) {
-          cryptography.destroy();
-          return $q.reject(error);
-        }
-      })
-      .then(() => state.save(
+    try {
+      savedCredentials = cryptography.initialize(userCredentials);
+      newUserInfo.challenge = cryptography.encrypt(userCredentials.id);
+      cryptography.decrypt(newUserInfo.challenge);
+    } catch(error) {
+      cryptography.destroy();
+      return $q.reject(error);
+    }
+
+    if (options.staySignedIn) {
+      state.save(
         state.persistent.cursors.identity,
-        [persistentUserInfo.id, 'userInfo'],
-        persistentUserInfo
-      ))
-      //TODO: need to initialize with primary userId to connect to module
-      // possibly add another remotestorage module that stores users's ids
-      .then(() => state.synchronized.initialize(persistentUserInfo.id))
-      .then(() => state.save(
-        state.synchronized.cursors.identity,
-        ['userInfo'],
-        newUserInfo
-      ))
-      .then(() => state.save(
-        state.synchronized.cursors.network,
-        ['sessions', sessionInfo.id, 'sessionInfo'],
-        sessionInfo
-      ));
+        [userCredentials.id, 'savedCredentials'],
+        savedCredentials
+      );
+    }
+
+    return $q.when(newUserInfo);
   };
 
-  let authenticate = function authenticateIdentity(userCredentials) {
+  let authenticate = function authenticateIdentity(userCredentials, options) {
     let challenge = state.persistent.cursors.identity
       .get([userCredentials.id, 'userInfo']).challenge;
 
+    let savedCredentials;
+
     try {
-      cryptography.initialize(userCredentials);
+      savedCredentials = cryptography.initialize(userCredentials);
       cryptography.decrypt(challenge);
     }
     catch(error) {
@@ -72,23 +48,28 @@ export default function identity($q, state, R, network, cryptography) {
       return $q.reject('identity: wrong password');
     }
 
-    return state.synchronized.initialize(userCredentials.id)
-      .then(() => {
-        let contactsCursor = state.synchronized.cursors.contacts;
-
-        R.pipe(
-          R.keys,
-          R.forEach((contactId) =>
-            contactsCursor.set([contactId, 'statusId'], 0)
-          )
-        )(contactsCursor.get());
-      })
-      .then(() => state.synchronized.cursors.network.get(
-        ['sessions', userCredentials.id, 'sessionInfo']
-      ))
-      .then((sessionInfo) =>
-        network.initialize(sessionInfo.keypair)
+    if (options.staySignedIn) {
+      state.save(
+        state.persistent.cursors.identity,
+        [userCredentials.id, 'savedCredentials'],
+        savedCredentials
       );
+    }
+
+    return $q.when(userCredentials);
+  };
+
+  let restore = function restoreIdentity(rememberedUser) {
+    try {
+      cryptography.restore(rememberedUser.savedCredentials);
+      cryptography.decrypt(rememberedUser.userInfo.challenge);
+    }
+    catch(error) {
+      cryptography.destroy();
+      return $q.reject('identity: wrong saved credentials');
+    }
+
+    return $q.when(rememberedUser.userInfo);
   };
 
   let initialize = function initializeIdentity() {
@@ -97,6 +78,7 @@ export default function identity($q, state, R, network, cryptography) {
   return {
     create,
     authenticate,
+    restore,
     initialize
   };
 }

@@ -47,6 +47,15 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
         .then(cryptography.decrypt);
     };
 
+    let removeObject = function removeObject(key) {
+      let encryptedKey = cryptography.escapeBase64(
+        JSON.stringify(cryptography.encryptDeterministic(key))
+      );
+
+      return $q.when(privateClient.remove(encryptedKey))
+        .then(() => key);
+    };
+
     let getAllObjects = function getAllObjects() {
       //all encrypted paths are under root
       let key = '';
@@ -89,13 +98,14 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
       exports: {
         storeObject,
         getObject,
+        removeObject,
         getAllObjects,
         onChange
       }
     };
   };
 
-  let createLocal = function createLocal(moduleName = 'global') {
+  let createLocal = function createLocal(moduleName = 'local') {
     const KEY_PREFIX = STORAGE_MODULE_PREFIX + moduleName + KEY_SEPARATOR;
 
     let getObject = function getObjectLocal(key) {
@@ -107,7 +117,12 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
       return JSON.parse($window.localStorage.getItem(KEY_PREFIX + key));
     };
 
-    let getAllObjects = function getAllObjects() {
+    let removeObject = function removeObjectLocal(key) {
+      $window.localStorage.removeItem(KEY_PREFIX + key);
+      return $q.when(key);
+    };
+
+    let getAllObjects = function getAllObjectsLocal() {
       let objects = R.pipe(
         R.keys,
         R.filter(key => key.startsWith(KEY_PREFIX)),
@@ -133,6 +148,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
     return {
       getObject,
       getObjectSync,
+      removeObject,
       getAllObjects,
       storeObject,
       storeObjectSync
