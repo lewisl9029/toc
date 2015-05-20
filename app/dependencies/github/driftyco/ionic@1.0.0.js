@@ -1,0 +1,1 @@
+module.exports = require("github:driftyco/ionic@1.0.0/release/js/ionic-angular");
