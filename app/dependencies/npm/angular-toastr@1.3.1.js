@@ -1,0 +1,1 @@
+module.exports = require("npm:angular-toastr@1.3.1/dist/angular-toastr.tpls");
