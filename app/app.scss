@@ -15,6 +15,8 @@
 
 $card-border-radius: 0 !default;
 $button-border-radius: 0 !default;
+$popup-button-border-radius: 0 !default;
+$popup-background-color: #fff !default;
 
 //FIXME: cant select text in side menu
 // .disable-user-behavior {
@@ -44,7 +46,7 @@ $button-border-radius: 0 !default;
   transition: opacity 0.75s ease-in;
 }
 
-.scroll,.scroll-view {
+.scroll {
   height: 100%;
 }
 
@@ -56,9 +58,12 @@ $button-border-radius: 0 !default;
 
 .toc-flex-content {
   @include flex(1);
+  z-index: 1;
 }
 
 .toc-flex-footer {
+  background-color: $light;
+  z-index: 2;
 }
 
 .toc-hidden {

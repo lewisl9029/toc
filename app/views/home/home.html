@@ -2,32 +2,36 @@
   <ion-nav-bar class="bar-positive">
     <toc-header></toc-header>
   </ion-nav-bar>
-
-  <div class="bar bar-subheader item-input-inset">
-    <div class="row">
-      <div class="col-10 balanced-bg">
+  <ion-content has-header="true">
+    <div class="toc-flex-container">
+      <div class="toc-flex-content">
+        <div class="list">
+          <!-- <div class="row balanced-bg"></div>
+          <div class="item item-avatar">
+            <img src="http://cdn.libravatar.org/avatar/{{homeView.currentUser.userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{homeView.currentUser.userInfo.email}}" />
+            <h2>{{homeView.currentUser.userInfo.displayName}}</h2>
+            <p>{{homeView.currentUser.userInfo.id}}</p>
+          </div> -->
+          <label class="item item-input item-stacked-label">
+            <span class="input-label">User ID</span>
+            <input type="text" placeholder="ID"
+              value="{{homeView.currentUser.userInfo.id}}" readonly>
+          </label>
+          <div class="item item-image toc-qr-image-container">
+            <toc-qr-image data="{{homeView.currentUser.userInfo.id}}">
+            </toc-qr-image>
+          </div>
+        </div>
       </div>
-      <label class="col-60 item-input-wrapper">
-        <i class="icon ion-email placeholder-icon"></i>
-        <input type="text" placeholder="Email"
-          value="{{homeView.currentUser.userInfo.email}}" readonly>
-      </label>
-      <label class="col-30 item-input-wrapper">
-        <i class="icon ion-android-person placeholder-icon"></i>
-        <input type="text" placeholder="ID"
-          value="{{homeView.currentUser.userInfo.id}}" readonly>
-      </label>
-    </div>
-  </div>
-
-  <ion-content class="has-subheader">
-    <div class="card">
-      <div class="item item-divider item-calm">
-        QR Code ID
-      </div>
-      <div class="item item-image toc-qr-image-container">
-        <toc-qr-image data="{{homeView.currentUser.userInfo.id}}">
-        </toc-qr-image>
+      <div class="toc-flex-footer">
+        <div class="row">
+          <div class="col">
+            <button class="button button-block button-outline button-assertive"
+              ng-click="homeView.showSignoutConfirm()">
+              Sign out
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </ion-content>
