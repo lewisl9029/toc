@@ -45,9 +45,10 @@
       </button>
     </div>
   </form>
+  <!-- FIXME: use ui-sref here for nav-clear to work-->
   <div ng-repeat="(id, channel) in channelList.channels track by id"
     ng-click="channelList.channelId !== id ?
-      channelList.goToChannel(id) : undefined" menu-close>
+      channelList.goToChannel(id) : undefined" nav-clear menu-close>
     <div class="row" ng-class="{
       'dark-bg':
         channelList.contacts[channel.channelInfo.contactIds[0]].statusId === 0,

@@ -68,7 +68,7 @@
     },
     "main": "angular-ui-router",
     "shim": {
-      "release/angular-ui-router": [
+      "angular-ui-router": [
         "angular"
       ]
     },
@@ -81,7 +81,7 @@
     "lib": "release"
   },
   "shim": {
-    "release/angular-ui-router": [
+    "angular-ui-router": [
       "angular"
     ]
   },

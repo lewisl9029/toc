@@ -7,7 +7,8 @@ export default function tocSigninForm() {
     template: template,
     controllerAs: 'signinForm',
     controller: function SigninFormController($q, $state, $scope, state,
-      identity, network, contacts, notification, signinForm, R, $ionicModal) {
+      identity, network, contacts, notification, signinForm, R, $ionicModal,
+      $ionicHistory) {
       //TODO: refactor into state service .transient
       this.model = signinForm;
 
@@ -24,6 +25,7 @@ export default function tocSigninForm() {
       this.model.password = '';
       this.model.staySignedIn = false;
 
+      //TODO: add check for already signed in users (i.e. hitting back button)?
       this.signIn = function(userCredentials) {
         let options = {
           staySignedIn: this.model.staySignedIn
@@ -50,6 +52,11 @@ export default function tocSigninForm() {
             network.initialize(sessionInfo.keypair)
               .catch((error) =>
                 notification.error(error, 'Network Init Error'));
+
+            $ionicHistory.nextViewOptions({
+              historyRoot: true,
+              disableBack: true
+            });
 
             return $state.go('app.home');
           })

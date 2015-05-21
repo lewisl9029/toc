@@ -8,16 +8,15 @@
       <div class="item item-divider item-calm item-clear">
         Welcome back {{signinForm.model.users[signinForm.model.selectedUser].userInfo.displayName}}!
       </div>
-      <!-- TODO: make user list scrollable -->
       <label class="item item-avatar">
         <img src="http://cdn.libravatar.org/avatar/{{signinForm.model.users[signinForm.model.selectedUser].userInfo.id | limitTo:32}}?d=identicon"
           alt="Avatar for {{signinForm.model.users[signinForm.model.selectedUser].userInfo.email}}" />
         <h2>{{signinForm.model.users[signinForm.model.selectedUser].userInfo.displayName}}</h2>
         <p>{{signinForm.model.users[signinForm.model.selectedUser].userInfo.id}}</p>
       </label>
-      <label class="item item-input item-floating-label">
+      <label class="item item-input item-stacked-label">
         <span class="input-label">Password</span>
-        <input type="password" placeholder="Password"
+        <input type="password" placeholder="To unlock your data."
           ng-model="signinForm.model.password" toc-auto-focus>
       </label>
       <ion-toggle ng-model="signinForm.model.staySignedIn"

@@ -3,6 +3,8 @@ import template from 'app.html!text';
 export default function configApp($stateProvider, $urlRouterProvider,
   $ionicConfigProvider) {
   $ionicConfigProvider.tabs.position('bottom');
+  $ionicConfigProvider.backButton.previousTitleText(false);
+  $ionicConfigProvider.views.transition('android');
 
   $stateProvider.state('app', {
     url: '/app',
