@@ -1,5 +1,6 @@
 /* */ 
-"format cjs";
+"format global";
+"deps angular";
 /**
  * State-based routing for AngularJS
  * @version v0.2.15

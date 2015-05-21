@@ -6,7 +6,7 @@ export default function tocChannelList() {
     template: template,
     controllerAs: 'channelList',
     controller: function ChannelListController($q, $state, state, contacts,
-      notification) {
+      notification, $ionicHistory) {
       //TODO: optimize by pulling cursors into service
       this.channelId = $state.params.channelId;
 
@@ -59,6 +59,11 @@ export default function tocChannelList() {
           );
         }
 
+        $ionicHistory.nextViewOptions({
+          disableBack: true,
+          disableAnimate: true
+        });
+
         return $state.go('app.channel', {channelId: channelId});
       };
 
@@ -74,6 +79,11 @@ export default function tocChannelList() {
             'home'
           );
         }
+
+        $ionicHistory.nextViewOptions({
+          disableBack: true,
+          disableAnimate: true
+        });
 
         return $state.go('app.home');
       };

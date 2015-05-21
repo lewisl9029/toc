@@ -106,7 +106,7 @@
       },
       "github:angular-ui/ui-router@0.2.15": {
         "shim": {
-          "release/angular-ui-router": [
+          "angular-ui-router": [
             "angular"
           ]
         },

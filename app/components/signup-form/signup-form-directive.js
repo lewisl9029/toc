@@ -6,7 +6,7 @@ export default function tocSignupForm() {
     template: template,
     controllerAs: 'signupForm',
     controller: function SignupFormController($q, $state, state, identity,
-      network, notification) {
+      network, notification, $ionicHistory) {
       this.newUser = {
         displayName: '',
         email: '',
@@ -54,7 +54,14 @@ export default function tocSignupForm() {
                 sessionInfo
               ));
           })
-          .then(() => $state.go('app.home'))
+          .then(() => {
+            $ionicHistory.nextViewOptions({
+              historyRoot: true,
+              disableBack: true
+            });
+
+            return $state.go('app.home');
+          })
           .catch((error) => notification.error(error, 'User Creation Error'));
 
         return this.signingUp;

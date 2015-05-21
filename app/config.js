@@ -750,6 +750,9 @@ System.config({
     ],
     "github:angular-ui/ui-router@0.2.15": [
       "github:angular-ui/ui-router@0.2.15/angular-ui-router"
+    ],
+    "github:angular-ui/ui-router@0.2.15/angular-ui-router": [
+      "github:angular/bower-angular@1.3.15"
     ]
   }
 });
