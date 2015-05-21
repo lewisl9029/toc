@@ -5,7 +5,7 @@ export default function tocSignupForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signupForm',
-    controller: function SignupFormController($q, $state, identity,
+    controller: function SignupFormController($q, $state, state, identity,
       network, notification, storage, $ionicHistory) {
       this.newUser = {
         displayName: '',
