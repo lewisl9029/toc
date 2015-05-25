@@ -1,0 +1,38 @@
+<div class="toc-flex-container">
+  <ion-scroll class="toc-flex-content">
+    <div class="list">
+      <div class="item item-divider item-calm item-clear">
+        Select a storage service
+      </div>
+      <ion-radio class="item item-avatar"
+        ng-repeat="service in cloudConnectForm.serviceList track by service.id"
+        ng-model="cloudConnectForm.selectedService" ng-value="'{{service.id}}'"
+        icon="ion-checkmark">
+        <img ng-src="assets/images/{{service.img}}" alt="Avatar for {{service.name}}" />
+        <h2>{{service.name}}</h2>
+        <p>{{service.description}}</p>
+      </ion-radio>
+      <!-- <label class="item item-input item-stacked-label">
+        <span class="input-label">Email</span>
+        <input type="password" placeholder="Your remoteStorage.io email."
+          ng-model="cloudConnectForm.email" toc-auto-focus>
+      </label> -->
+    </div>
+  </ion-scroll>
+  <div class="toc-flex-footer">
+    <div class="row">
+      <div class="col">
+        <button class="button button-block button-outline button-calm"
+          ng-click="cloudConnectForm.goBack()">
+          Back
+        </button>
+      </div>
+      <div class="col">
+        <button class="button button-block button-outline button-balanced"
+          ng-click="cloudConnectForm.services[cloudConnectForm.selectedService].connect()">
+          Connect
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<div class="toc-flex-container">
+  <div class="toc-flex-content">
+    <ion-scroll>
+      <div class="list">
+        <ion-radio class="item item-avatar"
+          ng-repeat="user in model.userList track by user.userInfo.id"
+          ng-model="model.selectedUser" ng-value="'{{user.userInfo.id}}'"
+          ng-click="userListModal.hide()"
+          icon="ion-checkmark">
+          <img src="http://cdn.libravatar.org/avatar/{{user.userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{user.userInfo.email}}" />
+          <h2>{{user.userInfo.displayName}}</h2>
+          <p>{{user.userInfo.id}}</p>
+        </ion-radio>
+      </div>
+    </ion-scroll>
+  </div>
+  <div class="toc-flex-footer">
+    <div class="row">
+      <div class="col">
+        <button ui-sref="app.signup" class="button button-block button-outline button-calm">
+          Create an account
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button class="button button-block button-outline button-assertive"
+          ng-click="userListModal.hide()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

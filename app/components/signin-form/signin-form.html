@@ -9,7 +9,7 @@
         Welcome back {{signinForm.model.users[signinForm.model.selectedUser].userInfo.displayName}}!
       </div>
       <label class="item item-avatar">
-        <img src="http://cdn.libravatar.org/avatar/{{signinForm.model.users[signinForm.model.selectedUser].userInfo.id | limitTo:32}}?d=identicon"
+        <img ng-src="http://cdn.libravatar.org/avatar/{{signinForm.model.users[signinForm.model.selectedUser].userInfo.id | limitTo:32}}?d=identicon"
           alt="Avatar for {{signinForm.model.users[signinForm.model.selectedUser].userInfo.email}}" />
         <h2>{{signinForm.model.users[signinForm.model.selectedUser].userInfo.displayName}}</h2>
         <p>{{signinForm.model.users[signinForm.model.selectedUser].userInfo.id}}</p>

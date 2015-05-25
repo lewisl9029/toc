@@ -5,6 +5,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
   const STORAGE_MODULE_PREFIX = 'toc-state-';
   const KEY_SEPARATOR = '.';
 
+
   let getStorageKey = R.join(KEY_SEPARATOR);
 
   let local = {};
