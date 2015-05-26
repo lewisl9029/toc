@@ -5,7 +5,7 @@ export default function tocAutoFocus($timeout, notification) {
     restrict: 'A',
     link: function linkAutoFocus(scope, element) {
       try {
-        $timeout(() => element[0].focus(), 100);
+        $timeout(() => element[0].focus(), 500);
       } catch (error) {
         notification.error(error, 'AutoFocus Error');
       }

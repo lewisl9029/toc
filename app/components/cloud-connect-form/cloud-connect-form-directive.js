@@ -19,6 +19,7 @@ export default function tocCloudConnectForm() {
 
       $scope.submitRemoteStorageEmail = (email) => {
         if (!email) {
+          //TODO: actually do validation here
           return notification.error('Please enter a valid email.', 'Validation Error');
         }
 
@@ -35,7 +36,8 @@ export default function tocCloudConnectForm() {
           connect: () => {
             let remoteStoragePopup = $ionicPopup.show({
               template: `
-                <form ng-submit="submitRemoteStorageEmail(remoteStorage.email)">
+                <form ng-submit="submitRemoteStorageEmail(remoteStorage.email)"
+                  novalidate>
                   <input type="email" placeholder="Your remoteStorage email."
                     ng-model="remoteStorage.email" toc-auto-focus>
                 </form>`,
@@ -44,7 +46,7 @@ export default function tocCloudConnectForm() {
               buttons: [
                 {
                   text: 'Cancel',
-                  type: 'button-outline button-assertive'
+                  type: 'button-outline button-calm'
                 },
                 {
                   text: 'Connect',
@@ -64,7 +66,7 @@ export default function tocCloudConnectForm() {
         'dropbox': {
           id: 'dropbox',
           name: 'Dropbox',
-          description: 'Use Dropbox to store your data.',
+          description: 'Use Dropbox to store your data. (Coming soon)',
           img: 'dropbox.svg',
           connect: function connectDropbox() {
 
@@ -73,8 +75,8 @@ export default function tocCloudConnectForm() {
         'googledrive': {
           id: 'googledrive',
           name: 'Google Drive',
-          description: 'Use Google Drive to store your data.',
-          img: 'googledrive.svg',
+          description: 'Use Google Drive to store your data. (Coming soon)',
+          img: 'googledrive.png',
           connect: function connectGoogledrive() {
 
           }

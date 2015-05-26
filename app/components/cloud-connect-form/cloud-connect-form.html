@@ -2,13 +2,14 @@
   <ion-scroll class="toc-flex-content">
     <div class="list">
       <div class="item item-divider item-calm item-clear">
-        Select a storage service
+        Select a cloud storage service
       </div>
-      <ion-radio class="item item-avatar"
+      <ion-radio class="item item-avatar toc-square-avatar"
         ng-repeat="service in cloudConnectForm.serviceList track by service.id"
         ng-model="cloudConnectForm.selectedService" ng-value="'{{service.id}}'"
         icon="ion-checkmark">
-        <img ng-src="assets/images/{{service.img}}" alt="Avatar for {{service.name}}" />
+        <img ng-src="assets/images/{{service.img}}"
+          alt="Avatar for {{service.name}}" />
         <h2>{{service.name}}</h2>
         <p>{{service.description}}</p>
       </ion-radio>

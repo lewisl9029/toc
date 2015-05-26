@@ -50,6 +50,10 @@ $popup-background-color: #fff !default;
   height: 100%;
 }
 
+.toc-square-avatar .item-content > img:first-child {
+  border-radius: 0;
+}
+
 .toc-flex-container {
   @include display-flex;
   @include flex-direction(column);
