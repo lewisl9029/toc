@@ -11,6 +11,10 @@ export default function tocSigninForm() {
       $ionicHistory) {
       //TODO: refactor into state service .transient
       this.model = signinForm;
+      
+      this.goBack = function goBack() {
+        $ionicHistory.goBack();
+      };
 
       let localUsersCursor = state.persistent.cursors.identity;
 

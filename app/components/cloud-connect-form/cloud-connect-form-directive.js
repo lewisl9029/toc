@@ -5,12 +5,26 @@ export default function tocCloudConnectForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'cloudConnectForm',
-    controller: function CloudConnectFormController($ionicHistory) {
+    controller: function CloudConnectFormController($ionicHistory, $ionicPopup,
+      $scope, notification, storage) {
       this.goBack = function goBack() {
-        $ionicHistory.goBack(1);
+        $ionicHistory.goBack();
       };
 
       this.selectedService = 'remotestorage';
+
+      $scope.remoteStorage = {
+        email: ''
+      };
+
+      $scope.submitRemoteStorageEmail = (email) => {
+        if (!email) {
+          return notification.error('Please enter a valid email.', 'Validation Error');
+        }
+
+        storage.claimAccess('users');
+        storage.connect(email);
+      };
 
       this.services = {
         'remotestorage': {
@@ -18,8 +32,33 @@ export default function tocCloudConnectForm() {
           name: 'remoteStorage',
           description: 'Use remoteStorage to store your data.',
           img: 'remotestorage.svg',
-          connect: function connectRemotestorage() {
+          connect: () => {
+            let remoteStoragePopup = $ionicPopup.show({
+              template: `
+                <form ng-submit="submitRemoteStorageEmail(remoteStorage.email)">
+                  <input type="email" placeholder="Your remoteStorage email."
+                    ng-model="remoteStorage.email" toc-auto-focus>
+                </form>`,
+              title: 'RemoteStorage Email',
+              scope: $scope,
+              buttons: [
+                {
+                  text: 'Cancel',
+                  type: 'button-outline button-assertive'
+                },
+                {
+                  text: 'Connect',
+                  type: 'button-outline button-balanced',
+                  onTap: (event) => {
+                    if (!$scope.remoteStorage.email) {
+                      event.preventDefault();
+                    }
 
+                    $scope.submitRemoteStorageEmail($scope.remoteStorage.email);
+                  }
+                }
+              ]
+            });
           }
         },
         'dropbox': {

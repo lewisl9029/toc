@@ -3,7 +3,8 @@ export default function layout($state, R) {
     let menuDisabledStates = [
       'app.welcome',
       'app.signin',
-      'app.signup'
+      'app.signup',
+      'app.cloud'
     ];
 
     return !R.any($state.includes)(menuDisabledStates);

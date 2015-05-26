@@ -42,10 +42,9 @@
   <div class="toc-flex-footer">
     <div class="row">
       <div class="col">
-        <button type="button" ui-sref="app.signin"
-          class="button button-block button-outline button-calm"
-          ng-disabled="!signupForm.users">
-          Sign in
+        <button type="button" ng-click="signupForm.goBack()"
+          class="button button-block button-outline button-calm">
+          Back
         </button>
       </div>
       <div class="col">
