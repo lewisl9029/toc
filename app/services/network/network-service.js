@@ -386,6 +386,27 @@ export default function network($q, $window, $interval, R, state, telehash,
       });
   };
 
+  let initializeChannels = function initializeChannels() {
+    let channels = state.cloud.cursors.network.get(['channels']);
+
+    R.pipe(
+      R.values,
+      R.map(R.prop('channelInfo')),
+      R.forEach(initializeChannel)
+    )(channels);
+
+    $window.onbeforeunload = () => {
+      let contactsCursor = state.cloud.tree.select(['contacts']);
+
+      R.pipe(
+        R.keys,
+        R.forEach((contactId) => sendStatus(contactId, 0))
+      )(contactsCursor.get());
+    };
+
+    return $q.when();
+  };
+
   let initialize = function initializeNetwork(keypair) {
     let deferredSession = $q.defer();
 
@@ -420,23 +441,6 @@ export default function network($q, $window, $interval, R, state, telehash,
 
       listen({id: INVITE_CHANNEL_ID});
 
-      let channels = state.cloud.cursors.network.get(['channels']);
-
-      R.pipe(
-        R.values,
-        R.map(R.prop('channelInfo')),
-        R.forEach(initializeChannel)
-      )(channels);
-
-      $window.onbeforeunload = () => {
-        let contactsCursor = state.cloud.tree.select(['contacts']);
-
-        R.pipe(
-          R.keys,
-          R.forEach((contactId) => sendStatus(contactId, 0))
-        )(contactsCursor.get());
-      };
-
       return sessionInfo;
     });
   };
@@ -450,6 +454,7 @@ export default function network($q, $window, $interval, R, state, telehash,
     sendStatus,
     sendMessage,
     initializeChannel,
+    initializeChannels,
     initialize
   };
 }

@@ -29,7 +29,7 @@ export default function HomeController(state, identity, network, notification,
 
       return state.remove(
           state.local.cursors.identity,
-          [currentUserCursor.get(['userInfo', 'id']), 'savedCredentials']
+          ['savedCredentials']
         )
         .then(() => $q.when(window.location.reload()))
         .catch((error) => notification.error(error, 'Signout Error'));

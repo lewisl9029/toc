@@ -11,7 +11,8 @@
       <h1 class="title">Contacts</h1>
     </ion-header-bar>
     <ion-content>
-      <toc-channel-list></toc-channel-list>
+      <toc-channel-list ng-if="appView.isContactsMenuEnabled()">
+      </toc-channel-list>
     </ion-content>
   </ion-side-menu>
 </ion-side-menus>

@@ -1,16 +1,16 @@
 export default function WelcomeController(state, R, storage) {
-  let localUsersCursor = state.local.cursors.identity;
+  let localUsers = state.local.tree;
 
   // this.chooseAccount = function chooseAccount() {
-  //   storage.claimAccess(R.keys(localUsersCursor.get()[0]));
+  //   storage.claimAccess(R.keys(localUsers.get()[0]));
   //   storage.connect('tocuser1@5apps.com');
   // };
 
   this.isConnected = storage.isConnected;
 
-  this.users = localUsersCursor.get();
+  this.users = localUsers.get();
 
-  localUsersCursor.on('update', () => {
-    this.users = localUsersCursor.get();
+  localUsers.on('update', () => {
+    this.users = localUsers.get();
   });
 }

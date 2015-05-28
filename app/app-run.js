@@ -14,10 +14,11 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
 
   state.initialize()
     .then(() => {
-      let localUsers = state.local.cursors.identity.get();
+      let localUsers = state.local.tree.get();
 
       let rememberedUser = R.pipe(
         R.values,
+        R.map(R.prop('identity')),
         R.find((user) => user.savedCredentials)
       )(localUsers);
 
@@ -25,11 +26,12 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
         return $state.go('app.welcome');
       }
 
-      return identity.restore(rememberedUser)
+      return identity.initialize(rememberedUser.userInfo.id)
+        .then(() => identity.restore(rememberedUser))
         .then(() => {
           state.save(
             state.local.cursors.identity,
-            [rememberedUser.userInfo.id, 'latestSession'],
+            ['latestSession'],
             Date.now()
           );
 
@@ -44,6 +46,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
           );
 
           network.initialize(sessionInfo.keypair)
+            .then(() => network.initializeChannels())
             .catch((error) =>
               notification.error(error, 'Network Init Error'));
 
@@ -66,7 +69,10 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
 
           return $state.go('app.channel', {channelId: activeChannelId});
         })
-        .catch((error) => notification.error(error, 'Authentication Error'));
+        .catch((error) => {
+          return notification.error(error, 'Authentication Error')
+            .then(() => identity.destroy());
+        });
     });
 
 

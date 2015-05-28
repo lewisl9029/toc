@@ -21,7 +21,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
   let enableLog = remoteStorage.remoteStorage.enableLog;
 
   let claimAccess =
-    function claimAccess(moduleName, accessLevel = DEFAULT_ACCESS_LEVEL) {
+    function claimAccess(moduleName = 'cloud', accessLevel = DEFAULT_ACCESS_LEVEL) {
       remoteStorage.remoteStorage.access
         .claim(STORAGE_MODULE_PREFIX + moduleName, accessLevel);
     };
@@ -162,7 +162,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
     };
   };
 
-  let createRemote = function createRemote(moduleName) {
+  let createRemote = function createRemote(moduleName = 'cloud') {
     remoteStorage.RemoteStorage
       .defineModule(STORAGE_MODULE_PREFIX + moduleName, buildModule);
 

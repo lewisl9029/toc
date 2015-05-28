@@ -31,17 +31,19 @@ export default function tocSignupForm() {
               staySignedIn: this.staySignedIn
             };
 
-            return identity.create(sessionInfo, userInfo, options)
+            return identity.initialize(sessionInfo.id)
+              .then(() => network.initializeChannels())
+              .then(() => identity.create(sessionInfo, userInfo, options))
               .then((newUserInfo) => {
                 state.save(
                   state.local.cursors.identity,
-                  [newUserInfo.id, 'userInfo'],
+                  ['userInfo'],
                   newUserInfo
                 );
 
                 state.save(
                   state.local.cursors.identity,
-                  [newUserInfo.id, 'latestSession'],
+                  ['latestSession'],
                   Date.now()
                 );
 
@@ -66,17 +68,20 @@ export default function tocSignupForm() {
 
             return $state.go('app.home');
           })
-          .catch((error) => notification.error(error, 'User Creation Error'));
+          .catch((error) => {
+            return notification.error(error, 'User Creation Error')
+              .then(() => identity.destroy());
+          });
 
         return this.signingUp;
       };
 
-      let localUsersCursor = state.local.cursors.identity;
+      let localUsers = state.local.tree;
 
-      this.users = localUsersCursor.get();
+      this.users = localUsers.get();
 
-      localUsersCursor.on('update', () => {
-        this.users = localUsersCursor.get();
+      localUsers.on('update', () => {
+        this.users = localUsers.get();
       });
     }
   };

@@ -11,14 +11,14 @@ export default function tocSigninForm() {
       $ionicHistory) {
       //TODO: refactor into state service .memory
       this.model = signinForm;
-      
+
       this.goBack = function goBack() {
         $ionicHistory.goBack();
       };
 
-      let localUsersCursor = state.local.cursors.identity;
+      let localUsers = state.local.tree;
 
-      this.model.users = localUsersCursor.get() || {};
+      this.model.users = R.mapObj(R.prop('identity'))(localUsers.get());
       this.model.userList = R.pipe(
         R.values,
         R.sortBy((user) => user.latestSession ? user.latestSession * -1 : 0)
@@ -35,11 +35,13 @@ export default function tocSigninForm() {
           staySignedIn: this.model.staySignedIn
         };
 
-        this.signingIn = identity.authenticate(userCredentials, options)
+        this.signingIn = identity.initialize(userCredentials.id)
+          .then(() => identity.authenticate(userCredentials, options))
           .then((userCredentials) => {
+            //TODO: move this to cloud state
             state.save(
               state.local.cursors.identity,
-              [userCredentials.id, 'latestSession'],
+              ['latestSession'],
               Date.now()
             );
 
@@ -54,6 +56,7 @@ export default function tocSigninForm() {
             );
 
             network.initialize(sessionInfo.keypair)
+              .then(() => network.initializeChannels())
               .catch((error) =>
                 notification.error(error, 'Network Init Error'));
 
@@ -64,7 +67,10 @@ export default function tocSigninForm() {
 
             return $state.go('app.home');
           })
-          .catch((error) => notification.error(error, 'Authentication Error'));
+          .catch((error) => {
+            return notification.error(error, 'Authentication Error')
+              .then(() => identity.destroy());
+          });
 
         return this.signingIn;
       };
@@ -78,8 +84,8 @@ export default function tocSigninForm() {
       this.userListModal = $scope.userListModal;
 
       //FIXME: dangling listener, clean up on destroy
-      localUsersCursor.on('update', () => {
-        this.model.users = localUsersCursor.get();
+      localUsers.on('update', () => {
+        this.model.users = R.mapObj(R.prop('identity'))(localUsers.get());
         this.model.userList = R.pipe(
           R.values,
           R.sortBy((user) => user.latestSession ? user.latestSession * -1 : 0)

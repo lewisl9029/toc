@@ -6,45 +6,73 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
   $window.state = stateService;
 
   // local application state persisted in-memory only
-  stateService.memory = {};
+  stateService.memory = {
+    tree: new Baobab({})
+  };
+
+  stateService.memory.cursors = {
+    identity: stateService.memory.tree.select(['identity'])
+  };
+
+  stateService.memory.tree.on('update',
+    () => setTimeout(() => $rootScope.$apply())
+  );
 
   // local application state persisted in localStorage
   stateService.local = {
     tree: new Baobab({})
   };
 
-  stateService.local.cursors = {
-    identity: stateService.local.tree.select(['identity'])
-  };
+  stateService.local.tree.on('update',
+    () => setTimeout(() => $rootScope.$apply())
+  );
 
   // shared user application state persisted in indexedDB with remoteStorage
   stateService.cloud = {
     tree: new Baobab({})
   };
 
-  stateService.cloud.cursors = {
-    contacts: stateService.cloud.tree.select(['contacts']),
-    identity: stateService.cloud.tree.select(['identity']),
-    network: stateService.cloud.tree.select(['network'])
-  };
-
-  // shared user index state persisted in indexedDB with remoteStorage
-  stateService.cloudIndex = {
-    tree: new Baobab({})
-  };
-
-  stateService.local.tree.on('update',
-    () => setTimeout(() => $rootScope.$apply())
-  );
   stateService.cloud.tree.on('update',
     () => setTimeout(() => $rootScope.$apply())
   );
-  stateService.cloudIndex.tree.on('update',
-    () => setTimeout(() => $rootScope.$apply())
-  );
+
+  let initializeCursors = function updateCursors(userId) {
+    stateService.local.cursors = {
+      identity: stateService.local.tree.select([userId, 'identity'])
+    };
+
+    stateService.cloud.cursors = {
+      contacts: stateService.cloud.tree.select([userId, 'contacts']),
+      identity: stateService.cloud.tree.select([userId, 'identity']),
+      network: stateService.cloud.tree.select([userId, 'network'])
+    };
+  };
+
+  let destroyCursors = function destroyCursors() {
+    stateService.local.cursors = undefined;
+
+    stateService.cloud.cursors = undefined;
+  };
+
+  stateService.initializeCursors = initializeCursors;
+  stateService.destroyCursors = destroyCursors;
+
+  let saveVolatile =
+    function saveVolatile(cursor, relativePath, object) {
+      return $q.when()
+        .then(() => {
+          if (cursor.get() === undefined) {
+            cursor.tree.set(cursor.path, {});
+            cursor.tree.commit();
+          }
+
+          cursor.set(relativePath, object);
+          return object;
+        })
+        .catch((error) => notification.error(error, 'State Save Error'));
+    };
 
   //TODO: create schema object and keep up to date for each tree
-
   let savePersistent =
     function savePersistent(cursor, relativePath, object, store) {
       let storageKey = storage.getStorageKey(
@@ -64,6 +92,16 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
         .catch((error) => notification.error(error, 'State Save Error'));
     };
 
+  let removeVolatile =
+    function removeVolatile(cursor, relativePath) {
+      return $q.when()
+        .then(() => {
+          cursor.unset(relativePath);
+          return relativePath;
+        })
+        .catch((error) => notification.error(error, 'State Delete Error'));
+    };
+
   let removePersistent =
     function removePersistent(cursor, relativePath, store) {
       let storageKey = storage.getStorageKey(
@@ -78,13 +116,13 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
         .catch((error) => notification.error(error, 'State Delete Error'));
     };
 
+  stateService.memory.save = saveVolatile;
   stateService.local.save = savePersistent;
   stateService.cloud.save = savePersistent;
-  stateService.cloudIndex.save = savePersistent;
 
+  stateService.memory.remove = removeVolatile;
   stateService.local.remove = removePersistent;
   stateService.cloud.remove = removePersistent;
-  stateService.cloudIndex.remove = removePersistent;
 
   let handleChangeCloud = function handleChangeCloud(event) {
     if (event.oldValue === event.newValue) {
@@ -115,17 +153,17 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
       });
   };
 
-  let initializeLocal = function initializeLocal(moduleName) {
-    let store = storage.createLocal(moduleName);
+  let initializeLocal = function initializeLocal() {
+    let store = storage.createLocal();
 
     return initializeStore(stateService.local, store);
   };
 
-  let initializeCloud = function initializeCloud(moduleName) {
+  let initializeCloud = function initializeCloud(userId) {
     //TODO: reset state tree before loading keys
     //TODO: figure out how to remove modules for logging out
-    let store = storage.createRemote(moduleName);
-    storage.claimAccess(moduleName);
+    let store = storage.createRemote();
+    storage.claimAccess();
     store.onChange(handleChangeCloud);
 
     return initializeStore(stateService.cloud, store);
@@ -133,9 +171,9 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
 
   stateService.local.initialize = initializeLocal;
   stateService.cloud.initialize = initializeCloud;
-  stateService.cloudIndex.initialize = initializeCloud;
 
   const TREE_TO_STATE = new Map([
+    [stateService.memory.tree, stateService.memory],
     [stateService.local.tree, stateService.local],
     [stateService.cloud.tree, stateService.cloud]
   ]);
