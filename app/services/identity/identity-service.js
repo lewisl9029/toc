@@ -24,7 +24,7 @@ export default function identity($q, state, R, cryptography) {
 
     if (options.staySignedIn) {
       state.save(
-        state.persistent.cursors.identity,
+        state.local.cursors.identity,
         [userCredentials.id, 'savedCredentials'],
         savedCredentials
       );
@@ -34,7 +34,7 @@ export default function identity($q, state, R, cryptography) {
   };
 
   let authenticate = function authenticateIdentity(userCredentials, options) {
-    let challenge = state.persistent.cursors.identity
+    let challenge = state.local.cursors.identity
       .get([userCredentials.id, 'userInfo']).challenge;
 
     let savedCredentials;
@@ -50,7 +50,7 @@ export default function identity($q, state, R, cryptography) {
 
     if (options.staySignedIn) {
       state.save(
-        state.persistent.cursors.identity,
+        state.local.cursors.identity,
         [userCredentials.id, 'savedCredentials'],
         savedCredentials
       );

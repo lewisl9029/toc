@@ -1,2 +1,3 @@
-export default function CloudController() {
+export default function CloudController(storage) {
+  this.isConnected = storage.isConnected;
 }

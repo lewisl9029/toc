@@ -34,26 +34,26 @@ export default function tocSignupForm() {
             return identity.create(sessionInfo, userInfo, options)
               .then((newUserInfo) => {
                 state.save(
-                  state.persistent.cursors.identity,
+                  state.local.cursors.identity,
                   [newUserInfo.id, 'userInfo'],
                   newUserInfo
                 );
 
                 state.save(
-                  state.persistent.cursors.identity,
+                  state.local.cursors.identity,
                   [newUserInfo.id, 'latestSession'],
                   Date.now()
                 );
 
-                return state.synchronized.initialize(newUserInfo.id)
+                return state.cloud.initialize(newUserInfo.id)
                   .then(() => state.save(
-                    state.synchronized.cursors.identity,
+                    state.cloud.cursors.identity,
                     ['userInfo'],
                     newUserInfo
                   ));
               })
               .then(() => state.save(
-                state.synchronized.cursors.network,
+                state.cloud.cursors.network,
                 ['sessions', sessionInfo.id, 'sessionInfo'],
                 sessionInfo
               ));
@@ -71,7 +71,7 @@ export default function tocSignupForm() {
         return this.signingUp;
       };
 
-      let localUsersCursor = state.persistent.cursors.identity;
+      let localUsersCursor = state.local.cursors.identity;
 
       this.users = localUsersCursor.get();
 

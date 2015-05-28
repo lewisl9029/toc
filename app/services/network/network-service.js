@@ -44,11 +44,11 @@ export default function network($q, $window, $interval, R, state, telehash,
     let contactInfo = invitePayload;
 
     let userId =
-      state.synchronized.tree.select(['identity', 'userInfo']).get().id;
+      state.cloud.tree.select(['identity', 'userInfo']).get().id;
 
     let channel = createContactChannel(userId, contactInfo.id);
 
-    let existingChannel = state.synchronized.cursors.network
+    let existingChannel = state.cloud.cursors.network
       .get(['channels', channel.id, 'channelInfo']);
 
     let statusId = 1; //online
@@ -56,17 +56,17 @@ export default function network($q, $window, $interval, R, state, telehash,
     channel.pendingAccept = !existingChannel;
 
     return state.save(
-        state.synchronized.cursors.network,
+        state.cloud.cursors.network,
         ['channels', channel.id, 'channelInfo'],
         channel
       )
       .then(() => state.save(
-        state.synchronized.tree.select(['contacts']),
+        state.cloud.tree.select(['contacts']),
         [contactInfo.id, 'userInfo'],
         contactInfo
       ))
       .then(() => state.save(
-        state.synchronized.tree.select(['contacts']),
+        state.cloud.tree.select(['contacts']),
         [contactInfo.id, 'statusId'],
         statusId
       ));
@@ -75,7 +75,7 @@ export default function network($q, $window, $interval, R, state, telehash,
   let handleStatus = function handleStatus(statusPayload, contactId) {
     let statusId = statusPayload;
 
-    let contactCursor = state.synchronized.tree
+    let contactCursor = state.cloud.tree
       .select(['contacts', contactId]);
 
     let currentContactStatus = contactCursor.get(['statusId']);
@@ -85,7 +85,7 @@ export default function network($q, $window, $interval, R, state, telehash,
     }
 
     return state.save(
-      state.synchronized.tree.select(['contacts']),
+      state.cloud.tree.select(['contacts']),
       [contactId, 'statusId'],
       statusId
     );
@@ -108,7 +108,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       content: messageContent
     };
 
-    let channelCursor = state.synchronized.cursors.network.select(
+    let channelCursor = state.cloud.cursors.network.select(
       ['channels', channelId]
     );
 
@@ -129,13 +129,13 @@ export default function network($q, $window, $interval, R, state, telehash,
       ))
       .then(() => {
         let activeChannelId =
-          state.synchronized.cursors.network.get(['activeChannelId']);
+          state.cloud.cursors.network.get(['activeChannelId']);
         if (activeChannelId === channelId &&
           channelCursor.get(['viewingLatest'])) {
           return $q.when();
         }
 
-        let contactName = state.synchronized.tree.get(
+        let contactName = state.cloud.tree.get(
           ['contacts', contactId, 'userInfo', 'displayName']
         );
 
@@ -237,7 +237,7 @@ export default function network($q, $window, $interval, R, state, telehash,
         return $q.reject(error);
       }
 
-      let contactCursor = state.synchronized.tree
+      let contactCursor = state.cloud.tree
         .select(['contacts', contactId]);
 
       // do not change status back to offline if contact was already offline
@@ -249,7 +249,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       }
 
       return state.save(
-        state.synchronized.tree.select(['contacts']),
+        state.cloud.tree.select(['contacts']),
         [contactId, 'statusId'],
         0
       );
@@ -270,14 +270,14 @@ export default function network($q, $window, $interval, R, state, telehash,
 
   let sendStatus = function sendStatus(contactId, statusId) {
     let userId =
-      state.synchronized.tree.select(['identity', 'userInfo']).get().id;
+      state.cloud.tree.select(['identity', 'userInfo']).get().id;
     let contactChannel = createContactChannel(userId, contactId);
 
     let payload = {
       s: statusId
     };
 
-    let contactCursor = state.synchronized.tree
+    let contactCursor = state.cloud.tree
       .select(['contacts', contactId]);
 
     let previousContactStatusId = contactCursor.get(['statusId']);
@@ -310,7 +310,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       let receivedTime = acknowledgement.r;
 
       let userId =
-        state.synchronized.tree.select(['identity', 'userInfo']).get().id;
+        state.cloud.tree.select(['identity', 'userInfo']).get().id;
       let messageId = sentTime + '-' + userId;
 
       let message = {
@@ -324,7 +324,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       };
 
       return state.save(
-        state.synchronized.cursors.network.select(
+        state.cloud.cursors.network.select(
           ['channels', channelInfo.id, 'messages']
         ),
         [messageId, 'messageInfo'],
@@ -334,7 +334,7 @@ export default function network($q, $window, $interval, R, state, telehash,
 
     let contactId = channelInfo.contactIds[0];
 
-    let previousContactStatusId = state.synchronized.tree
+    let previousContactStatusId = state.cloud.tree
       .select(['contacts', contactId]).get(['statusId']);
 
     if (previousContactStatusId === undefined) {
@@ -371,7 +371,7 @@ export default function network($q, $window, $interval, R, state, telehash,
         return $q.when();
       })
       .then(() => {
-        let channelCursor = state.synchronized.cursors.network.select([
+        let channelCursor = state.cloud.cursors.network.select([
           'channels', channelInfo.id
         ]);
 
@@ -420,7 +420,7 @@ export default function network($q, $window, $interval, R, state, telehash,
 
       listen({id: INVITE_CHANNEL_ID});
 
-      let channels = state.synchronized.cursors.network.get(['channels']);
+      let channels = state.cloud.cursors.network.get(['channels']);
 
       R.pipe(
         R.values,
@@ -429,7 +429,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       )(channels);
 
       $window.onbeforeunload = () => {
-        let contactsCursor = state.synchronized.tree.select(['contacts']);
+        let contactsCursor = state.cloud.tree.select(['contacts']);
 
         R.pipe(
           R.keys,

@@ -6,32 +6,40 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
   $window.state = stateService;
 
   // local application state persisted in-memory only
-  stateService.transient = {};
+  stateService.memory = {};
 
   // local application state persisted in localStorage
-  stateService.persistent = {
+  stateService.local = {
     tree: new Baobab({})
   };
 
-  stateService.persistent.cursors = {
-    identity: stateService.persistent.tree.select(['identity'])
+  stateService.local.cursors = {
+    identity: stateService.local.tree.select(['identity'])
   };
 
   // shared user application state persisted in indexedDB with remoteStorage
-  stateService.synchronized = {
+  stateService.cloud = {
     tree: new Baobab({})
   };
 
-  stateService.synchronized.cursors = {
-    contacts: stateService.synchronized.tree.select(['contacts']),
-    identity: stateService.synchronized.tree.select(['identity']),
-    network: stateService.synchronized.tree.select(['network'])
+  stateService.cloud.cursors = {
+    contacts: stateService.cloud.tree.select(['contacts']),
+    identity: stateService.cloud.tree.select(['identity']),
+    network: stateService.cloud.tree.select(['network'])
   };
 
-  stateService.persistent.tree.on('update',
+  // shared user index state persisted in indexedDB with remoteStorage
+  stateService.cloudIndex = {
+    tree: new Baobab({})
+  };
+
+  stateService.local.tree.on('update',
     () => setTimeout(() => $rootScope.$apply())
   );
-  stateService.synchronized.tree.on('update',
+  stateService.cloud.tree.on('update',
+    () => setTimeout(() => $rootScope.$apply())
+  );
+  stateService.cloudIndex.tree.on('update',
     () => setTimeout(() => $rootScope.$apply())
   );
 
@@ -70,18 +78,20 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
         .catch((error) => notification.error(error, 'State Delete Error'));
     };
 
-  stateService.persistent.save = savePersistent;
-  stateService.synchronized.save = savePersistent;
+  stateService.local.save = savePersistent;
+  stateService.cloud.save = savePersistent;
+  stateService.cloudIndex.save = savePersistent;
 
-  stateService.persistent.remove = removePersistent;
-  stateService.synchronized.remove = removePersistent;
+  stateService.local.remove = removePersistent;
+  stateService.cloud.remove = removePersistent;
+  stateService.cloudIndex.remove = removePersistent;
 
-  let handleChangeSynchronized = function handleChangeSynchronized(event) {
+  let handleChangeCloud = function handleChangeCloud(event) {
     if (event.oldValue === event.newValue) {
       return;
     }
 
-    stateService.synchronized.tree.set(
+    stateService.cloud.tree.set(
       getStatePath(event.relativePath),
       event.newValue
     );
@@ -105,28 +115,29 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
       });
   };
 
-  let initializePersistent = function initializePersistent(moduleName) {
+  let initializeLocal = function initializeLocal(moduleName) {
     let store = storage.createLocal(moduleName);
 
-    return initializeStore(stateService.persistent, store);
+    return initializeStore(stateService.local, store);
   };
 
-  let initializeSynchronized = function initializeSynchronized(moduleName) {
+  let initializeCloud = function initializeCloud(moduleName) {
     //TODO: reset state tree before loading keys
     //TODO: figure out how to remove modules for logging out
     let store = storage.createRemote(moduleName);
     storage.claimAccess(moduleName);
-    store.onChange(handleChangeSynchronized);
+    store.onChange(handleChangeCloud);
 
-    return initializeStore(stateService.synchronized, store);
+    return initializeStore(stateService.cloud, store);
   };
 
-  stateService.persistent.initialize = initializePersistent;
-  stateService.synchronized.initialize = initializeSynchronized;
+  stateService.local.initialize = initializeLocal;
+  stateService.cloud.initialize = initializeCloud;
+  stateService.cloudIndex.initialize = initializeCloud;
 
   const TREE_TO_STATE = new Map([
-    [stateService.persistent.tree, stateService.persistent],
-    [stateService.synchronized.tree, stateService.synchronized]
+    [stateService.local.tree, stateService.local],
+    [stateService.cloud.tree, stateService.cloud]
   ]);
 
   let save = function save(cursor, relativePath, object) {
@@ -140,7 +151,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
   };
 
   let initialize = function initialize() {
-    return initializePersistent();
+    return initializeLocal();
   };
 
   let reset = function resetState() {

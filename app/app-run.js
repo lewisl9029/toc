@@ -14,7 +14,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
 
   state.initialize()
     .then(() => {
-      let localUsers = state.persistent.cursors.identity.get();
+      let localUsers = state.local.cursors.identity.get();
 
       let rememberedUser = R.pipe(
         R.values,
@@ -28,18 +28,18 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
       return identity.restore(rememberedUser)
         .then(() => {
           state.save(
-            state.persistent.cursors.identity,
+            state.local.cursors.identity,
             [rememberedUser.userInfo.id, 'latestSession'],
             Date.now()
           );
 
-          return state.synchronized.initialize(rememberedUser.userInfo.id);
+          return state.cloud.initialize(rememberedUser.userInfo.id);
         })
         .then(() => {
           contacts.initialize()
             .catch((error) => notification.error(error, 'Contacts Error'));
 
-          let sessionInfo = state.synchronized.cursors.network.get(
+          let sessionInfo = state.cloud.cursors.network.get(
             ['sessions', rememberedUser.userInfo.id, 'sessionInfo']
           );
 
@@ -58,7 +58,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
           }
 
           let activeChannelId =
-            state.synchronized.cursors.network.get(['activeChannelId']);
+            state.cloud.cursors.network.get(['activeChannelId']);
 
           if (activeChannelId === 'home') {
             return $state.go('app.home');
@@ -76,7 +76,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
       return;
     }
 
-    if (state.synchronized.tree.get('identity')) {
+    if (state.cloud.tree.get('identity')) {
       return;
     }
 

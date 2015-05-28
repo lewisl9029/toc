@@ -6,7 +6,7 @@ export default function tocHeader() {
     template: template,
     controllerAs: 'header',
     controller: function HeaderController($state, state, layout) {
-      // let identityCursor = state.synchronized.cursors.identity;
+      // let identityCursor = state.cloud.cursors.identity;
 
       // this.currentUser = identityCursor.get();
 

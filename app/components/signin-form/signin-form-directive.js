@@ -9,14 +9,14 @@ export default function tocSigninForm() {
     controller: function SigninFormController($q, $state, $scope, state,
       identity, network, contacts, notification, signinForm, R, $ionicModal,
       $ionicHistory) {
-      //TODO: refactor into state service .transient
+      //TODO: refactor into state service .memory
       this.model = signinForm;
       
       this.goBack = function goBack() {
         $ionicHistory.goBack();
       };
 
-      let localUsersCursor = state.persistent.cursors.identity;
+      let localUsersCursor = state.local.cursors.identity;
 
       this.model.users = localUsersCursor.get() || {};
       this.model.userList = R.pipe(
@@ -38,18 +38,18 @@ export default function tocSigninForm() {
         this.signingIn = identity.authenticate(userCredentials, options)
           .then((userCredentials) => {
             state.save(
-              state.persistent.cursors.identity,
+              state.local.cursors.identity,
               [userCredentials.id, 'latestSession'],
               Date.now()
             );
 
-            return state.synchronized.initialize(userCredentials.id);
+            return state.cloud.initialize(userCredentials.id);
           })
           .then(() => {
             contacts.initialize()
               .catch((error) => notification.error(error, 'Contacts Error'));
 
-            let sessionInfo = state.synchronized.cursors.network.get(
+            let sessionInfo = state.cloud.cursors.network.get(
               ['sessions', userCredentials.id, 'sessionInfo']
             );
 

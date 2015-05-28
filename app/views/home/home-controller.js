@@ -1,14 +1,14 @@
 export default function HomeController(state, identity, network, notification,
   $ionicPopup, $q) {
-  let currentUserCursor = state.synchronized.cursors.identity;
+  let currentUserCursor = state.cloud.cursors.identity;
 
-  let activeChannelId = state.synchronized.cursors.network.get(
+  let activeChannelId = state.cloud.cursors.network.get(
     ['activeChannelId']
   );
 
   if (activeChannelId !== 'home') {
     state.save(
-      state.synchronized.cursors.network,
+      state.cloud.cursors.network,
       ['activeChannelId'],
       'home'
     );
@@ -28,7 +28,7 @@ export default function HomeController(state, identity, network, notification,
       }
 
       return state.remove(
-          state.persistent.cursors.identity,
+          state.local.cursors.identity,
           [currentUserCursor.get(['userInfo', 'id']), 'savedCredentials']
         )
         .then(() => $q.when(window.location.reload()))

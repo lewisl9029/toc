@@ -2,10 +2,10 @@ export default function ChannelController($q, $stateParams, state, network,
   notification) {
   this.channelId = $stateParams.channelId;
 
-  let channelCursor = state.synchronized.cursors.network
+  let channelCursor = state.cloud.cursors.network
     .select(['channels', this.channelId]);
 
-  let contactCursor = state.synchronized.cursors.contacts;
+  let contactCursor = state.cloud.cursors.contacts;
 
   this.contact = contactCursor.get(
     channelCursor.get(['channelInfo', 'contactIds'])[0]
