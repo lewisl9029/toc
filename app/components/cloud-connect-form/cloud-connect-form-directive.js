@@ -23,7 +23,6 @@ export default function tocCloudConnectForm() {
           return notification.error('Please enter a valid email.', 'Validation Error');
         }
 
-        storage.claimAccess('users');
         storage.connect(email);
       };
 

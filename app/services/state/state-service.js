@@ -27,7 +27,16 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
     () => setTimeout(() => $rootScope.$apply())
   );
 
-  // shared user application state persisted in indexedDB with remoteStorage
+  // unencrypted application state persisted in indexedDB with remoteStorage
+  stateService.cloudUnencrypted = {
+    tree: new Baobab({})
+  };
+
+  stateService.cloudUnencrypted.tree.on('update',
+    () => setTimeout(() => $rootScope.$apply())
+  );
+
+  // encrypted application state persisted in indexedDB with remoteStorage
   stateService.cloud = {
     tree: new Baobab({})
   };
@@ -41,6 +50,10 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
       identity: stateService.local.tree.select([userId, 'identity'])
     };
 
+    stateService.cloudUnencrypted.cursors = {
+      identity: stateService.cloudUnencrypted.tree.select([userId, 'identity'])
+    };
+
     stateService.cloud.cursors = {
       contacts: stateService.cloud.tree.select([userId, 'contacts']),
       identity: stateService.cloud.tree.select([userId, 'identity']),
@@ -50,7 +63,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
 
   let destroyCursors = function destroyCursors() {
     stateService.local.cursors = undefined;
-
+    stateService.cloudUnencrypted.cursors = undefined;
     stateService.cloud.cursors = undefined;
   };
 
@@ -118,10 +131,12 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
 
   stateService.memory.save = saveVolatile;
   stateService.local.save = savePersistent;
+  stateService.cloudUnencrypted.save = savePersistent;
   stateService.cloud.save = savePersistent;
 
   stateService.memory.remove = removeVolatile;
   stateService.local.remove = removePersistent;
+  stateService.cloudUnencrypted.remove = removePersistent;
   stateService.cloud.remove = removePersistent;
 
   let handleChangeCloud = function handleChangeCloud(event) {
@@ -134,6 +149,18 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
       event.newValue
     );
   };
+
+  let handleChangeCloudUnencrypted =
+    function handleChangeCloudUnencrypted(event) {
+      if (event.oldValue === event.newValue) {
+        return;
+      }
+
+      stateService.cloudUnencrypted.tree.set(
+        getStatePath(event.relativePath),
+        event.newValue
+      );
+    };
 
   // let initializeTransient = function initializeTransient() {
   // };
@@ -154,27 +181,29 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
   };
 
   let initializeLocal = function initializeLocal() {
-    let store = storage.createLocal();
-
-    return initializeStore(stateService.local, store);
   };
 
-  let initializeCloud = function initializeCloud(userId) {
+  let initializeCloud = function initializeCloud() {
     //TODO: reset state tree before loading keys
     //TODO: figure out how to remove modules for logging out
-    let store = storage.createRemote();
-    storage.claimAccess();
-    store.onChange(handleChangeCloud);
+    return initializeStore(stateService.cloud, storage.cloud);
+  };
 
-    return initializeStore(stateService.cloud, store);
+  let initializeCloudUnencrypted = function initializeCloudUnencrypted() {
+    return initializeStore(
+      stateService.cloudUnencrypted,
+      storage.cloudUnencrypted
+    );
   };
 
   stateService.local.initialize = initializeLocal;
+  stateService.cloudUnencrypted.initialize = initializeCloudUnencrypted;
   stateService.cloud.initialize = initializeCloud;
 
   const TREE_TO_STATE = new Map([
     [stateService.memory.tree, stateService.memory],
     [stateService.local.tree, stateService.local],
+    [stateService.cloudUnencrypted.tree, stateService.cloudUnencrypted],
     [stateService.cloud.tree, stateService.cloud]
   ]);
 
@@ -189,7 +218,11 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
   };
 
   let initialize = function initialize() {
-    return initializeLocal();
+    storage.initialize();
+
+    storage.cloud.onChange(handleChangeCloud);
+    storage.cloudUnencrypted.onChange(handleChangeCloudUnencrypted);
+    return initializeStore(stateService.local, storage.local);
   };
 
   let reset = function resetState() {
