@@ -6,7 +6,7 @@
       'calm-bg': messageGroup[0].sender === messageList.userInfo.id
     }"></div>
     <div class="item item-avatar">
-      <img src="http://cdn.libravatar.org/avatar/{{
+      <img ng-src="http://cdn.libravatar.org/avatar/{{
         messageGroup[0].sender === messageList.userInfo.id ?
         messageList.userInfo.id :
         messageList.contacts[messageGroup[0].sender].userInfo.id | limitTo:32

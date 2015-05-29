@@ -8,6 +8,8 @@ import qrImage from './qr-image/qr-image';
 import spinnerButton from './spinner-button/spinner-button';
 import signupForm from './signup-form/signup-form';
 import signinForm from './signin-form/signin-form';
+import cloudConnectForm from './cloud-connect-form/cloud-connect-form';
+import cloudManageForm from './cloud-manage-form/cloud-manage-form';
 
 export default angular.module('toc.components', [
   header.name,
@@ -17,5 +19,7 @@ export default angular.module('toc.components', [
   qrImage.name,
   spinnerButton.name,
   signupForm.name,
-  signinForm.name
+  signinForm.name,
+  cloudConnectForm.name,
+  cloudManageForm.name
 ]);

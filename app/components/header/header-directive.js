@@ -5,8 +5,8 @@ export default function tocHeader() {
     restrict: 'E',
     template: template,
     controllerAs: 'header',
-    controller: function HeaderController($state, state, layout) {
-      // let identityCursor = state.synchronized.cursors.identity;
+    controller: function HeaderController($state, state, navigation) {
+      // let identityCursor = state.cloud.cursors.identity;
 
       // this.currentUser = identityCursor.get();
 
@@ -15,7 +15,7 @@ export default function tocHeader() {
         $state.go('app.welcome');
       };
 
-      this.isContactsMenuEnabled = layout.isContactsMenuEnabled;
+      this.isPrivateState = navigation.isPrivateState;
 
       // currentUserCursor.on('update', () => {
       //   this.currentUser = identityCursor.get();

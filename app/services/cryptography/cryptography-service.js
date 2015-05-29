@@ -36,6 +36,19 @@ export default function cryptography($q, forge) {
     }
   };
 
+  const UNENCRYPTED_OBJECT = {
+    name: 'tocUnencryptedObject',
+    schema: {
+      type: 'object',
+      properties: {
+        pt: {
+          type: 'string'
+        }
+      },
+      required: ['pt']
+    }
+  };
+
   // replaces forwardslash in base64 string for use in paths for indexeddb
   let escapeBase64 = function escapeBase64(base64) {
     return base64.replace(/\//g, '.');
@@ -47,7 +60,7 @@ export default function cryptography($q, forge) {
 
   let checkCredentials =
     function checkCredentials(credentials) {
-      if (credentials && credentials.salt && credentials.key) {
+      if (credentials && credentials.key) {
         return;
       }
       //FIXME: Throw error object instead?
@@ -142,7 +155,11 @@ export default function cryptography($q, forge) {
       PBKDF2_KEY_LENGTH
     );
 
-    return { salt, key };
+    return { key };
+  };
+
+  let isInitialized = function isInitialized() {
+    return cachedCredentials !== undefined;
   };
 
   let initialize = function initializeCryptography(userCredentials) {
@@ -161,6 +178,7 @@ export default function cryptography($q, forge) {
 
   return {
     ENCRYPTED_OBJECT,
+    UNENCRYPTED_OBJECT,
     escapeBase64,
     unescapeBase64,
     getHmac,
@@ -168,6 +186,7 @@ export default function cryptography($q, forge) {
     encrypt,
     decrypt,
     deriveCredentials,
+    isInitialized,
     initialize,
     restore,
     destroy

@@ -6,7 +6,11 @@ export default function tocSignupForm() {
     template: template,
     controllerAs: 'signupForm',
     controller: function SignupFormController($q, $state, state, identity,
-      network, notification, $ionicHistory) {
+      network, notification, storage, $ionicHistory) {
+      this.goBack = function goBack() {
+        $ionicHistory.goBack();
+      };
+
       this.newUser = {
         displayName: '',
         email: '',
@@ -27,29 +31,31 @@ export default function tocSignupForm() {
               staySignedIn: this.staySignedIn
             };
 
-            return identity.create(sessionInfo, userInfo, options)
+            return identity.initialize(sessionInfo.id)
+              .then(() => network.initializeChannels())
+              .then(() => identity.create(sessionInfo, userInfo, options))
               .then((newUserInfo) => {
                 state.save(
-                  state.persistent.cursors.identity,
-                  [newUserInfo.id, 'userInfo'],
+                  state.cloudUnencrypted.cursors.identity,
+                  ['userInfo'],
                   newUserInfo
                 );
 
                 state.save(
-                  state.persistent.cursors.identity,
-                  [newUserInfo.id, 'latestSession'],
+                  state.cloudUnencrypted.cursors.identity,
+                  ['latestSession'],
                   Date.now()
                 );
 
-                return state.synchronized.initialize(newUserInfo.id)
+                return state.cloud.initialize(newUserInfo.id)
                   .then(() => state.save(
-                    state.synchronized.cursors.identity,
+                    state.cloud.cursors.identity,
                     ['userInfo'],
                     newUserInfo
                   ));
               })
               .then(() => state.save(
-                state.synchronized.cursors.network,
+                state.cloud.cursors.network,
                 ['sessions', sessionInfo.id, 'sessionInfo'],
                 sessionInfo
               ));
@@ -62,17 +68,20 @@ export default function tocSignupForm() {
 
             return $state.go('app.home');
           })
-          .catch((error) => notification.error(error, 'User Creation Error'));
+          .catch((error) => {
+            return notification.error(error, 'User Creation Error')
+              .then(() => identity.destroy());
+          });
 
         return this.signingUp;
       };
 
-      let localUsersCursor = state.persistent.cursors.identity;
+      let localUsers = state.cloudUnencrypted.tree;
 
-      this.users = localUsersCursor.get();
+      this.users = localUsers.get();
 
-      localUsersCursor.on('update', () => {
-        this.users = localUsersCursor.get();
+      localUsers.on('update', () => {
+        this.users = localUsers.get();
       });
     }
   };

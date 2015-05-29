@@ -553,7 +553,8 @@ System.config({
       "views/home/home",
       "views/welcome/welcome",
       "views/signin/signin",
-      "views/signup/signup"
+      "views/signup/signup",
+      "views/cloud/cloud"
     ],
     "components/components": [
       "github:angular/bower-angular@1.3.15",
@@ -564,7 +565,9 @@ System.config({
       "components/qr-image/qr-image",
       "components/spinner-button/spinner-button",
       "components/signup-form/signup-form",
-      "components/signin-form/signin-form"
+      "components/signin-form/signin-form",
+      "components/cloud-connect-form/cloud-connect-form",
+      "components/cloud-manage-form/cloud-manage-form"
     ],
     "npm:ramda@0.11.0/dist/ramda": [
       "github:jspm/nodelibs-process@0.1.1"
@@ -728,7 +731,7 @@ System.config({
       "github:angular/bower-angular@1.3.15",
       "services/contacts/contacts",
       "services/identity/identity",
-      "services/layout/layout",
+      "services/navigation/navigation",
       "services/network/network",
       "services/notification/notification",
       "services/storage/storage",
@@ -753,6 +756,33 @@ System.config({
     ],
     "github:angular-ui/ui-router@0.2.15/angular-ui-router": [
       "github:angular/bower-angular@1.3.15"
+    ],
+    "views/cloud/cloud-config": [
+      "views/cloud/cloud.html!github:systemjs/plugin-text@0.0.2",
+      "views/cloud/cloud-controller"
+    ],
+    "components/cloud-connect-form/cloud-connect-form-directive": [
+      "components/cloud-connect-form/cloud-connect-form.html!github:systemjs/plugin-text@0.0.2"
+    ],
+    "views/cloud/cloud": [
+      "github:angular/bower-angular@1.3.15",
+      "views/cloud/cloud-config",
+      "views/cloud/cloud-controller"
+    ],
+    "components/cloud-connect-form/cloud-connect-form": [
+      "github:angular/bower-angular@1.3.15",
+      "components/cloud-connect-form/cloud-connect-form-directive"
+    ],
+    "services/navigation/navigation": [
+      "github:angular/bower-angular@1.3.15",
+      "services/navigation/navigation-service"
+    ],
+    "components/cloud-manage-form/cloud-manage-form-directive": [
+      "components/cloud-manage-form/cloud-manage-form.html!github:systemjs/plugin-text@0.0.2"
+    ],
+    "components/cloud-manage-form/cloud-manage-form": [
+      "github:angular/bower-angular@1.3.15",
+      "components/cloud-manage-form/cloud-manage-form-directive"
     ]
   }
 });

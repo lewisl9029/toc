@@ -9,7 +9,7 @@
         Welcome back {{signinForm.model.users[signinForm.model.selectedUser].userInfo.displayName}}!
       </div>
       <label class="item item-avatar">
-        <img src="http://cdn.libravatar.org/avatar/{{signinForm.model.users[signinForm.model.selectedUser].userInfo.id | limitTo:32}}?d=identicon"
+        <img ng-src="http://cdn.libravatar.org/avatar/{{signinForm.model.users[signinForm.model.selectedUser].userInfo.id | limitTo:32}}?d=identicon"
           alt="Avatar for {{signinForm.model.users[signinForm.model.selectedUser].userInfo.email}}" />
         <h2>{{signinForm.model.users[signinForm.model.selectedUser].userInfo.displayName}}</h2>
         <p>{{signinForm.model.users[signinForm.model.selectedUser].userInfo.id}}</p>
@@ -24,7 +24,7 @@
         Stay signed in?
       </ion-toggle>
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="col">
         <button type="button"
           class="button button-block button-outline button-royal"
@@ -32,15 +32,15 @@
           Not you?
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 
   <div class="toc-flex-footer">
     <div class="row">
       <div class="col">
-        <button type="button" ui-sref="app.signup"
+        <button type="button" ng-click="signinForm.goBack()"
           class="button button-block button-outline button-calm">
-          Create account
+          Back
         </button>
       </div>
       <div class="col">

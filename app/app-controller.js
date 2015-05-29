@@ -1,3 +1,3 @@
-export default function AppController(layout) {
-  this.isContactsMenuEnabled = layout.isContactsMenuEnabled;
+export default function AppController(navigation) {
+  this.isPrivateState = navigation.isPrivateState;
 }

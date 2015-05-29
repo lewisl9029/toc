@@ -10,11 +10,11 @@ export default function tocChannelList() {
       //TODO: optimize by pulling cursors into service
       this.channelId = $state.params.channelId;
 
-      let networkCursor = state.synchronized.cursors.network;
+      let networkCursor = state.cloud.cursors.network;
       let channelsCursor = networkCursor.select(['channels']);
-      let contactsCursor = state.synchronized.cursors.contacts;
+      let contactsCursor = state.cloud.cursors.contacts;
 
-      let identityCursor = state.synchronized.cursors.identity;
+      let identityCursor = state.cloud.cursors.identity;
 
       this.userInfo = identityCursor.get('userInfo');
 
@@ -47,13 +47,13 @@ export default function tocChannelList() {
       };
 
       this.goToChannel = function goToChannel(channelId) {
-        let activeChannelId = state.synchronized.cursors.network.get(
+        let activeChannelId = state.cloud.cursors.network.get(
           ['activeChannelId']
         );
 
         if (activeChannelId !== channelId) {
           state.save(
-            state.synchronized.cursors.network,
+            state.cloud.cursors.network,
             ['activeChannelId'],
             channelId
           );
@@ -68,13 +68,13 @@ export default function tocChannelList() {
       };
 
       this.goToHome = function goToHome() {
-        let activeChannelId = state.synchronized.cursors.network.get(
+        let activeChannelId = state.cloud.cursors.network.get(
           ['activeChannelId']
         );
 
         if (activeChannelId !== 'home') {
           state.save(
-            state.synchronized.cursors.network,
+            state.cloud.cursors.network,
             ['activeChannelId'],
             'home'
           );

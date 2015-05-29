@@ -5,11 +5,16 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
   const STORAGE_MODULE_PREFIX = 'toc-state-';
   const KEY_SEPARATOR = '.';
 
+
   let getStorageKey = R.join(KEY_SEPARATOR);
 
-  let local = {};
+  let connect = function connect(email) {
+    return remoteStorage.remoteStorage.connect(email);
+  };
 
-  // let connect = remoteStorage.remoteStorage.connect;
+  let isConnected = function isConnected() {
+    return remoteStorage.remoteStorage.connected;
+  };
 
   let enableLog = remoteStorage.remoteStorage.enableLog;
 
@@ -61,7 +66,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
       let key = '';
 
       return $q.when(privateClient.getAll(key))
-        .then(encryptedObjects => R.pipe(
+        .then(R.pipe(
           R.toPairs,
           R.map(encryptedKeyObjectPair => [
             cryptography.decrypt(
@@ -69,11 +74,15 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
             ),
             cryptography.decrypt(encryptedKeyObjectPair[1])
           ])
-        )(encryptedObjects));
+        ));
     };
 
     let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
+        if (!cryptography.isInitialized()) {
+          return;
+        }
+
         let decryptedEvent = Object.assign({}, event);
 
         decryptedEvent.relativePath = event.relativePath ?
@@ -94,13 +103,93 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
       });
     };
 
+    let initialize = function initialize() {
+      privateClient.cache('');
+    };
+
     return {
       exports: {
         storeObject,
         getObject,
         removeObject,
         getAllObjects,
-        onChange
+        onChange,
+        initialize
+      }
+    };
+  };
+
+  let buildModuleUnencrypted = function buildModuleUnencrypted(privateClient) {
+    privateClient.declareType(
+      cryptography.UNENCRYPTED_OBJECT.name,
+      cryptography.UNENCRYPTED_OBJECT.schema
+    );
+
+    let storeObject = function storeObject(key, object) {
+      let unencryptedObject = {
+        pt: JSON.stringify(object)
+      };
+
+      return $q.when(privateClient.storeObject(
+          cryptography.UNENCRYPTED_OBJECT.name,
+          key,
+          unencryptedObject
+        ))
+        .then(() => object);
+    };
+
+    let getObject = function getObject(key) {
+      return $q.when(privateClient.getObject(key))
+        .then(unencryptedObject => JSON.parse(unencryptedObject.pt));
+    };
+
+    let removeObject = function removeObject(key) {
+      return $q.when(privateClient.remove(key))
+        .then(() => key);
+    };
+
+    let getAllObjects = function getAllObjects() {
+      //all encrypted paths are under root
+      let key = '';
+
+      return $q.when(privateClient.getAll(key))
+        .then(R.pipe(
+          R.toPairs,
+          R.map(unencryptedKeyObjectPair => [
+            unencryptedKeyObjectPair[0],
+            JSON.parse(unencryptedKeyObjectPair[1].pt)
+          ])
+        ));
+    };
+
+    let onChange = function onChange(handleChange) {
+      privateClient.on('change', function handleStorageChange(event) {
+        let unwrappedEvent = Object.assign({}, event);
+
+        unwrappedEvent.newValue = event.newValue ?
+          JSON.parse(event.newValue.pt) :
+          event.newValue;
+
+        unwrappedEvent.oldValue = event.oldValue ?
+          JSON.parse(event.oldValue.pt) :
+          event.oldValue;
+
+        handleChange(unwrappedEvent);
+      });
+    };
+
+    let initialize = function initialize() {
+      privateClient.cache('');
+    };
+
+    return {
+      exports: {
+        storeObject,
+        getObject,
+        removeObject,
+        getAllObjects,
+        onChange,
+        initialize
       }
     };
   };
@@ -155,23 +244,48 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
     };
   };
 
-  let createRemote = function createRemote(moduleName) {
+  let createCloud = function createCloud(moduleName = 'cloud') {
     remoteStorage.RemoteStorage
       .defineModule(STORAGE_MODULE_PREFIX + moduleName, buildModule);
 
     return remoteStorage.remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
   };
 
-  let initialize = function initialize() {
-    // enableLog();
-  };
+  let createCloudUnencrypted =
+    function createCloudUnencrypted(moduleName = 'cloud-unencrypted') {
+      remoteStorage.RemoteStorage.defineModule(
+        STORAGE_MODULE_PREFIX + moduleName,
+        buildModuleUnencrypted
+      );
 
-  return {
+      return remoteStorage.remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
+    };
+
+  let storageService = {
     KEY_SEPARATOR,
     getStorageKey,
+    connect,
+    isConnected,
     claimAccess,
     createLocal,
-    createRemote,
-    initialize
+    createCloud,
+    createCloudUnencrypted
   };
+
+  let initialize = function initialize() {
+    enableLog();
+
+    storageService.local = createLocal();
+    storageService.cloud = createCloud();
+    storageService.cloud.initialize();
+    storageService.cloudUnencrypted = createCloudUnencrypted();
+    storageService.cloudUnencrypted.initialize();
+
+    claimAccess('cloud');
+    claimAccess('cloud-unencrypted');
+  };
+
+  storageService.initialize = initialize;
+
+  return storageService;
 }

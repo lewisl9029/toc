@@ -8,7 +8,7 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
       channelId: '@'
     },
     link: function linkMessageList(scope) {
-      let messagesCursor = state.synchronized.cursors.network
+      let messagesCursor = state.cloud.cursors.network
         .select(['channels', scope.channelId, 'messages']);
 
       $ionicScrollDelegate.scrollBottom(false);
@@ -39,13 +39,13 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
     },
     controllerAs: 'messageList',
     controller: function MessageListController($scope, $state, $interval) {
-      let channelsCursor = state.synchronized.cursors.network
+      let channelsCursor = state.cloud.cursors.network
         .select('channels');
 
-      let contactsCursor = state.synchronized.cursors.contacts;
-      let identityCursor = state.synchronized.cursors.identity;
+      let contactsCursor = state.cloud.cursors.contacts;
+      let identityCursor = state.cloud.cursors.identity;
 
-      let messagesCursor = state.synchronized.cursors.network
+      let messagesCursor = state.cloud.cursors.network
         .select(['channels', $scope.channelId, 'messages']);
 
       this.contacts = contactsCursor.get();

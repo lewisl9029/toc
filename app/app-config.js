@@ -5,6 +5,8 @@ export default function configApp($stateProvider, $urlRouterProvider,
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.backButton.previousTitleText(false);
   $ionicConfigProvider.views.transition('android');
+  // $ionicConfigProvider.views.maxCache(0);
+
 
   $stateProvider.state('app', {
     url: '/app',
