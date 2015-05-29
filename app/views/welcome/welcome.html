@@ -13,16 +13,15 @@
           </div>
         </div>
         <div class="row">
-          <div class="col">
+          <div class="col" ng-if="!welcomeView.users">
             <button ui-sref="app.signup"
               class="button button-block button-outline button-calm">
               Create account
             </button>
           </div>
-          <div class="col">
+          <div class="col" ng-if="welcomeView.users">
             <button ui-sref="app.signin"
-              class="button button-block button-outline button-calm"
-              ng-disabled="!welcomeView.users">
+              class="button button-block button-outline button-calm">
               Sign in
             </button>
           </div>

@@ -362,7 +362,6 @@ System.config({
       "github:angular-ui/ui-router@0.2.15"
     ],
     "github:jspm/nodelibs-process@0.1.1/index": [
-      "npm:process@0.10.1",
       "npm:process@0.10.1"
     ],
     "libraries/remote-storage/remote-storage": [
@@ -567,7 +566,8 @@ System.config({
       "components/spinner-button/spinner-button",
       "components/signup-form/signup-form",
       "components/signin-form/signin-form",
-      "components/cloud-connect-form/cloud-connect-form"
+      "components/cloud-connect-form/cloud-connect-form",
+      "components/cloud-manage-form/cloud-manage-form"
     ],
     "npm:ramda@0.11.0/dist/ramda": [
       "github:jspm/nodelibs-process@0.1.1"
@@ -731,7 +731,7 @@ System.config({
       "github:angular/bower-angular@1.3.15",
       "services/contacts/contacts",
       "services/identity/identity",
-      "services/layout/layout",
+      "services/navigation/navigation",
       "services/network/network",
       "services/notification/notification",
       "services/storage/storage",
@@ -772,6 +772,17 @@ System.config({
     "components/cloud-connect-form/cloud-connect-form": [
       "github:angular/bower-angular@1.3.15",
       "components/cloud-connect-form/cloud-connect-form-directive"
+    ],
+    "services/navigation/navigation": [
+      "github:angular/bower-angular@1.3.15",
+      "services/navigation/navigation-service"
+    ],
+    "components/cloud-manage-form/cloud-manage-form-directive": [
+      "components/cloud-manage-form/cloud-manage-form.html!github:systemjs/plugin-text@0.0.2"
+    ],
+    "components/cloud-manage-form/cloud-manage-form": [
+      "github:angular/bower-angular@1.3.15",
+      "components/cloud-manage-form/cloud-manage-form-directive"
     ]
   }
 });

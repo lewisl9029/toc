@@ -36,13 +36,13 @@ export default function tocSignupForm() {
               .then(() => identity.create(sessionInfo, userInfo, options))
               .then((newUserInfo) => {
                 state.save(
-                  state.local.cursors.identity,
+                  state.cloudUnencrypted.cursors.identity,
                   ['userInfo'],
                   newUserInfo
                 );
 
                 state.save(
-                  state.local.cursors.identity,
+                  state.cloudUnencrypted.cursors.identity,
                   ['latestSession'],
                   Date.now()
                 );
@@ -76,7 +76,7 @@ export default function tocSignupForm() {
         return this.signingUp;
       };
 
-      let localUsers = state.local.tree;
+      let localUsers = state.cloudUnencrypted.tree;
 
       this.users = localUsers.get();
 

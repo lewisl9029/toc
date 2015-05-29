@@ -1,4 +1,5 @@
-export default function state($rootScope, $q, $window, storage, R, Baobab) {
+export default function state($rootScope, $q, $window, storage, R, Baobab,
+  notification) {
   let getStatePath = R.split(storage.KEY_SEPARATOR);
 
   let stateService = {};
@@ -94,6 +95,8 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
 
       return store.storeObject(storageKey, object)
         .then(object => {
+          //FIXME: workaround for setting nonexistant cursors
+          // this can't be very performant
           if (cursor.get() === undefined) {
             cursor.tree.set(cursor.path, {});
             cursor.tree.commit();
@@ -107,6 +110,10 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
 
   let removeVolatile =
     function removeVolatile(cursor, relativePath) {
+      if (cursor.get() === undefined) {
+        return $q.when();
+      }
+
       return $q.when()
         .then(() => {
           cursor.unset(relativePath);
@@ -120,6 +127,10 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
       let storageKey = storage.getStorageKey(
         R.concat(cursor.path, relativePath)
       );
+
+      if (cursor.get() === undefined) {
+        return $q.when();
+      }
 
       return store.removeObject(storageKey)
         .then((key) => {
@@ -222,7 +233,11 @@ export default function state($rootScope, $q, $window, storage, R, Baobab) {
 
     storage.cloud.onChange(handleChangeCloud);
     storage.cloudUnencrypted.onChange(handleChangeCloudUnencrypted);
-    return initializeStore(stateService.local, storage.local);
+    return initializeStore(stateService.local, storage.local)
+      .then(() => initializeStore(
+        stateService.cloudUnencrypted,
+        storage.cloudUnencrypted
+      ));
   };
 
   let reset = function resetState() {

@@ -79,6 +79,10 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
 
     let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
+        if (!cryptography.isInitialized()) {
+          return;
+        }
+
         let decryptedEvent = Object.assign({}, event);
 
         decryptedEvent.relativePath = event.relativePath ?
@@ -127,7 +131,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
       };
 
       return $q.when(privateClient.storeObject(
-          cryptography.ENCRYPTED_OBJECT.name,
+          cryptography.UNENCRYPTED_OBJECT.name,
           key,
           unencryptedObject
         ))

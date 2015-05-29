@@ -1,5 +1,5 @@
 export default function HomeController(state, identity, network, notification,
-  $ionicPopup, $q) {
+  $ionicPopup, $q, $window) {
   let currentUserCursor = state.cloud.cursors.identity;
 
   let activeChannelId = state.cloud.cursors.network.get(
@@ -31,7 +31,7 @@ export default function HomeController(state, identity, network, notification,
           state.local.cursors.identity,
           ['savedCredentials']
         )
-        .then(() => $q.when(window.location.reload()))
+        .then(() => $q.when($window.location.reload()))
         .catch((error) => notification.error(error, 'Signout Error'));
     });
   };

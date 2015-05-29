@@ -34,7 +34,7 @@ export default function identity($q, state, R, cryptography) {
   };
 
   let authenticate = function authenticateIdentity(userCredentials, options) {
-    let challenge = state.local.cursors.identity
+    let challenge = state.cloudUnencrypted.cursors.identity
       .get(['userInfo']).challenge;
 
     let savedCredentials;

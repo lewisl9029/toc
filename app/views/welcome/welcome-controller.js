@@ -1,16 +1,16 @@
 export default function WelcomeController(state, R, storage) {
-  let localUsers = state.local.tree;
+  let cloudUsers = state.cloudUnencrypted.tree;
 
   // this.chooseAccount = function chooseAccount() {
-  //   storage.claimAccess(R.keys(localUsers.get()[0]));
+  //   storage.claimAccess(R.keys(cloudUsers.get()[0]));
   //   storage.connect('tocuser1@5apps.com');
   // };
 
   this.isConnected = storage.isConnected;
 
-  this.users = localUsers.get();
+  this.users = R.keys(cloudUsers.get()).length;
 
-  localUsers.on('update', () => {
-    this.users = localUsers.get();
+  cloudUsers.on('update', () => {
+    this.users = R.keys(cloudUsers.get()).length;
   });
 }

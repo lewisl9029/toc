@@ -16,7 +16,7 @@ export default function tocSigninForm() {
         $ionicHistory.goBack();
       };
 
-      let localUsers = state.local.tree;
+      let localUsers = state.cloudUnencrypted.tree;
 
       this.model.users = R.mapObj(R.prop('identity'))(localUsers.get());
       this.model.userList = R.pipe(
@@ -40,7 +40,7 @@ export default function tocSigninForm() {
           .then((userCredentials) => {
             //TODO: move this to cloud state
             state.save(
-              state.local.cursors.identity,
+              state.cloudUnencrypted.cursors.identity,
               ['latestSession'],
               Date.now()
             );

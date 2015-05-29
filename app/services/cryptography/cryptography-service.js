@@ -60,7 +60,7 @@ export default function cryptography($q, forge) {
 
   let checkCredentials =
     function checkCredentials(credentials) {
-      if (credentials && credentials.salt && credentials.key) {
+      if (credentials && credentials.key) {
         return;
       }
       //FIXME: Throw error object instead?
@@ -155,7 +155,11 @@ export default function cryptography($q, forge) {
       PBKDF2_KEY_LENGTH
     );
 
-    return { salt, key };
+    return { key };
+  };
+
+  let isInitialized = function isInitialized() {
+    return cachedCredentials !== undefined;
   };
 
   let initialize = function initializeCryptography(userCredentials) {
@@ -182,6 +186,7 @@ export default function cryptography($q, forge) {
     encrypt,
     decrypt,
     deriveCredentials,
+    isInitialized,
     initialize,
     restore,
     destroy
