@@ -49,7 +49,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
         JSON.stringify(cryptography.encryptDeterministic(key))
       );
 
-      return $q.when(privateClient.getObject(encryptedKey))
+      return $q.when(privateClient.getObject(encryptedKey, false))
         .then(cryptography.decrypt);
     };
 
@@ -66,8 +66,8 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
       //all encrypted paths are under root
       let key = '';
 
-      return $q.when(privateClient.getAll(key))
-        .then((encryptedKeyObjectPairs) => {
+      return $q.when(privateClient.getAll(key, false))
+        .then((encryptedKeyObjectMap) => {
           let decryptedKeyObjectPairs = R.pipe(
             R.toPairs,
             R.map(encryptedKeyObjectPair => {
@@ -95,7 +95,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
               return decryptedKeyObjectPair;
             }),
             R.filter((keyObjectPair) => keyObjectPair !== undefined)
-          )(encryptedKeyObjectPairs);
+          )(encryptedKeyObjectMap);
 
           return decryptedKeyObjectPairs;
         });
@@ -174,7 +174,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
     };
 
     let getObject = function getObject(key) {
-      return $q.when(privateClient.getObject(key))
+      return $q.when(privateClient.getObject(key, false))
         .then(unencryptedObject => JSON.parse(unencryptedObject.pt));
     };
 
@@ -187,7 +187,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
       //all encrypted paths are under root
       let key = '';
 
-      return $q.when(privateClient.getAll(key))
+      return $q.when(privateClient.getAll(key, false))
         .then(R.pipe(
           R.toPairs,
           R.map(unencryptedKeyObjectPair => [

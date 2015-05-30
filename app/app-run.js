@@ -15,12 +15,15 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
 
   // redirect to app.welcome if identity has not been initialized
   $rootScope.$on('$stateChangeStart', function(event, toState) {
-    let doRedirect = navigation.isPrivateState(toState.name);
-    let redirectStateName = 'app.welcome';
+    let doRedirect;
+    let redirectStateName;
 
     if (state.cloud.cursors && state.cloud.cursors.identity.get()) {
-      doRedirect = !doRedirect;
+      doRedirect = navigation.isPublicState(toState.name);
       redirectStateName = 'app.home';
+    } else {
+      doRedirect = navigation.isPrivateState(toState.name);
+      redirectStateName = 'app.welcome';
     }
 
     if (!doRedirect) {
@@ -89,8 +92,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
             if (!$state.is('app.home')) {
               $ionicHistory.nextViewOptions({
                 historyRoot: true,
-                disableBack: true,
-                disableAnimate: true
+                disableBack: true
               });
             }
 
@@ -104,8 +106,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
             if (!$state.is('app.home')) {
               $ionicHistory.nextViewOptions({
                 historyRoot: true,
-                disableBack: true,
-                disableAnimate: true
+                disableBack: true
               });
             }
 
@@ -115,8 +116,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
           if (!$state.includes('app.channel')) {
             $ionicHistory.nextViewOptions({
               historyRoot: true,
-              disableBack: true,
-              disableAnimate: true
+              disableBack: true
             });
           }
 
