@@ -37,29 +37,22 @@ export default function tocSigninForm() {
 
         this.signingIn = identity.initialize(userCredentials.id)
           .then(() => identity.authenticate(userCredentials, options))
-          .then((userCredentials) => {
-            //TODO: move this to cloud state
-            state.save(
-              state.cloudUnencrypted.cursors.identity,
-              ['latestSession'],
-              Date.now()
-            );
-
-            return state.cloud.initialize(userCredentials.id);
-          })
+          .then(() => state.cloud.initialize(userCredentials.id))
+          .then(() => contacts.initialize())
           .then(() => {
-            contacts.initialize()
-              .catch((error) => notification.error(error, 'Contacts Error'));
-
             let sessionInfo = state.cloud.cursors.network.get(
               ['sessions', userCredentials.id, 'sessionInfo']
             );
 
-            network.initialize(sessionInfo.keypair)
-              .then(() => network.initializeChannels())
-              .catch((error) =>
-                notification.error(error, 'Network Init Error'));
-
+            return network.initialize(sessionInfo.keypair)
+              .then(() => network.initializeChannels());
+          })
+          .then(() => state.save(
+            state.cloudUnencrypted.cursors.identity,
+            ['latestSession'],
+            Date.now()
+          ))
+          .then(() => {
             $ionicHistory.nextViewOptions({
               historyRoot: true,
               disableBack: true

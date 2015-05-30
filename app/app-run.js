@@ -49,6 +49,8 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
       }
 
       if (!rememberedIdUserPair) {
+        //TODO: refactor pattern into navigation service
+        // along with other instances of $state
         if (!$state.is('app.welcome')) {
           $ionicHistory.nextViewOptions({
             historyRoot: true,
@@ -72,28 +74,17 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
 
       return identity.initialize(rememberedUser.userInfo.id)
         .then(() => identity.restore(rememberedUser))
+        .then(() => state.cloud.initialize(rememberedUser.userInfo.id))
+        .then(() => contacts.initialize())
         .then(() => {
-          state.save(
-            state.cloudUnencrypted.cursors.identity,
-            ['latestSession'],
-            Date.now()
-          );
-
-          return state.cloud.initialize(rememberedUser.userInfo.id);
-        })
-        .then(() => {
-          contacts.initialize()
-            .catch((error) => notification.error(error, 'Contacts Error'));
-
           let sessionInfo = state.cloud.cursors.network.get(
             ['sessions', rememberedUser.userInfo.id, 'sessionInfo']
           );
 
-          network.initialize(sessionInfo.keypair)
-            .then(() => network.initializeChannels())
-            .catch((error) =>
-              notification.error(error, 'Network Init Error'));
-
+          return network.initialize(sessionInfo.keypair)
+            .then(() => network.initializeChannels());
+        })
+        .then(() => {
           if (!navigation.isPrivateState()) {
             if (!$state.is('app.home')) {
               $ionicHistory.nextViewOptions({
@@ -131,6 +122,11 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
 
           return $state.go('app.channel', {channelId: activeChannelId});
         })
+        .then(() => state.save(
+          state.cloudUnencrypted.cursors.identity,
+          ['latestSession'],
+          Date.now()
+        ))
         .catch((error) => {
           return notification.error(error, 'Authentication Error')
             .then(() => identity.destroy());

@@ -35,19 +35,21 @@ export default function tocSignupForm() {
               .then(() => network.initializeChannels())
               .then(() => identity.create(sessionInfo, userInfo, options))
               .then((newUserInfo) => {
-                state.save(
-                  state.cloudUnencrypted.cursors.identity,
-                  ['userInfo'],
-                  newUserInfo
-                );
+                let savingUnencryptedData = [
+                  state.save(
+                    state.cloudUnencrypted.cursors.identity,
+                    ['userInfo'],
+                    newUserInfo
+                  ),
+                  state.save(
+                    state.cloudUnencrypted.cursors.identity,
+                    ['latestSession'],
+                    Date.now()
+                  )
+                ];
 
-                state.save(
-                  state.cloudUnencrypted.cursors.identity,
-                  ['latestSession'],
-                  Date.now()
-                );
-
-                return state.cloud.initialize(newUserInfo.id)
+                return $q.all(saveUnencryptedData)
+                  .then(() => state.cloud.initialize(newUserInfo.id))
                   .then(() => state.save(
                     state.cloud.cursors.identity,
                     ['userInfo'],
