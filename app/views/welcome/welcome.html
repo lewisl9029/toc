@@ -5,15 +5,15 @@
 
       </div>
       <div class="toc-flex-footer">
-        <div class="row">
+        <div class="row" ng-if="!welcomeView.isStorageConnected()">
           <div class="col">
-            <button ui-sref="app.cloud" class="button button-block button-outline button-calm">
-              {{ welcomeView.isConnected() ? 'Manage ' : 'Connect ' }}cloud accounts
+            <button ui-sref="app.cloud" class="button button-block button-outline button-royal">
+              Connect a cloud account
             </button>
           </div>
         </div>
         <div class="row">
-          <div class="col" ng-if="!welcomeView.users">
+          <div class="col">
             <button ui-sref="app.signup"
               class="button button-block button-outline button-calm">
               Create account

@@ -1,6 +1,6 @@
 export default function runApp($state, $rootScope, R, state, identity, contacts,
   network, notification, $q, $ionicPlatform, $location, $ionicHistory, $timeout,
-  navigation) {
+  navigation, storage) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default
     // Remove this to show the accessory bar above the keyboard for form inputs
@@ -15,12 +15,15 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
 
   // redirect to app.welcome if identity has not been initialized
   $rootScope.$on('$stateChangeStart', function(event, toState) {
-    let doRedirect = navigation.isPrivateState(toState.name);
-    let redirectStateName = 'app.welcome';
+    let doRedirect;
+    let redirectStateName;
 
     if (state.cloud.cursors && state.cloud.cursors.identity.get()) {
-      doRedirect = !doRedirect;
+      doRedirect = navigation.isPublicState(toState.name);
       redirectStateName = 'app.home';
+    } else {
+      doRedirect = navigation.isPrivateState(toState.name);
+      redirectStateName = 'app.welcome';
     }
 
     if (!doRedirect) {
@@ -31,7 +34,8 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
     return $state.go(redirectStateName);
   });
 
-  state.initialize()
+  storage.prepare()
+    .then(() => state.initialize())
     .then(() => {
       let localUsers = state.local.tree.get();
 
@@ -49,6 +53,8 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
       }
 
       if (!rememberedIdUserPair) {
+        //TODO: refactor pattern into navigation service
+        // along with other instances of $state
         if (!$state.is('app.welcome')) {
           $ionicHistory.nextViewOptions({
             historyRoot: true,
@@ -72,34 +78,22 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
 
       return identity.initialize(rememberedUser.userInfo.id)
         .then(() => identity.restore(rememberedUser))
+        .then(() => state.cloud.initialize(rememberedUser.userInfo.id))
+        .then(() => contacts.initialize())
         .then(() => {
-          state.save(
-            state.cloudUnencrypted.cursors.identity,
-            ['latestSession'],
-            Date.now()
-          );
-
-          return state.cloud.initialize(rememberedUser.userInfo.id);
-        })
-        .then(() => {
-          contacts.initialize()
-            .catch((error) => notification.error(error, 'Contacts Error'));
-
           let sessionInfo = state.cloud.cursors.network.get(
             ['sessions', rememberedUser.userInfo.id, 'sessionInfo']
           );
 
-          network.initialize(sessionInfo.keypair)
-            .then(() => network.initializeChannels())
-            .catch((error) =>
-              notification.error(error, 'Network Init Error'));
-
+          return network.initialize(sessionInfo.keypair)
+            .then(() => network.initializeChannels());
+        })
+        .then(() => {
           if (!navigation.isPrivateState()) {
             if (!$state.is('app.home')) {
               $ionicHistory.nextViewOptions({
                 historyRoot: true,
-                disableBack: true,
-                disableAnimate: true
+                disableBack: true
               });
             }
 
@@ -113,8 +107,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
             if (!$state.is('app.home')) {
               $ionicHistory.nextViewOptions({
                 historyRoot: true,
-                disableBack: true,
-                disableAnimate: true
+                disableBack: true
               });
             }
 
@@ -124,13 +117,17 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
           if (!$state.includes('app.channel')) {
             $ionicHistory.nextViewOptions({
               historyRoot: true,
-              disableBack: true,
-              disableAnimate: true
+              disableBack: true
             });
           }
 
           return $state.go('app.channel', {channelId: activeChannelId});
         })
+        .then(() => state.save(
+          state.cloudUnencrypted.cursors.identity,
+          ['latestSession'],
+          Date.now()
+        ))
         .catch((error) => {
           return notification.error(error, 'Authentication Error')
             .then(() => identity.destroy());

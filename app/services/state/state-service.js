@@ -188,6 +188,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
           keyObjectPair[1]
         ))(keyObjectPairs);
         state.tree.commit();
+        return keyObjectPairs;
       });
   };
 

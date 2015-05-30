@@ -1,4 +1,5 @@
-export default function storage($window, $q, remoteStorage, cryptography, R) {
+export default function storage($window, $q, remoteStorage, cryptography, R,
+  notification) {
   //FIXME: storage usage is extremely high due to really long keys + storing
   // crypto settings with each item/key
   const DEFAULT_ACCESS_LEVEL = 'rw';
@@ -14,6 +15,17 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
 
   let isConnected = function isConnected() {
     return remoteStorage.remoteStorage.connected;
+  };
+
+  let prepare = function prepareStorage() {
+    let deferredStorageReady = $q.defer();
+
+    remoteStorage.remoteStorage.on(
+      'ready',
+      () => deferredStorageReady.resolve()
+    );
+
+    return deferredStorageReady.promise;
   };
 
   let enableLog = remoteStorage.remoteStorage.enableLog;
@@ -48,7 +60,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
         JSON.stringify(cryptography.encryptDeterministic(key))
       );
 
-      return $q.when(privateClient.getObject(encryptedKey))
+      return $q.when(privateClient.getObject(encryptedKey, false))
         .then(cryptography.decrypt);
     };
 
@@ -65,16 +77,39 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
       //all encrypted paths are under root
       let key = '';
 
-      return $q.when(privateClient.getAll(key))
-        .then(R.pipe(
-          R.toPairs,
-          R.map(encryptedKeyObjectPair => [
-            cryptography.decrypt(
-              JSON.parse(cryptography.unescapeBase64(encryptedKeyObjectPair[0]))
-            ),
-            cryptography.decrypt(encryptedKeyObjectPair[1])
-          ])
-        ));
+      return $q.when(privateClient.getAll(key, false))
+        .then((encryptedKeyObjectMap) => {
+          let decryptedKeyObjectPairs = R.pipe(
+            R.toPairs,
+            R.map(encryptedKeyObjectPair => {
+              let decryptedKeyObjectPair;
+
+              try {
+                decryptedKeyObjectPair = [
+                  cryptography.decrypt(
+                    JSON.parse(cryptography.unescapeBase64(encryptedKeyObjectPair[0]))
+                  ),
+                  cryptography.decrypt(encryptedKeyObjectPair[1])
+                ];
+              }
+              catch (error) {
+                // Assuming failed decryption indicates data belonging to
+                // a different account and filter out
+                if (error.message === 'cryptography: decryption failed') {
+                  return undefined;
+                }
+
+                notification.error(error.message, 'Storage Get Error');
+                return undefined;
+              }
+
+              return decryptedKeyObjectPair;
+            }),
+            R.filter((keyObjectPair) => keyObjectPair !== undefined)
+          )(encryptedKeyObjectMap);
+
+          return decryptedKeyObjectPairs;
+        });
     };
 
     let onChange = function onChange(handleChange) {
@@ -83,23 +118,34 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
           return;
         }
 
-        let decryptedEvent = Object.assign({}, event);
+        try {
+          let decryptedEvent = Object.assign({}, event);
 
-        decryptedEvent.relativePath = event.relativePath ?
-          cryptography.decrypt(
-            JSON.parse(cryptography.unescapeBase64(event.relativePath))
-          ) :
-          event.relativePath;
+          decryptedEvent.relativePath = event.relativePath ?
+            cryptography.decrypt(
+              JSON.parse(cryptography.unescapeBase64(event.relativePath))
+            ) :
+            event.relativePath;
 
-        decryptedEvent.newValue = event.newValue ?
-          cryptography.decrypt(event.newValue) :
-          event.newValue;
+          decryptedEvent.newValue = event.newValue ?
+            cryptography.decrypt(event.newValue) :
+            event.newValue;
 
-        decryptedEvent.oldValue = event.oldValue ?
-          cryptography.decrypt(event.oldValue) :
-          event.oldValue;
+          decryptedEvent.oldValue = event.oldValue ?
+            cryptography.decrypt(event.oldValue) :
+            event.oldValue;
 
-        handleChange(decryptedEvent);
+          handleChange(decryptedEvent);
+        }
+        catch (error) {
+          // Assuming failed decryption indicates data belonging to
+          // a different account and ignore
+          if (error.message === 'cryptography: decryption failed') {
+            return;
+          }
+
+          return notification.error(error.message, 'Storage Sync Error');
+        }
       });
     };
 
@@ -139,7 +185,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
     };
 
     let getObject = function getObject(key) {
-      return $q.when(privateClient.getObject(key))
+      return $q.when(privateClient.getObject(key, false))
         .then(unencryptedObject => JSON.parse(unencryptedObject.pt));
     };
 
@@ -152,14 +198,18 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
       //all encrypted paths are under root
       let key = '';
 
-      return $q.when(privateClient.getAll(key))
-        .then(R.pipe(
-          R.toPairs,
-          R.map(unencryptedKeyObjectPair => [
-            unencryptedKeyObjectPair[0],
-            JSON.parse(unencryptedKeyObjectPair[1].pt)
-          ])
-        ));
+      return $q.when(privateClient.getAll(key, false))
+        .then((keyObjectMap) => {
+          let keyObjectPairs = R.pipe(
+            R.toPairs,
+            R.map(keyObjectPair => [
+              keyObjectPair[0],
+              JSON.parse(keyObjectPair[1].pt)
+            ])
+          )(keyObjectMap);
+
+          return keyObjectPairs;
+        });
     };
 
     let onChange = function onChange(handleChange) {
@@ -263,6 +313,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R) {
 
   let storageService = {
     KEY_SEPARATOR,
+    prepare,
     getStorageKey,
     connect,
     isConnected,
