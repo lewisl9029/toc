@@ -17,6 +17,17 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
     return remoteStorage.remoteStorage.connected;
   };
 
+  let prepare = function prepareStorage() {
+    let deferredStorageReady = $q.defer();
+
+    remoteStorage.remoteStorage.on(
+      'ready',
+      () => deferredStorageReady.resolve()
+    );
+
+    return deferredStorageReady.promise;
+  };
+
   let enableLog = remoteStorage.remoteStorage.enableLog;
 
   let claimAccess =
@@ -188,13 +199,17 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
       let key = '';
 
       return $q.when(privateClient.getAll(key, false))
-        .then(R.pipe(
-          R.toPairs,
-          R.map(unencryptedKeyObjectPair => [
-            unencryptedKeyObjectPair[0],
-            JSON.parse(unencryptedKeyObjectPair[1].pt)
-          ])
-        ));
+        .then((keyObjectMap) => {
+          let keyObjectPairs = R.pipe(
+            R.toPairs,
+            R.map(keyObjectPair => [
+              keyObjectPair[0],
+              JSON.parse(keyObjectPair[1].pt)
+            ])
+          )(keyObjectMap);
+
+          return keyObjectPairs;
+        });
     };
 
     let onChange = function onChange(handleChange) {
@@ -298,6 +313,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
 
   let storageService = {
     KEY_SEPARATOR,
+    prepare,
     getStorageKey,
     connect,
     isConnected,

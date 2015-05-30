@@ -24,6 +24,13 @@
         </div>
       </div>
       <div class="toc-flex-footer">
+        <div class="row" ng-if="!homeView.isStorageConnected()">
+          <div class="col">
+            <button ui-sref="app.cloud" class="button button-block button-outline button-royal">
+              Connect a cloud account
+            </button>
+          </div>
+        </div>
         <div class="row">
           <div class="col">
             <button class="button button-block button-outline button-assertive"

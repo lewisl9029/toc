@@ -6,7 +6,7 @@ export default function WelcomeController(state, R, storage) {
   //   storage.connect('tocuser1@5apps.com');
   // };
 
-  this.isConnected = storage.isConnected;
+  this.isStorageConnected = storage.isConnected;
 
   this.users = R.keys(cloudUsers.get()).length;
 

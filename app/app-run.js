@@ -1,6 +1,6 @@
 export default function runApp($state, $rootScope, R, state, identity, contacts,
   network, notification, $q, $ionicPlatform, $location, $ionicHistory, $timeout,
-  navigation) {
+  navigation, storage) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default
     // Remove this to show the accessory bar above the keyboard for form inputs
@@ -34,7 +34,8 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
     return $state.go(redirectStateName);
   });
 
-  state.initialize()
+  storage.prepare()
+    .then(() => state.initialize())
     .then(() => {
       let localUsers = state.local.tree.get();
 

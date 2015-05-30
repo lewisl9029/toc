@@ -1,5 +1,5 @@
 export default function HomeController(state, identity, network, notification,
-  $ionicPopup, $q, $window) {
+  $ionicPopup, $q, $window, storage) {
   let currentUserCursor = state.cloud.cursors.identity;
 
   let activeChannelId = state.cloud.cursors.network.get(
@@ -13,6 +13,8 @@ export default function HomeController(state, identity, network, notification,
       'home'
     );
   }
+
+  this.isStorageConnected = storage.isConnected;
 
   this.showSignoutConfirm = function showSignoutConfirm() {
     let signoutPopup = $ionicPopup.confirm({
