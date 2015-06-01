@@ -1,9 +1,9 @@
 export default function contacts($q, R, state, network) {
   let invite = function inviteContact(contactId) {
-    let userInfo = state.cloud.cursors.identity.get('userInfo');
+    let userInfo = state.cloud.identity.get('userInfo');
     let contactChannel = network.createContactChannel(userInfo.id, contactId);
 
-    let existingContact = state.cloud.cursors.contacts
+    let existingContact = state.cloud.contacts
       .get([contactId, 'userInfo']);
 
     let contact = existingContact || {
@@ -33,12 +33,12 @@ export default function contacts($q, R, state, network) {
 
     return recursivelySendInvite()
       .then(() => state.save(
-        state.cloud.cursors.contacts,
+        state.cloud.contacts,
         [contactId, 'userInfo'],
         contact
       ))
       .then(() => state.save(
-        state.cloud.cursors.network,
+        state.cloud.network,
         ['channels', contactChannel.id, 'channelInfo'],
         contactChannel
       ))
@@ -46,7 +46,7 @@ export default function contacts($q, R, state, network) {
   };
 
   let initialize = function initializeContacts() {
-    let contactsCursor = state.cloud.cursors.contacts;
+    let contactsCursor = state.cloud.contacts;
 
     R.pipe(
       R.keys,

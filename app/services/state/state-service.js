@@ -8,7 +8,12 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
   $window.tocState = stateService;
   $window.baobab = Baobab;
 
-  stateService.tree = new Baobab({});
+  stateService.tree = new Baobab({
+    memory: {},
+    local: {},
+    cloudUnencrypted: {},
+    cloud: {}
+  });
 
   stateService.tree.on('update',
     () => setTimeout(() => $rootScope.$apply())
@@ -85,7 +90,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
   let savePersistent =
     function savePersistent(cursor, relativePath, object, store) {
       let storageKey = storage.getStorageKey(
-        R.concat(cursor.path, relativePath)
+        R.concat(R.drop(1, cursor.path), relativePath)
       );
 
       return store.storeObject(storageKey, object)
@@ -120,7 +125,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
   let removePersistent =
     function removePersistent(cursor, relativePath, store) {
       let storageKey = storage.getStorageKey(
-        R.concat(cursor.path, relativePath)
+        R.concat(R.drop(1, cursor.path), relativePath)
       );
 
       if (cursor.get() === undefined) {
@@ -149,7 +154,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
       return;
     }
 
-    stateService.cloud.tree.set(
+    stateService.cloud.cursor.set(
       getStatePath(event.relativePath),
       event.newValue
     );
@@ -161,35 +166,34 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
         return;
       }
 
-      stateService.cloudUnencrypted.tree.set(
+      stateService.cloudUnencrypted.cursor.set(
         getStatePath(event.relativePath),
         event.newValue
       );
     };
 
-  let initializeStore = function initializeStore(stateModule, store) {
-    stateModule.store = store;
-
-    return store.getAllObjects()
+  let initializeStore = function initializeStore(stateModule) {
+    return stateModule.store.getAllObjects()
       .then((keyObjectPairs) => {
         R.forEach(keyObjectPair => stateModule.cursor.set(
           getStatePath(keyObjectPair[0]),
           keyObjectPair[1]
         ))(keyObjectPairs);
-        stateModule.cursor.commit();
+        stateModule.cursor.tree.commit();
         return keyObjectPairs;
       });
   };
 
+  let initializeLocal = function initializeLocal() {
+    return initializeStore(stateService.local);
+  };
+
   let initializeCloud = function initializeCloud() {
-    return initializeStore(stateService.cloud, storage.cloud);
+    return initializeStore(stateService.cloud);
   };
 
   let initializeCloudUnencrypted = function initializeCloudUnencrypted() {
-    return initializeStore(
-      stateService.cloudUnencrypted,
-      storage.cloudUnencrypted
-    );
+    return initializeStore(stateService.cloudUnencrypted);
   };
 
   stateService.initializeUserCursors = initializeUserCursors;
@@ -206,7 +210,6 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
   stateService.cloud.remove = removePersistent;
 
   stateService.addListener = addListener;
-  stateService.cloudUnencrypted.initialize = initializeCloudUnencrypted;
   stateService.cloud.initialize = initializeCloud;
 
   let save = function save(cursor, relativePath, object) {
@@ -222,13 +225,14 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
   let initialize = function initialize() {
     storage.initialize();
 
+    stateService.local.store = storage.local;
+    stateService.cloudUnencrypted.store = storage.cloudUnencrypted;
+    stateService.cloud.store = storage.cloud;
+
     storage.cloud.onChange(handleChangeCloud);
     storage.cloudUnencrypted.onChange(handleChangeCloudUnencrypted);
-    return initializeStore(stateService.local, storage.local)
-      .then(() => initializeStore(
-        stateService.cloudUnencrypted,
-        storage.cloudUnencrypted
-      ));
+    return initializeLocal()
+      .then(() => initializeCloudUnencrypted());
   };
 
   stateService.save = save;

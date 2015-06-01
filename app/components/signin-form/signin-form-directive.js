@@ -25,7 +25,7 @@ export default function tocSigninForm() {
           R.sortBy((user) => user.latestSession ? user.latestSession * -1 : 0)
         )(this.model.users);
       };
-      
+
       state.addListener(savedUsersCursor, updateSavedUsers, $scope);
 
       this.model.selectedUser = this.model.userList[0] ?
@@ -43,7 +43,7 @@ export default function tocSigninForm() {
           .then(() => state.cloud.initialize(userCredentials.id))
           .then(() => contacts.initialize())
           .then(() => {
-            let sessionInfo = state.cloud.cursors.network.get(
+            let sessionInfo = state.cloud.network.get(
               ['sessions', userCredentials.id, 'sessionInfo']
             );
 
@@ -51,7 +51,7 @@ export default function tocSigninForm() {
               .then(() => network.initializeChannels());
           })
           .then(() => state.save(
-            state.cloudUnencrypted.cursors.identity,
+            state.cloudUnencrypted.identity,
             ['latestSession'],
             Date.now()
           ))

@@ -24,7 +24,7 @@ export default function identity($q, state, R, cryptography) {
 
     if (options.staySignedIn) {
       state.save(
-        state.local.cursors.identity,
+        state.local.identity,
         ['savedCredentials'],
         savedCredentials
       );
@@ -34,7 +34,7 @@ export default function identity($q, state, R, cryptography) {
   };
 
   let authenticate = function authenticateIdentity(userCredentials, options) {
-    let challenge = state.cloudUnencrypted.cursors.identity
+    let challenge = state.cloudUnencrypted.identity
       .get(['userInfo']).challenge;
 
     let savedCredentials;
@@ -50,7 +50,7 @@ export default function identity($q, state, R, cryptography) {
 
     if (options.staySignedIn) {
       state.save(
-        state.local.cursors.identity,
+        state.local.identity,
         ['savedCredentials'],
         savedCredentials
       );
@@ -73,22 +73,22 @@ export default function identity($q, state, R, cryptography) {
   };
 
   let initialize = function initializeIdentity(userId) {
-    state.initializeCursors(userId);
-
-    return state.save(
-      state.memory.cursors.identity,
-      ['currentUser'],
-      userId
-    );
+    state.initializeUserCursors(userId);
+    return $q.when();
+    // return state.save(
+    //   state.memory.cursors.identity,
+    //   ['currentUser'],
+    //   userId
+    // );
   };
 
   let destroy = function destroyIdentity() {
-    state.destroyCursors();
-
-    return state.remove(
-      state.memory.cursors.identity,
-      ['currentUser']
-    );
+    state.destroyUserCursors();
+    return $q.when();
+    // return state.remove(
+    //   state.memory.cursors.identity,
+    //   ['currentUser']
+    // );
   };
 
   return {

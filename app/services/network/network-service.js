@@ -44,11 +44,11 @@ export default function network($q, $window, $interval, R, state, telehash,
     let contactInfo = invitePayload;
 
     let userId =
-      state.cloud.cursors.identity.get(['userInfo']).id;
+      state.cloud.identity.get(['userInfo']).id;
 
     let channel = createContactChannel(userId, contactInfo.id);
 
-    let existingChannel = state.cloud.cursors.network
+    let existingChannel = state.cloud.network
       .get(['channels', channel.id, 'channelInfo']);
 
     let statusId = 1; //online
@@ -56,17 +56,17 @@ export default function network($q, $window, $interval, R, state, telehash,
     channel.pendingAccept = !existingChannel;
 
     return state.save(
-        state.cloud.cursors.network,
+        state.cloud.network,
         ['channels', channel.id, 'channelInfo'],
         channel
       )
       .then(() => state.save(
-        state.cloud.cursors.contacts,
+        state.cloud.contacts,
         [contactInfo.id, 'userInfo'],
         contactInfo
       ))
       .then(() => state.save(
-        state.cloud.cursors.contacts,
+        state.cloud.contacts,
         [contactInfo.id, 'statusId'],
         statusId
       ));
@@ -75,7 +75,7 @@ export default function network($q, $window, $interval, R, state, telehash,
   let handleStatus = function handleStatus(statusPayload, contactId) {
     let statusId = statusPayload;
 
-    let contactCursor = state.cloud.cursors.contacts
+    let contactCursor = state.cloud.contacts
       .select([contactId]);
 
     let currentContactStatus = contactCursor.get(['statusId']);
@@ -85,7 +85,7 @@ export default function network($q, $window, $interval, R, state, telehash,
     }
 
     return state.save(
-      state.cloud.cursors.contacts,
+      state.cloud.contacts,
       [contactId, 'statusId'],
       statusId
     );
@@ -108,7 +108,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       content: messageContent
     };
 
-    let channelCursor = state.cloud.cursors.network.select(
+    let channelCursor = state.cloud.network.select(
       ['channels', channelId]
     );
 
@@ -129,13 +129,13 @@ export default function network($q, $window, $interval, R, state, telehash,
       ))
       .then(() => {
         let activeChannelId =
-          state.cloud.cursors.network.get(['activeChannelId']);
+          state.cloud.network.get(['activeChannelId']);
         if (activeChannelId === channelId &&
           channelCursor.get(['viewingLatest'])) {
           return $q.when();
         }
 
-        let contactName = state.cloud.cursors.contacts.get(
+        let contactName = state.cloud.contacts.get(
           [contactId, 'userInfo', 'displayName']
         );
 
@@ -237,7 +237,7 @@ export default function network($q, $window, $interval, R, state, telehash,
         return $q.reject(error);
       }
 
-      let contactCursor = state.cloud.cursors.contacts
+      let contactCursor = state.cloud.contacts
         .select([contactId]);
 
       // do not change status back to offline if contact was already offline
@@ -249,7 +249,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       }
 
       return state.save(
-        state.cloud.cursors.contacts,
+        state.cloud.contacts,
         [contactId, 'statusId'],
         0
       );
@@ -269,14 +269,14 @@ export default function network($q, $window, $interval, R, state, telehash,
   };
 
   let sendStatus = function sendStatus(contactId, statusId) {
-    let userId = state.cloud.cursors.identity.get().userInfo.id;
+    let userId = state.cloud.identity.get().userInfo.id;
     let contactChannel = createContactChannel(userId, contactId);
 
     let payload = {
       s: statusId
     };
 
-    let contactCursor = state.cloud.cursors.contacts.select([contactId]);
+    let contactCursor = state.cloud.contacts.select([contactId]);
 
     let previousContactStatusId = contactCursor.get(['statusId']);
 
@@ -307,7 +307,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       let sentTime = acknowledgement.s;
       let receivedTime = acknowledgement.r;
 
-      let userId = state.cloud.cursors.identity.get().userInfo.id;
+      let userId = state.cloud.identity.get().userInfo.id;
       let messageId = sentTime + '-' + userId;
 
       let message = {
@@ -321,7 +321,7 @@ export default function network($q, $window, $interval, R, state, telehash,
       };
 
       return state.save(
-        state.cloud.cursors.network.select(
+        state.cloud.network.select(
           ['channels', channelInfo.id, 'messages']
         ),
         [messageId, 'messageInfo'],
@@ -331,7 +331,7 @@ export default function network($q, $window, $interval, R, state, telehash,
 
     let contactId = channelInfo.contactIds[0];
 
-    let previousContactStatusId = state.cloud.cursors.contacts
+    let previousContactStatusId = state.cloud.contacts
       .select([contactId]).get(['statusId']);
 
     if (previousContactStatusId === undefined) {
@@ -368,7 +368,7 @@ export default function network($q, $window, $interval, R, state, telehash,
         return $q.when();
       })
       .then(() => {
-        let channelCursor = state.cloud.cursors.network.select([
+        let channelCursor = state.cloud.network.select([
           'channels', channelInfo.id
         ]);
 
@@ -384,7 +384,7 @@ export default function network($q, $window, $interval, R, state, telehash,
   };
 
   let initializeChannels = function initializeChannels() {
-    let channels = state.cloud.cursors.network.get(['channels']);
+    let channels = state.cloud.network.get(['channels']);
 
     R.pipe(
       R.values,
@@ -393,7 +393,7 @@ export default function network($q, $window, $interval, R, state, telehash,
     )(channels);
 
     $window.onbeforeunload = () => {
-      let contactsCursor = state.cloud.cursors.contacts;
+      let contactsCursor = state.cloud.contacts;
 
       R.pipe(
         R.keys,

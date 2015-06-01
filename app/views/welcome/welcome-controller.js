@@ -1,5 +1,5 @@
 export default function WelcomeController(state, R, storage) {
-  let cloudUsers = state.cloudUnencrypted.tree;
+  let cloudUsers = state.cloudUnencrypted.cursor;
 
   // this.chooseAccount = function chooseAccount() {
   //   storage.claimAccess(R.keys(cloudUsers.get()[0]));
