@@ -10,20 +10,74 @@ System.config({
     "*": "*.js",
     "github:*": "dependencies/github/*.js",
     "npm:*": "dependencies/npm/*.js"
+  },
+  "bundles": {
+    "libraries": [
+      "github:angular/bower-angular@1.3.15/angular",
+      "github:driftyco/ionic@1.0.0/release/js/ionic",
+      "github:angular/bower-angular-animate@1.3.15/angular-animate",
+      "github:angular/bower-angular-sanitize@1.3.15/angular-sanitize",
+      "github:angular-ui/ui-router@0.2.15/angular-ui-router",
+      "npm:emmett@3.0.0/emmett",
+      "npm:baobab@1.0.2/src/facet",
+      "npm:baobab@1.0.2/defaults",
+      "npm:baobab@1.0.2/src/update",
+      "npm:baobab@1.0.2/src/merge",
+      "npm:angular-toastr@1.3.1/dist/angular-toastr.tpls",
+      "npm:moment@2.10.2/moment",
+      "npm:process@0.10.1/browser",
+      "npm:remotestoragejs@0.11.2/release/0.11.2/remotestorage",
+      "npm:qr-encode@0.3.0/lib/b64encode",
+      "npm:qr-encode@0.3.0/lib/byte-array",
+      "npm:qr-encode@0.3.0/lib/math",
+      "npm:qr-encode@0.3.0/lib/polynomial",
+      "npm:qr-encode@0.3.0/lib/constants",
+      "npm:qr-encode@0.3.0/lib/bit-buffer",
+      "npm:qr-encode@0.3.0/lib/string",
+      "npm:qr-encode@0.3.0/lib/bit-byte",
+      "npm:qr-encode@0.3.0/lib/rsblock",
+      "npm:qr-encode@0.3.0/lib/gif",
+      "libraries/telehash/telehash-library",
+      "github:angular/bower-angular@1.3.15",
+      "github:angular/bower-angular-animate@1.3.15",
+      "github:angular/bower-angular-sanitize@1.3.15",
+      "github:angular-ui/ui-router@0.2.15",
+      "npm:emmett@3.0.0",
+      "npm:baobab@1.0.2/src/type",
+      "npm:angular-toastr@1.3.1",
+      "npm:moment@2.10.2",
+      "npm:process@0.10.1",
+      "npm:remotestoragejs@0.11.2",
+      "npm:qr-encode@0.3.0/lib/qr",
+      "libraries/telehash/telehash",
+      "github:driftyco/ionic@1.0.0/release/js/ionic-angular",
+      "npm:baobab@1.0.2/src/helpers",
+      "libraries/angular-toastr/angular-toastr",
+      "libraries/moment/moment",
+      "github:jspm/nodelibs-process@0.1.1/index",
+      "libraries/remote-storage/remote-storage",
+      "npm:qr-encode@0.3.0/lib/qr-encode",
+      "github:driftyco/ionic@1.0.0",
+      "npm:baobab@1.0.2/src/cursor",
+      "github:jspm/nodelibs-process@0.1.1",
+      "npm:qr-encode@0.3.0",
+      "libraries/ionic/ionic",
+      "npm:baobab@1.0.2/src/baobab",
+      "npm:ramda@0.11.0/dist/ramda",
+      "libraries/qr-encode/qr-encode",
+      "npm:baobab@1.0.2/index",
+      "npm:ramda@0.11.0",
+      "npm:baobab@1.0.2",
+      "libraries/ramda/ramda",
+      "libraries/baobab/baobab",
+      "libraries/forge/forge",
+      "libraries/libraries"
+    ]
   }
 });
 
 System.config({
   "depCache": {
-    "github:angular/bower-angular-animate@1.3.15/angular-animate": [
-      "github:angular/bower-angular@1.3.15"
-    ],
-    "github:angular/bower-angular-sanitize@1.3.15/angular-sanitize": [
-      "github:angular/bower-angular@1.3.15"
-    ],
-    "github:angular-ui/ui-router@0.2.10/release/angular-ui-router": [
-      "github:angular/bower-angular@1.3.15"
-    ],
     "npm:core-js@0.9.6/library/modules/$.enum-keys": [
       "npm:core-js@0.9.6/library/modules/$"
     ],
@@ -154,6 +208,15 @@ System.config({
       "npm:node-forge@0.6.26/js/log",
       "npm:node-forge@0.6.26/js/util"
     ],
+    "github:angular/bower-angular-animate@1.3.15/angular-animate": [
+      "github:angular/bower-angular@1.3.15"
+    ],
+    "github:angular/bower-angular-sanitize@1.3.15/angular-sanitize": [
+      "github:angular/bower-angular@1.3.15"
+    ],
+    "github:angular-ui/ui-router@0.2.15/angular-ui-router": [
+      "github:angular/bower-angular@1.3.15"
+    ],
     "npm:baobab@1.0.2/src/facet": [
       "npm:emmett@3.0.0",
       "npm:baobab@1.0.2/src/cursor",
@@ -183,15 +246,6 @@ System.config({
     ],
     "github:angular/bower-angular@1.3.15": [
       "github:angular/bower-angular@1.3.15/angular"
-    ],
-    "github:angular/bower-angular-animate@1.3.15": [
-      "github:angular/bower-angular-animate@1.3.15/angular-animate"
-    ],
-    "github:angular/bower-angular-sanitize@1.3.15": [
-      "github:angular/bower-angular-sanitize@1.3.15/angular-sanitize"
-    ],
-    "github:angular-ui/ui-router@0.2.10": [
-      "github:angular-ui/ui-router@0.2.10/release/angular-ui-router"
     ],
     "npm:process@0.10.1": [
       "npm:process@0.10.1/browser"
@@ -241,9 +295,9 @@ System.config({
     "npm:core-js@0.9.6/library/modules/es7.map.to-json": [
       "npm:core-js@0.9.6/library/modules/$.collection-to-json"
     ],
-    "services/layout/layout": [
+    "services/navigation/navigation": [
       "github:angular/bower-angular@1.3.15",
-      "services/layout/layout-service"
+      "services/navigation/navigation-service"
     ],
     "libraries/telehash/telehash": [
       "github:angular/bower-angular@1.3.15",
@@ -286,6 +340,15 @@ System.config({
     "npm:moment@2.10.2": [
       "npm:moment@2.10.2/moment"
     ],
+    "github:angular/bower-angular-animate@1.3.15": [
+      "github:angular/bower-angular-animate@1.3.15/angular-animate"
+    ],
+    "github:angular/bower-angular-sanitize@1.3.15": [
+      "github:angular/bower-angular-sanitize@1.3.15/angular-sanitize"
+    ],
+    "github:angular-ui/ui-router@0.2.15": [
+      "github:angular-ui/ui-router@0.2.15/angular-ui-router"
+    ],
     "npm:emmett@3.0.0": [
       "npm:emmett@3.0.0/emmett"
     ],
@@ -323,6 +386,10 @@ System.config({
     "views/signup/signup-config": [
       "views/signup/signup.html!github:systemjs/plugin-text@0.0.2"
     ],
+    "views/cloud/cloud-config": [
+      "views/cloud/cloud.html!github:systemjs/plugin-text@0.0.2",
+      "views/cloud/cloud-controller"
+    ],
     "components/header/header-directive": [
       "components/header/header.html!github:systemjs/plugin-text@0.0.2"
     ],
@@ -351,15 +418,14 @@ System.config({
       "components/signin-form/signin-form.html!github:systemjs/plugin-text@0.0.2",
       "components/signin-form/signin-form-user-list.html!github:systemjs/plugin-text@0.0.2"
     ],
+    "components/cloud-connect-form/cloud-connect-form-directive": [
+      "components/cloud-connect-form/cloud-connect-form.html!github:systemjs/plugin-text@0.0.2"
+    ],
+    "components/cloud-manage-form/cloud-manage-form-directive": [
+      "components/cloud-manage-form/cloud-manage-form.html!github:systemjs/plugin-text@0.0.2"
+    ],
     "app-config": [
       "app.html!github:systemjs/plugin-text@0.0.2"
-    ],
-    "github:driftyco/ionic@1.0.0/release/js/ionic-angular": [
-      "github:driftyco/ionic@1.0.0/release/js/ionic",
-      "github:angular/bower-angular@1.3.15",
-      "github:angular/bower-angular-animate@1.3.15",
-      "github:angular/bower-angular-sanitize@1.3.15",
-      "github:angular-ui/ui-router@0.2.15"
     ],
     "github:jspm/nodelibs-process@0.1.1/index": [
       "npm:process@0.10.1"
@@ -445,6 +511,13 @@ System.config({
       "github:angular/bower-angular@1.3.15",
       "npm:moment@2.10.2"
     ],
+    "github:driftyco/ionic@1.0.0/release/js/ionic-angular": [
+      "github:driftyco/ionic@1.0.0/release/js/ionic",
+      "github:angular/bower-angular@1.3.15",
+      "github:angular/bower-angular-animate@1.3.15",
+      "github:angular/bower-angular-sanitize@1.3.15",
+      "github:angular-ui/ui-router@0.2.15"
+    ],
     "npm:baobab@1.0.2/src/helpers": [
       "npm:baobab@1.0.2/src/type"
     ],
@@ -459,8 +532,7 @@ System.config({
     "views/home/home": [
       "github:angular/bower-angular@1.3.15",
       "views/home/home-config",
-      "views/home/home-controller",
-      "views/home/home-service"
+      "views/home/home-controller"
     ],
     "views/welcome/welcome": [
       "github:angular/bower-angular@1.3.15",
@@ -474,6 +546,11 @@ System.config({
     "views/signup/signup": [
       "github:angular/bower-angular@1.3.15",
       "views/signup/signup-config"
+    ],
+    "views/cloud/cloud": [
+      "github:angular/bower-angular@1.3.15",
+      "views/cloud/cloud-config",
+      "views/cloud/cloud-controller"
     ],
     "components/header/header": [
       "github:angular/bower-angular@1.3.15",
@@ -496,8 +573,13 @@ System.config({
       "components/signin-form/signin-form-directive",
       "components/signin-form/signin-form-service"
     ],
-    "github:driftyco/ionic@1.0.0": [
-      "github:driftyco/ionic@1.0.0/release/js/ionic-angular"
+    "components/cloud-connect-form/cloud-connect-form": [
+      "github:angular/bower-angular@1.3.15",
+      "components/cloud-connect-form/cloud-connect-form-directive"
+    ],
+    "components/cloud-manage-form/cloud-manage-form": [
+      "github:angular/bower-angular@1.3.15",
+      "components/cloud-manage-form/cloud-manage-form-directive"
     ],
     "github:jspm/nodelibs-process@0.1.1": [
       "github:jspm/nodelibs-process@0.1.1/index"
@@ -537,6 +619,9 @@ System.config({
       "github:angular/bower-angular@1.3.15",
       "libraries/moment/moment",
       "services/time/time-service"
+    ],
+    "github:driftyco/ionic@1.0.0": [
+      "github:driftyco/ionic@1.0.0/release/js/ionic-angular"
     ],
     "npm:baobab@1.0.2/src/cursor": [
       "npm:emmett@3.0.0",
@@ -595,6 +680,9 @@ System.config({
       "npm:node-forge@0.6.26/js/rsa",
       "npm:node-forge@0.6.26/js/util",
       "npm:node-forge@0.6.26/js/x509"
+    ],
+    "libraries/ionic/ionic": [
+      "github:driftyco/ionic@1.0.0"
     ],
     "npm:baobab@1.0.2/src/baobab": [
       "npm:baobab@1.0.2/src/cursor",
@@ -709,6 +797,7 @@ System.config({
     ],
     "libraries/libraries": [
       "github:angular/bower-angular@1.3.15",
+      "libraries/ionic/ionic",
       "libraries/baobab/baobab",
       "libraries/angular-toastr/angular-toastr",
       "libraries/moment/moment",
@@ -741,7 +830,6 @@ System.config({
     ],
     "app": [
       "github:angular/bower-angular@1.3.15",
-      "github:driftyco/ionic@1.0.0",
       "app.css!github:systemjs/plugin-css@0.1.10",
       "services/services",
       "libraries/libraries",
@@ -750,39 +838,6 @@ System.config({
       "app-run",
       "app-config",
       "app-controller"
-    ],
-    "github:angular-ui/ui-router@0.2.15": [
-      "github:angular-ui/ui-router@0.2.15/angular-ui-router"
-    ],
-    "github:angular-ui/ui-router@0.2.15/angular-ui-router": [
-      "github:angular/bower-angular@1.3.15"
-    ],
-    "views/cloud/cloud-config": [
-      "views/cloud/cloud.html!github:systemjs/plugin-text@0.0.2",
-      "views/cloud/cloud-controller"
-    ],
-    "components/cloud-connect-form/cloud-connect-form-directive": [
-      "components/cloud-connect-form/cloud-connect-form.html!github:systemjs/plugin-text@0.0.2"
-    ],
-    "views/cloud/cloud": [
-      "github:angular/bower-angular@1.3.15",
-      "views/cloud/cloud-config",
-      "views/cloud/cloud-controller"
-    ],
-    "components/cloud-connect-form/cloud-connect-form": [
-      "github:angular/bower-angular@1.3.15",
-      "components/cloud-connect-form/cloud-connect-form-directive"
-    ],
-    "services/navigation/navigation": [
-      "github:angular/bower-angular@1.3.15",
-      "services/navigation/navigation-service"
-    ],
-    "components/cloud-manage-form/cloud-manage-form-directive": [
-      "components/cloud-manage-form/cloud-manage-form.html!github:systemjs/plugin-text@0.0.2"
-    ],
-    "components/cloud-manage-form/cloud-manage-form": [
-      "github:angular/bower-angular@1.3.15",
-      "components/cloud-manage-form/cloud-manage-form-directive"
     ]
   }
 });
