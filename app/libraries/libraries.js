@@ -1,4 +1,5 @@
 import angular from 'angular';
+import './ionic/ionic';
 
 import Baobab from './baobab/baobab';
 import angularToastr from './angular-toastr/angular-toastr';
