@@ -42,6 +42,8 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
 
     stateService.cloudUnencrypted.identity = stateService.cloudUnencrypted
       .cursor.select([userId, 'identity']);
+    stateService.cloudUnencrypted.state = stateService.cloudUnencrypted.cursor
+      .select([userId, 'state']);
 
     stateService.cloud.identity = stateService.cloud.cursor
       .select([userId, 'identity']);
@@ -49,19 +51,20 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
       .select([userId, 'contacts']);
     stateService.cloud.network = stateService.cloud.cursor
       .select([userId, 'network']);
-    stateService.cloud.state = stateService.cloud.cursor
-      .select([userId, 'state']);
+    stateService.cloud.channels = stateService.cloud.cursor
+      .select([userId, 'channels']);
   };
 
   let destroyUserCursors = function destroyUserCursors() {
     stateService.local.identity = undefined;
 
     stateService.cloudUnencrypted.identity = undefined;
+    stateService.cloudUnencrypted.state = undefined;
 
     stateService.cloud.identity = undefined;
     stateService.cloud.contacts = undefined;
     stateService.cloud.network = undefined;
-    stateService.cloud.state = undefined;
+    stateService.cloud.channels = undefined;
   };
 
   let saveVolatile =
@@ -132,6 +135,15 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
         .catch((error) => notification.error(error, 'State Delete Error'));
     };
 
+  let addListener = function addListener(cursor, handleUpdate, scope) {
+    handleUpdate();
+    cursor.on('update', handleUpdate);
+
+    if (scope) {
+      $scope.$on('destroy', () => cursor.off('update', handleUpdate));
+    }
+  };
+
   let handleChangeCloud = function handleChangeCloud(event) {
     if (event.oldValue === event.newValue) {
       return;
@@ -193,6 +205,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
   stateService.cloudUnencrypted.remove = removePersistent;
   stateService.cloud.remove = removePersistent;
 
+  stateService.addListener = addListener;
   stateService.cloudUnencrypted.initialize = initializeCloudUnencrypted;
   stateService.cloud.initialize = initializeCloud;
 

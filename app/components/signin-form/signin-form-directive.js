@@ -16,20 +16,23 @@ export default function tocSigninForm() {
         $ionicHistory.goBack();
       };
 
-      let localUsers = state.cloudUnencrypted.tree;
+      let savedUsersCursor = state.cloudUnencrypted.cursor;
 
-      this.model.users = R.mapObj(R.prop('identity'))(localUsers.get());
-      this.model.userList = R.pipe(
-        R.values,
-        R.sortBy((user) => user.latestSession ? user.latestSession * -1 : 0)
-      )(this.model.users) || [];
+      let updateSavedUsers = () => {
+        this.model.users = R.mapObj(R.prop('identity'))(savedUsersCursor.get());
+        this.model.userList = R.pipe(
+          R.values,
+          R.sortBy((user) => user.latestSession ? user.latestSession * -1 : 0)
+        )(this.model.users);
+      };
+      
+      state.addListener(savedUsersCursor, updateSavedUsers, $scope);
 
       this.model.selectedUser = this.model.userList[0] ?
         this.model.userList[0].userInfo.id : undefined;
       this.model.password = '';
       this.model.staySignedIn = false;
 
-      //TODO: add check for already signed in users (i.e. hitting back button)?
       this.signIn = function(userCredentials) {
         let options = {
           staySignedIn: this.model.staySignedIn
@@ -75,15 +78,6 @@ export default function tocSigninForm() {
       });
 
       this.userListModal = $scope.userListModal;
-
-      //FIXME: dangling listener, clean up on destroy
-      localUsers.on('update', () => {
-        this.model.users = R.mapObj(R.prop('identity'))(localUsers.get());
-        this.model.userList = R.pipe(
-          R.values,
-          R.sortBy((user) => user.latestSession ? user.latestSession * -1 : 0)
-        )(this.model.users);
-      });
     }
   };
 }
