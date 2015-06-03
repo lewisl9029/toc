@@ -1,4 +1,4 @@
-export default function WelcomeController(state, R, storage) {
+export default function WelcomeController(state, R, storage, $scope) {
   this.isStorageConnected = storage.isConnected;
 
   let savedUsersCursor = state.cloudUnencrypted.cursor;
