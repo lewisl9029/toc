@@ -1,5 +1,5 @@
 export default function ChannelController($q, $stateParams, state, network,
-  notification) {
+  notification, $scope) {
   this.channelId = $stateParams.channelId;
 
   let channelCursor = state.cloud.network
@@ -10,10 +10,26 @@ export default function ChannelController($q, $stateParams, state, network,
   this.contact = contactCursor.get(
     channelCursor.get(['channelInfo', 'contactIds'])[0]
   );
+  let updateTitle = () => {
+    this.title = this.contact.userInfo.displayName;
+  };
 
-  this.title = this.contact.userInfo.displayName;
+  state.addListener(contactCursor, updateTitle, $scope);
+
+  let updateContact = () => {
+    this.contact = contactCursor.get(
+      //TODO: refactor data dependency between contacts and channels
+      channelCursor.get(['channelInfo', 'contactIds'])[0]
+    );
+  };
+
+  state.addListener(contactCursor, updateContact, $scope);
+  state.addListener(channelCursor, updateContact, $scope, {
+    skipInitialize: true
+  });
 
   this.message = '';
+  //TODO: add to offline message queue instead of blocking further input
   this.send = () => {
     const MAX_ATTEMPTS = 3;
     let attemptCount = 0;
@@ -58,10 +74,4 @@ export default function ChannelController($q, $stateParams, state, network,
 
     return this.sending;
   };
-
-  contactCursor.on('update', () => {
-    this.contact = contactCursor.get(
-      channelCursor.get(['channelInfo', 'contactIds'])[0]
-    );
-  });
 }

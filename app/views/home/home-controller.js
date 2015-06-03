@@ -1,6 +1,5 @@
 export default function HomeController(state, identity, network, notification,
-  $ionicPopup, $q, $window, storage) {
-  let currentUserCursor = state.cloud.identity;
+  $ionicPopup, $q, $window, storage, $scope) {
 
   let activeChannelId = state.cloud.network.get(
     ['activeChannelId']
@@ -14,6 +13,14 @@ export default function HomeController(state, identity, network, notification,
     );
   }
 
+  let currentUserCursor = state.cloud.identity;
+  let updateCurrentUser = () => {
+    this.currentUser = currentUserCursor.get();
+  };
+
+  state.addListener(currentUserCursor, updateCurrentUser, $scope);
+
+  //FIXME: this should probably go into state.memory if possible
   this.isStorageConnected = storage.isConnected;
 
   this.showSignoutConfirm = function showSignoutConfirm() {
@@ -37,10 +44,4 @@ export default function HomeController(state, identity, network, notification,
         .catch((error) => notification.error(error, 'Signout Error'));
     });
   };
-
-  this.currentUser = currentUserCursor.get();
-
-  currentUserCursor.on('update', () => {
-    this.currentUser = currentUserCursor.get();
-  });
 }

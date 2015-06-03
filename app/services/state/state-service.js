@@ -15,6 +15,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
     cloud: {}
   });
 
+  //TODO: test baobab event batching and tweak manual commit timing
   stateService.tree.on('update',
     () => setTimeout(() => $rootScope.$apply())
   );
@@ -140,12 +141,15 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
         .catch((error) => notification.error(error, 'State Delete Error'));
     };
 
-  let addListener = function addListener(cursor, handleUpdate, scope) {
-    handleUpdate();
+  let addListener = function addListener(cursor, handleUpdate, scope, options) {
+    if (!options || !options.skipInitialize) {
+      handleUpdate();
+    }
+
     cursor.on('update', handleUpdate);
 
     if (scope) {
-      $scope.$on('destroy', () => cursor.off('update', handleUpdate));
+      scope.$on('destroy', () => cursor.off('update', handleUpdate));
     }
   };
 

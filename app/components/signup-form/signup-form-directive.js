@@ -6,7 +6,7 @@ export default function tocSignupForm() {
     template: template,
     controllerAs: 'signupForm',
     controller: function SignupFormController($q, $state, state, identity,
-      network, notification, storage, $ionicHistory) {
+      network, notification, storage, $ionicHistory, $scope) {
       this.goBack = function goBack() {
         $ionicHistory.goBack();
       };
@@ -74,13 +74,12 @@ export default function tocSignupForm() {
         return this.signingUp;
       };
 
-      let localUsers = state.cloudUnencrypted.cursor;
+      let savedUsersCursor = state.cloudUnencrypted.cursor;
+      let updateSavedUsers = () => {
+        this.users = savedUsersCursor.get();
+      };
 
-      this.users = localUsers.get();
-
-      localUsers.on('update', () => {
-        this.users = localUsers.get();
-      });
+      state.addListener(savedUsersCursor, updateSavedUsers, $scope);
     }
   };
 }

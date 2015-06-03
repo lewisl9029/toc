@@ -13,7 +13,7 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
 
       $ionicScrollDelegate.scrollBottom(false);
 
-      messagesCursor.on('update', () => {
+      let updateMessageListPosition = () => {
         let scrollView = $ionicScrollDelegate.getScrollView();
 
         if (scrollView.__scrollTop !== scrollView.__maxScrollTop) {
@@ -35,21 +35,32 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
             true
           ))
         )(messages);
+      };
+
+      state.addListener(messagesCursor, updateMessageListPosition, scope, {
+        skipInitialize: true
       });
     },
     controllerAs: 'messageList',
     controller: function MessageListController($scope, $state, $interval) {
+      //TODO: clean up this whole thing (refactor message functions to service)
+      // add state listeners and cleanup on destroy
       let channelsCursor = state.cloud.network
         .select('channels');
 
       let contactsCursor = state.cloud.contacts;
+      let updateContacts = () => {
+        this.contacts = contactsCursor.get();
+      };
+
+      state.addListener(contactsCursor, updateContacts, $scope);
+
       let identityCursor = state.cloud.identity;
+      let updateUserInfo = () => {
+        this.userInfo = identityCursor.get(['userInfo']);
+      };
 
-      let messagesCursor = state.cloud.network
-        .select(['channels', $scope.channelId, 'messages']);
-
-      this.contacts = contactsCursor.get();
-      this.userInfo = identityCursor.get(['userInfo']);
+      state.addListener(identityCursor, updateUserInfo, $scope);
 
       let getMessageList = function getMessageList(messages) {
         return R.pipe(
@@ -87,14 +98,17 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
         )(messages);
       };
 
-      this.groupedMessages = getMessageList(messagesCursor.get());
-
-      messagesCursor.on('update', () => {
+      let messagesCursor = state.cloud.network
+        .select(['channels', $scope.channelId, 'messages']);
+      let updateGroupedMessages = () => {
         this.groupedMessages = getMessageList(messagesCursor.get());
-      });
+      };
 
-      //TODO: write a more performant version of this
+      state.addListener(messagesCursor, updateGroupedMessages, $scope);
+
       $interval(() => {
+        //Updates unread messages based on scroll position
+        //TODO: write a more performant version of this
         let scrollView = $ionicScrollDelegate.getScrollView();
 
         if (scrollView.__scrollTop !== scrollView.__maxScrollTop) {

@@ -6,20 +6,30 @@ export default function tocChannelList() {
     template: template,
     controllerAs: 'channelList',
     controller: function ChannelListController($q, $state, state, contacts,
-      notification, $ionicHistory) {
-      //TODO: optimize by pulling cursors into service
+      notification, $ionicHistory, $scope) {
       this.channelId = $state.params.channelId;
+
+      let identityCursor = state.cloud.identity;
+      let updateUserInfo = () => {
+        this.userInfo = identityCursor.get('userInfo');
+      };
+
+      state.addListener(identityCursor, updateUserInfo, $scope);
 
       let networkCursor = state.cloud.network;
       let channelsCursor = networkCursor.select(['channels']);
+      let updateChannels = () => {
+        this.channels = channelsCursor.get();
+      };
+
+      state.addListener(channelsCursor, updateChannels, $scope);
+
       let contactsCursor = state.cloud.contacts;
+      let updateContacts = () => {
+        this.contacts = contactsCursor.get();
+      };
 
-      let identityCursor = state.cloud.identity;
-
-      this.userInfo = identityCursor.get('userInfo');
-
-      this.channels = channelsCursor.get();
-      this.contacts = contactsCursor.get();
+      state.addListener(contactsCursor, updateContacts, $scope);
 
       this.inviteId = '';
       this.invite = () => {
@@ -87,18 +97,6 @@ export default function tocChannelList() {
 
         return $state.go('app.home');
       };
-
-      identityCursor.on('update', () => {
-        this.userInfo = identityCursor.get('userInfo');
-      });
-
-      channelsCursor.on('update', () => {
-        this.channels = channelsCursor.get();
-      });
-
-      contactsCursor.on('update', () => {
-        this.contacts = contactsCursor.get();
-      });
     }
   };
 }
