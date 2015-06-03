@@ -6,7 +6,7 @@ export default function tocSignupForm() {
     template: template,
     controllerAs: 'signupForm',
     controller: function SignupFormController($q, $state, state, identity,
-      network, notification, storage, $ionicHistory) {
+      network, notification, storage, $ionicHistory, $scope) {
       this.goBack = function goBack() {
         $ionicHistory.goBack();
       };
@@ -36,19 +36,19 @@ export default function tocSignupForm() {
               .then(() => identity.create(sessionInfo, userInfo, options))
               .then((newUserInfo) => {
                 return state.save(
-                    state.cloudUnencrypted.cursors.identity,
+                    state.cloudUnencrypted.identity,
                     ['userInfo'],
                     newUserInfo
                   )
                   .then(() => state.cloud.initialize(newUserInfo.id))
                   .then(() => state.save(
-                    state.cloud.cursors.identity,
+                    state.cloud.identity,
                     ['userInfo'],
                     newUserInfo
                   ));
               })
               .then(() => state.save(
-                state.cloud.cursors.network,
+                state.cloud.network,
                 ['sessions', sessionInfo.id, 'sessionInfo'],
                 sessionInfo
               ));
@@ -62,7 +62,7 @@ export default function tocSignupForm() {
             return $state.go('app.home');
           })
           .then(() => state.save(
-            state.cloudUnencrypted.cursors.identity,
+            state.cloudUnencrypted.identity,
             ['latestSession'],
             Date.now()
           ))
@@ -74,13 +74,12 @@ export default function tocSignupForm() {
         return this.signingUp;
       };
 
-      let localUsers = state.cloudUnencrypted.tree;
+      let savedUsersCursor = state.cloudUnencrypted.cursor;
+      let updateSavedUsers = () => {
+        this.users = savedUsersCursor.get();
+      };
 
-      this.users = localUsers.get();
-
-      localUsers.on('update', () => {
-        this.users = localUsers.get();
-      });
+      state.addListener(savedUsersCursor, updateSavedUsers, $scope);
     }
   };
 }

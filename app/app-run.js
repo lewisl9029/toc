@@ -18,7 +18,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
     let doRedirect;
     let redirectStateName;
 
-    if (state.cloud.cursors && state.cloud.cursors.identity.get()) {
+    if (state.cloud.identity && state.cloud.identity.get()) {
       doRedirect = navigation.isPublicState(toState.name);
       redirectStateName = 'app.home';
     } else {
@@ -37,7 +37,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
   storage.prepare()
     .then(() => state.initialize())
     .then(() => {
-      let localUsers = state.local.tree.get();
+      let localUsers = state.local.cursor.get();
 
       let rememberedIdUserPair;
 
@@ -68,7 +68,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
           .then(() => $timeout(() => $ionicHistory.clearCache(), 0));
       }
 
-      let rememberedUser = state.cloudUnencrypted.tree.get([
+      let rememberedUser = state.cloudUnencrypted.cursor.get([
         rememberedIdUserPair[0],
         'identity'
       ]);
@@ -81,7 +81,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
         .then(() => state.cloud.initialize(rememberedUser.userInfo.id))
         .then(() => contacts.initialize())
         .then(() => {
-          let sessionInfo = state.cloud.cursors.network.get(
+          let sessionInfo = state.cloud.network.get(
             ['sessions', rememberedUser.userInfo.id, 'sessionInfo']
           );
 
@@ -101,7 +101,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
           }
 
           let activeChannelId =
-            state.cloud.cursors.network.get(['activeChannelId']);
+            state.cloud.network.get(['activeChannelId']);
 
           if (activeChannelId === 'home') {
             if (!$state.is('app.home')) {
@@ -124,7 +124,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
           return $state.go('app.channel', {channelId: activeChannelId});
         })
         .then(() => state.save(
-          state.cloudUnencrypted.cursors.identity,
+          state.cloudUnencrypted.identity,
           ['latestSession'],
           Date.now()
         ))

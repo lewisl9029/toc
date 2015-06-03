@@ -4,72 +4,74 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
 
   let stateService = {};
 
-  $window.state = stateService;
+  //DEBUG
+  $window.tocState = stateService;
+  $window.baobab = Baobab;
+
+  stateService.tree = new Baobab({
+    memory: {},
+    local: {},
+    cloudUnencrypted: {},
+    cloud: {}
+  });
+
+  //TODO: test baobab event batching and tweak manual commit timing
+  stateService.tree.on('update',
+    () => setTimeout(() => $rootScope.$apply())
+  );
+
+  stateService.version = '0.3.0';
 
   // local application state persisted in-memory only
   stateService.memory = {
-    tree: new Baobab({})
+    cursor: stateService.tree.select(['memory'])
   };
-
-  stateService.memory.cursors = {
-    identity: stateService.memory.tree.select(['identity'])
-  };
-
-  stateService.memory.tree.on('update',
-    () => setTimeout(() => $rootScope.$apply())
-  );
 
   // local application state persisted in localStorage
   stateService.local = {
-    tree: new Baobab({})
+    cursor: stateService.tree.select(['local'])
   };
-
-  stateService.local.tree.on('update',
-    () => setTimeout(() => $rootScope.$apply())
-  );
 
   // unencrypted application state persisted in indexedDB with remoteStorage
   stateService.cloudUnencrypted = {
-    tree: new Baobab({})
+    cursor: stateService.tree.select(['cloudUnencrypted'])
   };
-
-  stateService.cloudUnencrypted.tree.on('update',
-    () => setTimeout(() => $rootScope.$apply())
-  );
 
   // encrypted application state persisted in indexedDB with remoteStorage
   stateService.cloud = {
-    tree: new Baobab({})
+    cursor: stateService.tree.select(['cloud'])
   };
 
-  stateService.cloud.tree.on('update',
-    () => setTimeout(() => $rootScope.$apply())
-  );
+  let initializeUserCursors = function initializeUserCursors(userId) {
+    stateService.local.identity = stateService.local.cursor
+      .select([userId, 'identity']);
 
-  let initializeCursors = function updateCursors(userId) {
-    stateService.local.cursors = {
-      identity: stateService.local.tree.select([userId, 'identity'])
-    };
+    stateService.cloudUnencrypted.identity = stateService.cloudUnencrypted
+      .cursor.select([userId, 'identity']);
+    stateService.cloudUnencrypted.state = stateService.cloudUnencrypted.cursor
+      .select([userId, 'state']);
 
-    stateService.cloudUnencrypted.cursors = {
-      identity: stateService.cloudUnencrypted.tree.select([userId, 'identity'])
-    };
-
-    stateService.cloud.cursors = {
-      contacts: stateService.cloud.tree.select([userId, 'contacts']),
-      identity: stateService.cloud.tree.select([userId, 'identity']),
-      network: stateService.cloud.tree.select([userId, 'network'])
-    };
+    stateService.cloud.identity = stateService.cloud.cursor
+      .select([userId, 'identity']);
+    stateService.cloud.contacts = stateService.cloud.cursor
+      .select([userId, 'contacts']);
+    stateService.cloud.network = stateService.cloud.cursor
+      .select([userId, 'network']);
+    stateService.cloud.channels = stateService.cloud.cursor
+      .select([userId, 'channels']);
   };
 
-  let destroyCursors = function destroyCursors() {
-    stateService.local.cursors = undefined;
-    stateService.cloudUnencrypted.cursors = undefined;
-    stateService.cloud.cursors = undefined;
-  };
+  let destroyUserCursors = function destroyUserCursors() {
+    stateService.local.identity = undefined;
 
-  stateService.initializeCursors = initializeCursors;
-  stateService.destroyCursors = destroyCursors;
+    stateService.cloudUnencrypted.identity = undefined;
+    stateService.cloudUnencrypted.state = undefined;
+
+    stateService.cloud.identity = undefined;
+    stateService.cloud.contacts = undefined;
+    stateService.cloud.network = undefined;
+    stateService.cloud.channels = undefined;
+  };
 
   let saveVolatile =
     function saveVolatile(cursor, relativePath, object) {
@@ -86,11 +88,10 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
         .catch((error) => notification.error(error, 'State Save Error'));
     };
 
-  //TODO: create schema object and keep up to date for each tree
   let savePersistent =
     function savePersistent(cursor, relativePath, object, store) {
       let storageKey = storage.getStorageKey(
-        R.concat(cursor.path, relativePath)
+        R.concat(R.drop(1, cursor.path), relativePath)
       );
 
       return store.storeObject(storageKey, object)
@@ -125,7 +126,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
   let removePersistent =
     function removePersistent(cursor, relativePath, store) {
       let storageKey = storage.getStorageKey(
-        R.concat(cursor.path, relativePath)
+        R.concat(R.drop(1, cursor.path), relativePath)
       );
 
       if (cursor.get() === undefined) {
@@ -140,22 +141,24 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
         .catch((error) => notification.error(error, 'State Delete Error'));
     };
 
-  stateService.memory.save = saveVolatile;
-  stateService.local.save = savePersistent;
-  stateService.cloudUnencrypted.save = savePersistent;
-  stateService.cloud.save = savePersistent;
+  let addListener = function addListener(cursor, handleUpdate, scope, options) {
+    if (!options || !options.skipInitialize) {
+      handleUpdate();
+    }
 
-  stateService.memory.remove = removeVolatile;
-  stateService.local.remove = removePersistent;
-  stateService.cloudUnencrypted.remove = removePersistent;
-  stateService.cloud.remove = removePersistent;
+    cursor.on('update', handleUpdate);
+
+    if (scope) {
+      scope.$on('destroy', () => cursor.off('update', handleUpdate));
+    }
+  };
 
   let handleChangeCloud = function handleChangeCloud(event) {
     if (event.oldValue === event.newValue) {
       return;
     }
 
-    stateService.cloud.tree.set(
+    stateService.cloud.cursor.set(
       getStatePath(event.relativePath),
       event.newValue
     );
@@ -167,82 +170,73 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
         return;
       }
 
-      stateService.cloudUnencrypted.tree.set(
+      stateService.cloudUnencrypted.cursor.set(
         getStatePath(event.relativePath),
         event.newValue
       );
     };
 
-  // let initializeTransient = function initializeTransient() {
-  // };
-  //TODO: implement versioning of state tree schema
-  // perform migration and/or prompt for app update in initialization methods
-
-  let initializeStore = function initializeStore(state, store) {
-    state.store = store;
-
-    return store.getAllObjects()
+  let initializeStore = function initializeStore(stateModule) {
+    return stateModule.store.getAllObjects()
       .then((keyObjectPairs) => {
-        R.forEach(keyObjectPair => state.tree.set(
+        R.forEach(keyObjectPair => stateModule.cursor.set(
           getStatePath(keyObjectPair[0]),
           keyObjectPair[1]
         ))(keyObjectPairs);
-        state.tree.commit();
+        stateModule.cursor.tree.commit();
         return keyObjectPairs;
       });
   };
 
   let initializeLocal = function initializeLocal() {
+    return initializeStore(stateService.local);
   };
 
   let initializeCloud = function initializeCloud() {
-    //TODO: reset state tree before loading keys
-    //TODO: figure out how to remove modules for logging out
-    return initializeStore(stateService.cloud, storage.cloud);
+    return initializeStore(stateService.cloud);
   };
 
   let initializeCloudUnencrypted = function initializeCloudUnencrypted() {
-    return initializeStore(
-      stateService.cloudUnencrypted,
-      storage.cloudUnencrypted
-    );
+    return initializeStore(stateService.cloudUnencrypted);
   };
 
-  stateService.local.initialize = initializeLocal;
-  stateService.cloudUnencrypted.initialize = initializeCloudUnencrypted;
+  stateService.initializeUserCursors = initializeUserCursors;
+  stateService.destroyUserCursors = destroyUserCursors;
+
+  stateService.memory.save = saveVolatile;
+  stateService.local.save = savePersistent;
+  stateService.cloudUnencrypted.save = savePersistent;
+  stateService.cloud.save = savePersistent;
+
+  stateService.memory.remove = removeVolatile;
+  stateService.local.remove = removePersistent;
+  stateService.cloudUnencrypted.remove = removePersistent;
+  stateService.cloud.remove = removePersistent;
+
+  stateService.addListener = addListener;
   stateService.cloud.initialize = initializeCloud;
 
-  const TREE_TO_STATE = new Map([
-    [stateService.memory.tree, stateService.memory],
-    [stateService.local.tree, stateService.local],
-    [stateService.cloudUnencrypted.tree, stateService.cloudUnencrypted],
-    [stateService.cloud.tree, stateService.cloud]
-  ]);
-
   let save = function save(cursor, relativePath, object) {
-    let state = TREE_TO_STATE.get(cursor.tree);
-    return state.save(cursor, relativePath, object, state.store);
+    let stateModule = stateService[cursor.path[0]];
+    return stateModule.save(cursor, relativePath, object, stateModule.store);
   };
 
   let remove = function remove(cursor, relativePath) {
-    let state = TREE_TO_STATE.get(cursor.tree);
-    return state.remove(cursor, relativePath, state.store);
+    let stateModule = stateService[cursor.path[0]];
+    return stateModule.remove(cursor, relativePath, stateModule.store);
   };
 
   let initialize = function initialize() {
     storage.initialize();
 
+    stateService.local.store = storage.local;
+    stateService.cloudUnencrypted.store = storage.cloudUnencrypted;
+    stateService.cloud.store = storage.cloud;
+
     storage.cloud.onChange(handleChangeCloud);
     storage.cloudUnencrypted.onChange(handleChangeCloudUnencrypted);
-    return initializeStore(stateService.local, storage.local)
-      .then(() => initializeStore(
-        stateService.cloudUnencrypted,
-        storage.cloudUnencrypted
-      ));
-  };
-
-  let reset = function resetState() {
-
+    return initializeLocal()
+      .then(() => initializeCloudUnencrypted());
   };
 
   stateService.save = save;

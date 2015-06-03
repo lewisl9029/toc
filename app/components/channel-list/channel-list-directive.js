@@ -6,20 +6,30 @@ export default function tocChannelList() {
     template: template,
     controllerAs: 'channelList',
     controller: function ChannelListController($q, $state, state, contacts,
-      notification, $ionicHistory) {
-      //TODO: optimize by pulling cursors into service
+      notification, $ionicHistory, $scope) {
       this.channelId = $state.params.channelId;
 
-      let networkCursor = state.cloud.cursors.network;
+      let identityCursor = state.cloud.identity;
+      let updateUserInfo = () => {
+        this.userInfo = identityCursor.get('userInfo');
+      };
+
+      state.addListener(identityCursor, updateUserInfo, $scope);
+
+      let networkCursor = state.cloud.network;
       let channelsCursor = networkCursor.select(['channels']);
-      let contactsCursor = state.cloud.cursors.contacts;
+      let updateChannels = () => {
+        this.channels = channelsCursor.get();
+      };
 
-      let identityCursor = state.cloud.cursors.identity;
+      state.addListener(channelsCursor, updateChannels, $scope);
 
-      this.userInfo = identityCursor.get('userInfo');
+      let contactsCursor = state.cloud.contacts;
+      let updateContacts = () => {
+        this.contacts = contactsCursor.get();
+      };
 
-      this.channels = channelsCursor.get();
-      this.contacts = contactsCursor.get();
+      state.addListener(contactsCursor, updateContacts, $scope);
 
       this.inviteId = '';
       this.invite = () => {
@@ -47,13 +57,13 @@ export default function tocChannelList() {
       };
 
       this.goToChannel = function goToChannel(channelId) {
-        let activeChannelId = state.cloud.cursors.network.get(
+        let activeChannelId = state.cloud.network.get(
           ['activeChannelId']
         );
 
         if (activeChannelId !== channelId) {
           state.save(
-            state.cloud.cursors.network,
+            state.cloud.network,
             ['activeChannelId'],
             channelId
           );
@@ -68,13 +78,13 @@ export default function tocChannelList() {
       };
 
       this.goToHome = function goToHome() {
-        let activeChannelId = state.cloud.cursors.network.get(
+        let activeChannelId = state.cloud.network.get(
           ['activeChannelId']
         );
 
         if (activeChannelId !== 'home') {
           state.save(
-            state.cloud.cursors.network,
+            state.cloud.network,
             ['activeChannelId'],
             'home'
           );
@@ -87,18 +97,6 @@ export default function tocChannelList() {
 
         return $state.go('app.home');
       };
-
-      identityCursor.on('update', () => {
-        this.userInfo = identityCursor.get('userInfo');
-      });
-
-      channelsCursor.on('update', () => {
-        this.channels = channelsCursor.get();
-      });
-
-      contactsCursor.on('update', () => {
-        this.contacts = contactsCursor.get();
-      });
     }
   };
 }
