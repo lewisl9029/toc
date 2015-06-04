@@ -183,13 +183,13 @@ gulp.task('build-sass', function buildSass() {
   gulp.src(basePaths.dev + 'initialize.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
-    .pipe(postcss([
-      autoprefixer({
-        browsers: ['last 2 version']
-      })
-      // FIXME: blocked by https://github.com/cssdream/cssgrace/issues/7
-      //cssgrace
-    ]))
+    // .pipe(postcss([
+    //   autoprefixer({
+    //     browsers: ['last 2 version']
+    //   })
+    //   // FIXME: blocked by https://github.com/cssdream/cssgrace/issues/7
+    //   //cssgrace
+    // ]))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(basePaths.dev))
     .pipe(gulp.dest(basePaths.prod));
@@ -197,12 +197,12 @@ gulp.task('build-sass', function buildSass() {
   return gulp.src(basePaths.dev + 'app.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
-    .pipe(postcss([
-      autoprefixer({
-        browsers: ['last 2 version']
-      }),
-      cssgrace
-    ]))
+    // .pipe(postcss([
+    //   autoprefixer({
+    //     browsers: ['last 2 version']
+    //   }),
+    //   cssgrace
+    // ]))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(basePaths.dev))
     .pipe(gulp.dest(basePaths.prod));
