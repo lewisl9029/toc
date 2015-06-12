@@ -1,3 +1,54 @@
+@mixin toc-static-landing-font($font-size) {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  font-size: $font-size;
+}
+
+.toc-static-body {
+  margin: 0;
+  // overflow: hidden;
+}
+
+.toc-static-landing-content {
+  // overflow: scroll;
+}
+
+.toc-static-fullscreen-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.toc-static-item {
+
+}
+
+.toc-static-call-to-action-section {
+  background-color: #ffffff;
+}
+
+.toc-static-fullscreen-container {
+  max-width: 950px;
+  text-align: center;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.toc-static-call-to-action-heading {
+  h1 {
+    @include toc-static-landing-font(6vmin);
+    margin: 0 0 30px;
+  }
+}
+
+.toc-static-call-to-action-content {
+  p {
+    @include toc-static-landing-font(4vmin);
+  }
+}
+
 .toc-loading-screen {
   background-color: #ffffff;
   height: 100%;

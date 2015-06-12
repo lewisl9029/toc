@@ -24,10 +24,10 @@ export default angular.module(appName, [
   .controller(controller.name, controller);
 
 export function initialize() {
-  angular.element(document)
-    .ready(function bootstrap() {
-      angular.bootstrap(document.querySelector('[data-toc-app]'), [
-        appName
-      ]);
-    });
+  // angular.element(document)
+  //   .ready(function bootstrap() {
+  //     angular.bootstrap(document.querySelector('[data-toc-app]'), [
+  //       appName
+  //     ]);
+  //   });
 }
