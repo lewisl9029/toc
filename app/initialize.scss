@@ -1,6 +1,5 @@
 @mixin toc-static-landing-font($font-size) {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
   font-size: $font-size;
 }
 
@@ -26,11 +25,17 @@
 }
 
 .toc-static-call-to-action-section {
-  background-color: #ffffff;
+  background-color: #387ef5;
 }
 
 .toc-static-fullscreen-container {
-  max-width: 950px;
+  @media (min-width: 768px) {
+    max-width: 750px;
+  }
+
+  @media (min-width: 1200px) {
+    max-width: 1170px;
+  }
   text-align: center;
   padding-left: 15px;
   padding-right: 15px;
@@ -40,12 +45,15 @@
   h1 {
     @include toc-static-landing-font(6vmin);
     margin: 0 0 30px;
+    color: #E7F1FF;
+    font-weight: 300;
   }
 }
 
 .toc-static-call-to-action-content {
   p {
     @include toc-static-landing-font(4vmin);
+    color: #DCE9FF;
   }
 }
 
