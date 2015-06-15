@@ -75,7 +75,7 @@ export default function tocCloudConnectForm() {
           id: 'googledrive',
           name: 'Google Drive',
           description: 'Use Google Drive to store your data. (Coming soon)',
-          img: 'googledrive.png',
+          img: 'googledrive.svg',
           connect: function connectGoogledrive() {
 
           }
