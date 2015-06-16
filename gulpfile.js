@@ -17,6 +17,11 @@ var shell = require('gulp-shell');
 var runSequence = require('run-sequence');
 var del = require('del');
 
+function handleError(error) {
+  console.error(error);
+  this.emit('end');
+};
+
 var basePaths = {
   dev: './app/',
   prod: './www/',
@@ -183,6 +188,7 @@ gulp.task('build-sass', function buildSass() {
   gulp.src(basePaths.dev + 'initialize.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
+    .on('error', handleError)
     // .pipe(postcss([
     //   autoprefixer({
     //     browsers: ['last 2 version']
@@ -197,6 +203,7 @@ gulp.task('build-sass', function buildSass() {
   return gulp.src(basePaths.dev + 'app.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
+    .on('error', handleError)
     // .pipe(postcss([
     //   autoprefixer({
     //     browsers: ['last 2 version']
