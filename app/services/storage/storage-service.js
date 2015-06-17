@@ -29,6 +29,10 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
 
   let enableLog = remoteStorage.remoteStorage.enableLog;
 
+  let enableCaching = function enableCaching(path = '/') {
+    remoteStorage.remoteStorage.caching.enable(path);
+  };
+
   let claimAccess =
     function claimAccess(moduleName, accessLevel = DEFAULT_ACCESS_LEVEL) {
       remoteStorage.remoteStorage.access
@@ -324,7 +328,8 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
 
   let initialize = function initialize() {
     enableLog();
-
+    enableCaching();
+    
     storageService.local = createLocal();
     storageService.cloud = createCloud();
     storageService.cloud.initialize();
