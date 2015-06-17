@@ -85657,6 +85657,12 @@ System.register('services/storage/storage-service.js', ['npm:babel-runtime@5.5.8
 
     var enableLog = remoteStorage.remoteStorage.enableLog;
 
+    var enableCaching = function enableCaching() {
+      var path = arguments[0] === undefined ? '/' : arguments[0];
+
+      remoteStorage.remoteStorage.caching.enable(path);
+    };
+
     var claimAccess = function claimAccess(moduleName) {
       var accessLevel = arguments[1] === undefined ? DEFAULT_ACCESS_LEVEL : arguments[1];
 
@@ -85908,6 +85914,7 @@ System.register('services/storage/storage-service.js', ['npm:babel-runtime@5.5.8
 
     var initialize = function initialize() {
       enableLog();
+      enableCaching();
 
       storageService.local = createLocal();
       storageService.cloud = createCloud();
