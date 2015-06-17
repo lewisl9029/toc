@@ -50,7 +50,7 @@ var Request = module.exports = function(xhr, params) {
   });
   xhr.onreadystatechange = function() {
     if (xhr.__aborted)
-      return ;
+      return;
     res.handle(xhr);
   };
 };

@@ -1,1 +1,0 @@
-module.exports = require("npm:emmett@3.0.0/emmett");

@@ -1,0 +1,75 @@
+{
+  "name": "emmett",
+  "version": "3.0.1",
+  "description": "A custom event emitter for Node.js and the browser.",
+  "main": "emmett.js",
+  "scripts": {
+    "test": "gulp test",
+    "build": "gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jacomyal/emmett"
+  },
+  "keywords": [
+    "events",
+    "emitter"
+  ],
+  "contributors": [
+    {
+      "name": "jacomyal",
+      "url": "https://github.com/jacomyal"
+    },
+    {
+      "name": "yomguithereal",
+      "url": "https://github.com/Yomguithereal"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jacomyal/emmett/issues"
+  },
+  "homepage": "https://github.com/jacomyal/emmett",
+  "devDependencies": {
+    "gulp": "^3.8.9",
+    "gulp-browserify": "^0.5.0",
+    "gulp-gjslint": "^0.1.4",
+    "gulp-header": "^1.2.2",
+    "gulp-jshint": "^1.8.6",
+    "gulp-mocha": "^1.1.1",
+    "gulp-mocha-phantomjs": "^0.5.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.0.1",
+    "jshint-stylish": "^1.0.0"
+  },
+  "gitHead": "6580a33a2e9efe4579d973c608d0216c0633fe52",
+  "_id": "emmett@3.0.1",
+  "_shasum": "6841a3a883e9bb0a72571e2ca9e7ecba0ca1202e",
+  "_from": ".",
+  "_npmVersion": "2.7.4",
+  "_nodeVersion": "0.12.2",
+  "_npmUser": {
+    "name": "yomguithereal",
+    "email": "kropotkinepiotr@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "jacomyal",
+      "email": "alexis.jacomy@gmail.com"
+    },
+    {
+      "name": "yomguithereal",
+      "email": "kropotkinepiotr@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "6841a3a883e9bb0a72571e2ca9e7ecba0ca1202e",
+    "tarball": "http://registry.npmjs.org/emmett/-/emmett-3.0.1.tgz"
+  },
+  "format": "cjs",
+  "ignore": [
+    "node_modules"
+  ],
+  "registry": "npm",
+  "dependencies": {}
+}

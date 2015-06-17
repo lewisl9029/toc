@@ -512,7 +512,7 @@
       if (state.decoder)
         chunk = state.decoder.write(chunk);
       if (!chunk || !state.objectMode && !chunk.length)
-        return ;
+        return;
       var ret = self.push(chunk);
       if (!ret) {
         paused = true;

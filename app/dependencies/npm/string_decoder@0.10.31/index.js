@@ -42,7 +42,7 @@
         break;
       default:
         this.write = passThroughWrite;
-        return ;
+        return;
     }
     this.charBuffer = new Buffer(6);
     this.charReceived = 0;

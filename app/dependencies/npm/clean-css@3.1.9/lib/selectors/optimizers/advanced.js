@@ -355,7 +355,7 @@
       var qualifiedTokens = [];
       var mergeableTokens = tokensToMerge(movableTokens[key]);
       if (mergeableTokens.length < 2)
-        return ;
+        return;
       var allFits = findAllFits(mergeableTokens, valueSize, 1);
       var bestFit = allFits[0];
       if (bestFit[1] > 0)

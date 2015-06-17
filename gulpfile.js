@@ -65,7 +65,7 @@ gulp.task('watch', function watch() {
 gulp.task('serve', function serve() {
   var serveCommand = argv.prod ?
     'http-server www -p 8100' :
-    'ionic serve --lab --address=$(hostname -i) -i 8101';
+    'ionic serve --lab --address=$(hostname -i) -i 8101 --nobrowser';
   return gulp.src('')
     .pipe(shell(serveCommand));
 });
@@ -149,12 +149,9 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
   //   .pipe(gulp.dest(basePaths.dev));
 
   return gulp.src([
-      basePaths.dev + 'dependencies/es6-module-loader.src.js',
       basePaths.dev + 'dependencies/system.src.js',
-      basePaths.dev + 'dependencies/babel-polyfill.js',
       basePaths.dev + 'config.js',
       basePaths.dev + 'initialize.js',
-      basePaths.dev + 'loading.js',
     ], {
       base: basePaths.dev
     })

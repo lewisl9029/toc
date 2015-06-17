@@ -46,7 +46,7 @@
             lastGeneratedColumn = mapping.generatedColumn;
             addMappingWithCode(lastMapping, code);
             lastMapping = mapping;
-            return ;
+            return;
           }
         }
         while (lastGeneratedLine < mapping.generatedLine) {

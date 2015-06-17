@@ -88,7 +88,7 @@
     "stream-browserify": "stream-browserify@^1.0.0",
     "process": "github:jspm/nodelibs-process@^0.1.0",
     "buffer": "github:jspm/nodelibs-buffer@^0.1.0",
-    "events": "github:jspm/nodelibs-events@^0.1.0",
+    "events": "github:jspm/nodelibs-events@^0.1.1",
     "stream": "github:jspm/nodelibs-stream@^0.1.0",
     "util": "github:jspm/nodelibs-util@^0.1.0"
   }

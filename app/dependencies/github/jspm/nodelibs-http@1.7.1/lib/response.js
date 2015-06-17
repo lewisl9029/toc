@@ -89,7 +89,7 @@ Response.prototype._emitData = function(res) {
   if (respBody.toString().match(/ArrayBuffer/)) {
     this.emit('data', new Uint8Array(respBody, this.offset));
     this.offset = respBody.byteLength;
-    return ;
+    return;
   }
   if (respBody.length > this.offset) {
     this.emit('data', respBody.slice(this.offset));

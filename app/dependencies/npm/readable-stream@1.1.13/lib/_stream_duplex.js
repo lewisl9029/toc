@@ -32,7 +32,7 @@
   }
   function onend() {
     if (this.allowHalfOpen || this._writableState.ended)
-      return ;
+      return;
     process.nextTick(this.end.bind(this));
   }
   function forEach(xs, f) {
