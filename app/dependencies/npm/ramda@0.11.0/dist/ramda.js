@@ -69,7 +69,7 @@
     var _createMaxMinBy = function _createMaxMinBy(comparator) {
       return function(valueComputer, list) {
         if (!(list && list.length > 0)) {
-          return ;
+          return;
         }
         var idx = 0,
             winner = list[idx],
@@ -292,7 +292,7 @@
     };
     var _path = function _path(paths, obj) {
       if (obj == null || paths.length === 0) {
-        return ;
+        return;
       } else {
         var val = obj;
         for (var idx = 0,

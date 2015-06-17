@@ -56,7 +56,7 @@ function whatsNext(context) {
   if (closest == -1 || (nextBodyEnd > -1 && nextBodyEnd < closest))
     closest = nextBodyEnd;
   if (closest == -1)
-    return ;
+    return;
   if (nextEscape === closest)
     return [closest, 'escape'];
   if (nextBodyStart === closest)

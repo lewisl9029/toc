@@ -160,7 +160,7 @@
     var errorHandled = false;
     function handleError(message) {
       if (errorHandled)
-        return ;
+        return;
       errorHandled = true;
       context.errors.push('Broken @import declaration of "' + importedUrl + '" - ' + message);
       restoreImport(importedUrl, mediaQuery, context);

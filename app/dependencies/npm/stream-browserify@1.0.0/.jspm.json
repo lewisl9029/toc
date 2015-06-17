@@ -72,6 +72,6 @@
   "dependencies": {
     "inherits": "inherits@~2.0.1",
     "readable-stream": "readable-stream@^1.0.27-1",
-    "events": "github:jspm/nodelibs-events@^0.1.0"
+    "events": "github:jspm/nodelibs-events@^0.1.1"
   }
 }

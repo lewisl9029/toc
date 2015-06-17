@@ -33,7 +33,7 @@ module.exports = (function() {
       if (compatibility.units.rem) {
         compatibleCssUnitRegex = cssUnitRegex;
         compatibleCssUnitAnyRegex = cssUnitAnyRegex;
-        return ;
+        return;
       }
       var validUnits = allUnits.slice(0).filter(function(value) {
         return value != 'rem';

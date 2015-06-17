@@ -1,6 +1,6 @@
 {
   "name": "toc",
-  "version": "0.1.0-alpha",
+  "version": "0.3.0-alpha",
   "description": "Toc Messenger",
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "gulp-scsslint": "0.0.5",
     "gulp-shell": "^0.4.2",
     "gulp-sourcemaps": "^1.5.2",
+    "jspm": "^0.16.0-beta.2",
     "karma": "^0.12.35",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.1.12",
@@ -52,14 +53,13 @@
       "qr-encode": "npm:qr-encode@^0.3.0",
       "ramda": "npm:ramda@^0.11.0",
       "remotestoragejs": "npm:remotestoragejs@0.11.2",
-      "scut": "npm:scut@^1.1.2",
-      "sinon": "npm:sinon@^1.12.2",
       "text": "github:systemjs/plugin-text@^0.0.2"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.1.13",
       "babel-runtime": "npm:babel-runtime@^5.1.13",
-      "core-js": "npm:core-js@^0.9.4"
+      "core-js": "npm:core-js@^0.9.4",
+      "sinon": "npm:sinon@^1.15.3"
     },
     "overrides": {
       "github:driftyco/ionic@1.0.0": {

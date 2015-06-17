@@ -35,13 +35,13 @@ Stream.prototype.pipe = function(dest, options) {
   var didOnEnd = false;
   function onend() {
     if (didOnEnd)
-      return ;
+      return;
     didOnEnd = true;
     dest.end();
   }
   function onclose() {
     if (didOnEnd)
-      return ;
+      return;
     didOnEnd = true;
     if (typeof dest.destroy === 'function')
       dest.destroy();
