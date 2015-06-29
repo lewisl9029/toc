@@ -45,6 +45,8 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
   let initializeUserCursors = function initializeUserCursors(userId) {
     stateService.local.identity = stateService.local.cursor
       .select([userId, 'identity']);
+    stateService.local.devices = stateService.local.cursor
+      .select([userId, 'devices']);
 
     stateService.cloudUnencrypted.identity = stateService.cloudUnencrypted
       .cursor.select([userId, 'identity']);
@@ -55,6 +57,8 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
       .select([userId, 'identity']);
     stateService.cloud.contacts = stateService.cloud.cursor
       .select([userId, 'contacts']);
+    stateService.cloud.devices = stateService.cloud.cursor
+      .select([userId, 'devices']);
     stateService.cloud.network = stateService.cloud.cursor
       .select([userId, 'network']);
     stateService.cloud.channels = stateService.cloud.cursor
@@ -63,6 +67,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
 
   let destroyUserCursors = function destroyUserCursors() {
     stateService.local.identity = undefined;
+    stateService.local.devices = undefined;
 
     stateService.cloudUnencrypted.identity = undefined;
     stateService.cloudUnencrypted.state = undefined;

@@ -327,9 +327,9 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
   };
 
   let initialize = function initialize() {
-    enableLog();
+    //enableLog();
     enableCaching();
-    
+
     storageService.local = createLocal();
     storageService.cloud = createCloud();
     storageService.cloud.initialize();

@@ -34,6 +34,7 @@ export default function tocSignupForm() {
             return identity.initialize(sessionInfo.id)
               .then(() => network.initializeChannels())
               .then(() => identity.create(sessionInfo, userInfo, options))
+              .then(() => devices.initialize())
               .then((newUserInfo) => {
                 return state.save(
                     state.cloudUnencrypted.identity,

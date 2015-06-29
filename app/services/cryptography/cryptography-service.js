@@ -58,6 +58,21 @@ export default function cryptography($q, forge) {
     return base64.replace(/\./g, '/');
   };
 
+  let getRandomBase64 = function getRandomBase64(size) {
+    let deferredRandomBase64 = $q.defer();
+
+    forge.random.getBytes(size, (error, bytes) => {
+      if (error) {
+        return deferredRandomBase64.reject(error);
+      }
+
+      let result = forge.util.encode64(bytes);
+      deferredRandomBase64.resolve(result);
+    });
+
+    return deferredRandomBase64.promise;
+  };
+
   let checkCredentials =
     function checkCredentials(credentials) {
       if (credentials && credentials.key) {
