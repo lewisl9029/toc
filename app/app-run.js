@@ -80,6 +80,7 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
       return identity.initialize(rememberedUser.userInfo.id)
         .then(() => identity.restore(rememberedUser))
         .then(() => state.cloud.initialize(rememberedUser.userInfo.id))
+        .then(() => devices.initialize())
         .then(() => contacts.initialize())
         .then(() => {
           let sessionInfo = state.cloud.network.get(

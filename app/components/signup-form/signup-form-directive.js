@@ -31,6 +31,8 @@ export default function tocSignupForm() {
               staySignedIn: this.staySignedIn
             };
 
+            // TODO: refactor back into identity service
+            // replace duplicate implementations in signin-form and app-run
             return identity.initialize(sessionInfo.id)
               .then(() => network.initializeChannels())
               .then(() => identity.create(sessionInfo, userInfo, options))
