@@ -8,7 +8,7 @@ export default function tocSigninForm() {
     controllerAs: 'signinForm',
     controller: function SigninFormController($q, $state, $scope, state,
       identity, network, contacts, notification, signinForm, R, $ionicModal,
-      $ionicHistory) {
+      devices, $ionicHistory) {
       //TODO: refactor into state service .memory
       this.model = signinForm;
 

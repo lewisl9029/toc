@@ -196,6 +196,7 @@ export default function cryptography($q, forge) {
     UNENCRYPTED_OBJECT,
     escapeBase64,
     unescapeBase64,
+    getRandomBase64,
     getHmac,
     encryptDeterministic,
     encrypt,

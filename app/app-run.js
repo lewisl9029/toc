@@ -43,10 +43,11 @@ export default function runApp($state, $rootScope, R, state, identity, contacts,
 
       if (R.keys(localUsers).length !== 0) {
         rememberedIdUserPair = R.pipe(
+          R.filter((user) => user.identity),
           R.toPairs,
           R.map((idUserPair) => [
             idUserPair[0],
-            R.prop('identity')(idUserPair[1])
+            idUserPair[1].identity
           ]),
           R.find((idUserPair) => idUserPair[1].savedCredentials)
         )(localUsers);

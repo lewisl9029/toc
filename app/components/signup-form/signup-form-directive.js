@@ -6,7 +6,7 @@ export default function tocSignupForm() {
     template: template,
     controllerAs: 'signupForm',
     controller: function SignupFormController($q, $state, state, identity,
-      network, notification, storage, $ionicHistory, $scope) {
+      network, notification, storage, devices, $ionicHistory, $scope) {
       this.goBack = function goBack() {
         $ionicHistory.goBack();
       };
@@ -34,7 +34,6 @@ export default function tocSignupForm() {
             return identity.initialize(sessionInfo.id)
               .then(() => network.initializeChannels())
               .then(() => identity.create(sessionInfo, userInfo, options))
-              .then(() => devices.initialize())
               .then((newUserInfo) => {
                 return state.save(
                     state.cloudUnencrypted.identity,
@@ -48,6 +47,7 @@ export default function tocSignupForm() {
                     newUserInfo
                   ));
               })
+              .then(() => devices.initialize())
               .then(() => state.save(
                 state.cloud.network,
                 ['sessions', sessionInfo.id, 'sessionInfo'],
