@@ -21,7 +21,7 @@ export default function identity($q, state, R, cryptography) {
       cryptography.destroy();
       return $q.reject(error);
     }
-
+    //TODO: refactor into session service
     if (options.staySignedIn) {
       state.save(
         state.local.identity,

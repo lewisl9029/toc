@@ -1,5 +1,5 @@
-export default function HomeController(state, identity, network, notification,
-  $ionicPopup, $q, $window, storage, $scope) {
+export default function HomeController(state, session, identity, network,
+  notification, $ionicPopup, $q, $window, storage, $scope) {
 
   let activeChannelId = state.cloud.network.get(
     ['activeChannelId']
@@ -37,12 +37,7 @@ export default function HomeController(state, identity, network, notification,
       }
 
       //TODO: refactor signout into session service
-      return state.remove(
-          state.local.identity,
-          ['savedCredentials']
-        )
-        .then(() => $q.when($window.location.reload()))
-        .catch((error) => notification.error(error, 'Signout Error'));
+      return session.signOut();
     });
   };
 }

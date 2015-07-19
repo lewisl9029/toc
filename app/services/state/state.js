@@ -1,10 +1,6 @@
 import angular from 'angular';
 
-import storage from 'services/storage/storage';
-
 import service from './state-service';
 
-export default angular.module('toc.services.state', [
-    storage.name
-  ])
+export default angular.module('toc.services.state', [])
   .factory(service.name, service);
