@@ -36,6 +36,7 @@ export default function HomeController(state, identity, network, notification,
         return;
       }
 
+      //TODO: refactor signout into session service
       return state.remove(
           state.local.identity,
           ['savedCredentials']

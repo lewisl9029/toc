@@ -2,6 +2,7 @@ export default function devices(state, cryptography, $q, $interval) {
   let activeDevicePing;
 
   let updatePing = function updatePing() {
+    //TODO: don't let this grow unbounded.
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
     let previousPing = state.cloud.devices.get([localDeviceId, 'ping']);
 
@@ -28,14 +29,54 @@ export default function devices(state, cryptography, $q, $interval) {
           state.local.devices,
           ['deviceInfo'],
           { id: deviceId }
-        ));
+        ))
+        // needed a manual commit here because updatePing() depends on deviceId
+        .then(() => state.commit());
 
     deviceReady.then(() => {
       updatePing();
 
       activeDevicePing = $interval(updatePing, 20000);
-      //TODO: watch for pings from other devices and disconnect
-      // add an initial delay to minimize possibility of race conditions
+
+      let devicesCursor = state.cloud.devices;
+      let handleDevicesChange = (event) => {
+        if (!event.previousData) {
+          return;
+        }
+
+        let localDeviceId = state.local.devices.get('deviceInfo');
+        let newDevices = R.omit(localDeviceId)(event.data);
+
+        if (R.keys(newDevices).length === 0) {
+          return;
+        }
+
+        let previousDevices = R.omit(localDeviceId)(event.previousData);
+
+        let remotePingReceived = R.any((newDeviceId) => {
+          let newDeviceAdded = previousDevices[newDeviceId] === undefined;
+          if (newDeviceAdded) {
+            return true;
+          }
+
+          let newPingReceived = newDevices[newDeviceId].ping !=
+            previousDevices[newDeviceId].ping;
+          if (newPingReceived) {
+            return true;
+          }
+
+          return false;
+        })(R.keys(newDevices));
+
+        if (remotePingReceived) {
+          //TODO: actually trigger signout here
+          $log.info('signing out');
+        }
+      };
+
+      state.addListener(devicesCursor, handleDevicesChange, null, {
+        skipInitialize: true
+      });
     });
 
     return deviceReady;

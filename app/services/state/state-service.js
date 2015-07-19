@@ -169,6 +169,8 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
     );
   };
 
+  // TODO: refactor to use single password per storage account
+  // to reduce dependence on this (only unencrypted data will be the salt)
   let handleChangeCloudUnencrypted =
     function handleChangeCloudUnencrypted(event) {
       if (event.oldValue === event.newValue) {
@@ -231,6 +233,11 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
     return stateModule.remove(cursor, relativePath, stateModule.store);
   };
 
+  let commit = function commit() {
+    stateService.tree.commit();
+    return $q.when();
+  };
+
   let initialize = function initialize() {
     storage.initialize();
 
@@ -246,6 +253,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
 
   stateService.save = save;
   stateService.remove = remove;
+  stateService.commit = commit;
   stateService.initialize = initialize;
 
   return stateService;
