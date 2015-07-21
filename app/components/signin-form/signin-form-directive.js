@@ -8,7 +8,7 @@ export default function tocSigninForm() {
     controllerAs: 'signinForm',
     controller: function SigninFormController($q, $state, $scope, state,
       identity, network, contacts, notification, signinForm, R, $ionicModal,
-      $ionicHistory) {
+      devices, $ionicHistory) {
       //TODO: refactor into state service .memory
       this.model = signinForm;
 
@@ -34,13 +34,14 @@ export default function tocSigninForm() {
       this.model.staySignedIn = false;
 
       this.signIn = function(userCredentials) {
-        let options = {
+        let authOptions = {
           staySignedIn: this.model.staySignedIn
         };
 
         this.signingIn = identity.initialize(userCredentials.id)
-          .then(() => identity.authenticate(userCredentials, options))
+          .then(() => identity.authenticate(userCredentials, authOptions))
           .then(() => state.cloud.initialize(userCredentials.id))
+          .then(() => devices.initialize())
           .then(() => contacts.initialize())
           .then(() => {
             let sessionInfo = state.cloud.network.get(

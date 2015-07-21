@@ -4,6 +4,7 @@ export default function network($q, $window, $interval, R, state, telehash,
   const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
 
   let activeSession;
+  let activeChannelUpdates = {};
 
   let checkSession = function checkSession(session) {
     if (session) {
@@ -363,7 +364,7 @@ export default function network($q, $window, $interval, R, state, telehash,
           });
 
         sendStatusUpdate();
-        $interval(sendStatusUpdate, 15000);
+        activeChannelUpdates[channelInfo.id] = $interval(sendStatusUpdate, 15000);
 
         return $q.when();
       })
@@ -400,6 +401,17 @@ export default function network($q, $window, $interval, R, state, telehash,
         R.forEach((contactId) => sendStatus(contactId, 0))
       )(contactsCursor.get());
     };
+
+    return $q.when();
+  };
+
+  let destroyChannels = function destroyChannels() {
+    R.pipe(
+      R.values,
+      R.forEach((activeChannel) => $interval.cancel(activeChannel))
+    )(activeChannelUpdates);
+
+    activeChannelUpdates = {};
 
     return $q.when();
   };
@@ -442,7 +454,24 @@ export default function network($q, $window, $interval, R, state, telehash,
     });
   };
 
-  return {
+  let destroy = function destroyNetwork() {
+    return destroyChannels().then(() => {
+      // brute force stop telehash networking, alternative is to reload page...
+      //FIXME: cleanup isnt thorough enough, some telehash console errors remain
+      R.pipe(
+        R.keys,
+        R.forEach((key) => {
+          delete activeSession[key];
+        })
+      )(activeSession);
+
+      activeSession = undefined;
+
+      return $q.when();
+    });
+  };
+
+  let networkService = {
     INVITE_CHANNEL_ID,
     createContactChannel,
     listen,
@@ -452,6 +481,11 @@ export default function network($q, $window, $interval, R, state, telehash,
     sendMessage,
     initializeChannel,
     initializeChannels,
-    initialize
+    destroyChannels,
+    initialize,
+    destroy
   };
+
+  $window.tocNetwork = networkService;
+  return networkService;
 }
