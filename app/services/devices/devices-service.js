@@ -4,6 +4,7 @@ export default function devices(state, session, cryptography, R, $q, $log,
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
 
     let cloudDevices = state.cloud.devices.get();
+    cloudDevices[localDeviceId] = {};
 
     let killFlagsUpdated = R.map((deviceId) => {
       let killFlag = deviceId === localDeviceId ? 0 : 1;
