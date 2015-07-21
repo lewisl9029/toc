@@ -83169,6 +83169,7 @@ System.register('services/devices/devices-service.js', [], function (_export) {
       var localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
 
       var cloudDevices = state.cloud.devices.get();
+      cloudDevices[localDeviceId] = {};
 
       var killFlagsUpdated = R.map(function (deviceId) {
         var killFlag = deviceId === localDeviceId ? 0 : 1;
