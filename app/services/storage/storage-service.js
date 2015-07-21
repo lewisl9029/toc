@@ -29,8 +29,9 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
 
   let enableLog = remoteStorage.remoteStorage.enableLog;
 
-  let enableCaching = function enableCaching(path = '/') {
-    remoteStorage.remoteStorage.caching.enable(path);
+  let enableCaching = function enableCaching(moduleName) {
+    remoteStorage.remoteStorage.caching
+      .enable(`/${STORAGE_MODULE_PREFIX + moduleName}/`);
   };
 
   let claimAccess =
@@ -328,7 +329,6 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
 
   let initialize = function initialize() {
     enableLog();
-    enableCaching();
 
     storageService.local = createLocal();
     storageService.cloud = createCloud();
@@ -337,7 +337,12 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
     storageService.cloudUnencrypted.initialize();
 
     claimAccess('cloud');
+    enableCaching('cloud');
     claimAccess('cloud-unencrypted');
+    enableCaching('cloud-unencrypted');
+    // workaround for 401 error on initial connect
+    // remoteStorage.remoteStorage.access
+    //   .claim('*', DEFAULT_ACCESS_LEVEL);
   };
 
   storageService.initialize = initialize;

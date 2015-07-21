@@ -36,7 +36,6 @@ export default function HomeController(state, session, identity, network,
         return;
       }
 
-      //TODO: refactor signout into session service
       return session.signOut();
     });
   };
