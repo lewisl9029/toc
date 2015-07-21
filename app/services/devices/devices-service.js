@@ -1,62 +1,41 @@
 export default function devices(state, session, cryptography, R, $q, $log,
   $interval, $timeout) {
-  let activeDevicePing;
-
-  let updatePing = function updatePing() {
-    //TODO: don't let this grow unbounded.
+  let updateKillFlags = function updateKillFlags() {
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
-    let previousPing = state.cloud.devices.get([localDeviceId, 'ping']);
 
-    let newPing = previousPing === undefined ? 0 : previousPing + 1;
+    let cloudDevices = state.cloud.devices.get();
 
-    return state.save(
-      state.cloud.devices,
-      [localDeviceId, 'ping'],
-      newPing
-    );
+    let killFlagsUpdated = R.map((deviceId) => {
+      let killFlag = deviceId === localDeviceId ? 0 : 1;
+
+      return state.save(
+        state.cloud.devices,
+        [deviceId, 'kill'],
+        killFlag
+      );
+    })(R.keys(cloudDevices));
+
+    return $q.all(killFlagsUpdated);
   };
 
-  let disconnectOnRemotePing = function disconnectOnRemotePing() {
-    let devicesCursor = state.cloud.devices;
-    let handleDevicesChange = (event) => {
-      let newData = event.data.data;
-      let previousData = event.data.previousData;
+  let listenForKillFlags = function listenForKillFlags() {
+    let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
+    let localKillFlagCursor = state.cloud.devices
+      .select([localDeviceId, 'kill']);
 
-      if (!previousData) {
+    let handleKillFlagUpdate = function handleKillFlagUpdate(event) {
+      if (event.data.data !== 1) {
         return;
       }
 
-      let localDeviceId = state.local.devices.get('deviceInfo').id;
-      let newDevices = R.omit([localDeviceId])(newData);
+      $log.info('killing current device in 10s');
 
-      if (R.keys(newDevices).length === 0) {
-        return;
-      }
-
-      let previousDevices = R.omit([localDeviceId])(previousData);
-
-      let remotePingReceived = R.any((newDeviceId) => {
-        let newDeviceAdded = previousDevices[newDeviceId] === undefined;
-        if (newDeviceAdded) {
-          return true;
-        }
-
-        let newPingReceived = newDevices[newDeviceId].ping !=
-          previousDevices[newDeviceId].ping;
-        if (newPingReceived) {
-          return true;
-        }
-
-        return false;
-      })(R.keys(newDevices));
-
-      if (remotePingReceived) {
-        destroy()
-          .then(() => session.signOut());
-      }
+      $timeout(() => {
+        $log.info('killing current device');
+      }, 10000);
     };
 
-    state.addListener(devicesCursor, handleDevicesChange, null, {
+    state.addListener(localKillFlagCursor, handleKillFlagUpdate, null, {
       skipInitialize: true
     });
   };
@@ -79,25 +58,10 @@ export default function devices(state, session, cryptography, R, $q, $log,
         // needed a manual commit here because updatePing() depends on deviceId
         .then(() => state.commit());
 
-    deviceReady.then(() => {
-      activeDevicePing = $interval(updatePing, 20000);
-      updatePing();
-      //avoid listening for remote ping immediately to minimize race conditions
-      // where new client would immediately disconnect
-      $timeout(() => {
-        disconnectOnRemotePing();
-      }, 10000);
-    });
-
-    return deviceReady;
-  };
-
-  let destroy = function destroyDevices() {
-    $interval.cancel(activeDevicePing);
-
-    activeDevicePing = undefined;
-
-    return $q.when();
+    return deviceReady
+      .then(updateKillFlags)
+      .then(() => listenForKillFlags())
+      .catch((error) => notifications.error(error, 'Devices Init Error'));
   };
 
   return {
