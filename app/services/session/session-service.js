@@ -1,4 +1,4 @@
-export default function session(state, $window) {
+export default function session(state, notification, $q, $window) {
   //TODO: to be refactored from signin-form/signup-form/app-run
   let signIn = function signIn() {};
   let signOut = function signOut() {
