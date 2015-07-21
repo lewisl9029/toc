@@ -37278,13 +37278,6 @@ System.registerDynamic("libraries/telehash/telehash-library.js", [], false, func
             "paths": [{
               "type": "http",
               "http": "http://azure.lewisl.net:42424"
-            }, {
-              "type": "http",
-              "http": "http://191.236.53.66:42424"
-            }, {
-              "type": "ipv4",
-              "ip": "191.236.53.66",
-              "port": 42424
             }],
             "parts": {
               "2a": "a9b3da6d514c8aeb1cc001f5423dbf80f0c523a000b1087286fd1b18168d9e3e",
@@ -82866,18 +82859,21 @@ System.register('services/state/state-service.js', [], function (_export) {
 
     var initializeUserCursors = function initializeUserCursors(userId) {
       stateService.local.identity = stateService.local.cursor.select([userId, 'identity']);
+      stateService.local.devices = stateService.local.cursor.select([userId, 'devices']);
 
       stateService.cloudUnencrypted.identity = stateService.cloudUnencrypted.cursor.select([userId, 'identity']);
       stateService.cloudUnencrypted.state = stateService.cloudUnencrypted.cursor.select([userId, 'state']);
 
       stateService.cloud.identity = stateService.cloud.cursor.select([userId, 'identity']);
       stateService.cloud.contacts = stateService.cloud.cursor.select([userId, 'contacts']);
+      stateService.cloud.devices = stateService.cloud.cursor.select([userId, 'devices']);
       stateService.cloud.network = stateService.cloud.cursor.select([userId, 'network']);
       stateService.cloud.channels = stateService.cloud.cursor.select([userId, 'channels']);
     };
 
     var destroyUserCursors = function destroyUserCursors() {
       stateService.local.identity = undefined;
+      stateService.local.devices = undefined;
 
       stateService.cloudUnencrypted.identity = undefined;
       stateService.cloudUnencrypted.state = undefined;
@@ -82970,6 +82966,8 @@ System.register('services/state/state-service.js', [], function (_export) {
       stateService.cloud.cursor.set(getStatePath(event.relativePath), event.newValue);
     };
 
+    // TODO: refactor to use single password per storage account
+    // to reduce dependence on this (only unencrypted data will be the salt)
     var handleChangeCloudUnencrypted = function handleChangeCloudUnencrypted(event) {
       if (event.oldValue === event.newValue) {
         return;
@@ -83026,6 +83024,11 @@ System.register('services/state/state-service.js', [], function (_export) {
       return stateModule.remove(cursor, relativePath, stateModule.store);
     };
 
+    var commit = function commit() {
+      stateService.tree.commit();
+      return $q.when();
+    };
+
     var initialize = function initialize() {
       storage.initialize();
 
@@ -83042,6 +83045,7 @@ System.register('services/state/state-service.js', [], function (_export) {
 
     stateService.save = save;
     stateService.remove = remove;
+    stateService.commit = commit;
     stateService.initialize = initialize;
 
     return stateService;
@@ -83081,7 +83085,7 @@ System.register('services/identity/identity-service.js', [], function (_export) 
         cryptography.destroy();
         return $q.reject(error);
       }
-
+      //TODO: refactor into session service
       if (options.staySignedIn) {
         state.save(state.local.identity, ['savedCredentials'], savedCredentials);
       }
@@ -83155,6 +83159,93 @@ System.register('services/identity/identity-service.js', [], function (_export) 
   };
 });
 
+System.register('services/devices/devices-service.js', [], function (_export) {
+  'use strict';
+
+  _export('default', devices);
+
+  function devices(state, session, cryptography, R, $q, $log, $interval, $timeout, $ionicPopup) {
+    var updateKillFlags = function updateKillFlags() {
+      var localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
+
+      var cloudDevices = state.cloud.devices.get();
+
+      var killFlagsUpdated = R.map(function (deviceId) {
+        var killFlag = deviceId === localDeviceId ? 0 : 1;
+
+        return state.save(state.cloud.devices, [deviceId, 'kill'], killFlag);
+      })(R.keys(cloudDevices));
+
+      return $q.all(killFlagsUpdated);
+    };
+
+    var listenForKillFlags = function listenForKillFlags() {
+      var localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
+      var localKillFlagCursor = state.cloud.devices.select([localDeviceId, 'kill']);
+
+      var handleKillFlagUpdate = function handleKillFlagUpdate(event) {
+        if (event.data.data !== 1) {
+          return;
+        }
+
+        var killingDevice = $timeout(function () {
+          session.signOut();
+        }, 5000);
+
+        var remoteLoginPopup = $ionicPopup.show({
+          title: 'Another device has connected',
+          template: 'This device will disconnect in 5 seconds.',
+          buttons: [{
+            text: 'Stay connected',
+            type: 'button-assertive',
+            onTap: function onTap(event) {
+              $timeout.cancel(killingDevice);
+              updateKillFlags();
+            }
+          }]
+        });
+      };
+
+      state.addListener(localKillFlagCursor, handleKillFlagUpdate, null, {
+        skipInitialize: true
+      });
+
+      return $q.when();
+    };
+
+    var createDeviceId = function createDeviceId() {
+      return cryptography.getRandomBase64(16);
+    };
+
+    var initialize = function initializeDevices() {
+      var localDeviceInfo = state.local.devices.get('deviceInfo');
+
+      var deviceReady = localDeviceInfo ? $q.when() : createDeviceId().then(function (deviceId) {
+        return state.save(state.local.devices, ['deviceInfo'], { id: deviceId });
+      })
+      // needed a manual commit here because updatePing() depends on deviceId
+      .then(function () {
+        return state.commit();
+      });
+
+      return deviceReady.then(updateKillFlags).then(function () {
+        return listenForKillFlags();
+      })['catch'](function (error) {
+        return notifications.error(error, 'Devices Init Error');
+      });
+    };
+
+    return {
+      initialize: initialize
+    };
+  }
+
+  return {
+    setters: [],
+    execute: function () {}
+  };
+});
+
 System.register('services/navigation/navigation-service.js', [], function (_export) {
   'use strict';
 
@@ -83203,6 +83294,7 @@ System.register('services/network/network-service.js', [], function (_export) {
     var INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
 
     var activeSession = undefined;
+    var activeChannelUpdates = {};
 
     var checkSession = function checkSession(session) {
       if (session) {
@@ -83497,7 +83589,7 @@ System.register('services/network/network-service.js', [], function (_export) {
         };
 
         sendStatusUpdate();
-        $interval(sendStatusUpdate, 15000);
+        activeChannelUpdates[channelInfo.id] = $interval(sendStatusUpdate, 15000);
 
         return $q.when();
       }).then(function () {
@@ -83526,6 +83618,16 @@ System.register('services/network/network-service.js', [], function (_export) {
           return sendStatus(contactId, 0);
         }))(contactsCursor.get());
       };
+
+      return $q.when();
+    };
+
+    var destroyChannels = function destroyChannels() {
+      R.pipe(R.values, R.forEach(function (activeChannel) {
+        return $interval.cancel(activeChannel);
+      }))(activeChannelUpdates);
+
+      activeChannelUpdates = {};
 
       return $q.when();
     };
@@ -83566,7 +83668,21 @@ System.register('services/network/network-service.js', [], function (_export) {
       });
     };
 
-    return {
+    var destroy = function destroyNetwork() {
+      return destroyChannels().then(function () {
+        // brute force stop telehash networking, alternative is to reload page...
+        //FIXME: cleanup isnt thorough enough, some telehash console errors remain
+        R.pipe(R.keys, R.forEach(function (key) {
+          delete activeSession[key];
+        }))(activeSession);
+
+        activeSession = undefined;
+
+        return $q.when();
+      });
+    };
+
+    var networkService = {
       INVITE_CHANNEL_ID: INVITE_CHANNEL_ID,
       createContactChannel: createContactChannel,
       listen: listen,
@@ -83576,8 +83692,13 @@ System.register('services/network/network-service.js', [], function (_export) {
       sendMessage: sendMessage,
       initializeChannel: initializeChannel,
       initializeChannels: initializeChannels,
-      initialize: initialize
+      destroyChannels: destroyChannels,
+      initialize: initialize,
+      destroy: destroy
     };
+
+    $window.tocNetwork = networkService;
+    return networkService;
   }
 
   return {
@@ -83677,6 +83798,21 @@ System.register('services/cryptography/cryptography-service.js', [], function (_
 
     var unescapeBase64 = function unescapeBase64(base64) {
       return base64.replace(/\./g, '/');
+    };
+
+    var getRandomBase64 = function getRandomBase64(size) {
+      var deferredRandomBase64 = $q.defer();
+
+      forge.random.getBytes(size, function (error, bytes) {
+        if (error) {
+          return deferredRandomBase64.reject(error);
+        }
+
+        var result = forge.util.encode64(bytes);
+        deferredRandomBase64.resolve(result);
+      });
+
+      return deferredRandomBase64.promise;
     };
 
     var checkCredentials = function checkCredentials(credentials) {
@@ -83797,6 +83933,7 @@ System.register('services/cryptography/cryptography-service.js', [], function (_
       UNENCRYPTED_OBJECT: UNENCRYPTED_OBJECT,
       escapeBase64: escapeBase64,
       unescapeBase64: unescapeBase64,
+      getRandomBase64: getRandomBase64,
       getHmac: getHmac,
       encryptDeterministic: encryptDeterministic,
       encrypt: encrypt,
@@ -83812,6 +83949,36 @@ System.register('services/cryptography/cryptography-service.js', [], function (_
   return {
     setters: [],
     execute: function () {}
+  };
+});
+
+System.register('services/session/session-service.js', [], function (_export) {
+  'use strict';
+
+  _export('default', session);
+
+  function session(state, notification, $q, $window) {
+    //TODO: to be refactored from signin-form/signup-form/app-run
+    var signIn = function signIn() {};
+    var signOut = function signOut() {
+      return state.remove(state.local.identity, ['savedCredentials']).then(function () {
+        return $q.when($window.location.reload());
+      })['catch'](function (error) {
+        return notification.error(error, 'Signout Error');
+      });
+    };
+
+    return {
+      signIn: signIn,
+      signOut: signOut
+    };
+  }
+
+  return {
+    setters: [],
+    execute: function () {
+      ;
+    }
   };
 });
 
@@ -83910,7 +84077,7 @@ System.register('views/home/home-controller.js', [], function (_export) {
 
   _export('default', HomeController);
 
-  function HomeController(state, identity, network, notification, $ionicPopup, $q, $window, storage, $scope) {
+  function HomeController(state, session, identity, network, notification, $ionicPopup, $q, $window, storage, $scope) {
     var _this = this;
 
     var activeChannelId = state.cloud.network.get(['activeChannelId']);
@@ -83942,11 +84109,7 @@ System.register('views/home/home-controller.js', [], function (_export) {
           return;
         }
 
-        return state.remove(state.local.identity, ['savedCredentials']).then(function () {
-          return $q.when($window.location.reload());
-        })['catch'](function (error) {
-          return notification.error(error, 'Signout Error');
-        });
+        return session.signOut();
       });
     };
   }
@@ -84193,8 +84356,10 @@ System.register('app-run.js', [], function (_export) {
       var rememberedIdUserPair = undefined;
 
       if (R.keys(localUsers).length !== 0) {
-        rememberedIdUserPair = R.pipe(R.toPairs, R.map(function (idUserPair) {
-          return [idUserPair[0], R.prop('identity')(idUserPair[1])];
+        rememberedIdUserPair = R.pipe(R.filter(function (user) {
+          return user.identity;
+        }), R.toPairs, R.map(function (idUserPair) {
+          return [idUserPair[0], idUserPair[1].identity];
         }), R.find(function (idUserPair) {
           return idUserPair[1].savedCredentials;
         }))(localUsers);
@@ -84228,6 +84393,8 @@ System.register('app-run.js', [], function (_export) {
         return identity.restore(rememberedUser);
       }).then(function () {
         return state.cloud.initialize(rememberedUser.userInfo.id);
+      }).then(function () {
+        return devices.initialize();
       }).then(function () {
         return contacts.initialize();
       }).then(function () {
@@ -84300,22 +84467,36 @@ System.register("app-controller.js", [], function (_export) {
   };
 });
 
-System.register('services/state/state.js', ['github:angular/bower-angular@1.4.1.js', 'services/storage/storage.js', 'services/state/state-service.js'], function (_export) {
-    'use strict';
+System.register('services/state/state.js', ['github:angular/bower-angular@1.4.1.js', 'services/state/state-service.js'], function (_export) {
+  'use strict';
 
-    var angular, storage, service;
-    return {
-        setters: [function (_githubAngularBowerAngular141Js) {
-            angular = _githubAngularBowerAngular141Js['default'];
-        }, function (_servicesStorageStorageJs) {
-            storage = _servicesStorageStorageJs['default'];
-        }, function (_servicesStateStateServiceJs) {
-            service = _servicesStateStateServiceJs['default'];
-        }],
-        execute: function () {
-            _export('default', angular.module('toc.services.state', [storage.name]).factory(service.name, service));
-        }
-    };
+  var angular, service;
+  return {
+    setters: [function (_githubAngularBowerAngular141Js) {
+      angular = _githubAngularBowerAngular141Js['default'];
+    }, function (_servicesStateStateServiceJs) {
+      service = _servicesStateStateServiceJs['default'];
+    }],
+    execute: function () {
+      _export('default', angular.module('toc.services.state', []).factory(service.name, service));
+    }
+  };
+});
+
+System.register('services/devices/devices.js', ['github:angular/bower-angular@1.4.1.js', 'services/devices/devices-service.js'], function (_export) {
+  'use strict';
+
+  var angular, service;
+  return {
+    setters: [function (_githubAngularBowerAngular141Js) {
+      angular = _githubAngularBowerAngular141Js['default'];
+    }, function (_servicesDevicesDevicesServiceJs) {
+      service = _servicesDevicesDevicesServiceJs['default'];
+    }],
+    execute: function () {
+      _export('default', angular.module('toc.services.devices', []).factory(service.name, service));
+    }
+  };
 });
 
 System.register('services/navigation/navigation.js', ['github:angular/bower-angular@1.4.1.js', 'services/navigation/navigation-service.js'], function (_export) {
@@ -84348,6 +84529,22 @@ System.register('libraries/telehash/telehash.js', ['github:angular/bower-angular
       _export('default', angular.module('toc.libraries.telehash', []).factory('telehash', function () {
         return telehash;
       }));
+    }
+  };
+});
+
+System.register('services/session/session.js', ['github:angular/bower-angular@1.4.1.js', 'services/session/session-service.js'], function (_export) {
+  'use strict';
+
+  var angular, service;
+  return {
+    setters: [function (_githubAngularBowerAngular141Js) {
+      angular = _githubAngularBowerAngular141Js['default'];
+    }, function (_servicesSessionSessionServiceJs) {
+      service = _servicesSessionSessionServiceJs['default'];
+    }],
+    execute: function () {
+      _export('default', angular.module('toc.services.session', []).factory(service.name, service));
     }
   };
 });
@@ -84825,7 +85022,7 @@ System.register('components/signup-form/signup-form-directive.js', ['components/
       restrict: 'E',
       template: template,
       controllerAs: 'signupForm',
-      controller: function SignupFormController($q, $state, state, identity, network, notification, storage, $ionicHistory, $scope) {
+      controller: function SignupFormController($q, $state, state, identity, network, notification, storage, devices, $ionicHistory, $scope) {
         var _this2 = this;
 
         this.goBack = function goBack() {
@@ -84853,6 +85050,8 @@ System.register('components/signup-form/signup-form-directive.js', ['components/
               staySignedIn: _this.staySignedIn
             };
 
+            // TODO: refactor back into identity service
+            // replace duplicate implementations in signin-form and app-run
             return identity.initialize(sessionInfo.id).then(function () {
               return network.initializeChannels();
             }).then(function () {
@@ -84863,6 +85062,8 @@ System.register('components/signup-form/signup-form-directive.js', ['components/
               }).then(function () {
                 return state.save(state.cloud.identity, ['userInfo'], newUserInfo);
               });
+            }).then(function () {
+              return devices.initialize();
             }).then(function () {
               return state.save(state.cloud.network, ['sessions', sessionInfo.id, 'sessionInfo'], sessionInfo);
             });
@@ -84914,7 +85115,7 @@ System.register('components/signin-form/signin-form-directive.js', ['components/
       restrict: 'E',
       template: template,
       controllerAs: 'signinForm',
-      controller: function SigninFormController($q, $state, $scope, state, identity, network, contacts, notification, signinForm, R, $ionicModal, $ionicHistory) {
+      controller: function SigninFormController($q, $state, $scope, state, identity, network, contacts, notification, signinForm, R, $ionicModal, devices, $ionicHistory) {
         var _this = this;
 
         //TODO: refactor into state service .memory
@@ -84940,14 +85141,16 @@ System.register('components/signin-form/signin-form-directive.js', ['components/
         this.model.staySignedIn = false;
 
         this.signIn = function (userCredentials) {
-          var options = {
+          var authOptions = {
             staySignedIn: this.model.staySignedIn
           };
 
           this.signingIn = identity.initialize(userCredentials.id).then(function () {
-            return identity.authenticate(userCredentials, options);
+            return identity.authenticate(userCredentials, authOptions);
           }).then(function () {
             return state.cloud.initialize(userCredentials.id);
+          }).then(function () {
+            return devices.initialize();
           }).then(function () {
             return contacts.initialize();
           }).then(function () {
@@ -85657,10 +85860,8 @@ System.register('services/storage/storage-service.js', ['npm:babel-runtime@5.5.8
 
     var enableLog = remoteStorage.remoteStorage.enableLog;
 
-    var enableCaching = function enableCaching() {
-      var path = arguments[0] === undefined ? '/' : arguments[0];
-
-      remoteStorage.remoteStorage.caching.enable(path);
+    var enableCaching = function enableCaching(moduleName) {
+      remoteStorage.remoteStorage.caching.enable('/' + (STORAGE_MODULE_PREFIX + moduleName) + '/');
     };
 
     var claimAccess = function claimAccess(moduleName) {
@@ -85913,8 +86114,7 @@ System.register('services/storage/storage-service.js', ['npm:babel-runtime@5.5.8
     };
 
     var initialize = function initialize() {
-      enableLog();
-      enableCaching();
+      // enableLog();
 
       storageService.local = createLocal();
       storageService.cloud = createCloud();
@@ -85923,7 +86123,12 @@ System.register('services/storage/storage-service.js', ['npm:babel-runtime@5.5.8
       storageService.cloudUnencrypted.initialize();
 
       claimAccess('cloud');
+      enableCaching('cloud');
       claimAccess('cloud-unencrypted');
+      enableCaching('cloud-unencrypted');
+      // workaround for 401 error on initial connect
+      // remoteStorage.remoteStorage.access
+      //   .claim('*', DEFAULT_ACCESS_LEVEL);
     };
 
     storageService.initialize = initialize;
@@ -86065,11 +86270,10 @@ System.register('services/cryptography/cryptography.js', ['github:angular/bower-
     };
 });
 
-System.register('services/services.js', ['github:angular/bower-angular@1.4.1.js', 'services/contacts/contacts.js', 'services/identity/identity.js', 'services/navigation/navigation.js', 'services/network/network.js', 'services/notification/notification.js', 'services/storage/storage.js', 'services/cryptography/cryptography.js', 'services/state/state.js', 'services/time/time.js'], function (_export) {
+System.register('services/services.js', ['github:angular/bower-angular@1.4.1.js', 'services/contacts/contacts.js', 'services/identity/identity.js', 'services/devices/devices.js', 'services/navigation/navigation.js', 'services/network/network.js', 'services/notification/notification.js', 'services/storage/storage.js', 'services/cryptography/cryptography.js', 'services/session/session.js', 'services/state/state.js', 'services/time/time.js'], function (_export) {
   'use strict';
 
-  // import contacts from './contacts/contacts';
-  var angular, contacts, identity, navigation, network, notification, storage, cryptography, state, time;
+  var angular, contacts, identity, devices, navigation, network, notification, storage, cryptography, session, state, time;
   return {
     setters: [function (_githubAngularBowerAngular141Js) {
       angular = _githubAngularBowerAngular141Js['default'];
@@ -86077,6 +86281,8 @@ System.register('services/services.js', ['github:angular/bower-angular@1.4.1.js'
       contacts = _servicesContactsContactsJs['default'];
     }, function (_servicesIdentityIdentityJs) {
       identity = _servicesIdentityIdentityJs['default'];
+    }, function (_servicesDevicesDevicesJs) {
+      devices = _servicesDevicesDevicesJs['default'];
     }, function (_servicesNavigationNavigationJs) {
       navigation = _servicesNavigationNavigationJs['default'];
     }, function (_servicesNetworkNetworkJs) {
@@ -86087,15 +86293,15 @@ System.register('services/services.js', ['github:angular/bower-angular@1.4.1.js'
       storage = _servicesStorageStorageJs['default'];
     }, function (_servicesCryptographyCryptographyJs) {
       cryptography = _servicesCryptographyCryptographyJs['default'];
+    }, function (_servicesSessionSessionJs) {
+      session = _servicesSessionSessionJs['default'];
     }, function (_servicesStateStateJs) {
       state = _servicesStateStateJs['default'];
     }, function (_servicesTimeTimeJs) {
       time = _servicesTimeTimeJs['default'];
     }],
     execute: function () {
-      _export('default', angular.module('toc.services', [
-      // contacts.name,
-      contacts.name, identity.name, navigation.name, network.name, notification.name, storage.name, cryptography.name, state.name, time.name]));
+      _export('default', angular.module('toc.services', [contacts.name, identity.name, devices.name, navigation.name, network.name, notification.name, storage.name, cryptography.name, session.name, state.name, time.name]));
     }
   };
 });
