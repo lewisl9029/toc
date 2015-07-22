@@ -34,8 +34,7 @@ export default function identity($q, state, R, cryptography) {
   };
 
   let authenticate = function authenticateIdentity(userCredentials, options) {
-    let challenge = state.cloudUnencrypted.identity
-      .get(['userInfo']).challenge;
+    let challenge = state.cloudUnencrypted.identity.get().challenge;
 
     let savedCredentials;
 
@@ -48,15 +47,7 @@ export default function identity($q, state, R, cryptography) {
       return $q.reject('identity: wrong password');
     }
 
-    if (options.staySignedIn) {
-      state.save(
-        state.local.identity,
-        ['savedCredentials'],
-        savedCredentials
-      );
-    }
-
-    return $q.when(userCredentials);
+    return $q.when(savedCredentials);
   };
 
   let restore = function restoreIdentity(rememberedUser) {

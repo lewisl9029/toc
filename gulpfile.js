@@ -119,7 +119,7 @@ gulp.task('build', function build(done) {
   );
 });
 
-gulp.task('package', ['clean-package'], function package() {
+gulp.task('package', ['build', 'clean-package'], function package() {
   return gulp.src('')
     .pipe(shell(
       'cp -rf ' + process.env.TOC_BUNDLE_PATH + '/* .'

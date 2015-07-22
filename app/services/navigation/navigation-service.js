@@ -1,4 +1,4 @@
-export default function navigation($state, R) {
+export default function navigation($state, $q, R, $ionicHistory) {
   let privateStates = [
     'app.home',
     'app.channel'
@@ -17,7 +17,7 @@ export default function navigation($state, R) {
     return R.any(stateIncludes)(privateStates);
   };
 
-  let isPublicState = function isPrivateState(stateName) {
+  let isPublicState = function isPublicState(stateName) {
     let stateIncludes = stateName ?
       (otherState) => stateName.startsWith(otherState) :
       $state.includes;
@@ -25,8 +25,23 @@ export default function navigation($state, R) {
     return R.any(stateIncludes)(publicStates);
   };
 
+  let resetHistory = function resetHistory() {
+    $ionicHistory.nextViewOptions({
+      historyRoot: true,
+      disableBack: true
+    });
+    return $q.when();
+  };
+
+  let initialize = function initializeNavigation(initialState) {
+    return resetHistory()
+      .then(() => $state.go(initialState));
+  };
+
   return {
     isPrivateState,
-    isPublicState
+    isPublicState,
+    resetHistory,
+    initialize
   };
 }
