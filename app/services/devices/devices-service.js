@@ -1,9 +1,9 @@
 export default function devices(state, session, cryptography, R, $q, $log,
-  $interval, $timeout, $ionicPopup) {
+  $interval, $timeout, $ionicPopup, notification) {
   let updateKillFlags = function updateKillFlags() {
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
 
-    let cloudDevices = state.cloud.devices.get();
+    let cloudDevices = state.cloud.devices.get() || {};
     cloudDevices[localDeviceId] = {};
 
     let killFlagsUpdated = R.map((deviceId) => {
@@ -77,7 +77,7 @@ export default function devices(state, session, cryptography, R, $q, $log,
     return deviceReady
       .then(updateKillFlags)
       .then(() => listenForKillFlags())
-      .catch((error) => notifications.error(error, 'Devices Init Error'));
+      .catch((error) => notification.error(error, 'Devices Init Error'));
   };
 
   return {
