@@ -83164,11 +83164,11 @@ System.register('services/devices/devices-service.js', [], function (_export) {
 
   _export('default', devices);
 
-  function devices(state, session, cryptography, R, $q, $log, $interval, $timeout, $ionicPopup) {
+  function devices(state, session, cryptography, R, $q, $log, $interval, $timeout, $ionicPopup, notification) {
     var updateKillFlags = function updateKillFlags() {
       var localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
 
-      var cloudDevices = state.cloud.devices.get();
+      var cloudDevices = state.cloud.devices.get() || {};
       cloudDevices[localDeviceId] = {};
 
       var killFlagsUpdated = R.map(function (deviceId) {
@@ -83232,7 +83232,7 @@ System.register('services/devices/devices-service.js', [], function (_export) {
       return deviceReady.then(updateKillFlags).then(function () {
         return listenForKillFlags();
       })['catch'](function (error) {
-        return notifications.error(error, 'Devices Init Error');
+        return notification.error(error, 'Devices Init Error');
       });
     };
 
