@@ -1,5 +1,11 @@
 export default function session(state, identity, devices, contacts,
   notification, navigation, network, $q, $window) {
+  let initializeNetwork = function initializeNetwork() {
+    let sessionInfo = state.cloud.session.get().sessionInfo;
+    return network.initialize(sessionInfo.keypair)
+      .then(() => network.initializeChannels());
+  };
+
   let saveCredentials = function saveCredentials(credentials, staySignedIn) {
     return staySignedIn ?
       state.save(
@@ -48,12 +54,12 @@ export default function session(state, identity, devices, contacts,
           .then((newIdentity) => {
             return state.cloud.initialize(newIdentity.userInfo.id)
               .then(() => devices.initialize(signOut))
-              .then(() => saveUserInfo(newIdentity.userInfo))
-              .then(() => saveSessionInfo(sessionInfo))
               .then(() =>
                 saveCredentials(newIdentity.credentials, options.staySignedIn)
-              );
+              )
+              .then(() => saveUserInfo(newIdentity.userInfo));
           })
+          .then(() => saveSessionInfo(sessionInfo));
       })
       .then(() => updateLatest())
       .then(() => navigation.initialize())
@@ -64,25 +70,36 @@ export default function session(state, identity, devices, contacts,
   };
 
   let signIn = function signIn(userCredentials, options) {
-    let initializeNetwork = function initializeNetwork() {
-      let sessionInfo = state.cloud.session.get().sessionInfo;
-      return network.initialize(sessionInfo.keypair)
-        .then(() => network.initializeChannels());
-    };
-
     return identity.initialize(userCredentials.id)
       .then(() => identity.authenticate(userCredentials))
-      .then((existingIdentity) =>
-        saveCredentials(existingIdentity.credentials, options.staySignedIn)
-      )
-      .then(() => state.cloud.initialize(userCredentials.id))
-      .then(() => devices.initialize(signOut))
+      .then((existingIdentity) => {
+        return state.cloud.initialize(userCredentials.id)
+          .then(() => devices.initialize(signOut))
+          .then(() =>
+            saveCredentials(existingIdentity.credentials, options.staySignedIn)
+          );
+      })
       .then(() => contacts.initialize())
       .then(() => initializeNetwork())
       .then(() => updateLatest())
       .then(() => navigation.initialize())
       .catch((error) =>
         notification.error(error, 'Sign In Error')
+          .then(() => identity.destroy())
+      );
+  };
+
+  let restore = function restore(existingIdentity) {
+    return identity.initialize(existingIdentity.userInfo.id)
+      .then(() => identity.restore(existingIdentity))
+      .then(() => state.cloud.initialize(existingIdentity.userInfo.id))
+      .then(() => devices.initialize(signOut))
+      .then(() => contacts.initialize())
+      .then(() => initializeNetwork())
+      .then(() => updateLatest())
+      .then(() => navigation.initialize())
+      .catch((error) =>
+        notification.error(error, 'Restore Error')
           .then(() => identity.destroy())
       );
   };
@@ -99,6 +116,7 @@ export default function session(state, identity, devices, contacts,
   return {
     signUp,
     signIn,
+    restore,
     signOut
   };
 };

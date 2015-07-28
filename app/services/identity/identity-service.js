@@ -51,17 +51,17 @@ export default function identity($q, state, R, cryptography) {
     return $q.when(existingIdentity);
   };
 
-  let restore = function restoreIdentity(rememberedUser) {
+  let restore = function restoreIdentity(existingIdentity) {
     try {
-      cryptography.restore(rememberedUser.savedCredentials);
-      cryptography.decrypt(rememberedUser.userInfo.challenge);
+      cryptography.restore(existingIdentity.credentials);
+      cryptography.decrypt(existingIdentity.userInfo.challenge);
     }
     catch(error) {
       cryptography.destroy();
       return $q.reject('identity: wrong saved credentials');
     }
 
-    return $q.when(rememberedUser.userInfo);
+    return $q.when(existingIdentity);
   };
 
   let initialize = function initializeIdentity(userId) {
