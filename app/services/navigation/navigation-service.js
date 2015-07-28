@@ -33,7 +33,7 @@ export default function navigation($state, $q, R, $ionicHistory) {
     return $q.when();
   };
 
-  let initialize = function initializeNavigation(initialState) {
+  let initialize = function initializeNavigation(initialState = 'app.home') {
     return resetHistory()
       .then(() => $state.go(initialState));
   };

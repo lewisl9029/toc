@@ -1,5 +1,5 @@
 export default function identity($q, state, R, cryptography) {
-  let create = function createIdentity(sessionInfo, userInfo, options) {
+  let create = function createIdentity(sessionInfo, userInfo) {
     let userCredentials = {
       id: sessionInfo.id,
       password: userInfo.password
@@ -11,35 +11,31 @@ export default function identity($q, state, R, cryptography) {
       email: userInfo.email
     };
 
-    let savedCredentials;
+    let credentials = cryptography.initialize(userCredentials);
 
     try {
-      savedCredentials = cryptography.initialize(userCredentials);
       newUserInfo.challenge = cryptography.encrypt(userCredentials.id);
       cryptography.decrypt(newUserInfo.challenge);
     } catch(error) {
       cryptography.destroy();
       return $q.reject(error);
     }
-    //TODO: refactor into session service
-    if (options.staySignedIn) {
-      state.save(
-        state.local.identity,
-        ['savedCredentials'],
-        savedCredentials
-      );
-    }
 
-    return $q.when(newUserInfo);
+    let newIdentity = {
+      userInfo: newUserInfo,
+      credentials
+    };
+
+    return $q.when(newIdentity);
   };
 
-  let authenticate = function authenticateIdentity(userCredentials, options) {
-    let challenge = state.cloudUnencrypted.identity.get().challenge;
+  let authenticate = function authenticateIdentity(userCredentials) {
+    let userInfo = state.cloudUnencrypted.identity.get().userInfo;
+    let challenge = userInfo.challenge;
 
-    let savedCredentials;
+    let credentials = cryptography.initialize(userCredentials);
 
     try {
-      savedCredentials = cryptography.initialize(userCredentials);
       cryptography.decrypt(challenge);
     }
     catch(error) {
@@ -47,7 +43,12 @@ export default function identity($q, state, R, cryptography) {
       return $q.reject('identity: wrong password');
     }
 
-    return $q.when(savedCredentials);
+    let existingIdentity = {
+      userInfo,
+      credentials
+    };
+
+    return $q.when(existingIdentity);
   };
 
   let restore = function restoreIdentity(rememberedUser) {
