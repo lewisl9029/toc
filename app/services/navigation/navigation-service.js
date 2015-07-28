@@ -1,4 +1,5 @@
-export default function navigation($state, $q, R, $ionicHistory) {
+export default function navigation(state, $state, $q, R, $ionicHistory,
+  $rootScope) {
   let privateStates = [
     'app.home',
     'app.channel'
@@ -8,6 +9,33 @@ export default function navigation($state, $q, R, $ionicHistory) {
     'app.signin',
     'app.signup'
   ];
+
+  let setupRedirect = function setupRedirect() {
+    // redirect to app.welcome if identity has not been initialized
+    $rootScope.$on('$stateChangeStart', function(event, toState) {
+      let doRedirect;
+      let redirectStateName;
+
+      if (state.cloud.identity && state.cloud.identity.get()) {
+        doRedirect = isPublicState(toState.name);
+        redirectStateName = 'app.home';
+      } else {
+        doRedirect = isPrivateState(toState.name);
+        redirectStateName = 'app.welcome';
+      }
+
+      if (!doRedirect) {
+        return;
+      }
+
+      event.preventDefault();
+      return $state.go(redirectStateName);
+    });
+  };
+
+  let clearCache = function clearCache() {
+    return $ionicHistory.clearCache();
+  };
 
   let isPrivateState = function isPrivateState(stateName) {
     let stateIncludes = stateName ?
@@ -25,10 +53,11 @@ export default function navigation($state, $q, R, $ionicHistory) {
     return R.any(stateIncludes)(publicStates);
   };
 
-  let resetHistory = function resetHistory() {
+  let resetHistory = function resetHistory(options = {disableAnimate: false}) {
     $ionicHistory.nextViewOptions({
       historyRoot: true,
-      disableBack: true
+      disableBack: true,
+      disableAnimate: options.disableAnimate
     });
     return $q.when();
   };
@@ -41,6 +70,8 @@ export default function navigation($state, $q, R, $ionicHistory) {
   return {
     isPrivateState,
     isPublicState,
+    clearCache,
+    setupRedirect,
     resetHistory,
     initialize
   };

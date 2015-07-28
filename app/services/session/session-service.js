@@ -1,5 +1,5 @@
-export default function session(state, identity, devices, contacts,
-  notification, navigation, network, $q, $window) {
+export default function session(state, identity, devices, contacts, $state,
+  notification, navigation, network, $q, $window, $timeout, R) {
   let initializeNetwork = function initializeNetwork() {
     let sessionInfo = state.cloud.session.get().sessionInfo;
     return network.initialize(sessionInfo.keypair)
@@ -89,7 +89,42 @@ export default function session(state, identity, devices, contacts,
       );
   };
 
-  let restore = function restore(existingIdentity) {
+  let restore = function restore() {
+    let localUsers = state.local.cursor.get();
+
+    let existingIdUserPair;
+
+    if (R.keys(localUsers).length !== 0) {
+      existingIdUserPair = R.pipe(
+        R.toPairs,
+        R.filter((idUserPair) => idUserPair[1].session),
+        R.map((idUserPair) => [
+          idUserPair[0],
+          idUserPair[1].session
+        ]),
+        R.find((idUserPair) => idUserPair[1].savedCredentials)
+      )(localUsers);
+    }
+
+    if (!existingIdUserPair) {
+      let prepareNavigate = !$state.is('app.welcome') ?
+        navigation.resetHistory({disableAnimate: true}) :
+        $q.when();
+
+      return prepareNavigate
+        .then(() => $state.go('app.welcome'))
+        //workaround for too early initialization
+        .then(() => $timeout(() => navigation.clearCache(), 0));
+    }
+
+    let existingIdentity = state.cloudUnencrypted.cursor.get([
+      existingIdUserPair[0],
+      'identity'
+    ]);
+
+    existingIdentity.credentials =
+      existingIdUserPair[1].savedCredentials;
+
     return identity.initialize(existingIdentity.userInfo.id)
       .then(() => identity.restore(existingIdentity))
       .then(() => state.cloud.initialize(existingIdentity.userInfo.id))
