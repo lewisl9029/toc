@@ -1,5 +1,5 @@
 export default function identity($q, state, R, cryptography) {
-  let create = function createIdentity(sessionInfo, userInfo, options) {
+  let create = function createIdentity(sessionInfo, userInfo) {
     let userCredentials = {
       id: sessionInfo.id,
       password: userInfo.password
@@ -11,36 +11,31 @@ export default function identity($q, state, R, cryptography) {
       email: userInfo.email
     };
 
-    let savedCredentials;
+    let credentials = cryptography.initialize(userCredentials);
 
     try {
-      savedCredentials = cryptography.initialize(userCredentials);
       newUserInfo.challenge = cryptography.encrypt(userCredentials.id);
       cryptography.decrypt(newUserInfo.challenge);
     } catch(error) {
       cryptography.destroy();
       return $q.reject(error);
     }
-    //TODO: refactor into session service
-    if (options.staySignedIn) {
-      state.save(
-        state.local.identity,
-        ['savedCredentials'],
-        savedCredentials
-      );
-    }
 
-    return $q.when(newUserInfo);
+    let newIdentity = {
+      userInfo: newUserInfo,
+      credentials
+    };
+
+    return $q.when(newIdentity);
   };
 
-  let authenticate = function authenticateIdentity(userCredentials, options) {
-    let challenge = state.cloudUnencrypted.identity
-      .get(['userInfo']).challenge;
+  let authenticate = function authenticateIdentity(userCredentials) {
+    let userInfo = state.cloudUnencrypted.identity.get().userInfo;
+    let challenge = userInfo.challenge;
 
-    let savedCredentials;
+    let credentials = cryptography.initialize(userCredentials);
 
     try {
-      savedCredentials = cryptography.initialize(userCredentials);
       cryptography.decrypt(challenge);
     }
     catch(error) {
@@ -48,28 +43,25 @@ export default function identity($q, state, R, cryptography) {
       return $q.reject('identity: wrong password');
     }
 
-    if (options.staySignedIn) {
-      state.save(
-        state.local.identity,
-        ['savedCredentials'],
-        savedCredentials
-      );
-    }
+    let existingIdentity = {
+      userInfo,
+      credentials
+    };
 
-    return $q.when(userCredentials);
+    return $q.when(existingIdentity);
   };
 
-  let restore = function restoreIdentity(rememberedUser) {
+  let restore = function restoreIdentity(existingIdentity) {
     try {
-      cryptography.restore(rememberedUser.savedCredentials);
-      cryptography.decrypt(rememberedUser.userInfo.challenge);
+      cryptography.restore(existingIdentity.credentials);
+      cryptography.decrypt(existingIdentity.userInfo.challenge);
     }
     catch(error) {
       cryptography.destroy();
       return $q.reject('identity: wrong saved credentials');
     }
 
-    return $q.when(rememberedUser.userInfo);
+    return $q.when(existingIdentity);
   };
 
   let initialize = function initializeIdentity(userId) {

@@ -1,4 +1,4 @@
-export default function devices(state, session, cryptography, R, $q, $log,
+export default function devices(state, cryptography, R, $q, $log,
   $interval, $timeout, $ionicPopup, notification) {
   let updateKillFlags = function updateKillFlags() {
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
@@ -19,7 +19,7 @@ export default function devices(state, session, cryptography, R, $q, $log,
     return $q.all(killFlagsUpdated);
   };
 
-  let listenForKillFlags = function listenForKillFlags() {
+  let listenForKillFlags = function listenForKillFlags(signOut) {
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
     let localKillFlagCursor = state.cloud.devices
       .select([localDeviceId, 'kill']);
@@ -30,7 +30,7 @@ export default function devices(state, session, cryptography, R, $q, $log,
       }
 
       let killingDevice = $timeout(() => {
-        session.signOut();
+        signOut();
       }, 5000);
 
       let remoteLoginPopup = $ionicPopup.show({
@@ -60,7 +60,8 @@ export default function devices(state, session, cryptography, R, $q, $log,
     return cryptography.getRandomBase64(16);
   };
 
-  let initialize = function initializeDevices() {
+  //Workaround for circular dependency between devices and session
+  let initialize = function initializeDevices(signOut) {
     let localDeviceInfo = state.local.devices.get('deviceInfo');
 
     let deviceReady = localDeviceInfo ?
@@ -76,7 +77,7 @@ export default function devices(state, session, cryptography, R, $q, $log,
 
     return deviceReady
       .then(updateKillFlags)
-      .then(() => listenForKillFlags())
+      .then(() => listenForKillFlags(signOut))
       .catch((error) => notification.error(error, 'Devices Init Error'));
   };
 
