@@ -6,13 +6,14 @@
     channelList.goToHome() : undefined" menu-close>
     <div class="row balanced-bg"></div>
     <ion-item class="item item-avatar">
-      <img ng-src="http://cdn.libravatar.org/avatar/{{channelList.userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{channelList.userInfo.email}}" />
+      <img ng-src="{{channelList.getAvatar(channelList.userInfo.email)}}"
+        alt="Avatar for {{channelList.userInfo.email}}" />
       <h2>{{channelList.userInfo.displayName}}</h2>
       <p>{{channelList.userInfo.id}}</p>
     </ion-item>
   </div>
 
-  <div class="item item-divider item-royal">
+  <!-- <div class="item item-divider item-royal">
     Groups
   </div>
   <form name="toc-group-create-form">
@@ -23,10 +24,9 @@
       <button type="submit" class="button button-clear button-balanced"
         disabled>
         <i class="icon ion-plus"></i>
-        <!-- <ion-spinner icon="ripple" class="spinner-balanced"></ion-spinner> -->
       </button>
     </div>
-  </form>
+  </form> -->
 
   <div class="item item-divider item-balanced">
     Contacts
@@ -59,7 +59,8 @@
       }"></div>
     <ion-item class="item item-avatar"
       ng-class="{'item-button-right': channel.channelInfo.pendingAccept}">
-      <img ng-src="http://cdn.libravatar.org/avatar/{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email}}" />
+      <!-- FIXME: surely this could be cleaner -->
+      <img ng-src="{{channelList.getAvatar(channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email)}}" alt="Avatar for {{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email}}" />
       <h2>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.displayName}}</h2>
       <p>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id}}</p>
       <div class="buttons" ng-if="channel.channelInfo.pendingAccept">

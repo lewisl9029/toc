@@ -7,6 +7,8 @@ export default function tocSignupForm() {
     controllerAs: 'signupForm',
     controller: function SignupFormController($q, $state, state, identity,
       network, notification, storage, devices, $ionicHistory, $scope, session) {
+      this.getAvatar = identity.getAvatar;
+
       this.goBack = function goBack() {
         $ionicHistory.goBack();
       };

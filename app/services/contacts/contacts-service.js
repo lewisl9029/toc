@@ -1,4 +1,4 @@
-export default function contacts($q, R, state, network) {
+export default function contacts($q, R, state, identity, network) {
   let invite = function inviteContact(contactId) {
     let userInfo = state.cloud.identity.get('userInfo');
     let contactChannel = network.createContactChannel(userInfo.id, contactId);
@@ -9,7 +9,7 @@ export default function contacts($q, R, state, network) {
     let contact = existingContact || {
       id: contactId,
       displayName: 'Invite Pending',
-      email: 'unknown-user@toc-messenger.io'
+      email: 'unknown-user@toc.im'
     };
 
     const MAX_ATTEMPTS = 3;

@@ -1,4 +1,17 @@
 export default function identity($q, state, R, cryptography) {
+  let getAvatarBase = function getAvatarBase(email) {
+    // default to hash of unknown-user@toc.im
+    if (!email) {
+      return getAvatarBase('unknown-user@toc.im');
+    }
+
+    let emailHash = cryptography.getMd5(email);
+
+    return `http://cdn.libravatar.org/avatar/${emailHash}?d=identicon`;
+  };
+
+  let getAvatar = R.memoize(getAvatarBase);
+
   let create = function createIdentity(sessionInfo, userInfo) {
     let userCredentials = {
       id: sessionInfo.id,
@@ -84,6 +97,7 @@ export default function identity($q, state, R, cryptography) {
   };
 
   return {
+    getAvatar,
     create,
     authenticate,
     restore,

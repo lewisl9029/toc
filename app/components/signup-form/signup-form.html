@@ -8,7 +8,8 @@
       </div>
       <label class="item item-avatar">
         <!-- TODO: create directive for libravatar icon -->
-        <img ng-src="http://cdn.libravatar.org/avatar/2012345b479e2123456ec07710c08d50?d=identicon" alt="New User 1" />
+        <img ng-src="{{signupForm.getAvatar(signupForm.newUser.email)}}"
+          alt="New User Avatar" />
         <h2>{{signupForm.newUser.displayName || 'Anonymous'}}</h2>
         <p>Your contact card.</p>
       </label>
@@ -20,7 +21,10 @@
       <label class="item item-input item-stacked-label">
         <span class="input-label">Contact Email</span>
         <input type="text" placeholder="Another way to reach you."
-          ng-model="signupForm.newUser.email">
+          ng-model="signupForm.newUser.email" ng-model-options="{
+            updateOn: 'default blur',
+            debounce: { default: 1000, blur: 0}
+          }">
       </label>
       <label class="item item-input item-stacked-label">
         <span class="input-label">Password</span>
