@@ -12,6 +12,8 @@ export default function tocSigninForm() {
       //TODO: refactor into state service .memory
       this.model = signinForm;
 
+      this.getAvatar = identity.getAvatar;
+
       this.goBack = function goBack() {
         $ionicHistory.goBack();
       };
@@ -42,6 +44,7 @@ export default function tocSigninForm() {
       };
 
       $scope.model = signinForm;
+      $scope.getAvatar = identity.getAvatar;
       $scope.userListModal = $ionicModal.fromTemplate(userListTemplate, {
         scope: $scope,
         animation: 'slide-in-up'

@@ -6,7 +6,7 @@
     channelList.goToHome() : undefined" menu-close>
     <div class="row balanced-bg"></div>
     <ion-item class="item item-avatar">
-      <img ng-src="{{channelList.userInfo.avatar}}"
+      <img ng-src="{{channelList.getAvatar(channelList.userInfo.email)}}"
         alt="Avatar for {{channelList.userInfo.email}}" />
       <h2>{{channelList.userInfo.displayName}}</h2>
       <p>{{channelList.userInfo.id}}</p>
@@ -60,7 +60,8 @@
       }"></div>
     <ion-item class="item item-avatar"
       ng-class="{'item-button-right': channel.channelInfo.pendingAccept}">
-      <img ng-src="{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.avatar}}" alt="Avatar for {{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email}}" />
+      <!-- FIXME: surely this could be cleaner -->
+      <img ng-src="{{channelList.getAvatar(channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email)}}" alt="Avatar for {{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email}}" />
       <h2>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.displayName}}</h2>
       <p>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.id}}</p>
       <div class="buttons" ng-if="channel.channelInfo.pendingAccept">

@@ -6,7 +6,9 @@ export default function tocChannelList() {
     template: template,
     controllerAs: 'channelList',
     controller: function ChannelListController($q, $state, state, contacts,
-      notification, $ionicHistory, $scope) {
+      notification, identity, $ionicHistory, $scope) {
+      this.getAvatar = identity.getAvatar;  
+
       this.channelId = $state.params.channelId;
 
       let identityCursor = state.cloud.identity;

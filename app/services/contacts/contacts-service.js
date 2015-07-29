@@ -1,4 +1,4 @@
-export default function contacts($q, R, state, network) {
+export default function contacts($q, R, state, identity, network) {
   let invite = function inviteContact(contactId) {
     let userInfo = state.cloud.identity.get('userInfo');
     let contactChannel = network.createContactChannel(userInfo.id, contactId);
@@ -6,14 +6,10 @@ export default function contacts($q, R, state, network) {
     let existingContact = state.cloud.contacts
       .get([contactId, 'userInfo']);
 
-    // MD5 of 'unknown-user@toc.im'
-    let emailHash = '5ae4d25a9f2a3ea7d90f495711b34486';
-
     let contact = existingContact || {
       id: contactId,
       displayName: 'Invite Pending',
-      email: 'unknown-user@toc.im',
-      avatar: `http://cdn.libravatar.org/avatar/${emailHash}?d=identicon`
+      email: 'unknown-user@toc.im'
     };
 
     const MAX_ATTEMPTS = 3;
