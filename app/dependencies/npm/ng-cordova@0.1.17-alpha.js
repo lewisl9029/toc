@@ -1,0 +1,1 @@
+module.exports = require("npm:ng-cordova@0.1.17-alpha/dist/ng-cordova");

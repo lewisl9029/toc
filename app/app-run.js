@@ -10,11 +10,11 @@ export default function runApp(state, $ionicPlatform, navigation, storage,
       // org.apache.cordova.statusbar required
       window.StatusBar.styleDefault();
     }
+
+    navigation.setupRedirect();
+
+    storage.prepare()
+      .then(() => state.initialize())
+      .then(() => session.restore());
   });
-
-  navigation.setupRedirect();
-
-  storage.prepare()
-    .then(() => state.initialize())
-    .then(() => session.restore());
 }
