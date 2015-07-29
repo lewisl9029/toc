@@ -1,6 +1,7 @@
 export default function HomeController(state, session, identity, network,
   notification, $ionicPopup, $q, $window, storage, $scope) {
 
+  //TODO: do this in a $stateChangeStart hook instead
   let activeChannelId = state.cloud.network.get(
     ['activeChannelId']
   );

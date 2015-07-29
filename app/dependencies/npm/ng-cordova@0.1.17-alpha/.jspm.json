@@ -1,0 +1,76 @@
+{
+  "name": "ng-cordova",
+  "private": false,
+  "main": "dist/ng-cordova",
+  "version": "0.1.17-alpha",
+  "repository": {
+    "url": "git://github.com/driftyco/ng-cordova.git"
+  },
+  "devDependencies": {
+    "gulp": "^3.7.0",
+    "gulp-concat": "^2.2.0",
+    "gulp-footer": "^1.0.4",
+    "gulp-header": "^1.0.2",
+    "gulp-jscs": "^1.6.0",
+    "gulp-jshint": "^1.6.1",
+    "gulp-prettify": "^0.3.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-shell": "^0.2.10",
+    "gulp-uglify": "^0.2.1",
+    "jshint-stylish": "^0.4.0",
+    "karma": "^0.12.16",
+    "karma-chrome-launcher": "~0.1.2",
+    "karma-coverage": "~0.2.6",
+    "karma-jasmine": "~0.1.5",
+    "karma-phantomjs-launcher": "~0.1.2",
+    "minimist": "^0.1.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "scripts": {
+    "test": "gulp karma --browsers=PhantomJS --reporters=progress"
+  },
+  "gitHead": "712fe8d7de28a2abf354e146ef0c364b04f1d136",
+  "description": "[ngCordova](http://ngcordova.com/) ==========",
+  "bugs": {
+    "url": "https://github.com/driftyco/ng-cordova/issues"
+  },
+  "homepage": "https://github.com/driftyco/ng-cordova",
+  "_id": "ng-cordova@0.1.17-alpha",
+  "_shasum": "49307d74f353601fe62bf15c2c9f99de2eab8d81",
+  "_from": ".",
+  "_npmVersion": "1.4.28",
+  "_npmUser": {
+    "name": "pbernasconi",
+    "email": "paolo.enrico.bernasconi@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "pbernasconi",
+      "email": "paolo.enrico.bernasconi@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "49307d74f353601fe62bf15c2c9f99de2eab8d81",
+    "tarball": "http://registry.npmjs.org/ng-cordova/-/ng-cordova-0.1.17-alpha.tgz"
+  },
+  "format": "cjs",
+  "ignore": [
+    "node_modules"
+  ],
+  "registry": "npm",
+  "dependencies": {
+    "conventional-changelog": "conventional-changelog@0.0.11",
+    "fs": "fs@0.0.2",
+    "q": "q@^1.1.2",
+    "systemjs-json": "github:systemjs/plugin-json@^0.1.0",
+    "process": "github:jspm/nodelibs-process@^0.1.0",
+    "child_process": "github:jspm/nodelibs-child_process@^0.1.0",
+    "path": "github:jspm/nodelibs-path@^0.1.0",
+    "sys": "github:jspm/nodelibs-util@^0.1.0",
+    "buffer": "github:jspm/nodelibs-buffer@^0.1.0"
+  }
+}

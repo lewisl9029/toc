@@ -1,0 +1,1 @@
+module.exports = require("npm:lodash._basecreatecallback@2.4.1/index");

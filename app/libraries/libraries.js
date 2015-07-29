@@ -9,6 +9,7 @@ import remoteStorage from './remote-storage/remote-storage';
 import qrEncode from './qr-encode/qr-encode';
 import forge from './forge/forge';
 import telehash from './telehash/telehash';
+import ngCordova from './ng-cordova/ng-cordova';
 
 export default angular.module('toc.libraries', [
   angularToastr.name,
@@ -18,5 +19,6 @@ export default angular.module('toc.libraries', [
   ramda.name,
   remoteStorage.name,
   qrEncode.name,
-  telehash.name
+  telehash.name,
+  ngCordova.name
 ]);
