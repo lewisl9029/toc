@@ -95,6 +95,13 @@ export default function cryptography($q, forge) {
     return hmac.digest().getBytes();
   };
 
+  let getMd5 = function getMd5(plaintext) {
+    let md5 = forge.md.md5.create();
+    md5.update(plaintext);
+
+    return md5.digest().toHex();
+  };
+
   let encryptBase =
     function encryptBase(object, ivBytes, credentials = cachedCredentials) {
       checkCredentials(credentials);
@@ -198,6 +205,7 @@ export default function cryptography($q, forge) {
     unescapeBase64,
     getRandomBase64,
     getHmac,
+    getMd5,
     encryptDeterministic,
     encrypt,
     decrypt,

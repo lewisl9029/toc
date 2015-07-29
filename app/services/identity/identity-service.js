@@ -5,10 +5,13 @@ export default function identity($q, state, R, cryptography) {
       password: userInfo.password
     };
 
+    let emailHash = cryptography.getMd5(userInfo.email);
+
     let newUserInfo = {
       id: sessionInfo.id,
       displayName: userInfo.displayName,
-      email: userInfo.email
+      email: userInfo.email,
+      avatar: `http://cdn.libravatar.org/avatar/${emailHash}?d=identicon`
     };
 
     let credentials = cryptography.initialize(userCredentials);
