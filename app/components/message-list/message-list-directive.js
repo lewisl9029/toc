@@ -42,7 +42,9 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
       });
     },
     controllerAs: 'messageList',
-    controller: function MessageListController($scope, $state, $interval) {
+    controller: function MessageListController($scope, $state, $interval,
+      identity) {
+      this.getAvatar = identity.getAvatar;
       //TODO: clean up this whole thing (refactor message functions to service)
       // add state listeners and cleanup on destroy
       let channelsCursor = state.cloud.network
