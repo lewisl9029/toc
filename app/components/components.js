@@ -1,6 +1,5 @@
 import angular from 'angular';
 
-import header from './header/header';
 import autoFocus from './auto-focus/auto-focus';
 import channelList from './channel-list/channel-list';
 import messageList from './message-list/message-list';
@@ -12,7 +11,6 @@ import cloudConnectForm from './cloud-connect-form/cloud-connect-form';
 import cloudManageForm from './cloud-manage-form/cloud-manage-form';
 
 export default angular.module('toc.components', [
-  header.name,
   autoFocus.name,
   channelList.name,
   messageList.name,

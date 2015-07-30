@@ -6,7 +6,7 @@ export default function tocSigninForm() {
     restrict: 'E',
     template: template,
     controllerAs: 'signinForm',
-    controller: function SigninFormController($q, $state, $scope, state,
+    controller: function SigninFormController($q, $scope, state,
       identity, network, contacts, notification, signinForm, R, $ionicModal,
       devices, $ionicHistory, session) {
       //TODO: refactor into state service .memory

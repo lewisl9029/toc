@@ -1,8 +1,5 @@
 <ion-view view-title="{{homeView.currentUser.userInfo.displayName}}">
-  <ion-nav-bar class="bar-positive">
-    <toc-header></toc-header>
-  </ion-nav-bar>
-  <ion-content has-header="true">
+  <ion-content>
     <div class="toc-flex-container">
       <div class="toc-flex-content">
         <div class="list">
@@ -26,7 +23,7 @@
       <div class="toc-flex-footer">
         <div class="row" ng-if="!homeView.isStorageConnected()">
           <div class="col">
-            <button ui-sref="app.cloud" class="button button-block button-outline button-royal">
+            <button ui-sref="app.private.cloud" class="button button-block button-outline button-royal">
               Connect a cloud account
             </button>
           </div>

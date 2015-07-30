@@ -1,4 +1,5 @@
 import template from 'app.html!text';
+import menuTemplate from 'app-menu.html!text';
 
 export default function configApp($stateProvider, $urlRouterProvider,
   $ionicConfigProvider) {
@@ -7,19 +8,21 @@ export default function configApp($stateProvider, $urlRouterProvider,
   $ionicConfigProvider.views.transition('android');
   // $ionicConfigProvider.views.maxCache(0);
 
-
   $stateProvider.state('app', {
     url: '/app',
+    abstract: true,
+    template: '<ion-nav-view></ion-nav-view>'
+  });
+
+  $stateProvider.state('app.public', {
+    url: '/public',
     abstract: true,
     template: template
   });
 
-  //OAuth token matching
-  //http://localhost:8100/#access_token=a4fe6044356f389b512a9bd223816caa&state=%2Fapp%2Fhome
-  // $urlRouterProvider.when(/#access_token=/)
-  // $stateProvider.state('auth', {
-  //   url: '/'
-  // });
-  // if none of the above states are matched, use this as the fallback
-  //$urlRouterProvider.otherwise('/app/welcome');
+  $stateProvider.state('app.private', {
+    url: '/private',
+    abstract: true,
+    template: menuTemplate
+  });
 }
