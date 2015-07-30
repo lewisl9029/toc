@@ -7,20 +7,20 @@
       <div class="toc-flex-footer">
         <div class="row" ng-if="!welcomeView.isStorageConnected()">
           <div class="col">
-            <button ui-sref="app.cloud" class="button button-block button-outline button-royal">
+            <button ui-sref="app.public.cloud" class="button button-block button-outline button-royal">
               Connect a cloud account
             </button>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <button ui-sref="app.signup"
+            <button ui-sref="app.public.signup"
               class="button button-block button-outline button-calm">
               Create account
             </button>
           </div>
           <div class="col" ng-if="welcomeView.users">
-            <button ui-sref="app.signin"
+            <button ui-sref="app.public.signin"
               class="button button-block button-outline button-calm">
               Sign in
             </button>

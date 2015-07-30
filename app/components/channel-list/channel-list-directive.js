@@ -6,8 +6,8 @@ export default function tocChannelList() {
     template: template,
     controllerAs: 'channelList',
     controller: function ChannelListController($q, $state, state, contacts,
-      notification, identity, $ionicHistory, $scope) {
-      this.getAvatar = identity.getAvatar;  
+      navigation, notification, identity, $ionicHistory, $scope) {
+      this.getAvatar = identity.getAvatar;
 
       this.channelId = $state.params.channelId;
 
@@ -73,10 +73,13 @@ export default function tocChannelList() {
 
         $ionicHistory.nextViewOptions({
           disableBack: true,
-          disableAnimate: true
+          disableAnimate: false
         });
 
-        return $state.go('app.channel', {channelId: channelId});
+        return navigation.go(
+          navigation.app.private.channel,
+          {channelId: channelId}
+        );
       };
 
       this.goToHome = function goToHome() {
@@ -94,10 +97,10 @@ export default function tocChannelList() {
 
         $ionicHistory.nextViewOptions({
           disableBack: true,
-          disableAnimate: true
+          disableAnimate: false
         });
 
-        return $state.go('app.home');
+        return navigation.go(navigation.app.private.home);
       };
     }
   };

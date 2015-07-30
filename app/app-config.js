@@ -10,7 +10,8 @@ export default function configApp($stateProvider, $urlRouterProvider,
 
   $stateProvider.state('app', {
     url: '/app',
-    abstract: true
+    abstract: true,
+    template: '<ion-nav-view></ion-nav-view>'
   });
 
   $stateProvider.state('app.public', {

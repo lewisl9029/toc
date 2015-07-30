@@ -1,4 +1,4 @@
-export default function session(state, identity, devices, contacts, $state,
+export default function session(state, identity, devices, contacts,
   notification, navigation, network, $q, $window, $timeout, R) {
   let initializeNetwork = function initializeNetwork() {
     let sessionInfo = state.cloud.session.get().sessionInfo;
@@ -107,12 +107,12 @@ export default function session(state, identity, devices, contacts, $state,
     }
 
     if (!existingIdUserPair) {
-      let prepareNavigate = !$state.is('app.welcome') ?
+      let prepareNavigate = !navigation.at(navigation.app.public.welcome) ?
         navigation.resetHistory({disableAnimate: true}) :
         $q.when();
 
       return prepareNavigate
-        .then(() => $state.go('app.welcome'))
+        .then(() => navigation.go(navigation.app.public.welcome))
         //workaround for too early initialization
         .then(() => $timeout(() => navigation.clearCache(), 0));
     }
