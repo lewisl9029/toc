@@ -1,7 +1,6 @@
 export default function network($q, $window, $interval, R, state, telehash,
   notification, channels) {
   let activeSession;
-  let activeChannelUpdates = {};
 
   let checkSession = function checkSession(session) {
     if (session) {
@@ -71,7 +70,8 @@ export default function network($q, $window, $interval, R, state, telehash,
 
     let message = {
       id: messageId,
-      //TODO: find main contact userId from sender userId
+      //TODO: find main contact endpoint id from sender userId
+      // when using multi-endpoint contacts
       sender: contactId,
       receivedTime: receivedTime,
       sentTime: sentTime,
@@ -139,7 +139,6 @@ export default function network($q, $window, $interval, R, state, telehash,
         } else if (packet.js.s !== undefined) {
           return handleStatus(packet.js.s, packet.from.hashname);
         } else if (packet.js.m !== undefined) {
-          //TODO: implement toast on new message arrival
           return handleMessage(
             packet.js.m,
             packet.from.sentAt,
@@ -351,6 +350,14 @@ export default function network($q, $window, $interval, R, state, telehash,
       window.tocSession = activeSession;
 
       listen({id: channels.INVITE_CHANNEL_ID});
+
+      let existingChannels = state.cloud.channels.get();
+
+      R.pipe(
+        R.values,
+        R.map(R.prop('channelInfo')),
+        R.forEach(listen)
+      )(existingChannels);
 
       return sessionInfo;
     });
