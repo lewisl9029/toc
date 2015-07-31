@@ -61,6 +61,8 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
       .select([userId, 'identity']);
     stateService.cloud.contacts = stateService.cloud.cursor
       .select([userId, 'contacts']);
+    stateService.cloud.channels = stateService.cloud.cursor
+      .select([userId, 'channels']);
     stateService.cloud.devices = stateService.cloud.cursor
       .select([userId, 'devices']);
     stateService.cloud.network = stateService.cloud.cursor
