@@ -69,8 +69,8 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
       .select([userId, 'network']);
     stateService.cloud.session = stateService.cloud.cursor
       .select([userId, 'session']);
-    stateService.cloud.channels = stateService.cloud.cursor
-      .select([userId, 'channels']);
+    stateService.cloud.status = stateService.cloud.cursor
+      .select([userId, 'status']);
   };
 
   let destroyUserCursors = function destroyUserCursors() {
