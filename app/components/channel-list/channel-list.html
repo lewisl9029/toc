@@ -2,10 +2,12 @@
   <div class="item item-divider item-calm">
     You
   </div>
-  <div ng-click="this.channelId !== 'home' ?
-    channelList.goToHome() : undefined" menu-close>
+  <div
+    ng-click="this.channelId !== 'home' ? channelList.goToHome() : undefined"
+    menu-close>
     <div class="row balanced-bg"></div>
-    <ion-item class="item item-avatar">
+    <ion-item class="item item-avatar"
+      ng-class="{'toc-active-channel': !channelList.channelId}">
       <img ng-src="{{channelList.getAvatar(channelList.userInfo.email)}}"
         alt="Avatar for {{channelList.userInfo.email}}" />
       <h2>{{channelList.userInfo.displayName}}</h2>
@@ -58,7 +60,10 @@
         channelList.contacts[channel.channelInfo.contactIds[0]].statusId === undefined
       }"></div>
     <ion-item class="item item-avatar"
-      ng-class="{'item-button-right': channel.channelInfo.pendingAccept}">
+      ng-class="{
+        'toc-active-channel': channelList.channelId === id,
+        'item-button-right': channel.channelInfo.pendingAccept
+      }">
       <!-- FIXME: surely this could be cleaner -->
       <img ng-src="{{channelList.getAvatar(channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email)}}" alt="Avatar for {{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.email}}" />
       <h2>{{channelList.contacts[channel.channelInfo.contactIds[0]].userInfo.displayName}}</h2>
