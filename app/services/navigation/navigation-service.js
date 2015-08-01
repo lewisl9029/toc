@@ -70,9 +70,29 @@ export default function navigation(state, $state, $q, R, $ionicHistory,
   };
 
   let initialize =
-    function initializeNavigation(initialState = app.private.home) {
+    function initializeNavigation() {
+      let activeChannelId = state.cloud.navigation.get('activeChannelId');
+
+      if (activeChannelId === undefined) {
+        return resetHistory()
+          .then(() => go(DEFAULT_PRIVATE_STATE))
+          .then(() => state.save(
+            state.cloud.navigation,
+            ['activeChannelId'],
+            'home'
+          ));
+      }
+
+      if (activeChannelId.startsWith('toc-')) {
+        return resetHistory()
+          .then(() => go(
+            app.private.channel,
+            {channelId: activeChannelId}
+          ));
+      }
+
       return resetHistory()
-        .then(() => go(initialState));
+        .then(() => go(DEFAULT_PRIVATE_STATE));
     };
 
   return {

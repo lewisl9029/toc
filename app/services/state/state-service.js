@@ -67,6 +67,8 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
       .select([userId, 'devices']);
     stateService.cloud.network = stateService.cloud.cursor
       .select([userId, 'network']);
+    stateService.cloud.navigation = stateService.cloud.cursor
+      .select([userId, 'navigation']);
     stateService.cloud.session = stateService.cloud.cursor
       .select([userId, 'session']);
     stateService.cloud.status = stateService.cloud.cursor
@@ -86,6 +88,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
     stateService.cloud.contacts = undefined;
     stateService.cloud.devices = undefined;
     stateService.cloud.network = undefined;
+    stateService.cloud.navigation = undefined;
     stateService.cloud.session = undefined;
     stateService.cloud.channels = undefined;
     stateService.cloud.status = undefined;
