@@ -195,7 +195,9 @@ gulp.task('build-sass', function buildSass() {
     // ]))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(basePaths.dev))
-    .pipe(gulp.dest(basePaths.prod));
+    .on('error', handleError)
+    .pipe(gulp.dest(basePaths.prod))
+    .on('error', handleError);
 
   return gulp.src(basePaths.dev + 'app.scss')
     .pipe(sourcemaps.init())
@@ -209,7 +211,9 @@ gulp.task('build-sass', function buildSass() {
     // ]))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(basePaths.dev))
-    .pipe(gulp.dest(basePaths.prod));
+    .on('error', handleError)
+    .pipe(gulp.dest(basePaths.prod))
+    .on('error', handleError);
 });
 
 gulp.task('test-unit', function test(done) {

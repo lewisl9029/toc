@@ -8,8 +8,8 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
       channelId: '@'
     },
     link: function linkMessageList(scope) {
-      let messagesCursor = state.cloud.network
-        .select(['channels', scope.channelId, 'messages']);
+      let messagesCursor = state.cloud.channels
+        .select([scope.channelId, 'messages']);
 
       $ionicScrollDelegate.scrollBottom(false);
 
@@ -47,8 +47,7 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
       this.getAvatar = identity.getAvatar;
       //TODO: clean up this whole thing (refactor message functions to service)
       // add state listeners and cleanup on destroy
-      let channelsCursor = state.cloud.network
-        .select('channels');
+      let channelsCursor = state.cloud.channels;
 
       let contactsCursor = state.cloud.contacts;
       let updateContacts = () => {
@@ -100,8 +99,8 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
         )(messages);
       };
 
-      let messagesCursor = state.cloud.network
-        .select(['channels', $scope.channelId, 'messages']);
+      let messagesCursor = state.cloud.channels
+        .select([$scope.channelId, 'messages']);
       let updateGroupedMessages = () => {
         this.groupedMessages = getMessageList(messagesCursor.get());
       };

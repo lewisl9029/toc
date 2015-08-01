@@ -1,7 +1,7 @@
-export default function contacts($q, R, state, identity, network) {
+export default function contacts($q, R, state, identity, network, channels) {
   let invite = function inviteContact(contactId) {
     let userInfo = state.cloud.identity.get('userInfo');
-    let contactChannel = network.createContactChannel(userInfo.id, contactId);
+    let contactChannel = channels.createContactChannel(userInfo.id, contactId);
 
     let existingContact = state.cloud.contacts
       .get([contactId, 'userInfo']);
@@ -38,11 +38,12 @@ export default function contacts($q, R, state, identity, network) {
         contact
       ))
       .then(() => state.save(
-        state.cloud.network,
-        ['channels', contactChannel.id, 'channelInfo'],
+        state.cloud.channels,
+        [contactChannel.id, 'channelInfo'],
         contactChannel
       ))
-      .then(() => network.initializeChannel(contactChannel));
+      .then(() => channels.initializeChannel(contactChannel))
+      .then(() => network.listen(contactChannel));
   };
 
   let initialize = function initializeContacts() {
@@ -50,9 +51,11 @@ export default function contacts($q, R, state, identity, network) {
 
     R.pipe(
       R.keys,
-      R.forEach((contactId) =>
-        contactsCursor.set([contactId, 'statusId'], 0)
-      )
+      R.forEach((contactId) => state.save(
+        contactsCursor,
+        [contactId, 'statusId'],
+        0
+      ))
     )(contactsCursor.get());
 
     return $q.when();

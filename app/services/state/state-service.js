@@ -61,14 +61,18 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
       .select([userId, 'identity']);
     stateService.cloud.contacts = stateService.cloud.cursor
       .select([userId, 'contacts']);
+    stateService.cloud.channels = stateService.cloud.cursor
+      .select([userId, 'channels']);
     stateService.cloud.devices = stateService.cloud.cursor
       .select([userId, 'devices']);
     stateService.cloud.network = stateService.cloud.cursor
       .select([userId, 'network']);
+    stateService.cloud.navigation = stateService.cloud.cursor
+      .select([userId, 'navigation']);
     stateService.cloud.session = stateService.cloud.cursor
       .select([userId, 'session']);
-    stateService.cloud.channels = stateService.cloud.cursor
-      .select([userId, 'channels']);
+    stateService.cloud.status = stateService.cloud.cursor
+      .select([userId, 'status']);
   };
 
   let destroyUserCursors = function destroyUserCursors() {
@@ -77,14 +81,17 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
     stateService.local.devices = undefined;
 
     stateService.cloudUnencrypted.identity = undefined;
+    stateService.cloudUnencrypted.session = undefined;
     stateService.cloudUnencrypted.state = undefined;
 
     stateService.cloud.identity = undefined;
     stateService.cloud.contacts = undefined;
     stateService.cloud.devices = undefined;
     stateService.cloud.network = undefined;
+    stateService.cloud.navigation = undefined;
     stateService.cloud.session = undefined;
     stateService.cloud.channels = undefined;
+    stateService.cloud.status = undefined;
   };
 
   let saveVolatile =

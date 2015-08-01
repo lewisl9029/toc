@@ -1,10 +1,6 @@
 export default function network($q, $window, $interval, R, state, telehash,
-  notification) {
-  const CHANNEL_ID_PREFIX = 'toc-';
-  const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
-
+  notification, channels) {
   let activeSession;
-  let activeChannelUpdates = {};
 
   let checkSession = function checkSession(session) {
     if (session) {
@@ -14,51 +10,24 @@ export default function network($q, $window, $interval, R, state, telehash,
     throw new Error('network: no active session');
   };
 
-  let generateContactChannelId =
-    function generateContactChannelId(userId, contactId) {
-      let channelId = userId > contactId ?
-        userId + '-' + contactId :
-        contactId + '-' + userId;
-
-      return CHANNEL_ID_PREFIX + channelId;
-    };
-
-  let generateGroupChannelId =
-    function generateGroupChannelId(userId, channelName) {
-      let channelId = userId + channelName;
-
-      return CHANNEL_ID_PREFIX + channelId;
-    };
-
-  let createContactChannel = function createContactChannel(userId, contactId) {
-    let channelId = generateContactChannelId(userId, contactId);
-
-    let channel = {
-      id: channelId,
-      contactIds: [contactId]
-    };
-
-    return channel;
-  };
-
   let handleInvite = function handleInvite(invitePayload) {
     let contactInfo = invitePayload;
 
     let userId =
       state.cloud.identity.get(['userInfo']).id;
 
-    let channel = createContactChannel(userId, contactInfo.id);
+    let channel = channels.createContactChannel(userId, contactInfo.id);
 
-    let existingChannel = state.cloud.network
-      .get(['channels', channel.id, 'channelInfo']);
+    let existingChannel = state.cloud.channels
+      .get([channel.id, 'channelInfo']);
 
     let statusId = 1; //online
 
     channel.pendingAccept = !existingChannel;
 
     return state.save(
-        state.cloud.network,
-        ['channels', channel.id, 'channelInfo'],
+        state.cloud.channels,
+        [channel.id, 'channelInfo'],
         channel
       )
       .then(() => state.save(
@@ -101,7 +70,8 @@ export default function network($q, $window, $interval, R, state, telehash,
 
     let message = {
       id: messageId,
-      //TODO: find main contact userId from sender userId
+      //TODO: find main contact endpoint id from sender userId
+      // when using multi-endpoint contacts
       sender: contactId,
       receivedTime: receivedTime,
       sentTime: sentTime,
@@ -109,8 +79,8 @@ export default function network($q, $window, $interval, R, state, telehash,
       content: messageContent
     };
 
-    let channelCursor = state.cloud.network.select(
-      ['channels', channelId]
+    let channelCursor = state.cloud.channels.select(
+      [channelId]
     );
 
     let existingLogicalClock = channelCursor.get('logicalClock');
@@ -129,12 +99,14 @@ export default function network($q, $window, $interval, R, state, telehash,
         message
       ))
       .then(() => {
-        let activeChannelId =
-          state.cloud.network.get(['activeChannelId']);
-        if (activeChannelId === channelId &&
-          channelCursor.get(['viewingLatest'])) {
-          return $q.when();
-        }
+        //TODO: implement with new unread indicator
+
+        // let activeChannelId =
+        //   state.cloud.network.get(['activeChannelId']);
+        // if (activeChannelId === channelId &&
+        //   channelCursor.get(['viewingLatest'])) {
+        //   return $q.when();
+        // }
 
         let contactName = state.cloud.contacts.get(
           [contactId, 'userInfo', 'displayName']
@@ -167,7 +139,6 @@ export default function network($q, $window, $interval, R, state, telehash,
         } else if (packet.js.s !== undefined) {
           return handleStatus(packet.js.s, packet.from.hashname);
         } else if (packet.js.m !== undefined) {
-          //TODO: implement toast on new message arrival
           return handleMessage(
             packet.js.m,
             packet.from.sentAt,
@@ -258,7 +229,7 @@ export default function network($q, $window, $interval, R, state, telehash,
 
   let sendInvite = function sendInvite(contactId, userInfo) {
     let inviteChannel = {
-      id: INVITE_CHANNEL_ID,
+      id: channels.INVITE_CHANNEL_ID,
       contactIds: [contactId]
     };
 
@@ -271,7 +242,7 @@ export default function network($q, $window, $interval, R, state, telehash,
 
   let sendStatus = function sendStatus(contactId, statusId) {
     let userId = state.cloud.identity.get().userInfo.id;
-    let contactChannel = createContactChannel(userId, contactId);
+    let contactChannel = channels.createContactChannel(userId, contactId);
 
     let payload = {
       s: statusId
@@ -322,8 +293,8 @@ export default function network($q, $window, $interval, R, state, telehash,
       };
 
       return state.save(
-        state.cloud.network.select(
-          ['channels', channelInfo.id, 'messages']
+        state.cloud.channels.select(
+          [channelInfo.id, 'messages']
         ),
         [messageId, 'messageInfo'],
         message
@@ -344,76 +315,6 @@ export default function network($q, $window, $interval, R, state, telehash,
       .catch((error) =>
         handleSendTimeout(error, contactId, previousContactStatusId)
       );
-  };
-
-  let initializeChannel = function initializeChannel(channelInfo) {
-    if (channelInfo.contactIds.length !== 1) {
-      return $q.reject('Group chat not supported yet.');
-    }
-
-    return listen(channelInfo)
-      .catch((error) => notification.error(error, 'Network Listen Error'))
-      .then(() => {
-        let sendStatusUpdate = () => sendStatus(channelInfo.contactIds[0], 1)
-          .catch((error) => {
-            if (error === 'timeout') {
-              return $q.when();
-            }
-
-            return notification.error(error, 'Status Update Error');
-          });
-
-        sendStatusUpdate();
-        activeChannelUpdates[channelInfo.id] = $interval(sendStatusUpdate, 15000);
-
-        return $q.when();
-      })
-      .then(() => {
-        let channelCursor = state.cloud.network.select([
-          'channels', channelInfo.id
-        ]);
-
-        let logicalClock = channelCursor.get('logicalClock');
-
-        if (logicalClock) {
-          return $q.when();
-        }
-
-        logicalClock = 0;
-        return state.save(channelCursor, ['logicalClock'], logicalClock);
-      });
-  };
-
-  let initializeChannels = function initializeChannels() {
-    let channels = state.cloud.network.get(['channels']);
-
-    R.pipe(
-      R.values,
-      R.map(R.prop('channelInfo')),
-      R.forEach(initializeChannel)
-    )(channels);
-
-    $window.onbeforeunload = () => {
-      let contactsCursor = state.cloud.contacts;
-
-      R.pipe(
-        R.keys,
-        R.forEach((contactId) => sendStatus(contactId, 0))
-      )(contactsCursor.get());
-    };
-
-    return $q.when();
-  };
-
-  let destroyChannels = function destroyChannels() {
-    R.pipe(
-      R.values,
-      R.forEach((activeChannel) => $interval.cancel(activeChannel))
-    )(activeChannelUpdates);
-
-    activeChannelUpdates = {};
-
-    return $q.when();
   };
 
   let initialize = function initializeNetwork(keypair) {
@@ -448,40 +349,35 @@ export default function network($q, $window, $interval, R, state, telehash,
       //DEBUG
       window.tocSession = activeSession;
 
-      listen({id: INVITE_CHANNEL_ID});
+      listen({id: channels.INVITE_CHANNEL_ID});
 
       return sessionInfo;
     });
   };
 
   let destroy = function destroyNetwork() {
-    return destroyChannels().then(() => {
-      // brute force stop telehash networking, alternative is to reload page...
-      //FIXME: cleanup isnt thorough enough, some telehash console errors remain
-      R.pipe(
-        R.keys,
-        R.forEach((key) => {
-          delete activeSession[key];
-        })
-      )(activeSession);
-
-      activeSession = undefined;
-
-      return $q.when();
-    });
+    //FIXME: cleanup isnt thorough enough, some telehash console errors remain
+    // return destroyChannels().then(() => {
+    //   // brute force stop telehash networking, alternative is to reload page...
+    //   R.pipe(
+    //     R.keys,
+    //     R.forEach((key) => {
+    //       delete activeSession[key];
+    //     })
+    //   )(activeSession);
+    //
+    //   activeSession = undefined;
+    //
+    //   return $q.when();
+    // });
   };
 
   let networkService = {
-    INVITE_CHANNEL_ID,
-    createContactChannel,
     listen,
     send,
     sendInvite,
     sendStatus,
     sendMessage,
-    initializeChannel,
-    initializeChannels,
-    destroyChannels,
     initialize,
     destroy
   };
