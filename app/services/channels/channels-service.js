@@ -1,4 +1,4 @@
-export default function channels(state) {
+export default function channels(state, R, $q) {
   const CHANNEL_ID_PREFIX = 'toc-';
   const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
 
@@ -48,17 +48,25 @@ export default function channels(state) {
     return state.save(channelCursor, ['logicalClock'], logicalClock);
   };
 
-  let initialize = function initialize() {
-    let existingChannels = state.cloud.channels.get(['channels']);
+  let initialize = function initialize(networkListen) {
+    let existingChannels = state.cloud.channels.get();
 
     let initializingChannels = $q.all(R.pipe(
       R.values,
       R.map(R.prop('channelInfo')),
-      R.map(initializeChannel)
+      R.map((channelInfo) => {
+        return initializeChannel(channelInfo)
+          .then(() => networkListen(channelInfo));
+      })
     )(existingChannels));
 
     return initializingChannels;
   };
 
-  return {};
+  return {
+    INVITE_CHANNEL_ID,
+    createContactChannel,
+    initializeChannel,
+    initialize
+  };
 }

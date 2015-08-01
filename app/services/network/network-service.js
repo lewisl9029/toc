@@ -18,7 +18,7 @@ export default function network($q, $window, $interval, R, state, telehash,
 
     let channel = channels.createContactChannel(userId, contactInfo.id);
 
-    let existingChannel = state.cloud.channels.
+    let existingChannel = state.cloud.channels
       .get([channel.id, 'channelInfo']);
 
     let statusId = 1; //online
@@ -350,14 +350,6 @@ export default function network($q, $window, $interval, R, state, telehash,
       window.tocSession = activeSession;
 
       listen({id: channels.INVITE_CHANNEL_ID});
-
-      let existingChannels = state.cloud.channels.get();
-
-      R.pipe(
-        R.values,
-        R.map(R.prop('channelInfo')),
-        R.forEach(listen)
-      )(existingChannels);
 
       return sessionInfo;
     });

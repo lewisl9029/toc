@@ -1,9 +1,10 @@
-export default function session(state, identity, devices, contacts,
-  notification, navigation, network, $q, $window, $timeout, R) {
+export default function session(state, identity, devices, contacts, channels,
+  notification, navigation, network, status, $q, $window, $timeout, R) {
   let initializeNetwork = function initializeNetwork() {
     let sessionInfo = state.cloud.session.get().sessionInfo;
     return network.initialize(sessionInfo.keypair)
-      .then(() => network.initializeChannels());
+      .then(() => channels.initialize(network.listen))
+      .then(() => status.initialize());
   };
 
   let saveCredentials = function saveCredentials(credentials, staySignedIn) {
@@ -49,7 +50,6 @@ export default function session(state, identity, devices, contacts,
     return network.initialize()
       .then((sessionInfo) => {
         return identity.initialize(sessionInfo.id)
-          .then(() => network.initializeChannels())
           .then(() => identity.create(sessionInfo, userInfo))
           .then((newIdentity) => {
             return state.cloud.initialize(newIdentity.userInfo.id)
@@ -61,6 +61,8 @@ export default function session(state, identity, devices, contacts,
           })
           .then(() => saveSessionInfo(sessionInfo));
       })
+      .then(() => channels.initialize(network.listen))
+      .then(() => status.initialize())
       .then(() => updateLatest())
       .then(() => navigation.initialize())
       .catch((error) =>

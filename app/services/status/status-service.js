@@ -1,4 +1,5 @@
-export default function status(state, network, channels, $q) {
+export default function status(state, network, notification, R, $q, $interval,
+  $window) {
   let activeStatusUpdates = {};
 
   const ONLINE = 1;
@@ -6,10 +7,10 @@ export default function status(state, network, channels, $q) {
   //TODO: add random delay to stagger updates
   const STATUS_UPDATE_INTERVAL = 15000;
 
-  let sendUpdate = function sendUpdates(contactId) {
+  let sendUpdate = function sendUpdate(contactId) {
     //TODO: only send updates to initialized contacts (not existing new invites)
     //TODO: send current custom status rather than static ONLINE status
-    return sendStatus(contactId, ONLINE)
+    return network.sendStatus(contactId, ONLINE)
       .catch((error) => {
         if (error === 'timeout') {
           return $q.when();
@@ -40,7 +41,7 @@ export default function status(state, network, channels, $q) {
     $window.onbeforeunload = () => {
       R.pipe(
         R.keys,
-        R.forEach((contactId) => sendStatus(contactId, OFFLINE))
+        R.forEach((contactId) => network.sendStatus(contactId, OFFLINE))
       )(contacts);
     };
 
@@ -59,5 +60,10 @@ export default function status(state, network, channels, $q) {
     return $q.when();
   };
 
-  return {};
+  return {
+    sendUpdate,
+    initializeUpdates,
+    initialize,
+    destroy
+  };
 }

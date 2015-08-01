@@ -2,8 +2,8 @@ export default function ChannelController($q, $stateParams, state, network,
   notification, $scope) {
   this.channelId = $stateParams.channelId;
 
-  let channelCursor = state.cloud.network
-    .select(['channels', this.channelId]);
+  let channelCursor = state.cloud.channels
+    .select([this.channelId]);
 
   let contactCursor = state.cloud.contacts;
 

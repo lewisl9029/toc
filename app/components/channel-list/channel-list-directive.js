@@ -18,8 +18,7 @@ export default function tocChannelList() {
 
       state.addListener(identityCursor, updateUserInfo, $scope);
 
-      let networkCursor = state.cloud.network;
-      let channelsCursor = networkCursor.select(['channels']);
+      let channelsCursor = state.cloud.channels;
       let updateChannels = () => {
         this.channels = channelsCursor.get();
       };
@@ -59,17 +58,17 @@ export default function tocChannelList() {
       };
 
       this.goToChannel = function goToChannel(channelId) {
-        let activeChannelId = state.cloud.network.get(
-          ['activeChannelId']
-        );
-
-        if (activeChannelId !== channelId) {
-          state.save(
-            state.cloud.network,
-            ['activeChannelId'],
-            channelId
-          );
-        }
+        // let activeChannelId = state.cloud.network.get(
+        //   ['activeChannelId']
+        // );
+        //
+        // if (activeChannelId !== channelId) {
+        //   state.save(
+        //     state.cloud.network,
+        //     ['activeChannelId'],
+        //     channelId
+        //   );
+        // }
 
         $ionicHistory.nextViewOptions({
           disableBack: true,
@@ -83,17 +82,17 @@ export default function tocChannelList() {
       };
 
       this.goToHome = function goToHome() {
-        let activeChannelId = state.cloud.network.get(
-          ['activeChannelId']
-        );
-
-        if (activeChannelId !== 'home') {
-          state.save(
-            state.cloud.network,
-            ['activeChannelId'],
-            'home'
-          );
-        }
+        // let activeChannelId = state.cloud.network.get(
+        //   ['activeChannelId']
+        // );
+        //
+        // if (activeChannelId !== 'home') {
+        //   state.save(
+        //     state.cloud.network,
+        //     ['activeChannelId'],
+        //     'home'
+        //   );
+        // }
 
         $ionicHistory.nextViewOptions({
           disableBack: true,

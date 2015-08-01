@@ -79,6 +79,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
     stateService.local.devices = undefined;
 
     stateService.cloudUnencrypted.identity = undefined;
+    stateService.cloudUnencrypted.session = undefined;
     stateService.cloudUnencrypted.state = undefined;
 
     stateService.cloud.identity = undefined;
@@ -87,6 +88,7 @@ export default function state($rootScope, $q, $window, storage, R, Baobab,
     stateService.cloud.network = undefined;
     stateService.cloud.session = undefined;
     stateService.cloud.channels = undefined;
+    stateService.cloud.status = undefined;
   };
 
   let saveVolatile =

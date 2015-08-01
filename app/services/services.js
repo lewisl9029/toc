@@ -1,6 +1,7 @@
 import angular from 'angular';
 
 import contacts from './contacts/contacts';
+import channels from './channels/channels';
 import identity from './identity/identity';
 import devices from './devices/devices';
 import navigation from './navigation/navigation';
@@ -9,11 +10,13 @@ import notification from './notification/notification';
 import storage from './storage/storage';
 import cryptography from './cryptography/cryptography';
 import session from './session/session';
+import status from './status/status';
 import state from './state/state';
 import time from './time/time';
 
 export default angular.module('toc.services', [
   contacts.name,
+  channels.name,
   identity.name,
   devices.name,
   navigation.name,
@@ -22,6 +25,7 @@ export default angular.module('toc.services', [
   storage.name,
   cryptography.name,
   session.name,
+  status.name,
   state.name,
   time.name
 ]);
