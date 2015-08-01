@@ -1,19 +1,5 @@
 export default function HomeController(state, session, identity, network,
   notification, $ionicPopup, $q, $window, storage, $scope) {
-
-  // //TODO: do this in a $stateChangeStart hook instead
-  // let activeChannelId = state.cloud.network.get(
-  //   ['activeChannelId']
-  // );
-  //
-  // if (activeChannelId !== 'home') {
-  //   state.save(
-  //     state.cloud.network,
-  //     ['activeChannelId'],
-  //     'home'
-  //   );
-  // }
-
   let currentUserCursor = state.cloud.identity;
   let updateCurrentUser = () => {
     this.currentUser = currentUserCursor.get();
