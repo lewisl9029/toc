@@ -1,1 +1,0 @@
-module.exports = require("npm:lodash.isfunction@2.4.1/index");

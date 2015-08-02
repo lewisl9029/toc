@@ -1,5 +1,0 @@
-/* */ 
----
-name: complete
-component: $ionicLoading
----

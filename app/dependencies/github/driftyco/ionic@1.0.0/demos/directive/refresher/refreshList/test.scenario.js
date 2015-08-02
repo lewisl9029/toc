@@ -1,5 +1,0 @@
-/* */ 
----
-name: refreshList
-component: ionRefresher
----

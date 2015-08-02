@@ -1,1 +1,0 @@
-module.exports = require("npm:lolex@1.1.0/src/lolex");

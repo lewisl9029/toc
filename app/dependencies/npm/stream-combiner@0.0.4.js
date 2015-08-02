@@ -1,1 +1,0 @@
-module.exports = require("npm:stream-combiner@0.0.4/index");
