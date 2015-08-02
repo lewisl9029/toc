@@ -17,12 +17,5 @@
     "!app/views/**/*.scss",
     "!app/*.scss",
     "!app/services/**/*-test.unit.js"
-  ],
-  "browsers": [
-    {
-      "platform": "android",
-      "browser": "crosswalk",
-      "version": "12.41.296.5"
-    }
   ]
 }
