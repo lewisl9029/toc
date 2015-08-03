@@ -2,11 +2,6 @@ System.config({
   "baseURL": ".",
   "defaultJSExtensions": true,
   "transpiler": "babel",
-  "babelOptions": {
-    // "optional": [
-    //   "runtime"
-    // ]
-  },
   "paths": {
     "github:*": "dependencies/github/*",
     "npm:*": "dependencies/npm/*"
