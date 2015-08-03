@@ -65,8 +65,8 @@ gulp.task('watch', function watch() {
 gulp.task('serve', function serve() {
   var serveCommand = argv.prod ?
     'http-server www -p 8100' :
-    // 'jspm-server --open="app" --no-browser --port=8100 --ignore-exts=".scss"';
-    'ionic serve --address=$(hostname -i) -i 8101 --nobrowser';
+    // 'cd app && jspm-server --no-browser --port=8100 --ignore-exts=".scss"';
+    'ionic serve --lab --address=$(hostname -i) -i 8101 --nobrowser';
   return gulp.src('')
     .pipe(shell(serveCommand));
 });
