@@ -134,8 +134,7 @@
     "com.ionic.keyboard",
     "cordova-plugin-crosswalk-webview",
     "cordova-plugin-inappbrowser",
-    "de.appplant.cordova.plugin.background-mode",
-    "de.appplant.cordova.plugin.local-notification"
+    "de.appplant.cordova.plugin.background-mode"
   ],
   "cordovaPlatforms": [
     "android",

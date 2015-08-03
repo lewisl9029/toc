@@ -20,7 +20,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
     let remoteStorageReady =
       remoteStorage.remoteStorage.connected === true ||
       remoteStorage.remoteStorage.connected === false;
-      
+
     if (remoteStorageReady) {
       return $q.when();
     }
@@ -131,23 +131,21 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
         }
 
         try {
-          let decryptedEvent = Object.assign({}, event);
-
-          decryptedEvent.relativePath = event.relativePath ?
+          event.relativePath = event.relativePath ?
             cryptography.decrypt(
               JSON.parse(cryptography.unescapeBase64(event.relativePath))
             ) :
             event.relativePath;
 
-          decryptedEvent.newValue = event.newValue ?
+          event.newValue = event.newValue ?
             cryptography.decrypt(event.newValue) :
             event.newValue;
 
-          decryptedEvent.oldValue = event.oldValue ?
+          event.oldValue = event.oldValue ?
             cryptography.decrypt(event.oldValue) :
             event.oldValue;
 
-          handleChange(decryptedEvent);
+          handleChange(event);
         }
         catch (error) {
           // Assuming failed decryption indicates data belonging to
@@ -226,13 +224,11 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
 
     let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
-        let unwrappedEvent = Object.assign({}, event);
-
-        unwrappedEvent.newValue = event.newValue ?
+        event.newValue = event.newValue ?
           JSON.parse(event.newValue.pt) :
           event.newValue;
 
-        unwrappedEvent.oldValue = event.oldValue ?
+        event.oldValue = event.oldValue ?
           JSON.parse(event.oldValue.pt) :
           event.oldValue;
 
