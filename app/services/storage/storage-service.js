@@ -232,7 +232,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
           JSON.parse(event.oldValue.pt) :
           event.oldValue;
 
-        handleChange(unwrappedEvent);
+        handleChange(event);
       });
     };
 
