@@ -1,11 +1,12 @@
 import template from './cloud-manage-form.html!text';
 
-export default function tocCloudManageForm() {
+export let directiveName = 'tocCloudManageForm';
+export default /*@ngInject*/ function tocCloudManageForm() {
   return {
     restrict: 'E',
     template: template,
     controllerAs: 'cloudManageForm',
-    controller: function CloudManageFormController() {
+    controller: /*@ngInject*/ function CloudManageFormController() {
 
     }
   };

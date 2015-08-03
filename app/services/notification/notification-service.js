@@ -1,4 +1,9 @@
-export default function notification($q, $log, angularToastr) {
+export let serviceName = 'notification';
+export default /*@ngInject*/ function notification(
+  $log,
+  $q,
+  angularToastr
+) {
   let createToastrAsync = function createToastrPromise(toastrFunction) {
     return (message, title) => {
       $log.debug(title);

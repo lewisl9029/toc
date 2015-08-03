@@ -1,5 +1,13 @@
-export default function state($rootScope, $q, $window, storage, R, Baobab,
-  notification) {
+export let serviceName = 'state';
+export default /*@ngInject*/ function state(
+  $q,
+  $rootScope,
+  $window,
+  Baobab,
+  notification,
+  R,
+  storage
+) {
   let getStatePath = R.split(storage.KEY_SEPARATOR);
 
   let stateService = {};

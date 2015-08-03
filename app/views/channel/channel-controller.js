@@ -1,5 +1,12 @@
-export default function ChannelController($q, $stateParams, state, network,
-  notification, $scope) {
+export let controllerName = 'ChannelController';
+export default /*@ngInject*/ function ChannelController(
+  $q,
+  $scope,
+  $stateParams,
+  network,
+  notification,
+  state
+) {
   this.channelId = $stateParams.channelId;
 
   let channelCursor = state.cloud.channels

@@ -1,4 +1,8 @@
-export default function cryptography($q, forge) {
+export let serviceName = 'cryptography';
+export default /*@ngInject*/ function cryptography(
+  $q,
+  forge
+) {
   //TODO: add user setting to disable encryption
   let cachedCredentials;
 

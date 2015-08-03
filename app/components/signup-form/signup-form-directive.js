@@ -1,12 +1,18 @@
 import template from './signup-form.html!text';
 
-export default function tocSignupForm() {
+export let directiveName = 'tocSignupForm';
+export default /*@ngInject*/ function tocSignupForm() {
   return {
     restrict: 'E',
     template: template,
     controllerAs: 'signupForm',
-    controller: function SignupFormController($q, state, identity,
-      network, notification, storage, devices, $ionicHistory, $scope, session) {
+    controller: /*@ngInject*/ function SignupFormController(
+      $ionicHistory,
+      $scope,
+      identity,
+      session,
+      state
+    ) {
       this.getAvatar = identity.getAvatar;
 
       this.goBack = function goBack() {

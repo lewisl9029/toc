@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-import service from './status-service';
+import service, { serviceName } from './status-service';
 
 export default angular.module('toc.services.status', [])
-  .factory(service.name, service);
+  .factory(serviceName, service);

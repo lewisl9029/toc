@@ -1,5 +1,14 @@
-export default function network($q, $window, $interval, R, state, telehash,
-  notification, channels) {
+export let serviceName = 'network';
+export default /*@ngInject*/ function network(
+  $interval,
+  $q,
+  $window,
+  channels,
+  notification,
+  R,
+  state,
+  telehash
+) {
   let activeSession;
 
   let checkSession = function checkSession(session) {

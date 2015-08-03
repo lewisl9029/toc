@@ -1,6 +1,11 @@
 import template from './message-list.html!text';
 
-export default function tocMessageList(state, R, $ionicScrollDelegate) {
+export let directiveName = 'tocMessageList';
+export default /*@ngInject*/ function tocMessageList(
+  $ionicScrollDelegate,
+  R,
+  state
+) {
   return {
     restrict: 'E',
     template: template,
@@ -42,8 +47,12 @@ export default function tocMessageList(state, R, $ionicScrollDelegate) {
       });
     },
     controllerAs: 'messageList',
-    controller: function MessageListController($scope, $state, $interval,
-      identity) {
+    controller: /*@ngInject*/ function MessageListController(
+      $interval,
+      $scope,
+      $state,
+      identity
+    ) {
       this.getAvatar = identity.getAvatar;
       //TODO: clean up this whole thing (refactor message functions to service)
       // add state listeners and cleanup on destroy

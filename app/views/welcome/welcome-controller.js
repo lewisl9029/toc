@@ -1,4 +1,10 @@
-export default function WelcomeController(state, R, storage, $scope) {
+export let controllerName = 'WelcomeController';
+export default /*@ngInject*/ function WelcomeController(
+  $scope,
+  R,
+  state,
+  storage
+) {
   this.isStorageConnected = storage.isConnected;
 
   let savedUsersCursor = state.cloudUnencrypted.cursor;

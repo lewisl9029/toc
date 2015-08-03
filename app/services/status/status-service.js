@@ -1,5 +1,13 @@
-export default function status(state, network, notification, R, $q, $interval,
-  $window) {
+export let serviceName = 'status';
+export default /*@ngInject*/ function status(
+  $interval,
+  $q,
+  $window,
+  network,
+  notification,
+  R,
+  state
+) {
   let activeStatusUpdates = {};
 
   const ONLINE = 1;

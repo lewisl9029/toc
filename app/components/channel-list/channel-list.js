@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-import directive from './channel-list-directive';
+import directive, { directiveName } from './channel-list-directive';
 
 export default angular.module('toc.components.channel-list', [])
-  .directive(directive.name, directive);
+  .directive(directiveName, directive);

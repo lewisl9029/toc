@@ -1,10 +1,10 @@
 import template from './home.html!text';
-import controller from './home-controller';
+import controller, { controllerName } from './home-controller';
 
-export default function configHome($stateProvider) {
+export default /*@ngInject*/ function configHome($stateProvider) {
   $stateProvider.state('app.private.home', {
     url: '/home',
     template: template,
-    controller: controller.name + ' as homeView'
+    controller: controllerName + ' as homeView'
   });
 }

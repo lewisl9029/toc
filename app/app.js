@@ -1,9 +1,9 @@
 import angular from 'angular';
 
-import services from './services/services';
-import libraries from './libraries/libraries';
-import views from './views/views';
 import components from './components/components';
+import libraries from './libraries/libraries';
+import services from './services/services';
+import views from './views/views';
 
 import run from './app-run';
 import config from './app-config';
@@ -11,11 +11,10 @@ import config from './app-config';
 let appName = 'toc';
 
 export default angular.module(appName, [
-    'ionic',
-    services.name,
+    components.name,
     libraries.name,
+    services.name,
     views.name,
-    components.name
   ])
   .config(config)
   .run(run);

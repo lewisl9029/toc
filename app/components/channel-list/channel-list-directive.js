@@ -1,12 +1,22 @@
 import template from './channel-list.html!text';
 
-export default function tocChannelList() {
+export let directiveName = 'tocChannelList';
+export default /*@ngInject*/ function tocChannelList() {
   return {
     restrict: 'E',
     template: template,
     controllerAs: 'channelList',
-    controller: function ChannelListController($q, $state, state, contacts,
-      navigation, notification, identity, $ionicHistory, $scope) {
+    controller: /*@ngInject*/ function ChannelListController(
+      $ionicHistory,
+      $q,
+      $scope,
+      $state,
+      contacts,
+      identity,
+      navigation,
+      notification,
+      state
+    ) {
       this.getAvatar = identity.getAvatar;
 
       let channelIdCursor = state.cloud.navigation.select(['activeChannelId']);

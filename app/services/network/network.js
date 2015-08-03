@@ -1,13 +1,6 @@
 import angular from 'angular';
 
-import telehash from 'libraries/telehash/telehash';
+import service, { serviceName } from './network-service';
 
-import state from 'services/state/state';
-
-import service from './network-service';
-
-export default angular.module('toc.services.network', [
-    telehash.name,
-    state.name
-  ])
-  .factory(service.name, service);
+export default angular.module('toc.services.network', [])
+  .factory(serviceName, service);

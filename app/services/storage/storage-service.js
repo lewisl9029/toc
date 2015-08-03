@@ -1,5 +1,12 @@
-export default function storage($window, $q, remoteStorage, cryptography, R,
-  notification) {
+export let serviceName = 'storage';
+export default /*@ngInject*/ function storage(
+  $q,
+  $window,
+  cryptography,
+  notification,
+  R,
+  remoteStorage
+) {
   //FIXME: storage usage is extremely high due to really long keys + storing
   // crypto settings with each item/key
   const DEFAULT_ACCESS_LEVEL = 'rw';
