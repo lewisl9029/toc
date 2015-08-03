@@ -17,6 +17,14 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
   };
 
   let prepare = function prepareStorage() {
+    let remoteStorageReady =
+      remoteStorage.remoteStorage.connected === true ||
+      remoteStorage.remoteStorage.connected === false;
+      
+    if (remoteStorageReady) {
+      return $q.when();
+    }
+
     let deferredStorageReady = $q.defer();
 
     remoteStorage.remoteStorage.on(
@@ -328,7 +336,7 @@ export default function storage($window, $q, remoteStorage, cryptography, R,
   };
 
   let initialize = function initialize() {
-    // enableLog();
+    enableLog();
 
     storageService.local = createLocal();
     storageService.cloud = createCloud();

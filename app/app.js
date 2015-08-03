@@ -1,5 +1,4 @@
 import angular from 'angular';
-import 'app.css!';
 
 import services from './services/services';
 import libraries from './libraries/libraries';
