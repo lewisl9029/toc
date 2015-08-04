@@ -71,7 +71,7 @@ export default /*@ngInject*/ function tocCloudConnectForm() {
         'dropbox': {
           id: 'dropbox',
           name: 'Dropbox',
-          description: 'Use Dropbox to store your data. (Coming soon)',
+          description: '(Coming soon) Use Dropbox to store your data.',
           img: 'dropbox.svg',
           connect: function connectDropbox() {
 
@@ -80,7 +80,7 @@ export default /*@ngInject*/ function tocCloudConnectForm() {
         'googledrive': {
           id: 'googledrive',
           name: 'Google Drive',
-          description: 'Use Google Drive to store your data. (Coming soon)',
+          description: '(Coming soon) Use Google Drive to store your data.',
           img: 'googledrive.svg',
           connect: function connectGoogledrive() {
 
