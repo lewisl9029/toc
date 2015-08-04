@@ -42,6 +42,37 @@ export default /*@ngInject*/ function storage(
     return deferredStorageReady.promise;
   };
 
+  let reset = function resetStorage() {
+    let openingDb = $q.defer();
+
+    let openDbRequest = $window.indexedDB.open('remotestorage');
+
+    openDbRequest.onerror = (dbEvent) => {
+      openingDb.reject(dbEvent.target.errorCode);
+    };
+
+    openDbRequest.onsuccess = (dbEvent) => {
+      openingDb.resolve(dbEvent.target.result);
+    };
+
+    return openingDb.promise
+      .then((db) => {
+        let clearingDb = $q.defer();
+        let clearDbRequest = db.transaction(["nodes"], 'readwrite')
+          .objectStore("nodes").clear();
+
+        clearDbRequest.onerror = (dbEvent) => {
+          clearingDb.reject(dbEvent.target.errorCode);
+        };
+
+        clearDbRequest.onsuccess = (dbEvent) => {
+          clearingDb.resolve(dbEvent.target.result);
+        };
+
+        return clearingDb.promise;
+      });
+  };
+
   let enableLog = remoteStorage.remoteStorage.enableLog;
 
   let enableCaching = function enableCaching(moduleName) {
@@ -323,7 +354,7 @@ export default /*@ngInject*/ function storage(
       let objects = R.pipe(
         R.keys,
         R.filter(key => key.startsWith(KEY_PREFIX)),
-        R.map((key) => $window.localStorage.removeItem(key)))
+        R.map((key) => $window.localStorage.removeItem(key))
       )($window.localStorage);
 
       return $q.when(objects);
@@ -392,17 +423,16 @@ export default /*@ngInject*/ function storage(
     enableCaching('cloud');
     claimAccess('cloud-unencrypted');
     enableCaching('cloud-unencrypted');
-    // workaround for 401 error on initial connect
-    // remoteStorage.remoteStorage.access
-    //   .claim('*', DEFAULT_ACCESS_LEVEL);
   };
 
   storageService.initialize = initialize;
 
   let destroy = function destroy() {
-    $window.localStorage.clear();
-    $window.location.reload();
-    return $q.when();
+    return reset()
+      .then(() => {
+        $window.localStorage.clear();
+        $window.location.reload();
+      });
   };
 
   storageService.destroy = destroy;

@@ -13,4 +13,6 @@ export default /*@ngInject*/ function WelcomeController(
   };
 
   state.addListener(savedUsersCursor, updateSavedUsers, $scope);
+
+  this.resetAppState = () => state.destroy();
 }
