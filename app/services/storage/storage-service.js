@@ -131,6 +131,20 @@ export default /*@ngInject*/ function storage(
         });
     };
 
+    let removeAllObjects = function removeAllObjects() {
+      let key = '';
+
+      return $q.when(privateClient.getAll(key, false))
+        .then((encryptedKeyObjectMap) => {
+          let removingObjects = R.pipe(
+            R.keys,
+            R.map((encryptedKey) => $q.when(privateClient.remove(encryptedKey)))
+          )(encryptedKeyObjectMap);
+
+          return removingObjects;
+        });
+    };
+
     let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
         if (!cryptography.isInitialized()) {
@@ -176,6 +190,7 @@ export default /*@ngInject*/ function storage(
         getObject,
         removeObject,
         getAllObjects,
+        removeAllObjects,
         onChange,
         initialize
       }
@@ -229,6 +244,20 @@ export default /*@ngInject*/ function storage(
         });
     };
 
+    let removeAllObjects = function removeAllObjects() {
+      let key = '';
+
+      return $q.when(privateClient.getAll(key, false))
+        .then((keyObjectMap) => {
+          let removingObjects = R.pipe(
+            R.keys,
+            R.map((key) => $q.when(privateClient.remove(key)))
+          )(keyObjectMap);
+
+          return removingObjects;
+        });
+    };
+
     let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
         event.newValue = event.newValue ?
@@ -253,6 +282,7 @@ export default /*@ngInject*/ function storage(
         getObject,
         removeObject,
         getAllObjects,
+        removeAllObjects,
         onChange,
         initialize
       }
@@ -289,6 +319,16 @@ export default /*@ngInject*/ function storage(
       return $q.when(objects);
     };
 
+    let removeAllObjects = function removeAllObjectsLocal() {
+      let objects = R.pipe(
+        R.keys,
+        R.filter(key => key.startsWith(KEY_PREFIX)),
+        R.map((key) => $window.localStorage.removeItem(key)))
+      )($window.localStorage);
+
+      return $q.when(objects);
+    };
+
     let storeObject = function storeObjectLocal(key, object) {
       $window.localStorage.setItem(KEY_PREFIX + key, JSON.stringify(object));
       return $q.when(object);
@@ -304,6 +344,7 @@ export default /*@ngInject*/ function storage(
       getObjectSync,
       removeObject,
       getAllObjects,
+      removeAllObjects,
       storeObject,
       storeObjectSync
     };
@@ -357,6 +398,14 @@ export default /*@ngInject*/ function storage(
   };
 
   storageService.initialize = initialize;
+
+  let destroy = function destroy() {
+    $window.localStorage.clear();
+    $window.location.reload();
+    return $q.when();
+  };
+
+  storageService.destroy = destroy;
 
   return storageService;
 }

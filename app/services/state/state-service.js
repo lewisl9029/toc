@@ -275,10 +275,18 @@ export default /*@ngInject*/ function state(
       .then(() => initializeCloudUnencrypted());
   };
 
+  let destroy = function destroy() {
+    return stateService.local.store.removeAllObjects()
+      .then(() => stateService.cloudUnencrypted.store.removeAllObjects())
+      .then(() => stateService.cloud.store.removeAllObjects())
+      .then(() => storage.destroy());
+  };
+
   stateService.save = save;
   stateService.remove = remove;
   stateService.commit = commit;
   stateService.initialize = initialize;
+  stateService.destroy = destroy;
 
   return stateService;
 }
