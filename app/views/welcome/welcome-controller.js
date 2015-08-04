@@ -1,5 +1,6 @@
 export let controllerName = 'WelcomeController';
 export default /*@ngInject*/ function WelcomeController(
+  $ionicPopup,
   $scope,
   R,
   state,
@@ -14,5 +15,20 @@ export default /*@ngInject*/ function WelcomeController(
 
   state.addListener(savedUsersCursor, updateSavedUsers, $scope);
 
-  this.resetAppState = () => state.destroy();
+  this.showResetConfirm = function showResetConfirm() {
+    let resetPopup = $ionicPopup.confirm({
+      title: 'Reset App State',
+      template: 'Are you sure?',
+      okText: 'Reset',
+      okType: 'button-assertive button-outline'
+    });
+
+    resetPopup.then((response) => {
+      if (!response) {
+        return;
+      }
+
+      return state.destroy();
+    });
+  };
 }

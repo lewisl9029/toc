@@ -43,6 +43,8 @@ export default /*@ngInject*/ function storage(
   };
 
   let reset = function resetStorage() {
+    $window.localStorage.clear();
+
     let openingDb = $q.defer();
 
     let openDbRequest = $window.indexedDB.open('remotestorage');
@@ -70,7 +72,8 @@ export default /*@ngInject*/ function storage(
         };
 
         return clearingDb.promise;
-      });
+      })
+      .then(() => $window.location.reload());
   };
 
   let enableLog = remoteStorage.remoteStorage.enableLog;
@@ -428,11 +431,7 @@ export default /*@ngInject*/ function storage(
   storageService.initialize = initialize;
 
   let destroy = function destroy() {
-    return reset()
-      .then(() => {
-        $window.localStorage.clear();
-        $window.location.reload();
-      });
+    return reset();
   };
 
   storageService.destroy = destroy;
