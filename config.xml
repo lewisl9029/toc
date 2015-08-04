@@ -1,31 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.toc520592" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.lewisl.toc" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Toc Messenger</name>
   <description>
-        An Ionic Framework and Cordova project.
-    </description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
-    </author>
+      A messaging app that knows nothing about you.
+  </description>
+  <author email="dev@lewisl.net" href="https://github.com/lewisl9029">
+      Lewis Liu
+  </author>
   <content src="index.html"/>
   <access origin="*"/>
-  <allow-navigation href="*" />
-  <allow-intent href="*" />
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
+  <preference name="android-minSdkVersion" value="16"/>
   <preference name="BackupWebStorage" value="none"/>
   <preference name="SplashScreen" value="screen"/>
   <preference name="SplashScreenDelay" value="3000"/>
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
-  </feature>
-  <feature name="Keyboard">
-    <param name="ios-package" value="IonicKeyboard" onload="true"/>
-  </feature>
-  <feature name="Keyboard">
-    <param name="android-package" value="com.ionic.keyboard.IonicKeyboard"/>
-    <param name="onload" value="true"/>
   </feature>
   <platform name="android">
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>

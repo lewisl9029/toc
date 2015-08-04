@@ -1,14 +1,22 @@
 import template from './signin-form.html!text';
 import userListTemplate from './signin-form-user-list.html!text';
 
-export default function tocSigninForm() {
+export let directiveName = 'tocSigninForm';
+export default /*@ngInject*/ function tocSigninForm() {
   return {
     restrict: 'E',
     template: template,
     controllerAs: 'signinForm',
-    controller: function SigninFormController($q, $scope, state,
-      identity, network, contacts, notification, signinForm, R, $ionicModal,
-      devices, $ionicHistory, session) {
+    controller: /*@ngInject*/ function SigninFormController(
+      $ionicHistory,
+      $ionicModal,
+      $scope,
+      identity,
+      R,
+      session,
+      signinForm,
+      state
+    ) {
       //TODO: refactor into state service .memory
       this.model = signinForm;
 

@@ -1,1 +1,0 @@
-module.exports = require("npm:split@0.2.10/index");

@@ -1,4 +1,10 @@
-export default function identity($q, state, R, cryptography) {
+export let serviceName = 'identity';
+export default /*@ngInject*/ function identity(
+  $q,
+  cryptography,
+  R,
+  state
+) {
   let getAvatarBase = function getAvatarBase(email) {
     // default to hash of unknown-user@toc.im
     if (!email) {

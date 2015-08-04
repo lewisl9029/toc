@@ -1,5 +1,11 @@
-export default function HomeController(state, session, identity, network,
-  notification, $ionicPopup, $q, $window, storage, $scope) {
+export let controllerName = 'HomeController';
+export default /*@ngInject*/ function HomeController(
+  $ionicPopup,
+  $scope,
+  session,
+  state,
+  storage
+) {
   let currentUserCursor = state.cloud.identity;
   let updateCurrentUser = () => {
     this.currentUser = currentUserCursor.get();

@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-import service from './state-service';
+import service, { serviceName } from './state-service';
 
 export default angular.module('toc.services.state', [])
-  .factory(service.name, service);
+  .factory(serviceName, service);

@@ -1,16 +1,9 @@
 import angular from 'angular';
 
-import angularToastr from 'libraries/angular-toastr/angular-toastr';
+import service, { serviceName } from './notification-service';
 
-import state from 'services/state/state';
-
-import service from './notification-service';
-
-export default angular.module('toc.services.notification', [
-    angularToastr.name,
-    state.name
-  ])
-  .config((toastrConfig) => {
+export default angular.module('toc.services.notification', [])
+  .config(/*@ngInject*/ (toastrConfig) => {
     angular.extend(toastrConfig, {
       allowHtml: false,
       closeButton: false,
@@ -36,4 +29,4 @@ export default angular.module('toc.services.notification', [
       toastClass: 'toast'
     });
   })
-  .factory(service.name, service);
+  .factory(serviceName, service);

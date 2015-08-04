@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-import service from './contacts-service';
+import service, { serviceName } from './contacts-service';
 
 export default angular.module('toc.services.contacts', [])
-  .factory(service.name, service);
+  .factory(serviceName, service);

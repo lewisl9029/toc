@@ -1,5 +1,10 @@
-export default function runApp(state, $ionicPlatform, navigation, storage,
-  session) {
+export default /*@ngInject*/ function runApp(
+  $ionicPlatform,
+  navigation,
+  session,
+  state,
+  storage
+) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default
     // Remove this to show the accessory bar above the keyboard for form inputs

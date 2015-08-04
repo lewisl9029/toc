@@ -1,1 +1,0 @@
-module.exports = require("npm:pause-stream@0.0.11/index");

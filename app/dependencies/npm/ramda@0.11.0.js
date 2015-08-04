@@ -1,1 +1,0 @@
-module.exports = require("npm:ramda@0.11.0/dist/ramda");

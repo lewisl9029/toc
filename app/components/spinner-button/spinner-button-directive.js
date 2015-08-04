@@ -1,4 +1,8 @@
-export default function tocSpinnerButton($timeout, notification) {
+export let directiveName = 'tocSpinnerButton';
+export default /*@ngInject*/ function tocSpinnerButton(
+  $timeout,
+  notification
+) {
   return {
     restrict: 'A',
     scope: {

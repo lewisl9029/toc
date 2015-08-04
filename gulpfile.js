@@ -14,8 +14,10 @@ var karma = require('karma')
 var argv = require('yargs')
   .argv;
 var shell = require('gulp-shell');
+var uglify = require('gulp-uglify');
 var runSequence = require('run-sequence');
 var del = require('del');
+var ngAnnotate = require('gulp-ng-annotate');
 
 function handleError(error) {
   console.error(error);
@@ -26,10 +28,7 @@ var basePaths = {
   dev: './app/',
   prod: './www/',
   mobile: './mobile/',
-  bundle: './bundle/',
-  platforms: './platforms/',
-  plugins: './plugins/',
-  engine: './engine/'
+  platforms: './platforms/'
 };
 
 var paths = {
@@ -65,6 +64,7 @@ gulp.task('watch', function watch() {
 gulp.task('serve', function serve() {
   var serveCommand = argv.prod ?
     'http-server www -p 8100' :
+    // 'cd app && jspm-server --no-browser --port=8100 --ignore-exts=".scss"';
     'ionic serve --lab --address=$(hostname -i) -i 8101 --nobrowser';
   return gulp.src('')
     .pipe(shell(serveCommand));
@@ -80,33 +80,8 @@ gulp.task('clean-build', function clean(done) {
 
 gulp.task('clean-package', function cleanPackage(done) {
   return del([
-    basePaths.platforms + '**',
-    basePaths.plugins + '**',
-    basePaths.engine + '**',
     basePaths.mobile + '**'
   ], done);
-});
-
-gulp.task('bundle', function bundle(){
-  return gulp.src('')
-    .pipe(shell(
-      'rm -rf ' + basePaths.platforms + 'build'
-    ))
-    .pipe(shell(
-      'rm -rf ' + basePaths.platforms + 'android/cordova-plugin-crosswalk-webview/toc520592-xwalk_core_library/build'
-    ))
-    .pipe(shell(
-      'mkdir -p ' + basePaths.bundle
-    ))
-    .pipe(shell(
-      'tar czf ' + basePaths.bundle + 'toc-platforms.tar.gz platforms'
-    ))
-    .pipe(shell(
-      'tar czf ' + basePaths.bundle + 'toc-plugins.tar.gz plugins'
-    ))
-    .pipe(shell(
-      'tar czf ' + basePaths.bundle + 'toc-engine.tar.gz engine'
-    ));
 });
 
 //TODO: add node-webkit build steps
@@ -121,9 +96,6 @@ gulp.task('build', function build(done) {
 
 gulp.task('package', ['build', 'clean-package'], function package() {
   return gulp.src('')
-    .pipe(shell(
-      'cp -rf ' + process.env.TOC_BUNDLE_PATH + '/* .'
-    ))
     .pipe(shell('ionic build android'))
     .pipe(shell('mkdir -p ' + basePaths.mobile))
     .pipe(shell(
@@ -144,10 +116,6 @@ gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
 
 gulp.task('build-js', ['build-jspm'], function buildJs() {
-  // gulp.src(basePaths.dev + 'app.js')
-  //   .pipe(ngAnnotate())
-  //   .pipe(gulp.dest(basePaths.dev));
-
   return gulp.src([
       basePaths.dev + 'dependencies/system.src.js',
       basePaths.dev + 'config.js',
@@ -155,16 +123,22 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
     ], {
       base: basePaths.dev
     })
+    .pipe(uglify())
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('build-jspm', ['build-sass'], function buildJspm() {
+gulp.task('build-jspm', ['bundle-jspm'], function buildJspm() {
+  return gulp.src(basePaths.prod + 'app.js')
+  .pipe(ngAnnotate())
+  .pipe(uglify())
+  .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('bundle-jspm', ['build-sass'], function bundleJspm() {
   return gulp.src('')
     .pipe(shell([
       'jspm bundle app ' + basePaths.prod +
         'app.js --skip-source-maps'
-        //FIXME: minifying takes forever with the bundled telehash library
-        // 'app.js --minify --skip-source-maps --no-mangle'
     ]));
 });
 

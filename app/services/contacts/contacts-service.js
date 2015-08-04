@@ -1,4 +1,12 @@
-export default function contacts($q, R, state, identity, network, channels) {
+export let serviceName = 'contacts';
+export default /*@ngInject*/ function contacts(
+  $q,
+  channels,
+  identity,
+  network,
+  R,
+  state
+) {
   let invite = function inviteContact(contactId) {
     let userInfo = state.cloud.identity.get('userInfo');
     let contactChannel = channels.createContactChannel(userInfo.id, contactId);

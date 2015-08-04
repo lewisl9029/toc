@@ -1,6 +1,6 @@
 import template from './signin.html!text';
 
-export default function configSignin($stateProvider) {
+export default /*@ngInject*/ function configSignin($stateProvider) {
   $stateProvider.state('app.public.signin', {
     url: '/signin',
     template: template

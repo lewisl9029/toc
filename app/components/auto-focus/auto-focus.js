@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-import directive from './auto-focus-directive';
+import directive, { directiveName } from './auto-focus-directive';
 
 export default angular.module('toc.components.auto-focus', [])
-  .directive(directive.name, directive);
+  .directive(directiveName, directive);

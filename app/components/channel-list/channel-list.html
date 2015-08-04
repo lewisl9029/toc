@@ -7,7 +7,7 @@
     menu-close>
     <div class="row balanced-bg"></div>
     <ion-item class="item item-avatar"
-      ng-class="{'toc-active-channel': !channelList.channelId}">
+      ng-class="{'toc-active-channel': channelList.channelId === 'home'}">
       <img ng-src="{{channelList.getAvatar(channelList.userInfo.email)}}"
         alt="Avatar for {{channelList.userInfo.email}}" />
       <h2>{{channelList.userInfo.displayName}}</h2>

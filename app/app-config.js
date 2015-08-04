@@ -1,8 +1,11 @@
 import template from 'app.html!text';
 import menuTemplate from 'app-menu.html!text';
 
-export default function configApp($stateProvider, $urlRouterProvider,
-  $ionicConfigProvider) {
+export default /*@ngInject*/ function configApp(
+  $ionicConfigProvider,
+  $stateProvider,
+  $urlRouterProvider
+) {
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.backButton.previousTitleText(false);
   $ionicConfigProvider.views.transition('android');

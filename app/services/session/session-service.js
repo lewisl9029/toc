@@ -1,5 +1,19 @@
-export default function session(state, identity, devices, contacts, channels,
-  notification, navigation, network, status, $q, $window, $timeout, R) {
+export let serviceName = 'session';
+export default /*@ngInject*/ function session(
+  $q,
+  $timeout,
+  $window,
+  channels,
+  contacts,
+  devices,
+  identity,
+  navigation,
+  network,
+  notification,
+  R,
+  state,
+  status
+) {
   let initializeNetwork = function initializeNetwork() {
     let sessionInfo = state.cloud.session.get().sessionInfo;
     return network.initialize(sessionInfo.keypair)

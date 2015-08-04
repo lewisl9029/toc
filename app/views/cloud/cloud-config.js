@@ -1,16 +1,16 @@
 import template from './cloud.html!text';
-import controller from './cloud-controller';
+import controller, { controllerName } from './cloud-controller';
 
-export default function configCloud($stateProvider) {
+export default /*@ngInject*/ function configCloud($stateProvider) {
   $stateProvider.state('app.public.cloud', {
     url: '/cloud',
     template: template,
-    controller: controller.name + ' as cloudView'
+    controller: controllerName + ' as cloudView'
   });
 
   $stateProvider.state('app.private.cloud', {
     url: '/cloud',
     template: template,
-    controller: controller.name + ' as cloudView'
+    controller: controllerName + ' as cloudView'
   });
 }

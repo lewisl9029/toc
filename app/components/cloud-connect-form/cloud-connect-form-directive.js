@@ -1,12 +1,18 @@
 import template from './cloud-connect-form.html!text';
 
-export default function tocCloudConnectForm() {
+export let directiveName = 'tocCloudConnectForm';
+export default /*@ngInject*/ function tocCloudConnectForm() {
   return {
     restrict: 'E',
     template: template,
     controllerAs: 'cloudConnectForm',
-    controller: function CloudConnectFormController($ionicHistory, $ionicPopup,
-      $scope, notification, storage) {
+    controller: /*@ngInject*/ function CloudConnectFormController(
+      $ionicHistory,
+      $ionicPopup,
+      $scope,
+      notification,
+      storage
+    ) {
       this.goBack = function goBack() {
         $ionicHistory.goBack();
       };

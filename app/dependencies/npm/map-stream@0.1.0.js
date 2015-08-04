@@ -1,1 +1,0 @@
-module.exports = require("npm:map-stream@0.1.0/index");

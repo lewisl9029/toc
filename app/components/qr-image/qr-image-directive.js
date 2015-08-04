@@ -1,4 +1,8 @@
-export default function tocQrImage(qrEncode, notification) {
+export let directiveName = 'tocQrImage';
+export default /*@ngInject*/ function tocQrImage(
+  notification,
+  qrEncode
+) {
   return {
     restrict: 'E',
     link: function linkQrImage(scope, element, attrs) {

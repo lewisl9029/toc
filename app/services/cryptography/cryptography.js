@@ -1,10 +1,6 @@
 import angular from 'angular';
 
-import forge from 'libraries/forge/forge';
+import service, { serviceName } from './cryptography-service';
 
-import service from './cryptography-service';
-
-export default angular.module('toc.services.cryptography', [
-    forge.name
-  ])
-  .factory(service.name, service);
+export default angular.module('toc.services.cryptography', [])
+  .factory(serviceName, service);

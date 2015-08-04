@@ -1,5 +1,15 @@
-export default function devices(state, cryptography, R, $q, $log,
-  $interval, $timeout, $ionicPopup, notification) {
+export let serviceName = 'devices';
+export default /*@ngInject*/ function devices(
+  $interval,
+  $ionicPopup,
+  $log,
+  $q,
+  $timeout,
+  cryptography,
+  notification,
+  R,
+  state
+) {
   let updateKillFlags = function updateKillFlags() {
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
 

@@ -1,4 +1,9 @@
-export default function channels(state, R, $q) {
+export let serviceName = 'channels';
+export default /*@ngInject*/ function channels(
+  $q,
+  R,
+  state
+) {
   const CHANNEL_ID_PREFIX = 'toc-';
   const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
 

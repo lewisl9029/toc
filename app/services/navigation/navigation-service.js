@@ -1,5 +1,12 @@
-export default function navigation(state, $state, $q, R, $ionicHistory,
-  $rootScope) {
+export let serviceName = 'navigation';
+export default /*@ngInject*/ function navigation(
+  $ionicHistory,
+  $q,
+  $rootScope,
+  $state,
+  R,
+  state
+) {
   const app = {
     public: {
       welcome: 'app.public.welcome',
