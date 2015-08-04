@@ -42,6 +42,40 @@ export default /*@ngInject*/ function storage(
     return deferredStorageReady.promise;
   };
 
+  let reset = function resetStorage() {
+    $window.localStorage.clear();
+
+    let openingDb = $q.defer();
+
+    let openDbRequest = $window.indexedDB.open('remotestorage');
+
+    openDbRequest.onerror = (dbEvent) => {
+      openingDb.reject(dbEvent.target.errorCode);
+    };
+
+    openDbRequest.onsuccess = (dbEvent) => {
+      openingDb.resolve(dbEvent.target.result);
+    };
+
+    return openingDb.promise
+      .then((db) => {
+        let clearingDb = $q.defer();
+        let clearDbRequest = db.transaction(["nodes"], 'readwrite')
+          .objectStore("nodes").clear();
+
+        clearDbRequest.onerror = (dbEvent) => {
+          clearingDb.reject(dbEvent.target.errorCode);
+        };
+
+        clearDbRequest.onsuccess = (dbEvent) => {
+          clearingDb.resolve(dbEvent.target.result);
+        };
+
+        return clearingDb.promise;
+      })
+      .then(() => $window.location.reload());
+  };
+
   let enableLog = remoteStorage.remoteStorage.enableLog;
 
   let enableCaching = function enableCaching(moduleName) {
@@ -131,6 +165,20 @@ export default /*@ngInject*/ function storage(
         });
     };
 
+    let removeAllObjects = function removeAllObjects() {
+      let key = '';
+
+      return $q.when(privateClient.getAll(key, false))
+        .then((encryptedKeyObjectMap) => {
+          let removingObjects = R.pipe(
+            R.keys,
+            R.map((encryptedKey) => $q.when(privateClient.remove(encryptedKey)))
+          )(encryptedKeyObjectMap);
+
+          return removingObjects;
+        });
+    };
+
     let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
         if (!cryptography.isInitialized()) {
@@ -176,6 +224,7 @@ export default /*@ngInject*/ function storage(
         getObject,
         removeObject,
         getAllObjects,
+        removeAllObjects,
         onChange,
         initialize
       }
@@ -229,6 +278,20 @@ export default /*@ngInject*/ function storage(
         });
     };
 
+    let removeAllObjects = function removeAllObjects() {
+      let key = '';
+
+      return $q.when(privateClient.getAll(key, false))
+        .then((keyObjectMap) => {
+          let removingObjects = R.pipe(
+            R.keys,
+            R.map((key) => $q.when(privateClient.remove(key)))
+          )(keyObjectMap);
+
+          return removingObjects;
+        });
+    };
+
     let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
         event.newValue = event.newValue ?
@@ -253,6 +316,7 @@ export default /*@ngInject*/ function storage(
         getObject,
         removeObject,
         getAllObjects,
+        removeAllObjects,
         onChange,
         initialize
       }
@@ -289,6 +353,16 @@ export default /*@ngInject*/ function storage(
       return $q.when(objects);
     };
 
+    let removeAllObjects = function removeAllObjectsLocal() {
+      let objects = R.pipe(
+        R.keys,
+        R.filter(key => key.startsWith(KEY_PREFIX)),
+        R.map((key) => $window.localStorage.removeItem(key))
+      )($window.localStorage);
+
+      return $q.when(objects);
+    };
+
     let storeObject = function storeObjectLocal(key, object) {
       $window.localStorage.setItem(KEY_PREFIX + key, JSON.stringify(object));
       return $q.when(object);
@@ -304,6 +378,7 @@ export default /*@ngInject*/ function storage(
       getObjectSync,
       removeObject,
       getAllObjects,
+      removeAllObjects,
       storeObject,
       storeObjectSync
     };
@@ -351,12 +426,15 @@ export default /*@ngInject*/ function storage(
     enableCaching('cloud');
     claimAccess('cloud-unencrypted');
     enableCaching('cloud-unencrypted');
-    // workaround for 401 error on initial connect
-    // remoteStorage.remoteStorage.access
-    //   .claim('*', DEFAULT_ACCESS_LEVEL);
   };
 
   storageService.initialize = initialize;
+
+  let destroy = function destroy() {
+    return reset();
+  };
+
+  storageService.destroy = destroy;
 
   return storageService;
 }
