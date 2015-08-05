@@ -103,7 +103,9 @@ gulp.task('package', ['build', 'clean-package'], function package() {
     .pipe(gulp.dest(basePaths.prod));
 
   return gulp.src('')
-    .pipe(shell('ionic build android' + (argv.prod ? ' --release' : '')))
+    .pipe(shell('ionic build android'))
+    //FIXME: release build throws error on install
+    // .pipe(shell('ionic build android' + (argv.prod ? ' --release' : '')))
     .pipe(shell('mkdir -p ' + basePaths.mobile))
     .pipe(shell(
       'cp ' + basePaths.platforms +
