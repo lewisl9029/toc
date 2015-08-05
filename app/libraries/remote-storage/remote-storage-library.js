@@ -5599,7 +5599,7 @@ if (typeof XMLHttpRequest === 'undefined') {
 
   function extractParams(url) {
     //FF already decodes the URL fragment in document.location.hash, so use this instead:
-    var location = url || RemoteStorage.Authorize.getLocation(),
+    var location = {href: url} || RemoteStorage.Authorize.getLocation(),
         hashPos  = location.href.indexOf('#'),
         hash;
     if (hashPos === -1) { return; }
@@ -5635,14 +5635,19 @@ if (typeof XMLHttpRequest === 'undefined') {
     }
     url += '&response_type=token';
 
-    RemoteStorage.Authorize.openWindow(url, redirectUri)
-      .then(function (authResult) {
-        remoteStorage.remote.configure({
-          token: params.access_token
+    if (window.cordova) {
+      return RemoteStorage.Authorize.openWindow(url, redirectUri)
+        .then(function (authResult) {
+          remoteStorage.remote.configure({
+            token: authResult.access_token
+          });
+        })
+        .then(null, function (error) {
+          console.error(error);
         });
-      }, function (error) {
-        console.error(error);
-      });
+    }
+
+    RemoteStorage.Authorize.setLocation(url);
   };
 
   RemoteStorage.Authorize.openWindow = function (url, redirectUri) {
