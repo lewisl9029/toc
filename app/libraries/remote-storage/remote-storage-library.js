@@ -5700,7 +5700,7 @@ if (typeof XMLHttpRequest === 'undefined') {
     this.access.setStorageType(this.remote.storageType);
     var scope = this.access.scopeParameter;
 
-    var redirectUri = RemoteStorage.Authorize.getLocation().origin + '/callback';
+    var redirectUri = String(RemoteStorage.Authorize.getLocation());
     // not sure what to use as the id here
     // don't see any good candidates in window.location on cordova android
     // {
