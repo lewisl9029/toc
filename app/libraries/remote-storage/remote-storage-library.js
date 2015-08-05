@@ -5700,8 +5700,25 @@ if (typeof XMLHttpRequest === 'undefined') {
     this.access.setStorageType(this.remote.storageType);
     var scope = this.access.scopeParameter;
 
-    var redirectUri = window.location.origin + '/callback';
-    var clientId = RemoteStorage.Authorize.getLocation();
+    var redirectUri = RemoteStorage.Authorize.getLocation().origin + '/callback';
+    // not sure what to use as the id here
+    // don't see any good candidates in window.location on cordova android
+    // {
+    //  "ancestorOrigins": {
+    //   "length": 0
+    //  },
+    //  "origin": "file://",
+    //  "hash": "#/app/public/signup",
+    //  "search": "",
+    //  "pathname": "/android_asset/www/index.html",
+    //  "port": "",
+    //  "hostname": "",
+    //  "host": "",
+    //  "protocol": "file:",
+    //  "href": "file:///android_asset/www/index.html#/app/public/signup"
+    // }
+    // might need to request an clientId as input
+    var clientId = RemoteStorage.Authorize.getLocation().href;
 
     RemoteStorage.Authorize(authURL, scope, redirectUri, clientId);
   };
