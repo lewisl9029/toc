@@ -5599,11 +5599,11 @@ if (typeof XMLHttpRequest === 'undefined') {
 
   function extractParams(url) {
     //FF already decodes the URL fragment in document.location.hash, so use this instead:
-    var location = {href: url} || RemoteStorage.Authorize.getLocation(),
-        hashPos  = location.href.indexOf('#'),
+    var location = url || RemoteStorage.Authorize.getLocation().href,
+        hashPos  = location.indexOf('#'),
         hash;
     if (hashPos === -1) { return; }
-    hash = location.href.substring(hashPos+1);
+    hash = location.substring(hashPos+1);
     // if hash is not of the form #key=val&key=val, it's probably not for us
     if (hash.indexOf('=') === -1) { return; }
     return hash.split('&').reduce(function (m, kvs) {
@@ -5636,11 +5636,19 @@ if (typeof XMLHttpRequest === 'undefined') {
     url += '&response_type=token';
 
     if (window.cordova) {
-      return RemoteStorage.Authorize.openWindow(url, redirectUri)
+      return RemoteStorage.Authorize.openWindow(
+          url,
+          redirectUri,
+          'location=no,clearsessioncache=yes,clearcache=yes'
+        )
         .then(function (authResult) {
           remoteStorage.remote.configure({
             token: authResult.access_token
           });
+
+          // sync doesnt start until after reload
+          // possibly missing some initialization step?
+          window.location.reload();
         })
         .then(null, function (error) {
           console.error(error);
@@ -5650,9 +5658,9 @@ if (typeof XMLHttpRequest === 'undefined') {
     RemoteStorage.Authorize.setLocation(url);
   };
 
-  RemoteStorage.Authorize.openWindow = function (url, redirectUri) {
+  RemoteStorage.Authorize.openWindow = function (url, redirectUri, options) {
     var pending = Promise.defer();
-    var newWindow = window.open(url, '_blank');
+    var newWindow = window.open(url, '_blank', options);
 
     if (!newWindow || newWindow.closed) {
       pending.reject('Authorization popup was blocked');
