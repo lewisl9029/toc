@@ -5597,9 +5597,9 @@ if (typeof XMLHttpRequest === 'undefined') {
 /** FILE: src/authorize.js **/
 (function (global) {
 
-  function extractParams() {
+  function extractParams(url) {
     //FF already decodes the URL fragment in document.location.hash, so use this instead:
-    var location = RemoteStorage.Authorize.getLocation(),
+    var location = url || RemoteStorage.Authorize.getLocation(),
         hashPos  = location.href.indexOf('#'),
         hash;
     if (hashPos === -1) { return; }
@@ -5635,11 +5635,50 @@ if (typeof XMLHttpRequest === 'undefined') {
     }
     url += '&response_type=token';
 
-    RemoteStorage.Authorize.openWindow(url);
+    RemoteStorage.Authorize.openWindow(url, redirectUri)
+      .then(function (authResult) {
+        remoteStorage.remote.configure({
+          token: params.access_token
+        });
+      }, function (error) {
+        console.error(error);
+      });
   };
 
-  RemoteStorage.Authorize.openWindow = function (url) {
+  RemoteStorage.Authorize.openWindow = function (url, redirectUri) {
+    var pending = Promise.defer();
     var newWindow = window.open(url, '_blank');
+
+    if (!newWindow || newWindow.closed) {
+      pending.reject('Authorization popup was blocked');
+      return pending.promise;
+    }
+
+    var handleExit = function (event) {
+      pending.reject('Authorization was canceled');
+    };
+
+    var handleLoadstart = function (event) {
+      if (event.url.indexOf(redirectUri) !== 0) {
+        return;
+      }
+
+      newWindow.removeEventListener('exit', handleExit);
+      newWindow.close();
+
+      var authResult = extractParams(event.url);
+
+      if (!authResult) {
+        return pending.reject('Authorization error');
+      }
+
+      return pending.resolve(authResult);
+    };
+
+    newWindow.addEventListener('loadstart', handleLoadstart);
+    newWindow.addEventListener('exit', handleExit);
+
+    return pending.promise;
   };
 
   RemoteStorage.Authorize.IMPLIED_FAKE_TOKEN = false;
