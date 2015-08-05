@@ -1,5 +1,7 @@
 /* jshint node: true */
 var gulp = require('gulp');
+var gulpif = require('gulp-if');
+var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer-core');
@@ -19,6 +21,7 @@ var runSequence = require('run-sequence');
 var del = require('del');
 var ngAnnotate = require('gulp-ng-annotate');
 
+// allows for watch to continue after errors
 function handleError(error) {
   console.error(error);
   this.emit('end');
@@ -95,12 +98,16 @@ gulp.task('build', function build(done) {
 });
 
 gulp.task('package', ['build', 'clean-package'], function package() {
+  gulp.src(basePaths.dev + 'index-cordova.html')
+    .pipe(rename('index.html'))
+    .pipe(gulp.dest(basePaths.prod));
+
   return gulp.src('')
-    .pipe(shell('ionic build android'))
+    .pipe(shell('ionic build android' + (argv.prod ? ' --release' : '')))
     .pipe(shell('mkdir -p ' + basePaths.mobile))
     .pipe(shell(
       'cp ' + basePaths.platforms +
-        'android/build/outputs/apk/android-armv7-debug.apk ' +
+        'android/build/outputs/apk/* ' +
         basePaths.mobile
     ));
 });
@@ -123,15 +130,15 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
     ], {
       base: basePaths.dev
     })
-    .pipe(uglify())
+    .pipe(gulpif(argv.prod, uglify()))
     .pipe(gulp.dest(basePaths.prod));
 });
 
 gulp.task('build-jspm', ['bundle-jspm'], function buildJspm() {
   return gulp.src(basePaths.prod + 'app.js')
-  .pipe(ngAnnotate())
-  .pipe(uglify())
-  .pipe(gulp.dest(basePaths.prod));
+    .pipe(gulpif(argv.prod, ngAnnotate()))
+    .pipe(gulpif(argv.prod, uglify()))
+    .pipe(gulp.dest(basePaths.prod));
 });
 
 gulp.task('bundle-jspm', ['build-sass'], function bundleJspm() {
