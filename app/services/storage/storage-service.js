@@ -16,7 +16,9 @@ export default /*@ngInject*/ function storage(
   let getStorageKey = R.join(KEY_SEPARATOR);
 
   let connect = function connect(email) {
-    return remoteStorage.remoteStorage.connect(email);
+    return remoteStorage.remoteStorage.connect(email, 'https://toc.im');
+    //FIXME: next version will have a different arity
+    // remoteStorage.remoteStorage.connect(email, null, 'https://toc.im');
   };
 
   let isConnected = function isConnected() {
