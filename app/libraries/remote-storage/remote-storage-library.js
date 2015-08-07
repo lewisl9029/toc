@@ -5635,7 +5635,7 @@ if (typeof XMLHttpRequest === 'undefined') {
     }
     url += '&response_type=token';
 
-    if (window.cordova) {
+    if (global.cordova) {
       return RemoteStorage.Authorize.openWindow(
           url,
           redirectUri,
@@ -5648,7 +5648,7 @@ if (typeof XMLHttpRequest === 'undefined') {
 
           // sync doesnt start until after reload
           // possibly missing some initialization step?
-          window.location.reload();
+          global.location.reload();
         })
         .then(null, function (error) {
           console.error(error);
@@ -5658,69 +5658,21 @@ if (typeof XMLHttpRequest === 'undefined') {
     RemoteStorage.Authorize.setLocation(url);
   };
 
-  RemoteStorage.Authorize.openWindow = function (url, redirectUri, options) {
-    var pending = Promise.defer();
-    var newWindow = window.open(url, '_blank', options);
-
-    if (!newWindow || newWindow.closed) {
-      pending.reject('Authorization popup was blocked');
-      return pending.promise;
-    }
-
-    var handleExit = function (event) {
-      pending.reject('Authorization was canceled');
-    };
-
-    var handleLoadstart = function (event) {
-      if (event.url.indexOf(redirectUri) !== 0) {
-        return;
-      }
-
-      newWindow.removeEventListener('exit', handleExit);
-      newWindow.close();
-
-      var authResult = extractParams(event.url);
-
-      if (!authResult) {
-        return pending.reject('Authorization error');
-      }
-
-      return pending.resolve(authResult);
-    };
-
-    newWindow.addEventListener('loadstart', handleLoadstart);
-    newWindow.addEventListener('exit', handleExit);
-
-    return pending.promise;
-  };
-
   RemoteStorage.Authorize.IMPLIED_FAKE_TOKEN = false;
 
   RemoteStorage.prototype.authorize = function (authURL) {
     this.access.setStorageType(this.remote.storageType);
     var scope = this.access.scopeParameter;
 
-    var redirectUri = window.cordova ?
+    var redirectUri = global.cordova ?
       'http://localhost/callback' :
       String(RemoteStorage.Authorize.getLocation());
-    // not sure what to use as the id here
-    // don't see any good candidates in window.location on cordova android
-    // {
-    //  "ancestorOrigins": {
-    //   "length": 0
-    //  },
-    //  "origin": "file://",
-    //  "hash": "#/app/public/signup",
-    //  "search": "",
-    //  "pathname": "/android_asset/www/index.html",
-    //  "port": "",
-    //  "hostname": "",
-    //  "host": "",
-    //  "protocol": "file:",
-    //  "href": "file:///android_asset/www/index.html#/app/public/signup"
-    // }
-    // might need to request an clientId as input
-    var clientId = RemoteStorage.Authorize.getLocation().href;
+
+    var clientId = global.cordova ?
+      // not guaranteed to be unique on cordova
+      // replace with a custom per-app clientId
+      String(RemoteStorage.Authorize.getLocation()) :
+      redirectUri.match(/^(https?:\/\/[^\/]+)/)[0];
 
     RemoteStorage.Authorize(authURL, scope, redirectUri, clientId);
   };
@@ -5747,6 +5699,45 @@ if (typeof XMLHttpRequest === 'undefined') {
     } else {
       throw "Invalid location " + location;
     }
+  };
+
+  /**
+   * Open new InAppBrowser window for Oauth on cordova
+   */
+  RemoteStorage.Authorize.openWindow = function (url, redirectUri, options) {
+    var pending = Promise.defer();
+    var newWindow = global.open(url, '_blank', options);
+
+    if (!newWindow || newWindow.closed) {
+      pending.reject('Authorization popup was blocked');
+      return pending.promise;
+    }
+
+    var handleExit = function () {
+      pending.reject('Authorization was canceled');
+    };
+
+    var handleLoadstart = function (event) {
+      if (event.url.indexOf(redirectUri) !== 0) {
+        return;
+      }
+
+      newWindow.removeEventListener('exit', handleExit);
+      newWindow.close();
+
+      var authResult = extractParams(event.url);
+
+      if (!authResult) {
+        return pending.reject('Authorization error');
+      }
+
+      return pending.resolve(authResult);
+    };
+
+    newWindow.addEventListener('loadstart', handleLoadstart);
+    newWindow.addEventListener('exit', handleExit);
+
+    return pending.promise;
   };
 
   RemoteStorage.prototype.impliedauth = function () {
