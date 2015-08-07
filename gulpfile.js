@@ -122,7 +122,10 @@ gulp.task('test', ['test-unit', 'test-e2e']);
 
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
-
+gulp.task('run', function run() {
+  return gulp.src('')
+    .pipe(shell('ionic run android --livereload --livereload-port 8101'));
+});
 
 gulp.task('build-js', ['build-jspm'], function buildJs() {
   return gulp.src([

@@ -9,7 +9,7 @@
   </author>
   <content src="index.html"/>
   <access origin="*"/>
-  <allow-navigation href="file://*/*" />
+  <allow-navigation href="file://*/*"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
