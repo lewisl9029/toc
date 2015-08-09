@@ -1,5 +1,13 @@
 .toc-message {
-
+  padding-right: 72px;
+  .toc-message-content {
+    white-space: normal;
+  }
+  .toc-message-status-area {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+  }
 }
 
 .toc-message-separator {
@@ -15,6 +23,9 @@
     display: none;
   }
   h2 {
+    display: none;
+  }
+  .toc-message-status-area .toc-message-timestamp {
     display: none;
   }
 }

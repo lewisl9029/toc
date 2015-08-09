@@ -51,7 +51,8 @@ export default /*@ngInject*/ function tocMessageList(
       $interval,
       $scope,
       $state,
-      identity
+      identity,
+      time
     ) {
       this.getAvatar = identity.getAvatar;
       this.channelId = $scope.channelId;
@@ -63,7 +64,7 @@ export default /*@ngInject*/ function tocMessageList(
       };
 
       state.addListener(messagesCursor, updateMessages, $scope);
-
+      //TODO: memoize part of this and refactor into message service
       this.isMessageSeparator = (message) => {
         let messageIndex = this.messages.indexOf(message);
         let previousMessage = this.messages[messageIndex - 1];
@@ -72,8 +73,19 @@ export default /*@ngInject*/ function tocMessageList(
           return true;
         }
 
-        return message.messageInfo.senderId !==
+        let isSenderDifferent = message.messageInfo.senderId !==
           previousMessage.messageInfo.senderId;
+
+        if (isSenderDifferent) {
+          return true;
+        }
+
+        let isMinuteDifferent = time.isMinuteDifferent(
+          message.messageInfo.sentTime,
+          previousMessage.messageInfo.sentTime
+        );
+
+        return isMinuteDifferent;
       };
 
       this.getUserInfo = (message) => {
@@ -97,8 +109,12 @@ export default /*@ngInject*/ function tocMessageList(
         if (!message) {
           return;
         }
-        
+
         return identity.getAvatar(this.getUserInfo(message).email);
+      };
+
+      this.getTimestamp = (message) => {
+        return time.getTimestamp(message.messageInfo.sentTime);
       };
 
       // let identityCursor = state.cloud.identity;

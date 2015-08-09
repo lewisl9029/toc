@@ -11,7 +11,12 @@
     <img ng-src="{{messageList.getAvatar(message)}}"
       alt="Avatar for {{messageList.getUserInfo(message).email}}" />
     <h2>{{messageList.getUserInfo(message).displayName}}</h2>
-    <p>{{::message.messageInfo.content}}</p>
+    <p class="toc-message-content">{{::message.messageInfo.content}}</p>
+    <div class="toc-message-status-area">
+      <p class="toc-message-timestamp">
+        {{messageList.getTimestamp(message)}}
+      </p>
+    </div>
   </ion-item>
   <!-- <div ng-repeat="messageGroup in messageList.groupedMessages
     track by messageGroup[0].id">
