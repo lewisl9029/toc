@@ -5,6 +5,7 @@ import contacts from './contacts/contacts';
 import cryptography from './cryptography/cryptography';
 import devices from './devices/devices';
 import identity from './identity/identity';
+import messages from './messages/messages';
 import navigation from './navigation/navigation';
 import network from './network/network';
 import notification from './notification/notification';
@@ -20,6 +21,7 @@ export default angular.module('toc.services', [
   cryptography.name,
   devices.name,
   identity.name,
+  messages.name,
   navigation.name,
   network.name,
   notification.name,

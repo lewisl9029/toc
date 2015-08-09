@@ -13,8 +13,8 @@ export default /*@ngInject*/ function tocMessageList(
       channelId: '@'
     },
     link: function linkMessageList(scope) {
-      let messagesCursor = state.cloud.channels
-        .select([scope.channelId, 'messages']);
+      let messagesCursor = state.cloud.messages
+        .select([scope.channelId]);
 
       $ionicScrollDelegate.scrollBottom(false);
 
@@ -108,8 +108,8 @@ export default /*@ngInject*/ function tocMessageList(
         )(messages);
       };
 
-      let messagesCursor = state.cloud.channels
-        .select([$scope.channelId, 'messages']);
+      let messagesCursor = state.cloud.messages
+        .select([$scope.channelId]);
       let updateGroupedMessages = () => {
         this.groupedMessages = getMessageList(messagesCursor.get());
       };

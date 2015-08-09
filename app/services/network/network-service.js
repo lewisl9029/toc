@@ -70,18 +70,21 @@ export default /*@ngInject*/ function network(
     );
   };
 
-  let handleMessage = function handleMessage(messagePayload, sentTime,
-    receivedTime, contactId, channelId) {
-    let messageId = sentTime + '-' + contactId;
-
+  let handleMessage = function handleMessage(messagePayload, messageMetadata) {
     let messageContent = messagePayload.c;
     let receivedLogicalClock = messagePayload.l;
+    let sentTime = messageMetadata.sentTime;
+    let receivedTime = messageMetadata.receivedTime;
+    let senderId = messageMetadata.senderId;
+    let channelId = messageMetadata.channelId;
+
+    let messageId = sentTime + '-' + senderId;
 
     let message = {
       id: messageId,
       //TODO: find main contact endpoint id from sender userId
       // when using multi-endpoint contacts
-      sender: contactId,
+      sender: senderId,
       receivedTime: receivedTime,
       sentTime: sentTime,
       logicalClock: receivedLogicalClock,
@@ -89,6 +92,10 @@ export default /*@ngInject*/ function network(
     };
 
     let channelCursor = state.cloud.channels.select(
+      [channelId]
+    );
+
+    let messagesCursor = state.cloud.messages.select(
       [channelId]
     );
 
@@ -103,8 +110,8 @@ export default /*@ngInject*/ function network(
         currentLogicalClock + 1
       )
       .then(() => state.save(
-        channelCursor,
-        ['messages', messageId, 'messageInfo'],
+        messagesCursor,
+        [messageId, 'messageInfo'],
         message
       ))
       .then(() => {
@@ -118,7 +125,7 @@ export default /*@ngInject*/ function network(
         // }
 
         let contactName = state.cloud.contacts.get(
-          [contactId, 'userInfo', 'displayName']
+          [senderId, 'userInfo', 'displayName']
         );
 
         return notification.success(
@@ -135,26 +142,37 @@ export default /*@ngInject*/ function network(
           return $q.reject(error);
         }
 
+        let senderId = packet.from.hashname;
+        let channelId = channel.type.substr(1); //removes leading underscore
+        let receivedTime = Date.now();
+        let sentTime = packet.js.t;
+
+        let ackPayload = packet.js.a;
+        let invitePayload = packet.js.i;
+        let statusPayload = packet.js.s;
+        let messagePayload = packet.js.m;
+
+        let messageMetadata = {
+          senderId,
+          channelId,
+          sentTime,
+          receivedTime
+        };
+
         callback(true);
         channel.send({js: {a: {
-          s: packet.from.sentAt,
-          r: packet.from.recvAt
+          s: sentTime,
+          r: receivedTime
         }}});
 
-        if (packet.js.a !== undefined) {
+        if (ackPayload) {
           return $q.when();
-        } else if (packet.js.i !== undefined) {
-          return handleInvite(packet.js.i);
-        } else if (packet.js.s !== undefined) {
-          return handleStatus(packet.js.s, packet.from.hashname);
-        } else if (packet.js.m !== undefined) {
-          return handleMessage(
-            packet.js.m,
-            packet.from.sentAt,
-            packet.from.recvAt,
-            packet.from.hashname,
-            channel.type.substr(1) //remove leading underscore
-          );
+        } else if (invitePayload) {
+          return handleInvite(invitePayload);
+        } else if (statusPayload) {
+          return handleStatus(statusPayload, senderId);
+        } else if (messagePayload) {
+          return handleMessage(messagePayload,messageMetadata);
         } else {
           return $q.reject(
             'Unrecognized packet format: ' + JSON.stringify(packet.js)
@@ -177,24 +195,20 @@ export default /*@ngInject*/ function network(
 
   let send =
     function send(channelInfo, payload, session = activeSession) {
-      let sentMessage = $q.defer();
+      let sendingMessage = $q.defer();
 
-      let handleAcknowledgement = (error, packet, channel, callback) => {
+      let handleAck = (error, packet, channel, callback) => {
         if (error) {
-          return sentMessage.reject(error);
+          return sendingMessage.reject(error);
+        }
+
+        let ackPayload = packet.js.a;
+        if (!ackPayload) {
+          return sendingMessage.reject('Unrecognized message ack format');
         }
 
         callback(true);
-        let acknowledgement = packet.js.a;
-        if (acknowledgement) {
-          return sentMessage.resolve(acknowledgement);
-        } else {
-          channel.send({js: {a: {
-            s: packet.from.sentAt,
-            r: packet.from.recvAt
-          }}});
-          return sentMessage.resolve(packet.from.sentAt);
-        }
+        return sendingMessage.resolve(ackPayload);
       };
 
       try {
@@ -203,13 +217,13 @@ export default /*@ngInject*/ function network(
           channelInfo.contactIds[0],
           channelInfo.id,
           {js: payload},
-          handleAcknowledgement
+          handleAck
         );
       } catch(error) {
-        sentMessage.reject(error);
+        sendingMessage.reject(error);
       }
 
-      return sentMessage.promise;
+      return sendingMessage.promise;
     };
 
   let handleSendTimeout =
@@ -243,7 +257,8 @@ export default /*@ngInject*/ function network(
     };
 
     let payload = {
-      i: userInfo
+      i: userInfo,
+      t: Date.now()
     };
 
     return send(inviteChannel, payload);
@@ -253,10 +268,6 @@ export default /*@ngInject*/ function network(
     let userId = state.cloud.identity.get().userInfo.id;
     let contactChannel = channels.createContactChannel(userId, contactId);
 
-    let payload = {
-      s: statusId
-    };
-
     let contactCursor = state.cloud.contacts.select([contactId]);
 
     let previousContactStatusId = contactCursor.get(['statusId']);
@@ -264,6 +275,11 @@ export default /*@ngInject*/ function network(
     if (previousContactStatusId === undefined) {
       return $q.when();
     }
+
+    let payload = {
+      s: statusId,
+      t: Date.now()
+    };
 
     return send(contactChannel, payload)
       .catch((error) =>
@@ -277,16 +293,9 @@ export default /*@ngInject*/ function network(
       return $q.reject('Invalid message format.');
     }
 
-    let payload = {
-      m: {
-        c: messageContent,
-        l: logicalClock
-      }
-    };
-
-    let handleMessageAck = (acknowledgement) => {
-      let sentTime = acknowledgement.s;
-      let receivedTime = acknowledgement.r;
+    let handleMessageAck = (ack) => {
+      let sentTime = ack.s;
+      let receivedTime = ack.r;
 
       let userId = state.cloud.identity.get().userInfo.id;
       let messageId = sentTime + '-' + userId;
@@ -300,11 +309,10 @@ export default /*@ngInject*/ function network(
         logicalClock: logicalClock,
         content: messageContent
       };
+      let messagesCursor = state.cloud.messages.select([channelInfo.id]);
 
       return state.save(
-        state.cloud.channels.select(
-          [channelInfo.id, 'messages']
-        ),
+        messagesCursor,
         [messageId, 'messageInfo'],
         message
       );
@@ -318,6 +326,14 @@ export default /*@ngInject*/ function network(
     if (previousContactStatusId === undefined) {
       return $q.when();
     }
+
+    let payload = {
+      m: {
+        c: messageContent,
+        l: logicalClock
+      },
+      t: Date.now()
+    };
 
     return send(channelInfo, payload)
       .then(handleMessageAck)

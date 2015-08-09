@@ -71,6 +71,8 @@ export default /*@ngInject*/ function state(
       .select([userId, 'contacts']);
     stateService.cloud.channels = stateService.cloud.cursor
       .select([userId, 'channels']);
+    stateService.cloud.messages = stateService.cloud.cursor
+      .select([userId, 'messages']);
     stateService.cloud.devices = stateService.cloud.cursor
       .select([userId, 'devices']);
     stateService.cloud.network = stateService.cloud.cursor
