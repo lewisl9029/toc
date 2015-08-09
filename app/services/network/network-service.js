@@ -169,7 +169,7 @@ export default /*@ngInject*/ function network(
           return $q.when();
         } else if (invitePayload) {
           return handleInvite(invitePayload);
-        } else if (statusPayload) {
+        } else if (statusPayload !== undefined) {
           return handleStatus(statusPayload, senderId);
         } else if (messagePayload) {
           return handleMessage(messagePayload, messageMetadata);

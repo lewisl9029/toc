@@ -64,6 +64,49 @@ export default /*@ngInject*/ function tocMessageList(
 
       state.addListener(messagesCursor, updateMessages, $scope);
 
+      this.isMessageSeparator = (message) => {
+        let messageIndex = this.messages.indexOf(message);
+        let previousMessage = this.messages[messageIndex - 1];
+
+        if (!previousMessage) {
+          return true;
+        }
+
+        return message.messageInfo.senderId !==
+          previousMessage.messageInfo.senderId;
+      };
+
+      this.getUserInfo = (message) => {
+        if (!message) {
+          return;
+        }
+
+        let senderId = message.messageInfo.senderId;
+        let userInfo = state.cloud.identity.get().userInfo;
+
+        if (userInfo.id === senderId) {
+          return userInfo;
+        }
+
+        let contactInfo = state.cloud.contacts.get(senderId).userInfo;
+
+        return contactInfo;
+      };
+
+      this.getAvatar = (message) => {
+        if (!message) {
+          return;
+        }
+        
+        return identity.getAvatar(this.getUserInfo(message).email);
+      };
+
+      // let identityCursor = state.cloud.identity;
+      // let updateUserInfo = () => {
+      //   this.userInfo = identityCursor.get().userInfo;
+      // };
+      //
+      // state.addListener(identityCursor, updateUserInfo, $scope);
       //
       // let channelCursor = state.cloud.channels.select([this.channelId]);
       //
@@ -80,12 +123,6 @@ export default /*@ngInject*/ function tocMessageList(
       //
       // state.addListener(contactsCursor, updateContacts, $scope);
       //
-      // let identityCursor = state.cloud.identity;
-      // let updateUserInfo = () => {
-      //   this.userInfo = identityCursor.get(['userInfo']);
-      // };
-      //
-      // state.addListener(identityCursor, updateUserInfo, $scope);
 
 
 

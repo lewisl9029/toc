@@ -1,18 +1,39 @@
-p.toc-message {
-  &.toc-unread-message {
-    font-weight: bold;
+.toc-message {
+
+}
+
+.toc-message-separator {
+  border-top-width: 1px;
+}
+
+.toc-message-simple {
+  border-width: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  min-height: 36px;
+  img {
+    display: none;
+  }
+  h2 {
+    display: none;
   }
 }
 
-p.toc-message-content {
-  white-space: normal;
-  overflow: initial;
-  text-overflow: initial;
-  padding: 0px;
-
-}
-
-p.toc-message-timestamp {
-  padding: 0px;
-  text-align: right;
-}
+// p.toc-message {
+//   &.toc-unread-message {
+//     font-weight: bold;
+//   }
+// }
+//
+// p.toc-message-content {
+//   white-space: normal;
+//   overflow: initial;
+//   text-overflow: initial;
+//   padding: 0px;
+//
+// }
+//
+// p.toc-message-timestamp {
+//   padding: 0px;
+//   text-align: right;
+// }

@@ -1,7 +1,17 @@
 <ion-list>
-  <ion-item collection-repeat="message in messageList.messages
-    track by message.messageInfo.id">
-    {{message.messageInfo.content}} says {{message.messageInfo.senderId}}
+  <!-- FIXME: collection-repeat makes for buggy borders -->
+  <!-- TODO: use one time bindings for constant values -->
+  <ion-item class="toc-message item-avatar"
+    ng-repeat="message in messageList.messages
+      track by message.messageInfo.id"
+    ng-class="messageList.isMessageSeparator(message) ?
+      'toc-message-separator' :
+      'toc-message-simple'
+    ">
+    <img ng-src="{{messageList.getAvatar(message)}}"
+      alt="Avatar for {{messageList.getUserInfo(message).email}}" />
+    <h2>{{messageList.getUserInfo(message).displayName}}</h2>
+    <p>{{::message.messageInfo.content}}</p>
   </ion-item>
   <!-- <div ng-repeat="messageGroup in messageList.groupedMessages
     track by messageGroup[0].id">
