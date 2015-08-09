@@ -3,10 +3,12 @@ export default /*@ngInject*/ function ChannelController(
   $q,
   $scope,
   $stateParams,
+  identity,
   network,
   notification,
   state
 ) {
+  this.getAvatar = identity.getAvatar;
   this.channelId = $stateParams.channelId;
 
   let channelCursor = state.cloud.channels

@@ -19,8 +19,9 @@ $popup-button-border-radius: 0 !default;
 $popup-background-color: #fff !default;
 $button-bar-button-font-size: 15px !default;
 $bar-light-border: white !default;
-$bar-footer-height: 75px !default;
+$bar-footer-height: 70px !default;
 $bar-subfooter-height: 65px !default;
+$bar-subheader-height: 75px !default;
 //FIXME: cant select text in side menu
 // .disable-user-behavior {
 //   user-select: text;
@@ -50,6 +51,14 @@ $bar-subfooter-height: 65px !default;
   margin-top: 0;
   height: 42px;
   line-height: 40px;
+}
+
+.bar-subheader {
+  padding: 0;
+  // border-bottom: 0;
+  .item {
+    border-color: white;
+  }
 }
 
 .button {

@@ -1,4 +1,22 @@
-.toc-send-spinner svg {
-  height: 32px;
-  width: 32px;
+.toc-message-input-footer {
+  .col-80 {
+    padding: 5px;
+  }
+  .col-20 {
+    padding: 5px;
+  }
+}
+
+.toc-message-input-form {
+  display: none;
+}
+
+.toc-message-input-area {
+  border: 1px solid $calm !important;
+  height: 42px !important;
+  padding: 0 12px !important;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 10px;
+  resize: none;
 }

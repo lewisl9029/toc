@@ -18,39 +18,4 @@
       </p>
     </div>
   </ion-item>
-  <!-- <div ng-repeat="messageGroup in messageList.groupedMessages
-    track by messageGroup[0].id">
-    <div class="row" ng-class="{
-      'balanced-bg': messageGroup[0].sender !== messageList.userInfo.id,
-      'calm-bg': messageGroup[0].sender === messageList.userInfo.id
-    }"></div>
-    <div class="item item-avatar">
-      <img ng-src="{{
-        messageGroup[0].sender === messageList.userInfo.id ?
-        messageList.getAvatar(messageList.userInfo.email) :
-        messageList.getAvatar(messageList.contacts[messageGroup[0].sender].userInfo.email)}}" alt="Avatar for  {{
-        messageGroup[0].sender === messageList.userInfo.id ?
-        messageList.userInfo.email :
-        messageList.contacts[messageGroup[0].sender].userInfo.email
-      }}" />
-      <h2>{{
-        messageGroup[0].sender === messageList.userInfo.id ?
-        'You' :
-        messageList.contacts[messageGroup[0].sender].userInfo.displayName
-      }}</h2>
-      <div class="row toc-message" ng-repeat="message in messageGroup track by message.id"
-        ng-class="{'toc-unread-message': !message.isRead}">
-        <p class="col toc-message-content">
-          {{message.content}}
-        </p>
-        <p class="col col-20 toc-message-timestamp">
-          {{
-            message.sender === messageList.userInfo.id ?
-            message.sentTime : message.receivedTime |
-            date : 'shortTime'
-          }}
-        </p>
-      </div>
-    </div>
-  </div> -->
 </ion-list>
