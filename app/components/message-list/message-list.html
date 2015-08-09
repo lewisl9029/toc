@@ -1,5 +1,9 @@
-<div class="list">
-  <div ng-repeat="messageGroup in messageList.groupedMessages
+<ion-list>
+  <ion-item collection-repeat="message in messageList.messages
+    track by message.messageInfo.id">
+    {{message.messageInfo.content}} says {{message.messageInfo.senderId}}
+  </ion-item>
+  <!-- <div ng-repeat="messageGroup in messageList.groupedMessages
     track by messageGroup[0].id">
     <div class="row" ng-class="{
       'balanced-bg': messageGroup[0].sender !== messageList.userInfo.id,
@@ -33,5 +37,5 @@
         </p>
       </div>
     </div>
-  </div>
-</div>
+  </div> -->
+</ion-list>

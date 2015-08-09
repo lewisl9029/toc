@@ -1,6 +1,6 @@
 <form name="toc-signup-form" class="toc-flex-container"
   ng-submit="signupForm.createUser(signupForm.newUser)">
-  <div class="toc-flex-content">
+  <ion-content>
     <div class="list">
       <div class="item item-divider item-calm">
         Welcome{{signupForm.newUser.displayName ?
@@ -41,24 +41,21 @@
         Stay signed in?
       </ion-toggle>
     </div>
-  </div>
-
-  <div class="toc-flex-footer">
-    <div class="row">
-      <div class="col">
-        <button type="button" ng-click="signupForm.goBack()"
-          class="button button-block button-outline button-calm">
-          Back
-        </button>
-      </div>
-      <div class="col">
-        <button type="submit"
-          class="button button-block button-outline button-balanced"
-          toc-spinner-button loading-promise="signupForm.signingUp">
-          <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
-          Create account
-        </button>
-      </div>
+  </ion-content>
+  <ion-footer-bar>
+    <div class="col">
+      <button type="button" ng-click="signupForm.goBack()"
+        class="button button-block button-outline button-calm">
+        Back
+      </button>
     </div>
-  </div>
+    <div class="col">
+      <button type="submit"
+        class="button button-block button-outline button-balanced"
+        toc-spinner-button loading-promise="signupForm.signingUp">
+        <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
+        Create account
+      </button>
+    </div>
+  </ion-footer-bar>
 </form>

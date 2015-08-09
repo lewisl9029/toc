@@ -1,42 +1,36 @@
 <ion-view view-title="{{homeView.currentUser.userInfo.displayName}}">
-  <ion-content>
-    <div class="toc-flex-container">
-      <div class="toc-flex-content">
-        <div class="list">
-          <!-- <div class="row balanced-bg"></div>
-          <div class="item item-avatar">
-            <img ng-src="http://cdn.libravatar.org/avatar/{{homeView.currentUser.userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{homeView.currentUser.userInfo.email}}" />
-            <h2>{{homeView.currentUser.userInfo.displayName}}</h2>
-            <p>{{homeView.currentUser.userInfo.id}}</p>
-          </div> -->
-          <label class="item item-input item-stacked-label">
-            <span class="input-label">User ID</span>
-            <input type="text" placeholder="ID"
-              value="{{homeView.currentUser.userInfo.id}}" readonly>
-          </label>
-          <div class="item item-image toc-qr-image-container">
-            <toc-qr-image data="{{homeView.currentUser.userInfo.id}}">
-            </toc-qr-image>
-          </div>
-        </div>
-      </div>
-      <div class="toc-flex-footer">
-        <div class="row" ng-if="!homeView.isStorageConnected()">
-          <div class="col">
-            <button ui-sref="app.private.cloud" class="button button-block button-outline button-royal">
-              Connect a cloud account
-            </button>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <button class="button button-block button-outline button-assertive"
-              ng-click="homeView.showSignoutConfirm()">
-              Sign out
-            </button>
-          </div>
-        </div>
+  <ion-content class="has-subfooter">
+    <div class="list">
+      <!-- <div class="row balanced-bg"></div>
+      <div class="item item-avatar">
+        <img ng-src="http://cdn.libravatar.org/avatar/{{homeView.currentUser.userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{homeView.currentUser.userInfo.email}}" />
+        <h2>{{homeView.currentUser.userInfo.displayName}}</h2>
+        <p>{{homeView.currentUser.userInfo.id}}</p>
+      </div> -->
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">User ID</span>
+        <input type="text" placeholder="ID"
+          value="{{homeView.currentUser.userInfo.id}}" readonly>
+      </label>
+      <div class="item item-image toc-qr-image-container">
+        <toc-qr-image data="{{homeView.currentUser.userInfo.id}}">
+        </toc-qr-image>
       </div>
     </div>
   </ion-content>
+  <div class="bar bar-subfooter" ng-if="!homeView.isStorageConnected()">
+    <div class="col">
+      <button ui-sref="app.private.cloud" class="button button-block button-outline button-royal">
+        Connect a cloud account
+      </button>
+    </div>
+  </div>
+  <ion-footer-bar>
+    <div class="col">
+      <button class="button button-block button-outline button-assertive"
+        ng-click="homeView.showSignoutConfirm()">
+        Sign out
+      </button>
+    </div>
+  </ion-footer-bar>
 </ion-view>

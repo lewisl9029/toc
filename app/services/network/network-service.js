@@ -84,7 +84,7 @@ export default /*@ngInject*/ function network(
       id: messageId,
       //TODO: find main contact endpoint id from sender userId
       // when using multi-endpoint contacts
-      sender: senderId,
+      senderId: senderId,
       receivedTime: receivedTime,
       sentTime: sentTime,
       logicalClock: receivedLogicalClock,
@@ -172,7 +172,7 @@ export default /*@ngInject*/ function network(
         } else if (statusPayload) {
           return handleStatus(statusPayload, senderId);
         } else if (messagePayload) {
-          return handleMessage(messagePayload,messageMetadata);
+          return handleMessage(messagePayload, messageMetadata);
         } else {
           return $q.reject(
             'Unrecognized packet format: ' + JSON.stringify(packet.js)
@@ -303,7 +303,7 @@ export default /*@ngInject*/ function network(
       let message = {
         id: messageId,
         //TODO: find main contact userId from sender userId for multi-signon
-        sender: userId,
+        senderId: userId,
         receivedTime: receivedTime,
         sentTime: sentTime,
         logicalClock: logicalClock,

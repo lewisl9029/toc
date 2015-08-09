@@ -1,40 +1,41 @@
 <ion-view view-title="Toc Messenger">
-  <ion-content>
-    <div class="toc-flex-container">
-      <div class="toc-flex-content">
+  <ion-content class="has-subfooter">
+  </ion-content>
 
-      </div>
-      <div class="toc-flex-footer">
-        <div class="row">
-          <div class="col">
-            <button ng-click="welcomeView.showResetConfirm()"
-              class="button button-block button-outline button-assertive">
-              DEBUG: RESET
-            </button>
-          </div>
-        </div>
-        <div class="row" ng-if="!welcomeView.isStorageConnected()">
-          <div class="col">
-            <button ui-sref="app.public.cloud" class="button button-block button-outline button-royal">
-              Connect a cloud account
-            </button>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <button ui-sref="app.public.signup"
-              class="button button-block button-outline button-calm">
-              Create account
-            </button>
-          </div>
-          <div class="col" ng-if="welcomeView.users">
-            <button ui-sref="app.public.signin"
-              class="button button-block button-outline button-calm">
-              Sign in
-            </button>
-          </div>
-        </div>
+  <div class="bar bar-subfooter">
+    <div class="col">
+      <button ui-sref="app.public.cloud" class="button button-block button-outline button-royal">
+        Connect a cloud account
+      </button>
+    </div>
+  </div>
+  <ion-footer-bar>
+    <!-- <div class="row">
+      <div class="col">
+        <button ng-click="welcomeView.showResetConfirm()"
+          class="button button-block button-outline button-assertive">
+          DEBUG: RESET
+        </button>
       </div>
     </div>
-  </ion-content>
+    <div class="row" ng-if="!welcomeView.isStorageConnected()">
+      <div class="col">
+        <button ui-sref="app.public.cloud" class="button button-block button-outline button-royal">
+          Connect a cloud account
+        </button>
+      </div>
+    </div> -->
+      <div class="col">
+        <button ui-sref="app.public.signup"
+          class="button button-block button-outline button-calm">
+          Create account
+        </button>
+      </div>
+      <div class="col" ng-if="welcomeView.users">
+        <button ui-sref="app.public.signin"
+          class="button button-block button-outline button-calm">
+          Sign in
+        </button>
+      </div>
+  </ion-footer-bar>
 </ion-view>

@@ -3,7 +3,7 @@
     id: signinForm.model.selectedUser,
     password: signinForm.model.password
   })">
-  <div class="toc-flex-content">
+  <ion-content class="has-subfooter">
     <div class="list">
       <div class="item item-divider item-calm item-clear">
         Welcome back {{signinForm.model.users[signinForm.model.selectedUser].userInfo.displayName}}!
@@ -24,33 +24,31 @@
         Stay signed in?
       </ion-toggle>
     </div>
-  </div>
+  </ion-content>
 
-  <div class="toc-flex-footer">
-    <div class="row">
-      <div class="col">
-        <button type="button"
-          class="button button-block button-outline button-royal"
-          ng-click="signinForm.userListModal.show()">
-          Not you?
-        </button>
-      </div>
+  <div class="bar bar-subfooter">
+    <div class="col">
+      <button type="button"
+        class="button button-block button-outline button-royal"
+        ng-click="signinForm.userListModal.show()">
+        Not you?
+      </button>
     </div>
-    <div class="row">
-      <div class="col">
-        <button type="button" ng-click="signinForm.goBack()"
-          class="button button-block button-outline button-calm">
-          Back
-        </button>
-      </div>
-      <div class="col">
-        <button type="submit"
-          class="button button-block button-outline button-balanced"
-          toc-spinner-button loading-promise="signinForm.signingIn">
-          <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
-          Sign in
-        </button>
-      </div>
+  </div>
+  <ion-footer-bar>
+    <div class="col">
+      <button type="button" ng-click="signinForm.goBack()"
+        class="button button-block button-outline button-calm">
+        Back
+      </button>
     </div>
+    <div class="col">
+      <button type="submit"
+        class="button button-block button-outline button-balanced"
+        toc-spinner-button loading-promise="signinForm.signingIn">
+        <!-- <ion-spinner icon="ripple" class="spinner-light"></ion-spinner> -->
+        Sign in
+      </button>
+    </ion-footer-bar>
   </div>
 </form>
