@@ -8,6 +8,16 @@
     right: 16px;
     top: 16px;
   }
+  .toc-message-unread-marker {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+    color: $assertive;
+    border-top: 1px solid $assertive;
+    font-size: 10px;
+    width: 100%;
+  }
 }
 
 .toc-message-separator {

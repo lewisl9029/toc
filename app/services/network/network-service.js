@@ -115,23 +115,31 @@ export default /*@ngInject*/ function network(
         message
       ))
       .then(() => {
-        //TODO: implement with new unread indicator
-
-        // let activeChannelId =
-        //   state.cloud.network.get(['activeChannelId']);
-        // if (activeChannelId === channelId &&
-        //   channelCursor.get(['viewingLatest'])) {
-        //   return $q.when();
-        // }
+        let activeChannelId =
+          state.cloud.navigation.get(['activeChannelId']);
+        if (activeChannelId === channelId &&
+          channelCursor.get(['viewingLatest'])) {
+          return $q.when();
+        }
 
         let contactName = state.cloud.contacts.get(
           [senderId, 'userInfo', 'displayName']
         );
 
-        return notification.success(
-          message.content,
-          contactName + ' just said:'
-        );
+        let updatingUnreadPointer =
+          !channelCursor.get(['unreadMessageId']) ?
+            state.save(
+              channelCursor,
+              ['unreadMessageId'],
+              messageId
+            ) :
+            $q.when();
+
+        return updatingUnreadPointer
+          .then(() => notification.success(
+            message.content,
+            contactName + ' just said:'
+          ));
       });
   };
 

@@ -17,5 +17,9 @@
         {{messageList.getTimestamp(message)}}
       </p>
     </div>
+    <div ng-if="messageList.isUnread(message)"
+      class="toc-message-unread-marker">
+      NEW
+    </div>
   </ion-item>
 </ion-list>
