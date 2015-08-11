@@ -3,6 +3,7 @@ export default /*@ngInject*/ function ChannelController(
   $q,
   $scope,
   $stateParams,
+  $ionicScrollDelegate,
   identity,
   network,
   notification,
@@ -12,6 +13,8 @@ export default /*@ngInject*/ function ChannelController(
   this.channelId = $stateParams.channelId;
 
   let channelCursor = state.cloud.channels
+    .select([this.channelId]);
+  let messagesCursor = state.cloud.messages
     .select([this.channelId]);
 
   let contactCursor = state.cloud.contacts;
@@ -36,6 +39,26 @@ export default /*@ngInject*/ function ChannelController(
   state.addListener(channelCursor, updateContact, $scope, {
     skipInitialize: true
   });
+
+  this.viewLatest = () => {
+    $ionicScrollDelegate.scrollBottom(true);
+  };
+
+  this.getUnreadMessage = () => {
+    let unreadMessageId = channelCursor.get('unreadMessageId');
+
+    return unreadMessageId ? messagesCursor.get(unreadMessageId) : null;
+  };
+
+  this.getLatestMessage = () => {
+    let latestMessageId = channelCursor.get('latestMessageId');
+
+    return latestMessageId ? messagesCursor.get(latestMessageId) : null;
+  };
+
+  this.getQuote = () => {
+    return this.getUnreadMessage() || this.getLatestMessage();
+  };
 
   this.message = '';
   //TODO: add to offline message queue instead of blocking further input

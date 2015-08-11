@@ -17,7 +17,7 @@ export default /*@ngInject*/ function time(
       return messageTime.format('LT');
     }
 
-    return messageTime.format('IIII');
+    return `${messageTime.format('l')} ${messageTime.format('LT')}`;
   };
 
   let isMinuteDifferent = R.memoize((time1, time2) => {

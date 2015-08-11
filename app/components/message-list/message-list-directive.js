@@ -74,19 +74,23 @@ export default /*@ngInject*/ function tocMessageList(
             null
           );
         }
-      }, 3000);
+      }, 5000);
     },
     controllerAs: 'messageList',
     controller: /*@ngInject*/ function MessageListController(
       $scope,
       $state,
       identity,
-      time
+      time,
+      messages
     ) {
       this.getAvatar = identity.getAvatar;
       this.channelId = $scope.channelId;
+      //TODO: refactor into messages service
 
       let messagesCursor = state.cloud.messages.select([this.channelId]);
+      let channelCursor = state.cloud.channels
+        .select([this.channelId]);
 
       let updateMessages = () => {
         this.messages = R.values(messagesCursor.get());

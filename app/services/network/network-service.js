@@ -114,6 +114,11 @@ export default /*@ngInject*/ function network(
         [messageId, 'messageInfo'],
         message
       ))
+      .then(() => state.save(
+        channelCursor,
+        ['latestMessageId'],
+        messageId
+      ))
       .then(() => {
         let activeChannelId =
           state.cloud.navigation.get(['activeChannelId']);
