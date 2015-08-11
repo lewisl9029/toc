@@ -1,7 +1,5 @@
 <ion-list class="toc-message-list">
-  <!-- FIXME: collection-repeat makes for buggy borders -->
-  <!-- TODO: use one time bindings for constant values -->
-  <!-- TODO: sort list and pass indexes into functions -->
+  <!-- FIXME: collection-repeat doesn't allow for variable height items -->
   <ion-item class="toc-message item-avatar"
     ng-repeat="message in messageList.messages track by message.messageInfo.id"
     ng-class="messageList.isSenderSeparator(message) ?
@@ -12,7 +10,7 @@
       alt="Avatar for {{messageList.getUserInfo(message).email}}" />
     <div ng-if="messageList.isDateSeparator(message)"
       class="toc-message-datestamp">
-      {{messageList.getDatestamp(message)}}
+      {{::messageList.getDatestamp(message)}}
     </div>
     <div ng-if="messageList.isUnread(message)"
       class="toc-message-unread-marker">
@@ -21,7 +19,7 @@
     <p class="toc-message-content">{{::message.messageInfo.content}}</p>
     <div ng-if="messageList.isMinuteSeparator(message)"
       class="toc-message-timestamp">
-      {{messageList.getTimestamp(message)}}
+      {{::messageList.getTimestamp(message)}}
     </div>
   </ion-item>
 </ion-list>
