@@ -24,7 +24,7 @@ export default /*@ngInject*/ function tocMessageList(
       let updateMessageListPosition = () => {
         let scrollView = $ionicScrollDelegate.getScrollView();
 
-        if (scrollView.__scrollTop !== scrollView.__maxScrollTop) {
+        if (scrollView.__scrollTop < scrollView.__maxScrollTop) {
           return;
         }
 
@@ -42,11 +42,12 @@ export default /*@ngInject*/ function tocMessageList(
       });
 
       $interval(() => {
-        //Updates unread messages based on scroll position
+        //Updates unread messages if scrolled to bottom
+        //TODO: write a more robust version that moves unread marker granularly
         let scrollView = $ionicScrollDelegate.getScrollView();
 
         //Don't do anything if not at scrolled to bottom
-        if (scrollView.__scrollTop !== scrollView.__maxScrollTop) {
+        if (scrollView.__scrollTop < scrollView.__maxScrollTop) {
           if (!channelCursor.get(['viewingLatest'])) {
             return;
           }
@@ -106,7 +107,35 @@ export default /*@ngInject*/ function tocMessageList(
       };
 
       //TODO: memoize part of this and refactor into message service
-      this.isMessageSeparator = (message) => {
+      this.isSenderSeparator = (message) => {
+        let messageIndex = this.messages.indexOf(message);
+        let previousMessage = this.messages[messageIndex - 1];
+
+        if (!previousMessage) {
+          return true;
+        }
+
+        let isSenderDifferent = message.messageInfo.senderId !==
+          previousMessage.messageInfo.senderId;
+
+        return isSenderDifferent;
+      };
+
+      this.isMinuteSeparator = (message) => {
+        let messageIndex = this.messages.indexOf(message);
+        let previousMessage = this.messages[messageIndex - 1];
+
+        if (!previousMessage) {
+          return true;
+        }
+
+        return time.isMinuteDifferent(
+          message.messageInfo.sentTime,
+          previousMessage.messageInfo.sentTime
+        );
+      };
+
+      this.isDateSeparator = (message) => {
         let messageIndex = this.messages.indexOf(message);
         let previousMessage = this.messages[messageIndex - 1];
 
@@ -115,22 +144,13 @@ export default /*@ngInject*/ function tocMessageList(
         }
 
         if (this.isUnread(message)) {
-          return true;
+          return false;
         }
 
-        let isSenderDifferent = message.messageInfo.senderId !==
-          previousMessage.messageInfo.senderId;
-
-        if (isSenderDifferent) {
-          return true;
-        }
-
-        let isMinuteDifferent = time.isMinuteDifferent(
+        return time.isDayDifferent(
           message.messageInfo.sentTime,
           previousMessage.messageInfo.sentTime
         );
-
-        return isMinuteDifferent;
       };
 
       this.getUserInfo = (message) => {
@@ -160,6 +180,10 @@ export default /*@ngInject*/ function tocMessageList(
 
       this.getTimestamp = (message) => {
         return time.getTimestamp(message.messageInfo.sentTime);
+      };
+
+      this.getDatestamp = (message) => {
+        return time.getDatestamp(message.messageInfo.sentTime);
       };
     }
   };

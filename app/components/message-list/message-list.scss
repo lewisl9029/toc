@@ -1,5 +1,19 @@
+.toc-message-list {
+  .list {
+    > :first-child {
+      box-shadow: unset;
+    }
+    > :last-child {
+      box-shadow: unset;
+      margin-bottom: 16px;
+    }
+  }
+}
+
 .toc-message {
+  border: 0;
   padding-right: 72px;
+  min-height: unset;
   .toc-message-content {
     white-space: normal;
   }
@@ -12,49 +26,48 @@
     position: absolute;
     top: 0px;
     left: 0px;
-    text-align: center;
+    height: 3px;
+    text-align: left;
     color: $assertive;
-    border-top: 1px solid $assertive;
+    box-shadow: 0 1px 2px $assertive inset;
     font-size: 10px;
+    width: 110%;
+  }
+  .toc-message-timestamp {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    text-align: right;
+    color: $dark;
+    font-size: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+    width: 100%;
+  }
+  .toc-message-datestamp {
+    text-align: center;
+    color: $royal;
+    font-size: 12px;
     width: 100%;
   }
 }
 
-.toc-message-separator {
-  border-top-width: 1px;
+.toc-message-avatar {
+  padding-bottom: 0;
+  > img:first-child {
+    top: unset;
+    bottom: 0;
+  }
 }
 
 .toc-message-simple {
   border-width: 0;
   padding-top: 0;
   padding-bottom: 0;
-  min-height: 36px;
   img {
     display: none;
   }
   h2 {
     display: none;
   }
-  .toc-message-status-area .toc-message-timestamp {
-    display: none;
-  }
 }
-
-// p.toc-message {
-//   &.toc-unread-message {
-//     font-weight: bold;
-//   }
-// }
-//
-// p.toc-message-content {
-//   white-space: normal;
-//   overflow: initial;
-//   text-overflow: initial;
-//   padding: 0px;
-//
-// }
-//
-// p.toc-message-timestamp {
-//   padding: 0px;
-//   text-align: right;
-// }

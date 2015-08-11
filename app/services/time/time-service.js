@@ -8,38 +8,31 @@ export default /*@ngInject*/ function time(
 ) {
   let getTime = () => $window.Date.now();
 
-  let getTimestamp = (time) => {
-    let messageTime = moment(time);
+  let getTimestamp = R.memoize((time) => {
+    return moment(time).format('LT');
+  });
 
-    let now = moment();
-
-    if (messageTime.isSame(now, 'day')) {
-      return messageTime.format('LT');
-    }
-
-    return `${messageTime.format('l')} ${messageTime.format('LT')}`;
-  };
+  let getDatestamp = R.memoize((time) => {
+    return moment(time).calendar();
+  });
 
   let isMinuteDifferent = R.memoize((time1, time2) => {
     return moment(time1).minutes() !== moment(time2).minutes();
   });
 
+  let isDayDifferent = R.memoize((time1, time2) => {
+    return moment(time1).dayOfYear() !== moment(time2).dayOfYear();
+  });
+
   let initialize = function initialize() {
     moment.locale('en', {
-      relativeTime : {
-        future: 'just now',
-        past:   '%s ago',
-        s:  'seconds',
-        m:  'a minute',
-        mm: '%d minutes',
-        h:  'an hour',
-        hh: '%d hours',
-        d:  'a day',
-        dd: '%d days',
-        M:  'a month',
-        MM: '%d months',
-        y:  'a year',
-        yy: '%d years'
+      calendar : {
+        lastDay : '[Yesterday]',
+        sameDay : '[Today]',
+        nextDay : '[Tomorrow]',
+        lastWeek : 'll',
+        nextWeek : 'll',
+        sameElse : 'll'
       }
     });
 
@@ -49,7 +42,9 @@ export default /*@ngInject*/ function time(
   let timeService = {
     getTime,
     getTimestamp,
+    getDatestamp,
     isMinuteDifferent,
+    isDayDifferent,
     initialize,
     moment
   };

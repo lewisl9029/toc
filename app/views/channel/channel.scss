@@ -1,4 +1,9 @@
+.toc-channel-subheader {
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 .toc-message-input-footer {
+  box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.2);
   .col-80 {
     padding: 5px;
   }
@@ -12,11 +17,41 @@
 }
 
 .toc-message-input-area {
-  border: 1px solid $calm !important;
+  // outline: 1px solid $balanced !important;
+  border: 1px solid $balanced !important;
   height: 42px !important;
-  padding: 0 12px !important;
+  padding: 4px 12px !important;
   width: 100%;
   margin-top: 0;
   margin-bottom: 10px;
   resize: none;
+  line-height: unset !important;
+}
+
+.toc-channel-card {
+  h2 {
+    margin-left: 16px;
+  }
+}
+
+.toc-channel-card-status-indicator {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  left: 72px;
+  top: 22px;
+}
+
+.toc-channel-card-quote-unread {
+  font-style: italic;
+  color: $assertive !important;
+}
+
+.toc-contact-status-0 {
+  border: 2px solid $balanced;
+}
+
+.toc-contact-status-1 {
+  border: 2px solid $balanced;
+  background-color: $balanced;
 }

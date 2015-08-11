@@ -1,25 +1,28 @@
-<ion-list>
+<ion-list class="toc-message-list">
   <!-- FIXME: collection-repeat makes for buggy borders -->
   <!-- TODO: use one time bindings for constant values -->
+  <!-- TODO: sort list and pass indexes into functions -->
   <ion-item class="toc-message item-avatar"
     ng-repeat="message in messageList.messages
       track by message.messageInfo.id"
-    ng-class="messageList.isMessageSeparator(message) ?
-      'toc-message-separator' :
+    ng-class="messageList.isSenderSeparator(message) ?
+      'toc-message-avatar' :
       'toc-message-simple'
     ">
     <img ng-src="{{messageList.getAvatar(message)}}"
       alt="Avatar for {{messageList.getUserInfo(message).email}}" />
-    <h2>{{messageList.getUserInfo(message).displayName}}</h2>
-    <p class="toc-message-content">{{::message.messageInfo.content}}</p>
-    <div class="toc-message-status-area">
-      <p class="toc-message-timestamp">
-        {{messageList.getTimestamp(message)}}
-      </p>
+    <div ng-if="messageList.isDateSeparator(message)"
+      class="toc-message-datestamp">
+      {{messageList.getDatestamp(message)}}
     </div>
     <div ng-if="messageList.isUnread(message)"
       class="toc-message-unread-marker">
-      NEW
+    </div>
+    <h2>{{messageList.getUserInfo(message).displayName}}</h2>
+    <p class="toc-message-content">{{::message.messageInfo.content}}</p>
+    <div ng-if="messageList.isMinuteSeparator(message)"
+      class="toc-message-timestamp">
+      {{messageList.getTimestamp(message)}}
     </div>
   </ion-item>
 </ion-list>

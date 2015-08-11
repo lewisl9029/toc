@@ -13,13 +13,16 @@ $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
 
-$card-border-radius: 0 !default;
 $button-border-radius: 0 !default;
+$button-bar-button-font-size: 15px !default;
+
+$card-border-radius: 0 !default;
+
 $popup-button-border-radius: 0 !default;
 $popup-background-color: #fff !default;
-$button-bar-button-font-size: 15px !default;
+
 $bar-light-border: white !default;
-$bar-footer-height: 70px !default;
+$bar-footer-height: 60px !default;
 $bar-subfooter-height: 65px !default;
 $bar-subheader-height: 75px !default;
 //FIXME: cant select text in side menu

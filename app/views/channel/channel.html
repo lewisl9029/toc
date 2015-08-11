@@ -1,12 +1,18 @@
 <ion-view view-title="{{channelView.title}}">
-  <div class="bar bar-subheader">
-    <div class="item item-avatar" ng-click="channelView.viewLatest()">
-      <img ng-src="{{channelView.getAvatar(channelView.contact.userInfo.email)}}">
+  <div class="bar bar-subheader toc-channel-subheader">
+    <div class="toc-channel-card item item-avatar"
+      ng-click="channelView.viewLatest()">
+      <img class="toc-channel-card-avatar"
+        ng-src="{{channelView.getAvatar(channelView.contact.userInfo.email)}}">
       </img>
-      <!-- TODO: add color code for status Ids -->
+      <div class="toc-channel-card-status-indicator"
+        ng-class="'toc-contact-status-' + channelView.contact.statusId">
+      </div>
       <!-- {{channelView.contact.statusId === 1 ? 'Online' : 'Offline'}} -->
       <h2>{{channelView.contact.userInfo.displayName}}</h2>
-      <p>
+      <p class="toc-channel-card-quote" ng-class="{
+          'toc-channel-card-quote-unread': channelView.channel.unreadMessageId
+        }">
         {{channelView.getQuote().messageInfo.content}}
       </p>
     </div>

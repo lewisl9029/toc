@@ -22,11 +22,16 @@ export default /*@ngInject*/ function ChannelController(
   this.contact = contactCursor.get(
     channelCursor.get(['channelInfo', 'contactIds'])[0]
   );
+
   let updateTitle = () => {
     this.title = this.contact.userInfo.displayName;
   };
-
   state.addListener(contactCursor, updateTitle, $scope);
+
+  let updateChanel = () => {
+    this.channel = channelCursor.get();
+  };
+  state.addListener(channelCursor, updateChanel, $scope);
 
   let updateContact = () => {
     this.contact = contactCursor.get(
@@ -44,20 +49,16 @@ export default /*@ngInject*/ function ChannelController(
     $ionicScrollDelegate.scrollBottom(true);
   };
 
-  this.getUnreadMessage = () => {
-    let unreadMessageId = channelCursor.get('unreadMessageId');
-
-    return unreadMessageId ? messagesCursor.get(unreadMessageId) : null;
-  };
-
-  this.getLatestMessage = () => {
-    let latestMessageId = channelCursor.get('latestMessageId');
-
-    return latestMessageId ? messagesCursor.get(latestMessageId) : null;
-  };
-
   this.getQuote = () => {
-    return this.getUnreadMessage() || this.getLatestMessage();
+    if (this.channel.unreadMessageId) {
+      return messagesCursor.get(this.channel.unreadMessageId);
+    }
+
+    if (this.channel.latestMessageId) {
+      return messagesCursor.get(this.channel.latestMessageId);
+    }
+
+    return '...';
   };
 
   this.message = '';
