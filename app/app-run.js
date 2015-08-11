@@ -3,7 +3,8 @@ export default /*@ngInject*/ function runApp(
   navigation,
   session,
   state,
-  storage
+  storage,
+  time
 ) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default
@@ -18,7 +19,8 @@ export default /*@ngInject*/ function runApp(
 
     navigation.setupRedirect();
 
-    storage.prepare()
+    time.initialize()
+      .then(() => storage.prepare())
       .then(() => state.initialize())
       .then(() => session.restore());
   });

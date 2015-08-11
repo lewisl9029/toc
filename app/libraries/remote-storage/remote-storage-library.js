@@ -3593,12 +3593,18 @@ module.exports = ret;
      * This method must be called *after* all required access has been claimed.
      *
      */
-    connect: function (userAddress) {
+    connect: function (userAddress, cordovaRedirectUri) {
       this.setBackend('remotestorage');
       if (userAddress.indexOf('@') < 0) {
         this._emit('error', new RemoteStorage.DiscoveryError("User address doesn't contain an @."));
         return;
       }
+
+      if (global.cordova && !cordovaRedirectUri) {
+        this._emit('error', new RemoteStorage.DiscoveryError("Please supply a custom HTTPS redirect URI for your Cordova app"));
+        return;
+      }
+
       this.remote.configure({
         userAddress: userAddress
       });
@@ -3617,7 +3623,7 @@ module.exports = ret;
         this.remote.configure(info);
         if (! this.remote.connected) {
           if (info.authURL) {
-            this.authorize(info.authURL);
+            this.authorize(info.authURL, cordovaRedirectUri);
           } else {
             // In lieu of an excplicit authURL, assume that the browser
             // and server handle any authorization needs; for instance,
@@ -5660,19 +5666,15 @@ if (typeof XMLHttpRequest === 'undefined') {
 
   RemoteStorage.Authorize.IMPLIED_FAKE_TOKEN = false;
 
-  RemoteStorage.prototype.authorize = function (authURL) {
+  RemoteStorage.prototype.authorize = function (authURL, cordovaRedirectUri) {
     this.access.setStorageType(this.remote.storageType);
     var scope = this.access.scopeParameter;
 
     var redirectUri = global.cordova ?
-      'http://localhost/callback' :
+      cordovaRedirectUri :
       String(RemoteStorage.Authorize.getLocation());
 
-    var clientId = global.cordova ?
-      // not guaranteed to be unique on cordova
-      // replace with a custom per-app clientId
-      String(RemoteStorage.Authorize.getLocation()) :
-      redirectUri.match(/^(https?:\/\/[^\/]+)/)[0];
+    var clientId = redirectUri.match(/^(https?:\/\/[^\/]+)/)[0];
 
     RemoteStorage.Authorize(authURL, scope, redirectUri, clientId);
   };

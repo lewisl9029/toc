@@ -3,13 +3,18 @@ export default /*@ngInject*/ function ChannelController(
   $q,
   $scope,
   $stateParams,
+  $ionicScrollDelegate,
+  identity,
   network,
   notification,
   state
 ) {
+  this.getAvatar = identity.getAvatar;
   this.channelId = $stateParams.channelId;
 
   let channelCursor = state.cloud.channels
+    .select([this.channelId]);
+  let messagesCursor = state.cloud.messages
     .select([this.channelId]);
 
   let contactCursor = state.cloud.contacts;
@@ -17,11 +22,16 @@ export default /*@ngInject*/ function ChannelController(
   this.contact = contactCursor.get(
     channelCursor.get(['channelInfo', 'contactIds'])[0]
   );
+
   let updateTitle = () => {
     this.title = this.contact.userInfo.displayName;
   };
-
   state.addListener(contactCursor, updateTitle, $scope);
+
+  let updateChanel = () => {
+    this.channel = channelCursor.get();
+  };
+  state.addListener(channelCursor, updateChanel, $scope);
 
   let updateContact = () => {
     this.contact = contactCursor.get(
@@ -34,6 +44,22 @@ export default /*@ngInject*/ function ChannelController(
   state.addListener(channelCursor, updateContact, $scope, {
     skipInitialize: true
   });
+
+  this.viewLatest = () => {
+    $ionicScrollDelegate.scrollBottom(true);
+  };
+
+  this.getQuote = () => {
+    if (this.channel.unreadMessageId) {
+      return messagesCursor.get(this.channel.unreadMessageId);
+    }
+
+    if (this.channel.latestMessageId) {
+      return messagesCursor.get(this.channel.latestMessageId);
+    }
+
+    return '...';
+  };
 
   this.message = '';
   //TODO: add to offline message queue instead of blocking further input

@@ -1,44 +1,64 @@
 <ion-view view-title="{{channelView.title}}">
-  <div class="bar bar-subheader item-input-inset">
-    <div class="row">
-      <div class="col-10" ng-class="{
-        'dark-bg': channelView.contact.statusId === 0,
-        'balanced-bg': channelView.contact.statusId === 1,
-        'stable-bg': channelView.contact.statusId === undefined
-      }"></div>
-      <label class="col-60 item-input-wrapper">
-        <i class="icon ion-email placeholder-icon"></i>
-        <input type="text" placeholder="Email"
-          value="{{channelView.contact.userInfo.email}}" readonly>
-      </label>
-      <label class="col-30 item-input-wrapper">
-        <i class="icon ion-android-person placeholder-icon"></i>
-        <input type="text" placeholder="ID"
-          value="{{channelView.contact.userInfo.id}}" readonly>
-      </label>
+  <div class="bar bar-subheader toc-channel-subheader">
+    <div class="toc-channel-card item item-avatar"
+      ng-click="channelView.viewLatest()">
+      <img class="toc-channel-card-avatar"
+        ng-src="{{channelView.getAvatar(channelView.contact.userInfo.email)}}">
+      </img>
+      <div class="toc-channel-card-status-indicator"
+        ng-class="'toc-contact-status-' + channelView.contact.statusId">
+      </div>
+      <!-- {{channelView.contact.statusId === 1 ? 'Online' : 'Offline'}} -->
+      <h2>{{channelView.contact.userInfo.displayName}}</h2>
+      <p class="toc-channel-card-quote" ng-class="{
+          'toc-channel-card-quote-unread': channelView.channel.unreadMessageId
+        }">
+        {{channelView.getQuote().messageInfo.content}}
+      </p>
     </div>
+    <!-- <div class="col-10" ng-class="{
+      'dark-bg': channelView.contact.statusId === 0,
+      'balanced-bg': channelView.contact.statusId === 1,
+      'stable-bg': channelView.contact.statusId === undefined
+    }"></div>
+    <label class="col-60 item-input-wrapper">
+      <i class="icon ion-email placeholder-icon"></i>
+      <input type="text" placeholder="Email"
+        value="{{channelView.contact.userInfo.email}}" readonly>
+    </label>
+    <label class="col-30 item-input-wrapper">
+      <i class="icon ion-android-person placeholder-icon"></i>
+      <input type="text" placeholder="ID"
+        value="{{channelView.contact.userInfo.id}}" readonly>
+    </label> -->
   </div>
 
-  <ion-content class="has-subheader has-footer">
+  <ion-content class="has-subheader">
     <toc-message-list channel-id="{{channelView.channelId}}">
     </toc-message-list>
   </ion-content>
   <!-- TODO: refactor into separate component -->
-  <form name="toc-message-input-form">
-    <div class="bar bar-footer bar-calm item-input-inset">
-      <label class="item-input-wrapper">
-        <input type="text" placeholder="Message"
-          ng-model="channelView.message" toc-auto-focus>
-      </label>
-      <button type="submit" class="button button-clear"
+  <ion-footer-bar class="toc-message-input-footer">
+    <form class="toc-message-input-form" id="toc-message-input-form">
+    </form>
+    <div class="col-80">
+      <input form="toc-message-input-form"
+        class="toc-message-input-area"
+        type="text" placeholder="Message"
+        ng-model="channelView.message" toc-auto-focus>
+      </input>
+    </div>
+    <div class="col-20">
+      <button form="toc-message-input-form" type="submit"
+        class="button button-block button-outline button-balanced"
         ng-click="channelView.send()" toc-spinner-button
         loading-promise="channelView.sending">
-        <i class="icon ion-paper-airplane"></i>
+        Send
         <!-- FIXME: memory leak in ion-spinner.
           see https://github.com/driftyco/ionic/issues/3583 -->
         <!-- <ion-spinner icon="ripple" class="spinner-light toc-send-spinner">
         </ion-spinner> -->
       </button>
     </div>
-  </form>
+  </ion-footer-bar>
 </ion-view>

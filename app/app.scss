@@ -13,11 +13,18 @@ $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
 
-$card-border-radius: 0 !default;
 $button-border-radius: 0 !default;
+$button-bar-button-font-size: 15px !default;
+
+$card-border-radius: 0 !default;
+
 $popup-button-border-radius: 0 !default;
 $popup-background-color: #fff !default;
 
+$bar-light-border: white !default;
+$bar-footer-height: 60px !default;
+$bar-subfooter-height: 65px !default;
+$bar-subheader-height: 75px !default;
 //FIXME: cant select text in side menu
 // .disable-user-behavior {
 //   user-select: text;
@@ -37,6 +44,26 @@ $popup-background-color: #fff !default;
   border-radius: 0;
 }
 
+.bar-footer .button {
+  margin-top: 0;
+  height: 42px;
+  line-height: 40px;
+}
+
+.bar-subfooter .button {
+  margin-top: 0;
+  height: 42px;
+  line-height: 40px;
+}
+
+.bar-subheader {
+  padding: 0;
+  // border-bottom: 0;
+  .item {
+    border-color: white;
+  }
+}
+
 .button {
   opacity: 1;
   transition: opacity 0.75s ease-in;
@@ -46,29 +73,25 @@ $popup-background-color: #fff !default;
   transition: opacity 0.75s ease-in;
 }
 
-.scroll {
-  height: 100%;
-}
-
 .toc-square-avatar .item-content > img:first-child {
   border-radius: 0;
 }
-
-.toc-flex-container {
-  @include display-flex;
-  @include flex-direction(column);
-  height: 100%;
-}
-
-.toc-flex-content {
-  @include flex(1);
-  z-index: 1;
-}
-
-.toc-flex-footer {
-  background-color: $light;
-  z-index: 2;
-}
+//
+// .toc-flex-container {
+//   @include display-flex;
+//   @include flex-direction(column);
+//   height: 100%;
+// }
+//
+// .toc-flex-content {
+//   @include flex(1);
+//   z-index: 1;
+// }
+//
+// .toc-flex-footer {
+//   background-color: $light;
+//   z-index: 2;
+// }
 
 .toc-hidden {
   display: none;

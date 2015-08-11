@@ -11,6 +11,7 @@ var jshint = require('gulp-jshint');
 var htmlhint = require('gulp-htmlhint');
 var scsslint = require('gulp-scsslint');
 var jsbeautifier = require('gulp-jsbeautifier');
+var minifyCss = require('gulp-minify-css');
 var karma = require('karma')
   .server;
 var argv = require('yargs')
@@ -98,11 +99,12 @@ gulp.task('build', function build(done) {
 });
 
 gulp.task('package', ['build', 'clean-package'], function package() {
-  gulp.src(basePaths.dev + 'index-cordova.html')
-    .pipe(rename('index.html'))
-    .pipe(gulp.dest(basePaths.prod));
-
   return gulp.src('')
+    .pipe(shell('cp ' + basePaths.dev + 'index-cordova.html ' + basePaths.prod))
+    .pipe(shell('cd ' + basePaths.prod + ' && ' +
+      'mv index.html index-web.html && ' +
+      'mv index-cordova.html index.html'
+    ))
     .pipe(shell('ionic build android'))
     //FIXME: release build throws error on install
     // .pipe(shell('ionic build android' + (argv.prod ? ' --release' : '')))
@@ -111,6 +113,10 @@ gulp.task('package', ['build', 'clean-package'], function package() {
       'cp ' + basePaths.platforms +
         'android/build/outputs/apk/* ' +
         basePaths.mobile
+    ))
+    .pipe(shell('cd ' + basePaths.prod + ' && ' +
+      'rm index.html && ' +
+      'mv index-web.html index.html'
     ));
 });
 
@@ -122,7 +128,10 @@ gulp.task('test', ['test-unit', 'test-e2e']);
 
 gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
-
+gulp.task('run', function run() {
+  return gulp.src('')
+    .pipe(shell('ionic run android --livereload --livereload-port 8101'));
+});
 
 gulp.task('build-js', ['build-jspm'], function buildJs() {
   return gulp.src([
@@ -165,25 +174,11 @@ gulp.task('build-asset', function buildAsset() {
 
 gulp.task('build-sass', function buildSass() {
   //TODO: explore uncss viability
-  gulp.src(basePaths.dev + 'initialize.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass())
-    .on('error', handleError)
-    // .pipe(postcss([
-    //   autoprefixer({
-    //     browsers: ['last 2 version']
-    //   })
-    //   // FIXME: blocked by https://github.com/cssdream/cssgrace/issues/7
-    //   //cssgrace
-    // ]))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(basePaths.dev))
-    .on('error', handleError)
-    .pipe(gulp.dest(basePaths.prod))
-    .on('error', handleError);
-
-  return gulp.src(basePaths.dev + 'app.scss')
-    .pipe(sourcemaps.init())
+  return gulp.src([
+      basePaths.dev + 'app.scss',
+      basePaths.dev + 'initialize.scss'
+    ])
+    .pipe(gulpif(!argv.prod, sourcemaps.init()))
     .pipe(sass())
     .on('error', handleError)
     // .pipe(postcss([
@@ -192,7 +187,8 @@ gulp.task('build-sass', function buildSass() {
     //   }),
     //   cssgrace
     // ]))
-    .pipe(sourcemaps.write())
+    .pipe(gulpif(!argv.prod, sourcemaps.write()))
+    .pipe(gulpif(argv.prod, minifyCss()))
     .pipe(gulp.dest(basePaths.dev))
     .on('error', handleError)
     .pipe(gulp.dest(basePaths.prod))
