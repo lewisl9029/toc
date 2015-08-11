@@ -94,10 +94,27 @@ export default /*@ngInject*/ function tocMessageList(
         .select([this.channelId]);
 
       let updateMessages = () => {
-        this.messages = R.values(messagesCursor.get());
+        this.messages = R.pipe(
+          R.values,
+          R.sort((message1, message2) => {
+            let logicalClockDiff =
+              message1.messageInfo.logicalClock -
+              message2.messageInfo.logicalClock;
+
+            if (logicalClockDiff === 0) {
+              return message1.messageInfo.id > message2.messageInfo.id ? 1 : -1;
+            }
+
+            return logicalClockDiff;
+          })
+        )(messagesCursor.get());;
       };
 
       state.addListener(messagesCursor, updateMessages, $scope);
+
+      this.getMessageOrder = (message) => {
+        return
+      };
 
       this.isUnread = (message) => {
         let unreadMessageId = state.cloud.channels

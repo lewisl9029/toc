@@ -3,8 +3,7 @@
   <!-- TODO: use one time bindings for constant values -->
   <!-- TODO: sort list and pass indexes into functions -->
   <ion-item class="toc-message item-avatar"
-    ng-repeat="message in messageList.messages
-      track by message.messageInfo.id"
+    ng-repeat="message in messageList.messages track by message.messageInfo.id"
     ng-class="messageList.isSenderSeparator(message) ?
       'toc-message-avatar' :
       'toc-message-simple'
