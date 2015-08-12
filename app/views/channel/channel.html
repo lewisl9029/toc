@@ -13,7 +13,7 @@
       <p class="toc-channel-card-quote" ng-class="{
           'toc-channel-card-quote-unread': channelView.channel.unreadMessageId
         }">
-        {{channelView.getQuote().messageInfo.content}}
+        {{channelView.getQuote()}}
       </p>
     </div>
     <!-- <div class="col-10" ng-class="{
@@ -39,7 +39,8 @@
   </ion-content>
   <!-- TODO: refactor into separate component -->
   <ion-footer-bar class="toc-message-input-footer">
-    <form class="toc-message-input-form" id="toc-message-input-form">
+    <form class="toc-message-input-form" id="toc-message-input-form"
+      ng-submit="channelView.send()">
     </form>
     <div class="col-80">
       <input form="toc-message-input-form"
@@ -51,7 +52,7 @@
     <div class="col-20">
       <button form="toc-message-input-form" type="submit"
         class="button button-block button-outline button-balanced"
-        ng-click="channelView.send()" toc-spinner-button
+        toc-spinner-button
         loading-promise="channelView.sending">
         Send
         <!-- FIXME: memory leak in ion-spinner.

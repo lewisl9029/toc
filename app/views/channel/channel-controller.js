@@ -51,17 +51,19 @@ export default /*@ngInject*/ function ChannelController(
 
   this.getQuote = () => {
     if (this.channel.unreadMessageId) {
-      return messagesCursor.get(this.channel.unreadMessageId);
+      return messagesCursor.get(this.channel.unreadMessageId)
+        .messageInfo.content;
     }
 
     if (this.channel.latestMessageId) {
-      return messagesCursor.get(this.channel.latestMessageId);
+      return messagesCursor.get(this.channel.latestMessageId)
+        .messageInfo.content;
     }
 
     return '...';
   };
 
-  this.message = '';
+  // this.message = '';
   //TODO: add to offline message queue instead of blocking further input
   this.send = () => {
     const MAX_ATTEMPTS = 3;
