@@ -1,40 +1,11 @@
-<ion-view view-title="{{channelView.title}}">
+<ion-view view-title="{{channelView.contact.userInfo.displayName}}">
   <div class="bar bar-subheader toc-channel-subheader">
-    <div class="toc-channel-card item item-avatar"
-      ng-click="channelView.viewLatest()">
-      <img class="toc-channel-card-avatar"
-        ng-src="{{channelView.getAvatar(channelView.contact.userInfo.email)}}">
-      </img>
-      <div class="toc-channel-card-status-indicator"
-        ng-class="'toc-contact-status-' + channelView.contact.statusId">
-      </div>
-      <!-- {{channelView.contact.statusId === 1 ? 'Online' : 'Offline'}} -->
-      <h2>{{channelView.contact.userInfo.displayName}}</h2>
-      <p class="toc-channel-card-quote" ng-class="{
-          'toc-channel-card-quote-unread': channelView.channel.unreadMessageId
-        }">
-        {{channelView.getQuote()}}
-      </p>
-    </div>
-    <!-- <div class="col-10" ng-class="{
-      'dark-bg': channelView.contact.statusId === 0,
-      'balanced-bg': channelView.contact.statusId === 1,
-      'stable-bg': channelView.contact.statusId === undefined
-    }"></div>
-    <label class="col-60 item-input-wrapper">
-      <i class="icon ion-email placeholder-icon"></i>
-      <input type="text" placeholder="Email"
-        value="{{channelView.contact.userInfo.email}}" readonly>
-    </label>
-    <label class="col-30 item-input-wrapper">
-      <i class="icon ion-android-person placeholder-icon"></i>
-      <input type="text" placeholder="ID"
-        value="{{channelView.contact.userInfo.id}}" readonly>
-    </label> -->
+    <toc-channel-card channel-id="{{::channelView.channelId}}">
+    </toc-channel-card>
   </div>
 
   <ion-content class="has-subheader">
-    <toc-message-list channel-id="{{channelView.channelId}}">
+    <toc-message-list channel-id="{{::channelView.channelId}}">
     </toc-message-list>
   </ion-content>
   <!-- TODO: refactor into separate component -->
