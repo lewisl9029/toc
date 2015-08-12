@@ -1,6 +1,7 @@
 <ion-view view-title="{{channelView.contact.userInfo.displayName}}">
   <div class="bar bar-subheader toc-channel-subheader">
-    <toc-channel-card channel-id="{{::channelView.channelId}}">
+    <toc-channel-card channel-id="{{::channelView.channelId}}"
+      ng-click="channelView.viewLatest()">
     </toc-channel-card>
   </div>
 

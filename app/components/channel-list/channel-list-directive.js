@@ -69,6 +69,10 @@ export default /*@ngInject*/ function tocChannelList() {
       };
 
       this.goToChannel = function goToChannel(channelId) {
+        if (channelId === this.channelId) {
+          return $q.when();
+        }
+
         $ionicHistory.nextViewOptions({
           disableBack: true,
           disableAnimate: false
@@ -86,6 +90,10 @@ export default /*@ngInject*/ function tocChannelList() {
       };
 
       this.goToHome = function goToHome() {
+        if ('home' === this.channelId) {
+          return $q.when();
+        }
+
         $ionicHistory.nextViewOptions({
           disableBack: true,
           disableAnimate: false
