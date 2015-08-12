@@ -9,56 +9,27 @@ export default /*@ngInject*/ function ChannelController(
   notification,
   state
 ) {
-  this.getAvatar = identity.getAvatar;
   this.channelId = $stateParams.channelId;
 
-  let channelCursor = state.cloud.channels
-    .select([this.channelId]);
-  let messagesCursor = state.cloud.messages
-    .select([this.channelId]);
-
+  let channelCursor = state.cloud.channels.select([this.channelId]);
   let contactCursor = state.cloud.contacts;
-
-  this.contact = contactCursor.get(
-    channelCursor.get(['channelInfo', 'contactIds'])[0]
-  );
-
-  let updateTitle = () => {
-    this.title = this.contact.userInfo.displayName;
-  };
-  state.addListener(contactCursor, updateTitle, $scope);
-
-  let updateChanel = () => {
-    this.channel = channelCursor.get();
-  };
-  state.addListener(channelCursor, updateChanel, $scope);
 
   let updateContact = () => {
     this.contact = contactCursor.get(
-      //TODO: refactor data dependency between contacts and channels
-      channelCursor.get(['channelInfo', 'contactIds'])[0]
+      this.channel.channelInfo.contactIds[0]
     );
   };
 
+  let updateChannel = () => {
+    this.channel = channelCursor.get();
+    updateContact();
+  };
+
+  state.addListener(channelCursor, updateChannel, $scope);
   state.addListener(contactCursor, updateContact, $scope);
-  state.addListener(channelCursor, updateContact, $scope, {
-    skipInitialize: true
-  });
 
   this.viewLatest = () => {
     $ionicScrollDelegate.scrollBottom(true);
-  };
-
-  this.getQuote = () => {
-    if (this.channel.unreadMessageId) {
-      return messagesCursor.get(this.channel.unreadMessageId);
-    }
-
-    if (this.channel.latestMessageId) {
-      return messagesCursor.get(this.channel.latestMessageId);
-    }
-
-    return '...';
   };
 
   this.message = '';

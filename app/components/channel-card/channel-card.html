@@ -1,0 +1,14 @@
+<div class="toc-channel-card item item-avatar">
+  <img class="toc-channel-card-avatar"
+    ng-src="{{channelCard.getAvatar(channelCard.contact.userInfo.email)}}">
+  </img>
+  <div class="toc-channel-card-status-indicator"
+    ng-class="'toc-contact-status-' + channelCard.contact.statusId">
+  </div>
+  <h2>{{channelCard.contact.userInfo.displayName}}</h2>
+  <p class="toc-channel-card-quote" ng-class="{
+      'toc-channel-card-quote-unread': channelCard.channel.unreadMessageId
+    }">
+    {{channelCard.quote}}
+  </p>
+</div>
