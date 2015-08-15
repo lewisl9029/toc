@@ -13,6 +13,7 @@ export default /*@ngInject*/ function state(
   let stateService = {};
 
   //DEBUG
+  // Can call window.tocState.destroy() to reset all app data
   $window.tocState = stateService;
   $window.baobab = Baobab;
 

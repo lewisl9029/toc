@@ -8,3 +8,5 @@
 /plugins
 /node_modules
 /app/dependencies
+/app/cordova.js
+/app/cordova_plugins.js

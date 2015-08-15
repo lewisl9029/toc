@@ -100,24 +100,15 @@ gulp.task('build', function build(done) {
 
 gulp.task('package', ['build', 'clean-package'], function package() {
   return gulp.src('')
-    .pipe(shell('cp ' + basePaths.dev + 'index-cordova.html ' + basePaths.prod))
-    .pipe(shell('cd ' + basePaths.prod + ' && ' +
-      'mv index.html index-web.html && ' +
-      'mv index-cordova.html index.html'
-    ))
-    .pipe(shell('ionic build android'))
-    //FIXME: release build throws error on install
-    // .pipe(shell('ionic build android' + (argv.prod ? ' --release' : '')))
-    .pipe(shell('mkdir -p ' + basePaths.mobile))
     .pipe(shell(
+      'ionic build android && ' +
+      'mkdir -p ' + basePaths.mobile + ' && ' +
       'cp ' + basePaths.platforms +
         'android/build/outputs/apk/* ' +
         basePaths.mobile
-    ))
-    .pipe(shell('cd ' + basePaths.prod + ' && ' +
-      'rm index.html && ' +
-      'mv index-web.html index.html'
     ));
+    //FIXME: release build throws error on install
+    // .pipe(shell('ionic build android' + (argv.prod ? ' --release' : '')))
 });
 
 gulp.task('style', ['style-js', 'style-html']);
@@ -130,7 +121,10 @@ gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
 gulp.task('run', function run() {
   return gulp.src('')
-    .pipe(shell('ionic run android --livereload --livereload-port 8101'));
+    .pipe(shell(
+      'ionic run --device --livereload --livereload-port 8101 ' +
+      '--external-address $TOC_HOST_IP android'
+    ));
 });
 
 gulp.task('build-js', ['build-jspm'], function buildJs() {
