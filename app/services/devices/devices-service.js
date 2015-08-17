@@ -6,7 +6,6 @@ export default /*@ngInject*/ function devices(
   $q,
   $timeout,
   cryptography,
-  notification,
   R,
   state
 ) {
@@ -87,8 +86,7 @@ export default /*@ngInject*/ function devices(
 
     return deviceReady
       .then(updateKillFlags)
-      .then(() => listenForKillFlags(signOut))
-      .catch((error) => notification.error(error, 'Devices Init Error'));
+      .then(() => listenForKillFlags(signOut));
   };
 
   return {

@@ -14,7 +14,6 @@ export default /*@ngInject*/ function tocChannelList() {
       contacts,
       identity,
       navigation,
-      notification,
       state
     ) {
       this.getAvatar = identity.getAvatar;
@@ -49,10 +48,7 @@ export default /*@ngInject*/ function tocChannelList() {
           .then(() => {
             this.inviteId = '';
             return $q.when();
-          })
-          .catch((error) =>
-            notification.error(error, 'Contact Invite Send Error')
-          );
+          });
 
         return this.inviting;
       };
@@ -61,10 +57,7 @@ export default /*@ngInject*/ function tocChannelList() {
 
       this.acceptInvite = (channelInfo) => {
         this.invitesAccepting[channelInfo.id] =
-          contacts.invite(channelInfo.contactIds[0])
-            .catch((error) =>
-              notification.error(error, 'Contact Invite Accept Error')
-            );
+          contacts.invite(channelInfo.contactIds[0]);
         return this.invitesAccepting[channelInfo.id];
       };
 

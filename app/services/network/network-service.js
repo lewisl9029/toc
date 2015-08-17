@@ -4,7 +4,7 @@ export default /*@ngInject*/ function network(
   $q,
   $window,
   channels,
-  notification,
+  notifications,
   R,
   state,
   telehash
@@ -141,9 +141,9 @@ export default /*@ngInject*/ function network(
             $q.when();
 
         return updatingUnreadPointer
-          .then(() => notification.success(
-            message.content,
-            contactName + ' just said:'
+          .then(() => notifications.notify(
+            'message',
+            messageId
           ));
       });
   };
@@ -193,8 +193,7 @@ export default /*@ngInject*/ function network(
         }
       };
 
-      return handledPacket()
-        .catch((error) => notification.error(error, 'Network Listen Error'));
+      return handledPacket();
     };
 
     try {

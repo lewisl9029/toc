@@ -10,7 +10,6 @@ export default /*@ngInject*/ function tocCloudConnectForm() {
       $ionicHistory,
       $ionicPopup,
       $scope,
-      notification,
       storage
     ) {
       this.goBack = function goBack() {
@@ -26,7 +25,7 @@ export default /*@ngInject*/ function tocCloudConnectForm() {
       $scope.submitRemoteStorageEmail = (email) => {
         if (!email) {
           //TODO: actually do validation here
-          return notification.error('Please enter a valid email.', 'Validation Error');
+          // return notification.error('Please enter a valid email.', 'Validation Error');
         }
 
         storage.connect(email);

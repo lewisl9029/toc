@@ -6,7 +6,6 @@ export default /*@ngInject*/ function ChannelController(
   $ionicScrollDelegate,
   identity,
   network,
-  notification,
   state
 ) {
   this.channelId = $stateParams.channelId;
@@ -73,8 +72,7 @@ export default /*@ngInject*/ function ChannelController(
       .then(() => {
         this.message = '';
         return $q.when();
-      })
-      .catch((error) => notification.error(error, 'Message Delivery Error'));
+      });
 
     return this.sending;
   };

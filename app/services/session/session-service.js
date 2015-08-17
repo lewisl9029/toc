@@ -9,7 +9,6 @@ export default /*@ngInject*/ function session(
   identity,
   navigation,
   network,
-  notification,
   R,
   state,
   status
@@ -78,11 +77,7 @@ export default /*@ngInject*/ function session(
       .then(() => channels.initialize(network.listen))
       .then(() => status.initialize())
       .then(() => updateLatest())
-      .then(() => navigation.initialize())
-      .catch((error) =>
-        notification.error(error, 'Sign Up Error')
-          .then(() => identity.destroy())
-      );
+      .then(() => navigation.initialize());
   };
 
   let signIn = function signIn(userCredentials, options) {
@@ -99,10 +94,6 @@ export default /*@ngInject*/ function session(
       .then(() => initializeNetwork())
       .then(() => updateLatest())
       .then(() => navigation.initialize())
-      .catch((error) =>
-        notification.error(error, 'Sign In Error')
-          .then(() => identity.destroy())
-      );
   };
 
   let restore = function restore() {
@@ -149,10 +140,6 @@ export default /*@ngInject*/ function session(
       .then(() => initializeNetwork())
       .then(() => updateLatest())
       .then(() => navigation.initialize())
-      .catch((error) =>
-        notification.error(error, 'Restore Error')
-          .then(() => identity.destroy())
-      );
   };
 
   let signOut = function signOut() {
@@ -160,8 +147,7 @@ export default /*@ngInject*/ function session(
         state.local.session,
         ['savedCredentials']
       )
-      .then(() => $q.when($window.location.reload()))
-      .catch((error) => notification.error(error, 'SignOut Error'));
+      .then(() => $q.when($window.location.reload()));
   };
 
   return {
