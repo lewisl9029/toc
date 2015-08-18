@@ -1,0 +1,9 @@
+.toc-side-menu-subheader {
+  z-index: 11; //needed because menu content is set to 10
+}
+
+.toc-active-view {
+  .toc-channel-card, .toc-user-card {
+    background-color: darken($light, 3);
+  }
+}

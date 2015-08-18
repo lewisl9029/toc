@@ -16,19 +16,11 @@ export default /*@ngInject*/ function tocChannelList() {
       navigation,
       state
     ) {
-      this.getAvatar = identity.getAvatar;
-
-      let channelIdCursor = state.cloud.navigation.select(['activeChannelId']);
-      let updateChannelId = () => {
-        this.channelId = channelIdCursor.get();
+      let viewIdCursor = state.cloud.navigation.select(['activeViewId']);
+      let updateViewId = () => {
+        this.viewId = viewIdCursor.get();
       };
-      state.addListener(channelIdCursor, updateChannelId, $scope);
-
-      let identityCursor = state.cloud.identity;
-      let updateUserInfo = () => {
-        this.userInfo = identityCursor.get('userInfo');
-      };
-      state.addListener(identityCursor, updateUserInfo, $scope);
+      state.addListener(viewIdCursor, updateViewId, $scope);
 
       let channelsCursor = state.cloud.channels;
       let updateChannels = () => {
@@ -62,42 +54,7 @@ export default /*@ngInject*/ function tocChannelList() {
       };
 
       this.goToChannel = function goToChannel(channelId) {
-        if (channelId === this.channelId) {
-          return $q.when();
-        }
-
-        $ionicHistory.nextViewOptions({
-          disableBack: true,
-          disableAnimate: false
-        });
-
-        return navigation.go(
-            navigation.app.private.channel,
-            {channelId: channelId}
-          )
-          .then(() => state.save(
-            state.cloud.navigation,
-            ['activeChannelId'],
-            channelId
-          ));
-      };
-
-      this.goToHome = function goToHome() {
-        if ('home' === this.channelId) {
-          return $q.when();
-        }
-
-        $ionicHistory.nextViewOptions({
-          disableBack: true,
-          disableAnimate: false
-        });
-
-        return navigation.go(navigation.app.private.home)
-          .then(() => state.save(
-            state.cloud.navigation,
-            ['activeChannelId'],
-            'home'
-          ));
+        return navigation.goFromMenu(channelId);
       };
     }
   };

@@ -44,6 +44,10 @@ $bar-subheader-height: 75px !default;
   border-radius: 0;
 }
 
+.menu-content {
+  box-shadow: -1px 0px 5px rgba(0, 0, 0, 0.2), 1px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
 .bar-footer .button {
   margin-top: 0;
   height: 42px;
@@ -65,9 +69,10 @@ $bar-subheader-height: 75px !default;
 
 .bar-subheader {
   padding: 0;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
   // border-bottom: 0;
   .item {
-    border-color: white;
+    border-color: transparent;
   }
 }
 

@@ -28,8 +28,32 @@ export default /*@ngInject*/ function navigation(
     return $state.go(stateName, parameters);
   };
 
-  let at = function at(stateName) {
-    return $state.is(stateName);
+  let goFromMenu = function goFromMenu(viewId) {
+    let destination = viewId === 'home' ?
+      app.private.home : app.private.channel;
+
+    let destinationParams = viewId === 'home' ?
+      undefined : { channelId: viewId };
+
+    if (at(destination, destinationParams)) {
+      return $q.when();
+    }
+
+    $ionicHistory.nextViewOptions({
+      disableBack: true,
+      disableAnimate: false
+    });
+
+    return go(destination, destinationParams)
+      .then(() => state.save(
+        state.cloud.navigation,
+        ['activeViewId'],
+        viewId
+      ));
+  };
+
+  let at = function at(stateName, parameters) {
+    return $state.is(stateName, parameters);
   };
 
   let setupRedirect = function setupRedirect() {
@@ -78,23 +102,23 @@ export default /*@ngInject*/ function navigation(
 
   let initialize =
     function initializeNavigation() {
-      let activeChannelId = state.cloud.navigation.get('activeChannelId');
+      let activeViewId = state.cloud.navigation.get('activeViewId');
 
-      if (activeChannelId === undefined) {
+      if (activeViewId === undefined) {
         return resetHistory()
           .then(() => go(DEFAULT_PRIVATE_STATE))
           .then(() => state.save(
             state.cloud.navigation,
-            ['activeChannelId'],
+            ['activeViewId'],
             'home'
           ));
       }
 
-      if (activeChannelId.startsWith('toc-')) {
+      if (activeViewId.startsWith('toc-')) {
         return resetHistory()
           .then(() => go(
             app.private.channel,
-            {channelId: activeChannelId}
+            {channelId: activeViewId}
           ));
       }
 
@@ -105,6 +129,7 @@ export default /*@ngInject*/ function navigation(
   return {
     app,
     go,
+    goFromMenu,
     at,
     isPrivateState,
     clearCache,

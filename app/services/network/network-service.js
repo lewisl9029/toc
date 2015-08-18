@@ -22,36 +22,33 @@ export default /*@ngInject*/ function network(
   let handleInvite = function handleInvite(invitePayload) {
     let inviteInfo = invitePayload;
 
-    
-    return notifications.notify('invite', inviteInfo.userInfo.id, inviteInfo);
+    let userId =
+      state.cloud.identity.get(['userInfo']).id;
 
-    // let userId =
-    //   state.cloud.identity.get(['userInfo']).id;
-    //
-    // let channel = channels.createContactChannel(userId, contactInfo.id);
-    //
-    // let existingChannel = state.cloud.channels
-    //   .get([channel.id, 'channelInfo']);
-    //
-    // let statusId = 1; //online
-    //
-    // channel.pendingAccept = !existingChannel;
-    //
-    // return state.save(
-    //     state.cloud.channels,
-    //     [channel.id, 'channelInfo'],
-    //     channel
-    //   )
-    //   .then(() => state.save(
-    //     state.cloud.contacts,
-    //     [contactInfo.id, 'userInfo'],
-    //     contactInfo
-    //   ))
-    //   .then(() => state.save(
-    //     state.cloud.contacts,
-    //     [contactInfo.id, 'statusId'],
-    //     statusId
-    //   ));
+    let channel = channels.createContactChannel(userId, contactInfo.id);
+
+    let existingChannel = state.cloud.channels
+      .get([channel.id, 'channelInfo']);
+
+    let statusId = 1; //online
+
+    channel.pendingAccept = !existingChannel;
+
+    return state.save(
+        state.cloud.channels,
+        [channel.id, 'channelInfo'],
+        channel
+      )
+      .then(() => state.save(
+        state.cloud.contacts,
+        [contactInfo.id, 'userInfo'],
+        contactInfo
+      ))
+      .then(() => state.save(
+        state.cloud.contacts,
+        [contactInfo.id, 'statusId'],
+        statusId
+      ));
   };
 
   let handleStatus = function handleStatus(statusPayload, contactId) {
@@ -123,9 +120,9 @@ export default /*@ngInject*/ function network(
         messageId
       ))
       .then(() => {
-        let activeChannelId =
-          state.cloud.navigation.get(['activeChannelId']);
-        if (activeChannelId === channelId &&
+        let activeViewId =
+          state.cloud.navigation.get(['activeViewId']);
+        if (activeViewId === channelId &&
           channelCursor.get(['viewingLatest'])) {
           return $q.when();
         }
@@ -145,7 +142,6 @@ export default /*@ngInject*/ function network(
 
         return updatingUnreadPointer
           .then(() => notifications.notify(
-            'message',
             messageId
           ));
       });

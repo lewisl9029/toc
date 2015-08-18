@@ -123,7 +123,6 @@ export default /*@ngInject*/ function tocMessageList(
         return unreadMessageId === message.messageInfo.id;
       };
 
-      //TODO: memoize part of this and refactor into message service
       this.isSenderSeparator = (message) => {
         let messageIndex = this.messages.indexOf(message);
         let previousMessage = this.messages[messageIndex - 1];

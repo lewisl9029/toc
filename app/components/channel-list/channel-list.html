@@ -1,19 +1,5 @@
 <ion-list>
-  <div class="item item-divider item-calm">
-    You
-  </div>
-  <div
-    ng-click="this.channelId !== 'home' ? channelList.goToHome() : undefined"
-    menu-close>
-    <div class="row balanced-bg"></div>
-    <ion-item class="item item-avatar"
-      ng-class="{'toc-active-channel': channelList.channelId === 'home'}">
-      <img ng-src="{{channelList.getAvatar(channelList.userInfo.email)}}"
-        alt="Avatar for {{channelList.userInfo.email}}" />
-      <h2>{{channelList.userInfo.displayName}}</h2>
-      <p>{{channelList.userInfo.id}}</p>
-    </ion-item>
-  </div>
+
 
   <!-- <div class="item item-divider item-royal">
     Groups
@@ -29,11 +15,11 @@
       </button>
     </div>
   </form> -->
-
+<!--
   <div class="item item-divider item-balanced">
     Contacts
-  </div>
-  <form name="toc-contact-invite-form">
+  </div> -->
+  <!-- <form name="toc-contact-invite-form">
     <div class="item item-input-inset">
       <label class="item-input-wrapper">
         <input type="text" placeholder="Contact ID"
@@ -43,12 +29,12 @@
         ng-click="channelList.invite()" toc-spinner-button
         loading-promise="channelList.inviting">
         <i class="icon ion-plus"></i>
-        <!-- <ion-spinner icon="ripple" class="spinner-balanced"></ion-spinner> -->
       </button>
     </div>
-  </form>
+  </form> -->
   <toc-channel-card
     ng-repeat="(id, channel) in channelList.channels track by id"
+    ng-class="{'toc-active-view': channelList.viewId === id}"
     ng-click="channelList.goToChannel(id)" channel-id="{{::id}}" menu-close>
   </toc-channel-card>
       <!-- <div class="buttons" ng-if="channel.channelInfo.pendingAccept">

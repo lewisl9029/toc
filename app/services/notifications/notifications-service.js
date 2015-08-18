@@ -1,19 +1,22 @@
 export let serviceName = 'notifications';
 export default /*@ngInject*/ function notifications(
-  state
+  state,
+  time
 ) {
-  let notify = function notify(
-    notificationType, notificationId,
-    notificationInfo = { id: notificationId }
-  ) {
+  let notify = function notify(notificationId) {
     return state.save(
       state.cloud.notifications,
-      [notificationType, notificationId, 'notificationInfo'],
-      notificationInfo
+      [notificationId, 'notificationInfo'],
+      { id: notificationId }
     );
   };
 
+  let dismiss = function dismiss(notificationId) {
+
+  };
+
   return {
-    notify
+    notify,
+    dismiss
   };
 }
