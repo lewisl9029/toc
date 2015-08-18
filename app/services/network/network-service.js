@@ -20,35 +20,38 @@ export default /*@ngInject*/ function network(
   };
 
   let handleInvite = function handleInvite(invitePayload) {
-    let contactInfo = invitePayload;
+    let inviteInfo = invitePayload;
 
-    let userId =
-      state.cloud.identity.get(['userInfo']).id;
+    
+    return notifications.notify('invite', inviteInfo.userInfo.id, inviteInfo);
 
-    let channel = channels.createContactChannel(userId, contactInfo.id);
-
-    let existingChannel = state.cloud.channels
-      .get([channel.id, 'channelInfo']);
-
-    let statusId = 1; //online
-
-    channel.pendingAccept = !existingChannel;
-
-    return state.save(
-        state.cloud.channels,
-        [channel.id, 'channelInfo'],
-        channel
-      )
-      .then(() => state.save(
-        state.cloud.contacts,
-        [contactInfo.id, 'userInfo'],
-        contactInfo
-      ))
-      .then(() => state.save(
-        state.cloud.contacts,
-        [contactInfo.id, 'statusId'],
-        statusId
-      ));
+    // let userId =
+    //   state.cloud.identity.get(['userInfo']).id;
+    //
+    // let channel = channels.createContactChannel(userId, contactInfo.id);
+    //
+    // let existingChannel = state.cloud.channels
+    //   .get([channel.id, 'channelInfo']);
+    //
+    // let statusId = 1; //online
+    //
+    // channel.pendingAccept = !existingChannel;
+    //
+    // return state.save(
+    //     state.cloud.channels,
+    //     [channel.id, 'channelInfo'],
+    //     channel
+    //   )
+    //   .then(() => state.save(
+    //     state.cloud.contacts,
+    //     [contactInfo.id, 'userInfo'],
+    //     contactInfo
+    //   ))
+    //   .then(() => state.save(
+    //     state.cloud.contacts,
+    //     [contactInfo.id, 'statusId'],
+    //     statusId
+    //   ));
   };
 
   let handleStatus = function handleStatus(statusPayload, contactId) {
