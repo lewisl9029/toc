@@ -79,6 +79,8 @@ export default /*@ngInject*/ function state(
       .select([userId, 'network']);
     stateService.cloud.navigation = stateService.cloud.cursor
       .select([userId, 'navigation']);
+    stateService.cloud.notifications = stateService.cloud.cursor
+      .select([userId, 'notifications']);
     stateService.cloud.session = stateService.cloud.cursor
       .select([userId, 'session']);
     stateService.cloud.status = stateService.cloud.cursor
@@ -128,6 +130,7 @@ export default /*@ngInject*/ function state(
         .then(object => {
           //FIXME: workaround for setting nonexistant cursors
           // this can't be very performant
+          // migrating to baobab v2 should make this obsolete
           if (cursor.get() === undefined) {
             cursor.tree.set(cursor.path, {});
             cursor.tree.commit();
