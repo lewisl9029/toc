@@ -35,10 +35,6 @@ export default /*@ngInject*/ function tocChannelList() {
       };
       state.addListener(contactsCursor, updateContacts, $scope);
 
-      this.acceptInvite = (channelInfo) => {
-        return
-      };
-
       this.handleClick = function handleChannelClick(channel) {
         if (channel.sentInvite) {
           return;
@@ -62,7 +58,7 @@ export default /*@ngInject*/ function tocChannelList() {
                   return contacts.invite(channel.channelInfo.contactIds[0])
                     .then(() => state.remove(
                       state.cloud.channels,
-                      [channel.channelInfo.contactIds[0], 'receivedInvite']
+                      [channel.channelInfo.id, 'receivedInvite']
                     ));
                 }
               }

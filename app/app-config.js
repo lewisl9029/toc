@@ -9,6 +9,7 @@ export default /*@ngInject*/ function configApp(
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.backButton.previousTitleText(false);
   $ionicConfigProvider.views.transition('android');
+  $ionicConfigProvider.navBar.alignTitle('center');
   // $ionicConfigProvider.scrolling.jsScrolling(false);
   // $ionicConfigProvider.views.maxCache(0);
 

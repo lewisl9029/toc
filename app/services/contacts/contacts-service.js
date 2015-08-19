@@ -49,13 +49,9 @@ export default /*@ngInject*/ function contacts(
         [contactChannel.id, 'channelInfo'],
         contactChannel
       ))
-      .then(() => state.save(
-        state.cloud.channels,
-        [contactChannel.id, 'sentInvite'],
-        true
-      ))
       .then(() => channels.initializeChannel(contactChannel))
-      .then(() => network.listen(contactChannel));
+      .then(() => network.listen(contactChannel))
+      .then(() => contactChannel);
   };
 
   let initialize = function initializeContacts() {

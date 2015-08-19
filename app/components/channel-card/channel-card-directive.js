@@ -34,7 +34,7 @@ export default /*@ngInject*/ function tocChannelCard() {
         }
 
         if (this.channel.receivedInvite) {
-          this.quote = 'New invite!';
+          this.quote = 'New invite';
           return;
         }
 
@@ -50,7 +50,7 @@ export default /*@ngInject*/ function tocChannelCard() {
           return;
         }
 
-        this.quote = '...';
+        this.quote = 'No messages received';
       };
 
       let updateChannel = () => {

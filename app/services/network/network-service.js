@@ -36,10 +36,20 @@ export default /*@ngInject*/ function network(
     let receivedInvite = !existingChannel;
 
     return state.save(
+        state.cloud.contacts,
+        [contactInfo.id, 'userInfo'],
+        contactInfo
+      )
+      .then(() => state.save(
+        state.cloud.contacts,
+        [contactInfo.id, 'statusId'],
+        statusId
+      ))
+      .then(() => state.save(
         state.cloud.channels,
         [channel.id, 'channelInfo'],
         channel
-      )
+      ))
       .then(() => {
         if (receivedInvite) {
           return state.save(
@@ -53,17 +63,7 @@ export default /*@ngInject*/ function network(
           state.cloud.channels,
           [channel.id, 'sentInvite']
         );
-      })
-      .then(() => state.save(
-        state.cloud.contacts,
-        [contactInfo.id, 'userInfo'],
-        contactInfo
-      ))
-      .then(() => state.save(
-        state.cloud.contacts,
-        [contactInfo.id, 'statusId'],
-        statusId
-      ));
+      });
   };
 
   let handleStatus = function handleStatus(statusPayload, contactId) {
