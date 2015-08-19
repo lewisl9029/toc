@@ -8,7 +8,7 @@ import identity from './identity/identity';
 import messages from './messages/messages';
 import navigation from './navigation/navigation';
 import network from './network/network';
-import notification from './notification/notification';
+import notifications from './notifications/notifications';
 import session from './session/session';
 import state from './state/state';
 import status from './status/status';
@@ -24,7 +24,7 @@ export default angular.module('toc.services', [
   messages.name,
   navigation.name,
   network.name,
-  notification.name,
+  notifications.name,
   session.name,
   state.name,
   status.name,

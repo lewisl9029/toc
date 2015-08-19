@@ -1,4 +1,6 @@
 .toc-channel-card {
+  border-color: transparent;
+  // background-color: $light;
   h2 {
     margin-left: 16px;
   }
@@ -23,4 +25,13 @@
 .toc-contact-status-1 {
   border: 2px solid $balanced;
   background-color: $balanced;
+}
+
+.toc-channel-pending {
+  h2 {
+    font-style: italic;
+  }
+  p {
+    font-style: italic;
+  }
 }

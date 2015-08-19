@@ -4,7 +4,6 @@ export default /*@ngInject*/ function state(
   $rootScope,
   $window,
   Baobab,
-  notification,
   R,
   storage
 ) {
@@ -80,6 +79,8 @@ export default /*@ngInject*/ function state(
       .select([userId, 'network']);
     stateService.cloud.navigation = stateService.cloud.cursor
       .select([userId, 'navigation']);
+    stateService.cloud.notifications = stateService.cloud.cursor
+      .select([userId, 'notifications']);
     stateService.cloud.session = stateService.cloud.cursor
       .select([userId, 'session']);
     stateService.cloud.status = stateService.cloud.cursor
@@ -116,8 +117,7 @@ export default /*@ngInject*/ function state(
 
           cursor.set(relativePath, object);
           return object;
-        })
-        .catch((error) => notification.error(error, 'State Save Error'));
+        });
     };
 
   let savePersistent =
@@ -130,6 +130,7 @@ export default /*@ngInject*/ function state(
         .then(object => {
           //FIXME: workaround for setting nonexistant cursors
           // this can't be very performant
+          // migrating to baobab v2 should make this obsolete
           if (cursor.get() === undefined) {
             cursor.tree.set(cursor.path, {});
             cursor.tree.commit();
@@ -137,8 +138,7 @@ export default /*@ngInject*/ function state(
 
           cursor.set(relativePath, object);
           return object;
-        })
-        .catch((error) => notification.error(error, 'State Save Error'));
+        });
     };
 
   let removeVolatile =
@@ -151,8 +151,7 @@ export default /*@ngInject*/ function state(
         .then(() => {
           cursor.unset(relativePath);
           return relativePath;
-        })
-        .catch((error) => notification.error(error, 'State Delete Error'));
+        });
     };
 
   let removePersistent =
@@ -169,8 +168,7 @@ export default /*@ngInject*/ function state(
         .then((key) => {
           cursor.unset(relativePath);
           return key;
-        })
-        .catch((error) => notification.error(error, 'State Delete Error'));
+        });
     };
 
   let addListener = function addListener(cursor, handleUpdate, scope, options) {

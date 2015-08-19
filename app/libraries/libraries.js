@@ -1,6 +1,5 @@
 import angular from 'angular';
 
-import angularToastr from './angular-toastr/angular-toastr';
 import Baobab from './baobab/baobab';
 import forge from './forge/forge';
 import ionic from './ionic/ionic';
@@ -12,7 +11,6 @@ import remoteStorage from './remote-storage/remote-storage';
 import telehash from './telehash/telehash';
 
 export default angular.module('toc.libraries', [
-  angularToastr.name,
   Baobab.name,
   forge.name,
   ionic.name,

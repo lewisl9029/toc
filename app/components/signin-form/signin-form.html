@@ -9,7 +9,7 @@
         Welcome back {{signinForm.model.users[signinForm.model.selectedUser].userInfo.displayName}}!
       </div>
       <label class="item item-avatar">
-        <img ng-src="{{signinForm.getAvatar(signinForm.model.users[signinForm.model.selectedUser].userInfo.email)}}"
+        <img ng-src="{{signinForm.getAvatar(signinForm.model.users[signinForm.model.selectedUser].userInfo)}}"
           alt="Avatar for {{signinForm.model.users[signinForm.model.selectedUser].userInfo.email}}" />
         <h2>{{signinForm.model.users[signinForm.model.selectedUser].userInfo.displayName}}</h2>
         <p>{{signinForm.model.users[signinForm.model.selectedUser].userInfo.id}}</p>

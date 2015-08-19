@@ -58,6 +58,7 @@ export default /*@ngInject*/ function channels(
 
     let initializingChannels = $q.all(R.pipe(
       R.values,
+      R.filter((channel) => !channel.receivedInvite),
       R.map(R.prop('channelInfo')),
       R.map((channelInfo) => {
         return initializeChannel(channelInfo)

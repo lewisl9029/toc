@@ -8,28 +8,20 @@ export default /*@ngInject*/ function tocChannelList() {
     controllerAs: 'channelList',
     controller: /*@ngInject*/ function ChannelListController(
       $ionicHistory,
+      $ionicPopup,
       $q,
       $scope,
       $state,
       contacts,
       identity,
       navigation,
-      notification,
       state
     ) {
-      this.getAvatar = identity.getAvatar;
-
-      let channelIdCursor = state.cloud.navigation.select(['activeChannelId']);
-      let updateChannelId = () => {
-        this.channelId = channelIdCursor.get();
+      let viewIdCursor = state.cloud.navigation.select(['activeViewId']);
+      let updateViewId = () => {
+        this.viewId = viewIdCursor.get();
       };
-      state.addListener(channelIdCursor, updateChannelId, $scope);
-
-      let identityCursor = state.cloud.identity;
-      let updateUserInfo = () => {
-        this.userInfo = identityCursor.get('userInfo');
-      };
-      state.addListener(identityCursor, updateUserInfo, $scope);
+      state.addListener(viewIdCursor, updateViewId, $scope);
 
       let channelsCursor = state.cloud.channels;
       let updateChannels = () => {
@@ -43,68 +35,42 @@ export default /*@ngInject*/ function tocChannelList() {
       };
       state.addListener(contactsCursor, updateContacts, $scope);
 
-      this.inviteId = '';
-      this.invite = () => {
-        this.inviting = contacts.invite(this.inviteId)
-          .then(() => {
-            this.inviteId = '';
-            return $q.when();
-          })
-          .catch((error) =>
-            notification.error(error, 'Contact Invite Send Error')
-          );
+      this.handleClick = function handleChannelClick(channel) {
+        if (channel.sentInvite) {
+          return;
+        }
 
-        return this.inviting;
-      };
+        if (channel.receivedInvite) {
+          let contact =
+            state.cloud.contacts.get([channel.channelInfo.contactIds[0]]);
+          return $ionicPopup.show({
+            template: `Accept invite from ${contact.userInfo.displayName}?`,
+            title: 'Accept Invite',
+            buttons: [
+              {
+                text: 'Cancel',
+                type: 'button-outline button-calm'
+              },
+              {
+                text: 'Accept',
+                type: 'button-outline button-balanced',
+                onTap: (event) => {
+                  return contacts.invite(channel.channelInfo.contactIds[0])
+                    .then(() => state.remove(
+                      state.cloud.channels,
+                      [channel.channelInfo.id, 'receivedInvite']
+                    ));
+                }
+              }
+            ]
+          });
+        }
 
-      this.invitesAccepting = {};
-
-      this.acceptInvite = (channelInfo) => {
-        this.invitesAccepting[channelInfo.id] =
-          contacts.invite(channelInfo.contactIds[0])
-            .catch((error) =>
-              notification.error(error, 'Contact Invite Accept Error')
-            );
-        return this.invitesAccepting[channelInfo.id];
+        return navigation.goFromMenu(channel.channelInfo.id);
       };
 
       this.goToChannel = function goToChannel(channelId) {
-        if (channelId === this.channelId) {
-          return $q.when();
-        }
-
-        $ionicHistory.nextViewOptions({
-          disableBack: true,
-          disableAnimate: false
-        });
-
-        return navigation.go(
-            navigation.app.private.channel,
-            {channelId: channelId}
-          )
-          .then(() => state.save(
-            state.cloud.navigation,
-            ['activeChannelId'],
-            channelId
-          ));
-      };
-
-      this.goToHome = function goToHome() {
-        if ('home' === this.channelId) {
-          return $q.when();
-        }
-
-        $ionicHistory.nextViewOptions({
-          disableBack: true,
-          disableAnimate: false
-        });
-
-        return navigation.go(navigation.app.private.home)
-          .then(() => state.save(
-            state.cloud.navigation,
-            ['activeChannelId'],
-            'home'
-          ));
+        return navigation.goFromMenu(channelId);
       };
     }
   };

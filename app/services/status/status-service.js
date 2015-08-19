@@ -4,7 +4,6 @@ export default /*@ngInject*/ function status(
   $q,
   $window,
   network,
-  notification,
   R,
   state
 ) {
@@ -24,7 +23,7 @@ export default /*@ngInject*/ function status(
           return $q.when();
         }
 
-        return notification.error(error, 'Status Update Error');
+        return $q.reject(error);
       });
   };
 

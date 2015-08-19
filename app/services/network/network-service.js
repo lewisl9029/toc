@@ -4,7 +4,7 @@ export default /*@ngInject*/ function network(
   $q,
   $window,
   channels,
-  notification,
+  notifications,
   R,
   state,
   telehash
@@ -27,28 +27,43 @@ export default /*@ngInject*/ function network(
 
     let channel = channels.createContactChannel(userId, contactInfo.id);
 
+    // if channel already exists, this invite packet indicates acceptance
     let existingChannel = state.cloud.channels
       .get([channel.id, 'channelInfo']);
 
     let statusId = 1; //online
 
-    channel.pendingAccept = !existingChannel;
+    let receivedInvite = !existingChannel;
 
     return state.save(
-        state.cloud.channels,
-        [channel.id, 'channelInfo'],
-        channel
-      )
-      .then(() => state.save(
         state.cloud.contacts,
         [contactInfo.id, 'userInfo'],
         contactInfo
-      ))
+      )
       .then(() => state.save(
         state.cloud.contacts,
         [contactInfo.id, 'statusId'],
         statusId
-      ));
+      ))
+      .then(() => state.save(
+        state.cloud.channels,
+        [channel.id, 'channelInfo'],
+        channel
+      ))
+      .then(() => {
+        if (receivedInvite) {
+          return state.save(
+            state.cloud.channels,
+            [channel.id, 'receivedInvite'],
+            true
+          );
+        }
+
+        return state.remove(
+          state.cloud.channels,
+          [channel.id, 'sentInvite']
+        );
+      });
   };
 
   let handleStatus = function handleStatus(statusPayload, contactId) {
@@ -120,9 +135,9 @@ export default /*@ngInject*/ function network(
         messageId
       ))
       .then(() => {
-        let activeChannelId =
-          state.cloud.navigation.get(['activeChannelId']);
-        if (activeChannelId === channelId &&
+        let activeViewId =
+          state.cloud.navigation.get(['activeViewId']);
+        if (activeViewId === channelId &&
           channelCursor.get(['viewingLatest'])) {
           return $q.when();
         }
@@ -141,9 +156,8 @@ export default /*@ngInject*/ function network(
             $q.when();
 
         return updatingUnreadPointer
-          .then(() => notification.success(
-            message.content,
-            contactName + ' just said:'
+          .then(() => notifications.notify(
+            messageId
           ));
       });
   };
@@ -193,8 +207,7 @@ export default /*@ngInject*/ function network(
         }
       };
 
-      return handledPacket()
-        .catch((error) => notification.error(error, 'Network Listen Error'));
+      return handledPacket();
     };
 
     try {

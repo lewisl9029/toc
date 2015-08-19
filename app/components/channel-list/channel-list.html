@@ -1,65 +1,7 @@
 <ion-list>
-  <div class="item item-divider item-calm">
-    You
-  </div>
-  <div
-    ng-click="this.channelId !== 'home' ? channelList.goToHome() : undefined"
-    menu-close>
-    <div class="row balanced-bg"></div>
-    <ion-item class="item item-avatar"
-      ng-class="{'toc-active-channel': channelList.channelId === 'home'}">
-      <img ng-src="{{channelList.getAvatar(channelList.userInfo.email)}}"
-        alt="Avatar for {{channelList.userInfo.email}}" />
-      <h2>{{channelList.userInfo.displayName}}</h2>
-      <p>{{channelList.userInfo.id}}</p>
-    </ion-item>
-  </div>
-
-  <!-- <div class="item item-divider item-royal">
-    Groups
-  </div>
-  <form name="toc-group-create-form">
-    <div class="item item-input-inset">
-      <label class="item-input-wrapper">
-        <input type="text" placeholder="Group Name">
-      </label>
-      <button type="submit" class="button button-clear button-balanced"
-        disabled>
-        <i class="icon ion-plus"></i>
-      </button>
-    </div>
-  </form> -->
-
-  <div class="item item-divider item-balanced">
-    Contacts
-  </div>
-  <form name="toc-contact-invite-form">
-    <div class="item item-input-inset">
-      <label class="item-input-wrapper">
-        <input type="text" placeholder="Contact ID"
-          ng-model="channelList.inviteId">
-      </label>
-      <button type="submit" class="button button-clear button-balanced"
-        ng-click="channelList.invite()" toc-spinner-button
-        loading-promise="channelList.inviting">
-        <i class="icon ion-plus"></i>
-        <!-- <ion-spinner icon="ripple" class="spinner-balanced"></ion-spinner> -->
-      </button>
-    </div>
-  </form>
-  <toc-channel-card
+  <toc-channel-card channel-id="{{::id}}"
     ng-repeat="(id, channel) in channelList.channels track by id"
-    ng-click="channelList.goToChannel(id)" channel-id="{{::id}}" menu-close>
+    ng-class="{'toc-active-view': channelList.viewId === id}"
+    ng-click="channelList.handleClick(channel)" menu-close>
   </toc-channel-card>
-      <!-- <div class="buttons" ng-if="channel.channelInfo.pendingAccept">
-        <button class="button button-balanced button-clear"
-          ng-click="channelList.acceptInvite(channel.channelInfo);
-            $event.stopPropagation()" toc-spinner-button
-            loading-promise="channelList.invitesAccepting[id]">
-          <i class="icon ion-checkmark"></i>
-        </button>
-        <button class="button button-assertive button-clear">
-          <i class="icon ion-close"></i>
-        </button>
-      </div> -->
 </ion-list>

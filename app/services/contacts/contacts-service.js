@@ -16,8 +16,7 @@ export default /*@ngInject*/ function contacts(
 
     let contact = existingContact || {
       id: contactId,
-      displayName: 'Invite Pending',
-      email: 'unknown-user@toc.im'
+      displayName: 'Invite sent'
     };
 
     const MAX_ATTEMPTS = 3;
@@ -51,7 +50,8 @@ export default /*@ngInject*/ function contacts(
         contactChannel
       ))
       .then(() => channels.initializeChannel(contactChannel))
-      .then(() => network.listen(contactChannel));
+      .then(() => network.listen(contactChannel))
+      .then(() => contactChannel);
   };
 
   let initialize = function initializeContacts() {

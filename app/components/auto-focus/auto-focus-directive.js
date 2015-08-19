@@ -1,17 +1,12 @@
 //workaround for transition performance issues with ionic navigation + autofocus
 export let directiveName = 'tocAutoFocus';
 export default /*@ngInject*/ function tocAutoFocus(
-  $timeout,
-  notification
+  $timeout
 ) {
   return {
     restrict: 'A',
     link: function linkAutoFocus(scope, element) {
-      try {
-        $timeout(() => element[0].focus(), 500);
-      } catch (error) {
-        notification.error(error, 'AutoFocus Error');
-      }
+      $timeout(() => element[0].focus(), 500);
     }
   };
 }

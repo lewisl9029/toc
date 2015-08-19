@@ -1,0 +1,39 @@
+import template from './user-card.html!text';
+
+export let directiveName = 'tocUserCard';
+export default /*@ngInject*/ function tocUserCard(
+) {
+  return {
+    restrict: 'E',
+    template: template,
+    controllerAs: 'userCard',
+    controller: /*@ngInject*/ function userCardController(
+      $scope,
+      identity,
+      R,
+      state
+    ) {
+      let userInfoCursor = state.cloud.identity.select(['userInfo']);
+      let updateUserInfo = () => {
+        let userInfo = userInfoCursor.get();
+        this.avatar = identity.getAvatar(userInfo);
+        this.avatarText = `Avatar for ${userInfo.displayName}`;
+        this.name = userInfoCursor.get(['displayName']);
+      };
+      state.addListener(userInfoCursor, updateUserInfo, $scope);
+
+      let notificationsCursor = state.cloud.notifications;
+      let updateSummary = () => {
+        let notificationCount = R.keys(notificationsCursor.get()).length;
+
+        if (notificationCount === 0) {
+          this.summary = 'No new notifications';
+          return;
+        }
+
+        this.summary = `${notificationCount} new notification${notificationCount > 1 ? 's' : ''}`;
+      };
+      state.addListener(notificationsCursor, updateSummary, $scope);
+    }
+  };
+}

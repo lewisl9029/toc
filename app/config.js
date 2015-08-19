@@ -11,7 +11,6 @@ System.config({
 System.config({
   "map": {
     "angular": "github:angular/bower-angular@1.4.3",
-    "angular-toastr": "npm:angular-toastr@1.4.1",
     "babel": "npm:babel-core@5.8.20",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "baobab": "npm:baobab@1.1.2",
@@ -61,9 +60,6 @@ System.config({
     },
     "github:jspm/nodelibs-util@0.1.0": {
       "util": "npm:util@0.10.3"
-    },
-    "npm:angular-toastr@1.4.1": {
-      "angular": "github:angular/bower-angular@1.4.3"
     },
     "npm:babel-runtime@5.8.20": {
       "process": "github:jspm/nodelibs-process@0.1.1"

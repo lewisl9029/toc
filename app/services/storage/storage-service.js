@@ -3,7 +3,6 @@ export default /*@ngInject*/ function storage(
   $q,
   $window,
   cryptography,
-  notification,
   R,
   remoteStorage
 ) {
@@ -88,7 +87,7 @@ export default /*@ngInject*/ function storage(
   let claimAccess =
     function claimAccess(moduleName, accessLevel = DEFAULT_ACCESS_LEVEL) {
       remoteStorage.remoteStorage.access
-        .claim(STORAGE_MODULE_PREFIX + moduleName, accessLevel);
+        .claim(`${STORAGE_MODULE_PREFIX + moduleName}`, accessLevel);
     };
 
   let buildModule = function buildModule(privateClient) {
@@ -151,11 +150,11 @@ export default /*@ngInject*/ function storage(
                 // Assuming failed decryption indicates data belonging to
                 // a different account and filter out
                 if (error.message === 'cryptography: decryption failed') {
-                  return undefined;
+                  return;
                 }
 
-                notification.error(error.message, 'Storage Get Error');
-                return undefined;
+                throw new Error(error);
+                return;
               }
 
               return decryptedKeyObjectPair;
@@ -211,7 +210,8 @@ export default /*@ngInject*/ function storage(
             return;
           }
 
-          return notification.error(error.message, 'Storage Sync Error');
+          throw new Error(error);
+          return;
         }
       });
     };
