@@ -5,18 +5,24 @@ export default /*@ngInject*/ function identity(
   R,
   state
 ) {
-  let getAvatarBase = function getAvatarBase(email) {
-    // default to hash of unknown-user@toc.im
-    if (!email) {
-      return getAvatarBase('unknown-user@toc.im');
+  let getAvatarBase = R.memoize(function getAvatarBase(identifier) {
+    let identifierHash = cryptography.getMd5(identifier);
+
+    return `http://cdn.libravatar.org/avatar/${identifierHash}?d=identicon`;
+  });
+
+  let getAvatar = function getAvatar(userInfo) {
+    if (userInfo.email) {
+      return getAvatarBase(userInfo.email);
     }
 
-    let emailHash = cryptography.getMd5(email);
+    if (userInfo.id) {
+      return getAvatarBase(userInfo.id);
+    }
 
-    return `http://cdn.libravatar.org/avatar/${emailHash}?d=identicon`;
+    // default to hash of unknown-user@toc.im
+    return getAvatarBase('unknown-user@toc.im');
   };
-
-  let getAvatar = R.memoize(getAvatarBase);
 
   let create = function createIdentity(sessionInfo, userInfo) {
     let userCredentials = {

@@ -8,6 +8,7 @@ export default /*@ngInject*/ function tocSideMenu() {
     controllerAs: 'sideMenu',
     controller: /*@ngInject*/ function SideMenuController(
       $ionicPopup,
+      $q,
       $scope,
       contacts,
       navigation,
@@ -56,7 +57,7 @@ export default /*@ngInject*/ function tocSideMenu() {
                   return;
                 }
 
-                invite($scope.invitePopup);
+                return invite($scope.invitePopup);
               }
             }
           ]

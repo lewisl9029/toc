@@ -41,17 +41,14 @@ export default /*@ngInject*/ function tocNotificationCard() {
       let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
       let contactCursor = state.cloud.contacts.select(contactId);
 
-      let emailCursor = contactCursor.select(['userInfo', 'email']);
-      let updateIcon = () => {
-        this.icon = identity.getAvatar(emailCursor.get());
+      let contactInfoCursor = contactCursor.select(['userInfo']);
+      let updateContactInfo = () => {
+        let contactInfo = contactInfoCursor.get();
+        this.icon = identity.getAvatar(contactInfo);
+        this.iconText = `Avatar for ${contactInfo.displayName}`;
+        this.title = contactInfo.displayName;
       };
-      state.addListener(emailCursor, updateIcon, $scope);
-
-      let nameCursor = contactCursor.select(['userInfo', 'displayName']);
-      let updateTitle = () => {
-        this.title = nameCursor.get();
-      };
-      state.addListener(nameCursor, updateTitle, $scope);
+      state.addListener(contactInfoCursor, updateContactInfo, $scope);
     }
   };
 }

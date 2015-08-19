@@ -26,3 +26,12 @@
   border: 2px solid $balanced;
   background-color: $balanced;
 }
+
+.toc-channel-pending {
+  h2 {
+    font-style: italic;
+  }
+  p {
+    font-style: italic;
+  }
+}

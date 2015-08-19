@@ -16,8 +16,7 @@ export default /*@ngInject*/ function contacts(
 
     let contact = existingContact || {
       id: contactId,
-      displayName: 'Invite Pending',
-      email: 'unknown-user@toc.im'
+      displayName: 'Invite sent'
     };
 
     const MAX_ATTEMPTS = 3;

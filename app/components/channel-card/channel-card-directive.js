@@ -28,6 +28,16 @@ export default /*@ngInject*/ function tocChannelCard() {
       };
 
       let updateQuote = () => {
+        if (this.channel.sentInvite) {
+          this.quote = `ID: ${this.channel.channelInfo.contactIds[0]}`;
+          return;
+        }
+
+        if (this.channel.receivedInvite) {
+          this.quote = 'New invite!';
+          return;
+        }
+
         if (this.channel.unreadMessageId) {
           this.quote = messagesCursor.get(this.channel.unreadMessageId)
             .messageInfo.content;
@@ -48,6 +58,7 @@ export default /*@ngInject*/ function tocChannelCard() {
         updateContact();
         updateQuote();
       };
+
       state.addListener(channelCursor, updateChannel, $scope);
       state.addListener(contactCursor, updateContact, $scope);
     }

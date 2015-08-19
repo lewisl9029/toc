@@ -8,6 +8,7 @@ export default /*@ngInject*/ function tocChannelList() {
     controllerAs: 'channelList',
     controller: /*@ngInject*/ function ChannelListController(
       $ionicHistory,
+      $ionicPopup,
       $q,
       $scope,
       $state,
@@ -35,11 +36,41 @@ export default /*@ngInject*/ function tocChannelList() {
       state.addListener(contactsCursor, updateContacts, $scope);
 
       this.acceptInvite = (channelInfo) => {
-        return contacts.invite(channelInfo.contactIds[0])
-          .then(() => state.remove(
-            state.cloud.contacts,
-            [channelInfo.contactIds[0], 'receivedInvite']
-          ));
+        return
+      };
+
+      this.handleClick = function handleChannelClick(channel) {
+        if (channel.sentInvite) {
+          return;
+        }
+
+        if (channel.receivedInvite) {
+          let contact =
+            state.cloud.contacts.get([channel.channelInfo.contactIds[0]]);
+          return $ionicPopup.show({
+            template: `Accept invite from ${contact.userInfo.displayName}?`,
+            title: 'Accept Invite',
+            buttons: [
+              {
+                text: 'Cancel',
+                type: 'button-outline button-calm'
+              },
+              {
+                text: 'Accept',
+                type: 'button-outline button-balanced',
+                onTap: (event) => {
+                  return contacts.invite(channel.channelInfo.contactIds[0])
+                    .then(() => state.remove(
+                      state.cloud.channels,
+                      [channel.channelInfo.contactIds[0], 'receivedInvite']
+                    ));
+                }
+              }
+            ]
+          });
+        }
+
+        return navigation.goFromMenu(channel.channelInfo.id);
       };
 
       this.goToChannel = function goToChannel(channelId) {

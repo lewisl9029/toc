@@ -13,21 +13,14 @@ export default /*@ngInject*/ function tocUserCard(
       R,
       state
     ) {
-      let userCursor = state.cloud.identity.select(['userInfo']);
-
-      let nameCursor = userCursor.select(['displayName']);
-      let updateName = () => {
-        this.name = nameCursor.get();
+      let userInfoCursor = state.cloud.identity.select(['userInfo']);
+      let updateUserInfo = () => {
+        let userInfo = userInfoCursor.get();
+        this.avatar = identity.getAvatar(userInfo);
+        this.avatarText = `Avatar for ${userInfo.displayName}`;
+        this.name = userInfoCursor.get(['displayName']);
       };
-      state.addListener(nameCursor, updateName, $scope);
-
-      let emailCursor = userCursor.select(['email']);
-      let updateAvatar = () => {
-        let email = emailCursor.get();
-        this.avatar = identity.getAvatar(email);
-        this.avatarText = `Avatar for ${email}`;
-      };
-      state.addListener(emailCursor, updateAvatar, $scope);
+      state.addListener(userInfoCursor, updateUserInfo, $scope);
 
       let notificationsCursor = state.cloud.notifications;
       let updateSummary = () => {

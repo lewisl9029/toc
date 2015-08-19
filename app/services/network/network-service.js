@@ -43,15 +43,15 @@ export default /*@ngInject*/ function network(
       .then(() => {
         if (receivedInvite) {
           return state.save(
-            state.cloud.contacts,
-            [contactInfo.id, 'receivedInvite'],
+            state.cloud.channels,
+            [channel.id, 'receivedInvite'],
             true
           );
         }
 
         return state.remove(
-          state.cloud.contacts,
-          [contactInfo.id, 'sentInvite']
+          state.cloud.channels,
+          [channel.id, 'sentInvite']
         );
       })
       .then(() => state.save(

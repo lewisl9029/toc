@@ -191,7 +191,7 @@ export default /*@ngInject*/ function tocMessageList(
           return;
         }
 
-        return identity.getAvatar(this.getUserInfo(message).email);
+        return identity.getAvatar(this.getUserInfo(message));
       };
 
       this.getTimestamp = (message) => {
