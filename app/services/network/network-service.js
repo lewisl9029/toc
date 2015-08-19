@@ -20,25 +20,40 @@ export default /*@ngInject*/ function network(
   };
 
   let handleInvite = function handleInvite(invitePayload) {
-    let inviteInfo = invitePayload;
+    let contactInfo = invitePayload;
 
     let userId =
       state.cloud.identity.get(['userInfo']).id;
 
     let channel = channels.createContactChannel(userId, contactInfo.id);
 
+    // if channel already exists, this invite packet indicates acceptance
     let existingChannel = state.cloud.channels
       .get([channel.id, 'channelInfo']);
 
     let statusId = 1; //online
 
-    channel.pendingAccept = !existingChannel;
+    let receivedInvite = !existingChannel;
 
     return state.save(
         state.cloud.channels,
         [channel.id, 'channelInfo'],
         channel
       )
+      .then(() => {
+        if (receivedInvite) {
+          return state.save(
+            state.cloud.contacts,
+            [contactInfo.id, 'receivedInvite'],
+            true
+          );
+        }
+
+        return state.remove(
+          state.cloud.contacts,
+          [contactInfo.id, 'sentInvite']
+        );
+      })
       .then(() => state.save(
         state.cloud.contacts,
         [contactInfo.id, 'userInfo'],

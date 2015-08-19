@@ -34,7 +34,7 @@ export default /*@ngInject*/ function tocUserCard(
         let notificationCount = R.keys(notificationsCursor.get()).length;
 
         if (notificationCount === 0) {
-          this.summary = 'No new notifications.';
+          this.summary = 'No new notifications';
           return;
         }
 

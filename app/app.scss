@@ -45,16 +45,22 @@ $bar-subheader-height: 75px !default;
 }
 
 .menu-content {
-  box-shadow: -1px 0px 5px rgba(0, 0, 0, 0.2), 1px 0px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: -1px 0px 3px rgba(0, 0, 0, 0.2), 1px 0px 3px rgba(0, 0, 0, 0.2);
 }
 
-.bar-footer .button {
-  margin-top: 0;
-  height: 42px;
-  line-height: 40px;
+.bar-footer {
+  box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.2);
+  border-top-color: $light;
+  .button {
+    margin-top: 0;
+    height: 42px;
+    line-height: 40px;
+  }
 }
 
 .bar-subfooter {
+  z-index: 10; // to get it to appear above footer shadow
+  box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.2);
   padding-bottom: 0;
   .col {
     padding-bottom: 0;
@@ -69,7 +75,7 @@ $bar-subheader-height: 75px !default;
 
 .bar-subheader {
   padding: 0;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
   // border-bottom: 0;
   .item {
     border-color: transparent;

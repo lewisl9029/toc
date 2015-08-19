@@ -34,23 +34,12 @@ export default /*@ngInject*/ function tocChannelList() {
       };
       state.addListener(contactsCursor, updateContacts, $scope);
 
-      this.inviteId = '';
-      this.invite = () => {
-        this.inviting = contacts.invite(this.inviteId)
-          .then(() => {
-            this.inviteId = '';
-            return $q.when();
-          });
-
-        return this.inviting;
-      };
-
-      this.invitesAccepting = {};
-
       this.acceptInvite = (channelInfo) => {
-        this.invitesAccepting[channelInfo.id] =
-          contacts.invite(channelInfo.contactIds[0]);
-        return this.invitesAccepting[channelInfo.id];
+        return contacts.invite(channelInfo.contactIds[0])
+          .then(() => state.remove(
+            state.cloud.contacts,
+            [channelInfo.contactIds[0], 'receivedInvite']
+          ));
       };
 
       this.goToChannel = function goToChannel(channelId) {

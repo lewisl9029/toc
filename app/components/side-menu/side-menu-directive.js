@@ -7,9 +7,11 @@ export default /*@ngInject*/ function tocSideMenu() {
     template: template,
     controllerAs: 'sideMenu',
     controller: /*@ngInject*/ function SideMenuController(
+      $ionicPopup,
       $scope,
-      state,
-      navigation
+      contacts,
+      navigation,
+      state
     ) {
       let viewIdCursor = state.cloud.navigation.select(['activeViewId']);
       let updateViewId = () => {
@@ -21,8 +23,44 @@ export default /*@ngInject*/ function tocSideMenu() {
         return navigation.goFromMenu('home');
       };
 
-      this.openInvitePopup = function openInvitePopup() {
+      let invite = (invitePopup) => {
+        return contacts.invite(invitePopup.userId)
+          .then(() => {
+            invitePopup.userId = '';
+            return $q.when();
+          });
+      };
 
+      $scope.invitePopup = {};
+
+      this.openInvitePopup = function openInvitePopup() {
+        let invitePopup = $ionicPopup.show({
+          template: `
+            <form novalidate>
+              <input type="text" placeholder="Your contact's user ID."
+                ng-model="invitePopup.userId" toc-auto-focus>
+            </form>`,
+          title: 'Add Contact',
+          scope: $scope,
+          buttons: [
+            {
+              text: 'Cancel',
+              type: 'button-outline button-calm'
+            },
+            {
+              text: 'Invite',
+              type: 'button-outline button-balanced',
+              onTap: (event) => {
+                if (!$scope.invitePopup.userId) {
+                  event.preventDefault();
+                  return;
+                }
+
+                invite($scope.invitePopup);
+              }
+            }
+          ]
+        });
       };
     }
   };
