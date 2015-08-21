@@ -156,9 +156,7 @@ export default /*@ngInject*/ function network(
             $q.when();
 
         return updatingUnreadPointer
-          .then(() => notifications.notify(
-            messageId
-          ));
+          .then(() => notifications.notify(channelId));
       });
   };
 

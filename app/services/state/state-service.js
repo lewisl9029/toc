@@ -1,5 +1,6 @@
 export let serviceName = 'state';
 export default /*@ngInject*/ function state(
+  $log,
   $q,
   $rootScope,
   $window,
@@ -156,6 +157,7 @@ export default /*@ngInject*/ function state(
 
   let removePersistent =
     function removePersistent(cursor, relativePath, store) {
+      //FIXME: doesn't work for removing cursor without providing relativePath
       let storageKey = storage.getStorageKey(
         R.concat(R.drop(1, cursor.path), relativePath)
       );
@@ -168,7 +170,7 @@ export default /*@ngInject*/ function state(
         .then((key) => {
           cursor.unset(relativePath);
           return key;
-        });
+        }).catch($log.error);
     };
 
   let addListener = function addListener(cursor, handleUpdate, scope, options) {
@@ -253,6 +255,8 @@ export default /*@ngInject*/ function state(
     return stateModule.save(cursor, relativePath, object, stateModule.store);
   };
 
+  //FIXME: removing objects doesnt always work as expected
+  // see https://github.com/lewisl9029/toc/issues/233
   let remove = function remove(cursor, relativePath) {
     let stateModule = stateService[cursor.path[0]];
     return stateModule.remove(cursor, relativePath, stateModule.store);

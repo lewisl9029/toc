@@ -4,6 +4,7 @@ export let directiveName = 'tocMessageList';
 export default /*@ngInject*/ function tocMessageList(
   $interval,
   $ionicScrollDelegate,
+  notifications,
   R,
   state
 ) {
@@ -19,7 +20,22 @@ export default /*@ngInject*/ function tocMessageList(
       let messagesCursor = state.cloud.messages
         .select([scope.channelId]);
 
-      $ionicScrollDelegate.scrollBottom(false);
+      let viewingLatestCursor = channelCursor.select(['viewingLatest']);
+      let scrollToLatest = () => {
+        if (!viewingLatestCursor.get()) {
+          return;
+        }
+
+        if (state.cloud.navigation.get('activeViewId') !== scope.channelId) {
+          return;
+        }
+        
+        $ionicScrollDelegate.scrollBottom(true);
+        notifications.dismiss(scope.channelId)
+          .then(() => state.save(channelCursor, ['unreadMessageId'], null));
+      };
+
+      state.addListener(viewingLatestCursor, scrollToLatest, scope);
 
       let updateMessageListPosition = () => {
         let scrollView = $ionicScrollDelegate.getScrollView();
@@ -28,13 +44,8 @@ export default /*@ngInject*/ function tocMessageList(
           return;
         }
 
-        $ionicScrollDelegate.scrollBottom(true);
-
-        state.save(
-          channelCursor,
-          ['unreadMessageId'],
-          null
-        );
+        state.save(channelCursor, ['viewingLatest'], true)
+          .then(() => state.save(channelCursor, ['unreadMessageId'], null));
       };
 
       state.addListener(messagesCursor, updateMessageListPosition, scope, {
@@ -42,6 +53,9 @@ export default /*@ngInject*/ function tocMessageList(
       });
 
       $interval(() => {
+        if (state.cloud.navigation.get('activeViewId') !== scope.channelId) {
+          return;
+        }
         //Updates unread messages if scrolled to bottom
         //TODO: write a more robust version that moves unread marker granularly
         let scrollView = $ionicScrollDelegate.getScrollView();
@@ -52,28 +66,20 @@ export default /*@ngInject*/ function tocMessageList(
             return;
           }
 
-          return state.save(
-            channelCursor,
-            ['viewingLatest'],
-            false
-          );
+          return state.save(channelCursor, ['viewingLatest'], false);
         }
 
         //Otherwise update unread pointer
         if (!channelCursor.get(['viewingLatest'])) {
-          state.save(
-            channelCursor,
-            ['viewingLatest'],
-            true
-          );
+          state.save(channelCursor, ['viewingLatest'], true);
         }
 
         if (channelCursor.get(['unreadMessageId'])) {
-          state.save(
-            channelCursor,
-            ['unreadMessageId'],
-            null
-          );
+          state.save(channelCursor, ['unreadMessageId'], null);
+        }
+
+        if (!notifications.isDismissed(scope.channelId)) {
+          notifications.dismiss(scope.channelId);
         }
       }, 5000);
     },
@@ -111,10 +117,6 @@ export default /*@ngInject*/ function tocMessageList(
       };
 
       state.addListener(messagesCursor, updateMessages, $scope);
-
-      this.getMessageOrder = (message) => {
-        return
-      };
 
       this.isUnread = (message) => {
         let unreadMessageId = state.cloud.channels

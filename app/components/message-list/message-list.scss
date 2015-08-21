@@ -29,7 +29,8 @@
     height: 3px;
     text-align: left;
     color: $assertive;
-    box-shadow: 0 1px 2px $assertive inset;
+    //FIXME: pick a less jarring unread marker style
+    // box-shadow: 0 1px 2px $assertive inset;
     font-size: 10px;
     width: 110%;
   }
