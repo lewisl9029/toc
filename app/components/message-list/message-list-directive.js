@@ -4,6 +4,7 @@ export let directiveName = 'tocMessageList';
 export default /*@ngInject*/ function tocMessageList(
   $interval,
   $ionicScrollDelegate,
+  notifications,
   R,
   state
 ) {
@@ -18,6 +19,7 @@ export default /*@ngInject*/ function tocMessageList(
         .select([scope.channelId]);
       let messagesCursor = state.cloud.messages
         .select([scope.channelId]);
+      let notificationsCursor = state.cloud.notifications;
 
       $ionicScrollDelegate.scrollBottom(false);
 
@@ -30,11 +32,7 @@ export default /*@ngInject*/ function tocMessageList(
 
         $ionicScrollDelegate.scrollBottom(true);
 
-        state.save(
-          channelCursor,
-          ['unreadMessageId'],
-          null
-        );
+        state.save(channelCursor, ['unreadMessageId'], null);
       };
 
       state.addListener(messagesCursor, updateMessageListPosition, scope, {
@@ -52,28 +50,20 @@ export default /*@ngInject*/ function tocMessageList(
             return;
           }
 
-          return state.save(
-            channelCursor,
-            ['viewingLatest'],
-            false
-          );
+          return state.save(channelCursor, ['viewingLatest'], false);
         }
 
         //Otherwise update unread pointer
         if (!channelCursor.get(['viewingLatest'])) {
-          state.save(
-            channelCursor,
-            ['viewingLatest'],
-            true
-          );
+          state.save(channelCursor, ['viewingLatest'], true);
         }
 
         if (channelCursor.get(['unreadMessageId'])) {
-          state.save(
-            channelCursor,
-            ['unreadMessageId'],
-            null
-          );
+          state.save(channelCursor, ['unreadMessageId'], null);
+        }
+
+        if (notificationsCursor.get([scope.channelId, 'notificationInfo'])) {
+          notifications.dismiss(scope.channelId);
         }
       }, 5000);
     },

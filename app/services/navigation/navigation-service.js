@@ -29,10 +29,11 @@ export default /*@ngInject*/ function navigation(
   };
 
   let goFromMenu = function goFromMenu(viewId) {
-    let destination = viewId === 'home' ?
+    let toHome = viewId === 'home';
+    let destination = toHome ?
       app.private.home : app.private.channel;
 
-    let destinationParams = viewId === 'home' ?
+    let destinationParams = toHome ?
       undefined : { channelId: viewId };
 
     if (at(destination, destinationParams)) {
@@ -40,6 +41,7 @@ export default /*@ngInject*/ function navigation(
     }
 
     $ionicHistory.nextViewOptions({
+      historyRoot: true,
       disableBack: true,
       disableAnimate: false
     });

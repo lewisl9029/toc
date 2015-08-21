@@ -12,7 +12,10 @@ export default /*@ngInject*/ function notifications(
   };
 
   let dismiss = function dismiss(notificationId) {
-
+    return state.remove(
+      state.cloud.notifications,
+      [notificationId, 'notificationInfo']
+    );
   };
 
   return {

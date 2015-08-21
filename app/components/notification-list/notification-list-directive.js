@@ -9,8 +9,23 @@ export default /*@ngInject*/ function tocNotificationList() {
     controller: /*@ngInject*/ function NotificationListController(
       $scope,
       identity,
-      state
+      navigation,
+      state,
+      R
     ) {
+      let notificationsCursor = state.cloud.notifications;
+      let updateNotifications = () => {
+        this.notifications = notificationsCursor.get();
+      };
+      state.addListener(notificationsCursor, updateNotifications, $scope);
+
+      this.isActive = (notification) => {
+        return R.keys(notification).length !== 0;
+      };
+
+      this.handleClick = (notificationId) => {
+        return navigation.goFromMenu(notificationId);
+      };
     }
   };
 }

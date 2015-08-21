@@ -1,6 +1,7 @@
 <ion-list>
   <toc-notification-card notification-id="{{::id}}"
     ng-repeat="(id, notification) in notificationList.notifications track by id"
-    ng-click="notificationList.handleClick(notification)">
+    ng-click="::notificationList.handleClick(id)"
+    ng-if="notificationList.isActive(notification)">
   </toc-notification-card>
 </ion-list>

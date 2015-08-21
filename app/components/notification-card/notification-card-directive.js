@@ -12,6 +12,7 @@ export default /*@ngInject*/ function tocNotificationCard() {
     controller: /*@ngInject*/ function NotificationCardController(
       $scope,
       identity,
+      navigation,
       state
     ) {
       //TODO: reduce volume of update events in other services
@@ -23,10 +24,10 @@ export default /*@ngInject*/ function tocNotificationCard() {
 
       this.click = () => {
         //TODO: scroll down to bottom of message list after navigating
-        return navigation.go('channel', { channelId });
+        return navigation.go(navigation.app.private.channel, { channelId });
       };
 
-      let messageIdCursor = channelCursor.select(['unreadMessageId']);
+      let messageIdCursor = channelCursor.select(['latestMessageId']);
       let updateMessage = () => {
         let messageId = messageIdCursor.get();
         if (!messageId) {
