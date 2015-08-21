@@ -24,7 +24,10 @@ export default /*@ngInject*/ function tocUserCard(
 
       let notificationsCursor = state.cloud.notifications;
       let updateSummary = () => {
-        let notificationCount = R.keys(notificationsCursor.get()).length;
+        let notificationCount = R.pipe(
+          R.values,
+          R.reject(R.prop('dismissed'))
+        )(notificationsCursor.get() || {}).length;
 
         if (notificationCount === 0) {
           this.summary = 'No new notifications';

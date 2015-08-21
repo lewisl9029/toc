@@ -22,7 +22,7 @@ export default /*@ngInject*/ function tocSideMenu() {
       state.addListener(viewIdCursor, updateViewId, $scope);
 
       this.goToHome = function goToHome() {
-        return navigation.goFromMenu('home');
+        return navigation.navigate('home');
       };
 
       let invite = (invitePopup) => {

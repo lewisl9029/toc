@@ -66,11 +66,11 @@ export default /*@ngInject*/ function tocChannelList() {
           });
         }
 
-        return navigation.goFromMenu(channel.channelInfo.id);
+        return navigation.navigate(channel.channelInfo.id);
       };
 
       this.goToChannel = function goToChannel(channelId) {
-        return navigation.goFromMenu(channelId);
+        return navigation.navigate(channelId);
       };
     }
   };

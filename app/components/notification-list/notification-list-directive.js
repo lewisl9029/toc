@@ -15,17 +15,12 @@ export default /*@ngInject*/ function tocNotificationList() {
     ) {
       let notificationsCursor = state.cloud.notifications;
       let updateNotifications = () => {
-        this.notifications = notificationsCursor.get();
+        this.notifications = R.pipe(
+          R.values,
+          R.reject(R.prop('dismissed'))
+        )(notificationsCursor.get() || {});
       };
       state.addListener(notificationsCursor, updateNotifications, $scope);
-
-      this.isActive = (notification) => {
-        return R.keys(notification).length !== 0;
-      };
-
-      this.handleClick = (notificationId) => {
-        return navigation.goFromMenu(notificationId);
-      };
     }
   };
 }

@@ -23,8 +23,8 @@ export default /*@ngInject*/ function tocNotificationCard() {
       let channelCursor = state.cloud.channels.select([channelId]);
 
       this.click = () => {
-        //TODO: scroll down to bottom of message list after navigating
-        return navigation.go(navigation.app.private.channel, { channelId });
+        return navigation.navigate(channelId)
+          .then(() => state.save(channelCursor, ['viewingLatest'], true));
       };
 
       let messageIdCursor = channelCursor.select(['latestMessageId']);

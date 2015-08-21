@@ -28,7 +28,11 @@ export default /*@ngInject*/ function navigation(
     return $state.go(stateName, parameters);
   };
 
-  let goFromMenu = function goFromMenu(viewId) {
+  let navigate = function navigate(viewId) {
+    if (isActiveView(viewId)) {
+      return $q.when();
+    }
+
     let toHome = viewId === 'home';
     let destination = toHome ?
       app.private.home : app.private.channel;
@@ -36,12 +40,7 @@ export default /*@ngInject*/ function navigation(
     let destinationParams = toHome ?
       undefined : { channelId: viewId };
 
-    if (at(destination, destinationParams)) {
-      return $q.when();
-    }
-
     $ionicHistory.nextViewOptions({
-      historyRoot: true,
       disableBack: true,
       disableAnimate: false
     });
@@ -52,6 +51,10 @@ export default /*@ngInject*/ function navigation(
         ['activeViewId'],
         viewId
       ));
+  };
+
+  let isActiveView = function isActiveView(viewId) {
+    return state.cloud.navigation.get('activeViewId') === viewId;
   };
 
   let at = function at(stateName, parameters) {
@@ -131,7 +134,8 @@ export default /*@ngInject*/ function navigation(
   return {
     app,
     go,
-    goFromMenu,
+    navigate,
+    isActiveView,
     at,
     isPrivateState,
     clearCache,
