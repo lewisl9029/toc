@@ -1,10 +1,10 @@
 <ion-header-bar class="bar-positive">
   <h1 class="title">Conversations</h1>
 </ion-header-bar>
-<div class="toc-side-menu-subheader bar bar-subheader">
+<div class="toc-conversations-menu-subheader bar bar-subheader">
   <toc-user-card
-    ng-class="{'toc-active-view': sideMenu.viewId === 'home'}"
-    ng-click="sideMenu.goToHome()" menu-close></toc-user-card>
+    ng-class="{'toc-active-view': conversationsMenu.viewId === 'home'}"
+    ng-click="conversationsMenu.goToHome()" menu-close></toc-user-card>
 </div>
 <ion-content class="has-subheader">
   <toc-channel-list>
@@ -13,8 +13,8 @@
 <ion-footer-bar>
   <div class="col">
     <button class="button button-block button-outline button-balanced"
-      ng-click="sideMenu.openInvitePopup()">
-      Add a new contact
+      ng-click="conversationsMenu.openInvitePopup()">
+      Start a conversation
     </button>
   </div>
 </ion-footer-bar>

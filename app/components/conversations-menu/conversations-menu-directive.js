@@ -1,12 +1,12 @@
-import template from './side-menu.html!text';
+import template from './conversations-menu.html!text';
 
-export let directiveName = 'tocSideMenu';
-export default /*@ngInject*/ function tocSideMenu() {
+export let directiveName = 'tocConversationsMenu';
+export default /*@ngInject*/ function tocConversationsMenu() {
   return {
     restrict: 'E',
     template: template,
-    controllerAs: 'sideMenu',
-    controller: /*@ngInject*/ function SideMenuController(
+    controllerAs: 'conversationsMenu',
+    controller: /*@ngInject*/ function ConversationsMenuController(
       $ionicPopup,
       $q,
       $scope,
