@@ -50,7 +50,7 @@ export default /*@ngInject*/ function tocChannelCard() {
           return;
         }
 
-        this.quote = 'No messages received';
+        this.quote = 'No new messages';
       };
 
       let updateChannel = () => {

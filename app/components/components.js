@@ -8,6 +8,7 @@ import cloudManageForm from './cloud-manage-form/cloud-manage-form';
 import messageList from './message-list/message-list';
 import notificationCard from './notification-card/notification-card';
 import notificationList from './notification-list/notification-list';
+import notificationOverlay from './notification-overlay/notification-overlay';
 import qrImage from './qr-image/qr-image';
 import conversationsMenu from './conversations-menu/conversations-menu';
 import signinForm from './signin-form/signin-form';
@@ -24,6 +25,7 @@ export default angular.module('toc.components', [
   messageList.name,
   notificationCard.name,
   notificationList.name,
+  notificationOverlay.name,
   qrImage.name,
   conversationsMenu.name,
   signinForm.name,

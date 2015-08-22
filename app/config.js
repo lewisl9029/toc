@@ -2,6 +2,11 @@ System.config({
   "baseURL": ".",
   "defaultJSExtensions": true,
   "transpiler": "babel",
+  "babelOptions": {
+    "optional": [
+      "runtime"
+    ]
+  },
   "paths": {
     "github:*": "dependencies/github/*",
     "npm:*": "dependencies/npm/*"
@@ -10,12 +15,13 @@ System.config({
 
 System.config({
   "map": {
-    "angular": "github:angular/bower-angular@1.4.3",
+    "angular": "github:angular/bower-angular@1.4.4",
+    "angular/bower-angular": "github:angular/bower-angular@1.4.4",
     "babel": "npm:babel-core@5.8.20",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "baobab": "npm:baobab@1.1.2",
     "core-js": "npm:core-js@0.9.18",
-    "driftyco/ionic": "github:driftyco/ionic@1.0.1",
+    "driftyco/ionic": "github:driftyco/ionic@1.1.0",
     "moment": "npm:moment@2.10.6",
     "ng-cordova": "npm:ng-cordova@0.1.17-alpha",
     "node-forge": "npm:node-forge@0.6.34",
@@ -26,18 +32,18 @@ System.config({
     "sinon": "npm:sinon@1.15.4",
     "text": "github:systemjs/plugin-text@0.0.2",
     "github:angular-ui/ui-router@0.2.15": {
-      "angular": "github:angular/bower-angular@1.4.3"
+      "angular": "github:angular/bower-angular@1.4.4"
     },
-    "github:angular/bower-angular-animate@1.4.3": {
-      "angular": "github:angular/bower-angular@1.4.3"
+    "github:angular/bower-angular-animate@1.4.4": {
+      "angular": "github:angular/bower-angular@1.4.4"
     },
-    "github:angular/bower-angular-sanitize@1.4.3": {
-      "angular": "github:angular/bower-angular@1.4.3"
+    "github:angular/bower-angular-sanitize@1.4.4": {
+      "angular": "github:angular/bower-angular@1.4.4"
     },
-    "github:driftyco/ionic@1.0.1": {
-      "angular": "github:angular/bower-angular@1.4.3",
-      "angular-animate": "github:angular/bower-angular-animate@1.4.3",
-      "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.3",
+    "github:driftyco/ionic@1.1.0": {
+      "angular": "github:angular/bower-angular@1.4.4",
+      "angular-animate": "github:angular/bower-angular-animate@1.4.4",
+      "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.4",
       "angular-ui-router": "github:angular-ui/ui-router@0.2.15"
     },
     "github:jspm/nodelibs-buffer@0.1.0": {
@@ -179,7 +185,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:ng-cordova@0.1.17-alpha": {
-      "angular": "github:angular/bower-angular@1.4.3",
+      "angular": "github:angular/bower-angular@1.4.4",
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "child_process": "github:jspm/nodelibs-child_process@0.1.0",
       "conventional-changelog": "npm:conventional-changelog@0.0.11",
