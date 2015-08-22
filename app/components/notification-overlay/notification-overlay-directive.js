@@ -43,6 +43,7 @@ export default /*@ngInject*/ function tocNotificationOverlay() {
           resetNotificationTimeout(5000);
         };
 
+      let isFirstRun = true;
       let updateListeners = () => {
         this.notifications = R.pipe(
           R.keys,
@@ -54,8 +55,13 @@ export default /*@ngInject*/ function tocNotificationOverlay() {
               $scope,
               { skipInitialize: true }
             );
-            updateActiveNotification(null, notificationId);
             watchingNotifications[notificationId] = true;
+            // don't fire notifications on app init
+            if (isFirstRun) {
+              isFirstRun = false;
+              return;
+            }
+            updateActiveNotification(null, notificationId);
           })
         )(notificationsCursor.get() || {});
       };

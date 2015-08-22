@@ -1,5 +1,9 @@
 <ion-view view-title="{{homeView.currentUser.userInfo.displayName}}">
-  <ion-content class="has-subfooter">
+  <div class="bar bar-subheader">
+    <toc-user-card>
+    </toc-user-card>
+  </div>
+  <ion-content class="has-subheader has-subfooter">
     <toc-notification-list></toc-notification-list>
     <div class="list">
       <!-- <div class="row balanced-bg"></div>

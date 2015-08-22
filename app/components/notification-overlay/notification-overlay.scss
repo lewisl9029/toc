@@ -1,13 +1,52 @@
 .toc-notification-overlay {
-  visibility: hidden;
+  // visibility: hidden;
+  box-shadow: none !important;
 }
 
 .toc-notification-overlay-card {
-  visibility: visible;
-  &.ng-enter {
+  // visibility: visible;
+}
 
+.toc-notification-overlay.ng-hide-add,
+.toc-notification-overlay.ng-hide-remove {
+  // display: block !important;
+}
+
+.toc-notification-overlay.ng-hide-remove {
+  animation-name: tocFadeInRight;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+.toc-notification-overlay.ng-hide-add {
+  animation-name: tocFadeOutLeft;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+// slightly edited forms from https://github.com/ShakrMedia/tuesday
+@keyframes tocFadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+    animation-timing-function: cubic-bezier(0.2, 0.590, 0.375, 0.7);
   }
-  &.ng-leave {
 
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes tocFadeOutLeft {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    animation-timing-function: cubic-bezier(0.2, 0.590, 0.375, 0.7);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-10px);
   }
 }
