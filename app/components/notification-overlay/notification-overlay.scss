@@ -1,3 +1,13 @@
 .toc-notification-overlay {
-  // visibility: hidden;
+  visibility: hidden;
+}
+
+.toc-notification-overlay-card {
+  visibility: visible;
+  &.ng-enter {
+
+  }
+  &.ng-leave {
+
+  }
 }
