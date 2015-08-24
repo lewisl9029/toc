@@ -5,10 +5,15 @@ export default /*@ngInject*/ function devices(
   $log,
   $q,
   $timeout,
+  $window,
   cryptography,
   R,
   state
 ) {
+  let isWebApp = function isWebApp() {
+    return !$window.cordova;
+  };
+
   let updateKillFlags = function updateKillFlags() {
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
 
@@ -90,6 +95,7 @@ export default /*@ngInject*/ function devices(
   };
 
   return {
-    initialize
+    initialize,
+    isWebApp
   };
 }

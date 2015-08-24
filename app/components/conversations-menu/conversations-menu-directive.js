@@ -7,7 +7,7 @@ export default /*@ngInject*/ function tocConversationsMenu() {
     template: template,
     controllerAs: 'conversationsMenu',
     controller: /*@ngInject*/ function ConversationsMenuController(
-      $ionicPopup,
+      $ionicModal,
       $q,
       $scope,
       channels,
@@ -43,36 +43,17 @@ export default /*@ngInject*/ function tocConversationsMenu() {
           });
       };
 
-      $scope.invitePopup = {};
+      this.beginConversationModal = $ionicModal.fromTemplate(
+        `
+        <toc-begin-conversation-modal
+          hide-modal="conversationsMenu.beginConversationModal.hide()">
+        </toc-begin-conversation-modal>
+        `,
+        { scope: $scope }
+      );
 
-      this.openInvitePopup = function openInvitePopup() {
-        let invitePopup = $ionicPopup.show({
-          template: `
-            <form novalidate>
-              <input type="text" placeholder="Your contact's user ID."
-                ng-model="invitePopup.userId" toc-auto-focus>
-            </form>`,
-          title: 'Add Contact',
-          scope: $scope,
-          buttons: [
-            {
-              text: 'Cancel',
-              type: 'button-outline button-calm'
-            },
-            {
-              text: 'Invite',
-              type: 'button-outline button-balanced',
-              onTap: (event) => {
-                if (!$scope.invitePopup.userId) {
-                  event.preventDefault();
-                  return;
-                }
-
-                return invite($scope.invitePopup);
-              }
-            }
-          ]
-        });
+      this.openBeginConversationModal = function openBeginConversationModal() {
+        this.beginConversationModal.show();
       };
     }
   };
