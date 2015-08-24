@@ -1,21 +1,12 @@
 <ion-view view-title="Toc Messenger">
   <div class="bar bar-subheader">
-    <toc-user-card>
+    <toc-user-card enable-dismiss-notifications>
     </toc-user-card>
   </div>
   <ion-content class="has-subheader has-subfooter">
     <toc-notification-list></toc-notification-list>
-    <div class="list">
-      <!-- <div class="row balanced-bg"></div>
-      <div class="item item-avatar">
-        <img ng-src="http://cdn.libravatar.org/avatar/{{homeView.currentUser.userInfo.id | limitTo:32}}?d=identicon" alt="Avatar for {{homeView.currentUser.userInfo.email}}" />
-        <h2>{{homeView.currentUser.userInfo.displayName}}</h2>
-        <p>{{homeView.currentUser.userInfo.id}}</p>
-      </div> -->
-      <!-- <toc-notification-card notification-type="message"
-        notification-id="toc-7eff1be5d60b22bd59647f1f7b875a93d20b3bf2e1b1e5609c8c3f90644d6e70-4e9b0ba17d30ef3f7024a97bdaac37ee73f0a2f6071035a30203c1cbd92403e7">
-      </toc-notification-card> -->
-      <label class="item item-input item-stacked-label">
+
+      <!-- <label class="item item-input item-stacked-label">
         <span class="input-label">User ID</span>
         <input type="text" placeholder="ID"
           value="{{homeView.currentUser.userInfo.id}}" readonly>
@@ -23,8 +14,7 @@
       <div class="item item-image toc-qr-image-container">
         <toc-qr-image data="{{homeView.currentUser.userInfo.id}}">
         </toc-qr-image>
-      </div>
-    </div>
+      </div> -->
   </ion-content>
   <div class="bar bar-subfooter" ng-if="!homeView.isStorageConnected()">
     <div class="col">

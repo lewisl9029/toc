@@ -82,6 +82,15 @@ $bar-subheader-height: 75px !default;
   }
 }
 
+.item-radio.item-icon-left {
+  .item-content {
+    padding-left: 54px;
+  }
+  .radio-icon {
+    left: unset;
+  }
+}
+
 .button {
   opacity: 1;
   transition: opacity 0.75s ease-in;
