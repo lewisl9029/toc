@@ -6,6 +6,9 @@ export default /*@ngInject*/ function tocUserCard(
   return {
     restrict: 'E',
     template: template,
+    scope: {
+      message: '@'
+    },
     controllerAs: 'userCard',
     controller: /*@ngInject*/ function userCardController(
       $scope,
@@ -13,6 +16,8 @@ export default /*@ngInject*/ function tocUserCard(
       R,
       state
     ) {
+      this.message = $scope.message;
+
       let userInfoCursor = state.cloud.identity.select(['userInfo']);
       let updateUserInfo = () => {
         let userInfo = userInfoCursor.get();
@@ -22,6 +27,10 @@ export default /*@ngInject*/ function tocUserCard(
       };
       state.addListener(userInfoCursor, updateUserInfo, $scope);
 
+
+      if (this.message) {
+        return;
+      }
       let notificationsCursor = state.cloud.notifications;
       let updateSummary = () => {
         let notificationCount = R.pipe(

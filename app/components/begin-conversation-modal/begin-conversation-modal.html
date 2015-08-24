@@ -2,11 +2,55 @@
   <ion-header-bar class="bar-royal">
     <h1 class="title">Begin a Conversation</h1>
   </ion-header-bar>
-  <ion-content>
+  <!-- <div class="bar bar-subheader">
+    <toc-user-card message="Give someone your ID"
+      ng-click="channelView.viewLatest()">
+    </toc-user-card>
+  </div> -->
+  <ion-content class="has-subfooter">
     <div class="list">
-
+      <a ion-radio class="item item-icon-left">
+        <i class="icon ion-ios-compose"></i>
+        Enter an ID
+      </a>
+      <ion-radio class="item item-icon-left">
+        <i class="icon ion-camera"></i>
+        Scan an ID
+      </ion-radio>
+      <ion-radio class="item item-icon-left">
+        <i class="icon ion-mail"></i>
+        Send an Email invite
+      </ion-radio>
+      <!-- <label class="item item-input item-floating-label">
+        <span class="input-label">Your contact's ID</span>
+        <input type="text" placeholder="Paste your contact's ID here">
+      </label> -->
+      <!-- <label class="item item-input item-stacked-label">
+        <span class="input-label">Click to select</span>
+        <input type="text" placeholder="ID"
+          value="7eff1be5d60b22bd59647f1f7b875a93d20b3bf2e1b1e5609c8c3f90644d6e70" readonly>
+      </label> -->
+    </div>
+    <div class="padding">
+      <button class="button button-outline button-block button-balanced"
+        type="button">
+        Scan an ID
+      </button>
+    </div>
+    <div class="padding">
+      <button class="button button-block button-outline button-balanced">
+        Or send an Email invite
+      </button>
     </div>
   </ion-content>
+  <div class="bar bar-subfooter" ng-if="!homeView.isStorageConnected()">
+    <div class="col">
+      <button class="button button-outline button-block button-royal"
+        type="button">
+        Show your own ID
+      </button>
+    </div>
+  </div>
   <ion-footer-bar>
     <div class="col">
       <button class="button button-block button-outline button-calm"

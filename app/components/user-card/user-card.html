@@ -2,6 +2,6 @@
   <img ng-src="{{userCard.avatar}}" alt="{{userCard.avatarText}}" />
   <h2>{{userCard.name}}</h2>
   <p>
-    {{userCard.summary}}
+    {{userCard.message || userCard.summary}}
   </p>
 </div>
