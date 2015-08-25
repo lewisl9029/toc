@@ -10,6 +10,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
     },
     controllerAs: 'beginConversationModal',
     controller: /*@ngInject*/ function BeginConversationModalController(
+      $cordovaBarcodeScanner,
       $ionicPopup,
       $q,
       $scope,
@@ -74,7 +75,25 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           icon: 'ion-camera',
           text: 'Scan a picture ID',
           doInvite: () => {
-
+            if (!$window.cordova) {
+              return;
+            }
+            $cordovaBarcodeScanner.scan()
+              //TODO: validate this
+              .then((barcodeData) => contacts.invite(barcodeData.text))
+              .then((contactChannel) => state.save(
+                state.cloud.channels,
+                [contactChannel.id, 'sentInvite'],
+                true
+              ))
+              .then(() => state.save(
+                state.cloud.contacts,
+                [this.contactId, 'statusId'],
+                0
+              ))
+              .then(() => {
+                this.hideModal();
+              });
           }
         },
         'mail': {
