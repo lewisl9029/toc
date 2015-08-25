@@ -1,6 +1,7 @@
 import angular from 'angular';
 
 import autoFocus from './auto-focus/auto-focus';
+import autoSelect from './auto-select/auto-select';
 import beginConversationModal from
   './begin-conversation-modal/begin-conversation-modal';
 import channelCard from './channel-card/channel-card';
@@ -20,6 +21,7 @@ import userCard from './user-card/user-card';
 
 export default angular.module('toc.components', [
   autoFocus.name,
+  autoSelect.name,
   beginConversationModal.name,
   channelCard.name,
   channelList.name,
