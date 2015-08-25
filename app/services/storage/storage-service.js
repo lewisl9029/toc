@@ -1,6 +1,7 @@
 export let serviceName = 'storage';
 export default /*@ngInject*/ function storage(
   $q,
+  $log,
   $window,
   cryptography,
   R,
@@ -97,6 +98,8 @@ export default /*@ngInject*/ function storage(
     );
 
     let storeObject = function storeObject(key, object) {
+      $log.debug(`Cloud: Saving object ${JSON.stringify(object)} at ${key}`);
+
       let encryptedObject = cryptography.encrypt(object);
       let encryptedKey = cryptography.escapeBase64(
         JSON.stringify(cryptography.encryptDeterministic(key))
@@ -119,6 +122,7 @@ export default /*@ngInject*/ function storage(
     };
 
     let removeObject = function removeObject(key) {
+      $log.debug(`Cloud: Removing object at ${key}`);
       let encryptedKey = cryptography.escapeBase64(
         JSON.stringify(cryptography.encryptDeterministic(key))
       );
@@ -240,6 +244,8 @@ export default /*@ngInject*/ function storage(
     );
 
     let storeObject = function storeObject(key, object) {
+      $log.debug(`CloudUnencrypted: Saving object ${JSON.stringify(object)} at ${key}`);
+
       let unencryptedObject = {
         pt: JSON.stringify(object)
       };
@@ -258,6 +264,8 @@ export default /*@ngInject*/ function storage(
     };
 
     let removeObject = function removeObject(key) {
+      $log.debug(`CloudUnencrypted: Removing object at ${key}`);
+
       return $q.when(privateClient.remove(key))
         .then(() => key);
     };
@@ -338,6 +346,7 @@ export default /*@ngInject*/ function storage(
     };
 
     let removeObject = function removeObjectLocal(key) {
+      $log.debug(`Local: Removing object at ${key}`);
       $window.localStorage.removeItem(KEY_PREFIX + key);
       return $q.when(key);
     };
@@ -366,11 +375,13 @@ export default /*@ngInject*/ function storage(
     };
 
     let storeObject = function storeObjectLocal(key, object) {
+      $log.debug(`Local: Saving object ${JSON.stringify(object)} at ${key}`);
       $window.localStorage.setItem(KEY_PREFIX + key, JSON.stringify(object));
       return $q.when(object);
     };
 
     let storeObjectSync = function storeObjectLocalSync(key, object) {
+      $log.debug(`Local: Saving object ${JSON.stringify(object)} at ${key}`);
       $window.localStorage.setItem(KEY_PREFIX + key, JSON.stringify(object));
       return object;
     };

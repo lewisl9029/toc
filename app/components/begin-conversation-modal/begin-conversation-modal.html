@@ -7,23 +7,19 @@
       <div class="item item-divider item-calm item-clear">
         How would you like to start?
       </div>
-      <ion-radio class="item item-icon-left">
-        <i class="icon ion-ios-compose"></i>
-        Enter someone's ID
-      </ion-radio>
-      <ion-radio class="item-icon-left">
-        <i class="icon ion-camera"></i>
-        Scan a picture ID
-      </ion-radio>
-      <ion-radio class="item-icon-left">
-        <i class="icon ion-email"></i>
-        Send an invite email
+      <ion-radio class="item-icon-left"
+        ng-repeat="(id, inviteMethod) in beginConversationModal.inviteMethods
+          track by id"
+        ng-model="beginConversationModal.inviteMethod"
+        ng-value="::id">
+        <i class="icon" ng-class="::inviteMethod.icon"></i>
+        {{::inviteMethod.text}}
       </ion-radio>
     </div>
   </ion-content>
   <div class="bar bar-subfooter">
     <div class="col">
-      <button type="button" ng-click="beginConversationModal.showIdPopup()"
+      <button type="button" ng-click="::beginConversationModal.showIdPopup()"
         class="button button-outline button-block button-royal">
         Show your own ID
       </button>
@@ -32,12 +28,13 @@
   <ion-footer-bar>
     <div class="col">
       <button class="button button-block button-outline button-calm"
-        ng-click="beginConversationModal.hideModal()">
+        ng-click="::beginConversationModal.hideModal()">
         Cancel
       </button>
     </div>
     <div class="col">
-      <button class="button button-block button-outline button-balanced">
+      <button class="button button-block button-outline button-balanced"
+        ng-click="::beginConversationModal.doInvite()">
         Start
       </button>
     </div>

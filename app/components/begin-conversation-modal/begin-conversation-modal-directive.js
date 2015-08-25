@@ -10,12 +10,86 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
     },
     controllerAs: 'beginConversationModal',
     controller: /*@ngInject*/ function BeginConversationModalController(
-      $scope,
       $ionicPopup,
+      $q,
+      $scope,
+      contacts,
       state
     ) {
       this.hideModal = $scope.hideModal;
       this.userId = state.cloud.identity.get().userInfo.id;
+
+      this.contactId = '';
+
+      this.inviteMethod = 'enter';
+
+      this.inviteMethods = {
+        'enter': {
+          icon: 'ion-ios-compose',
+          text: 'Enter someone\'s ID',
+          doInvite: () => {
+            let invitePopup = $ionicPopup.show({
+              template: `
+                <input type="text" placeholder="Your contact's user ID."
+                  ng-model="beginConversationModal.contactId" toc-auto-focus>
+              `,
+              title: 'Enter ID',
+              scope: $scope,
+              buttons: [
+                {
+                  text: 'Cancel',
+                  type: 'button-outline button-calm'
+                },
+                {
+                  text: 'Invite',
+                  type: 'button-outline button-balanced',
+                  onTap: (event) => {
+                    if (!this.contactId) {
+                      event.preventDefault();
+                      return;
+                    }
+
+                    return contacts.invite(this.contactId)
+                      .then((contactChannel) => state.save(
+                        state.cloud.channels,
+                        [contactChannel.id, 'sentInvite'],
+                        true
+                      ))
+                      .then(() => state.save(
+                        state.cloud.contacts,
+                        [this.contactId, 'statusId'],
+                        0
+                      ))
+                      .then(() => {
+                        this.contactId = '';
+                        this.hideModal();
+                      });
+                  }
+                }
+              ]
+            });
+          }
+        },
+        'scan': {
+          icon: 'ion-camera',
+          text: 'Scan a picture ID',
+          doInvite: () => {
+
+          }
+        },
+        'mail': {
+          icon: 'ion-email',
+          text: 'Send an invite email',
+          doInvite: () => {
+
+          }
+        }
+      };
+
+      this.doInvite = () => {
+        this.inviteMethods[this.inviteMethod].doInvite();
+      };
+
       this.showIdPopup = () => {
         $ionicPopup.show({
           title: 'Your ID',

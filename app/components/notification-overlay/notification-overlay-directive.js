@@ -34,7 +34,14 @@ export default /*@ngInject*/ function tocNotificationOverlay() {
       };
 
       let updateActiveNotification =
-        (event, notificationId = event.data.data.notificationInfo.id) => {
+        (event, notificationId) => {
+          if (!notificationId) {
+            if (!event.data.data.notificationInfo) {
+              return;
+            }
+            notificationId = event.data.data.notificationInfo.id;
+          }
+
           if (notifications.isDismissed(notificationId)) {
             resetNotificationTimeout(0);
             return;

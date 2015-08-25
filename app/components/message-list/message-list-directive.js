@@ -32,8 +32,14 @@ export default /*@ngInject*/ function tocMessageList(
         }
 
         $ionicScrollDelegate.scrollBottom(true);
-        notifications.dismiss(scope.channelId)
-          .then(() => state.save(channelCursor, ['unreadMessageId'], null));
+
+        if (!notifications.isDismissed(scope.channelId)) {
+          notifications.dismiss(scope.channelId);
+        }
+        
+        if (channelCursor.get(['unreadMessageId'])) {
+          state.save(channelCursor, ['unreadMessageId'], null);
+        }
       };
 
       state.addListener(viewingLatestCursor, scrollToLatest, scope);
@@ -49,8 +55,13 @@ export default /*@ngInject*/ function tocMessageList(
           return;
         }
 
-        state.save(channelCursor, ['viewingLatest'], true)
-          .then(() => state.save(channelCursor, ['unreadMessageId'], null));
+        if (!channelCursor.get(['viewingLatest'])) {
+          state.save(channelCursor, ['viewingLatest'], true);
+        }
+
+        if (channelCursor.get(['unreadMessageId'])) {
+          state.save(channelCursor, ['unreadMessageId'], null);
+        }
       };
 
       state.addListener(messagesCursor, updateMessageListPosition, scope, {

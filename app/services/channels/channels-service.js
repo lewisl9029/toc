@@ -45,12 +45,9 @@ export default /*@ngInject*/ function channels(
 
     let logicalClock = channelCursor.get('logicalClock');
 
-    if (logicalClock) {
-      return $q.when();
+    if (logicalClock === undefined) {
+      return state.save(channelCursor, ['logicalClock'], 0);
     }
-
-    logicalClock = 0;
-    return state.save(channelCursor, ['logicalClock'], logicalClock);
   };
 
   let initialize = function initialize(networkListen) {
