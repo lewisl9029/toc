@@ -129,6 +129,8 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
               `mailto:?to=&body=${mailBody}&subject=${mailSubject}`,
               '_system'
             );
+
+            this.hideModal();
           }
         }
       };
