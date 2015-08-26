@@ -26,7 +26,7 @@ export default /*@ngInject*/ function identity(
   };
 
   let validateId = function validateId(id) {
-    return id.length === 32;
+    return id.length === 64;
   };
 
   let create = function createIdentity(sessionInfo, userInfo) {

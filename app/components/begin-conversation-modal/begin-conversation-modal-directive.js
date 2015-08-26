@@ -22,7 +22,9 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
       state
     ) {
       this.hideModal = $scope.hideModal;
-      this.userId = state.cloud.identity.get().userInfo.id;
+      this.userInfo = state.cloud.identity.get().userInfo;
+      this.userId = this.userInfo.id;
+      this.isCordovaApp = devices.isCordovaApp();
 
       this.contactId = '';
 
@@ -49,6 +51,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
         'enter': {
           icon: 'ion-ios-compose',
           text: 'Enter someone\'s ID',
+          isEnabled: true,
           doInvite: () => {
             let invitePopup = $ionicPopup.show({
               template: `
@@ -86,8 +89,9 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
         'scan': {
           icon: 'ion-camera',
           text: 'Scan a picture ID',
+          isEnabled: this.isCordovaApp,
           doInvite: () => {
-            if (devices.isCordovaApp()) {
+            if (this.isCordovaApp) {
               return $cordovaBarcodeScanner.scan()
                 .then((barcodeData) => {
                   let contactId = barcodeData.text;
@@ -106,8 +110,25 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
         'mail': {
           icon: 'ion-email',
           text: 'Send an invite email',
+          isEnabled: true,
           doInvite: () => {
+            let mailSubject = encodeURIComponent(
+              `An invite for Toc Messenger`
+            );
 
+            let mailBody = encodeURIComponent(
+              'Please invite me as a contact on Toc Messenger:\n' +
+              'http://lewisl9029.github.io/toc\n\n' +
+
+              'It\'s pretty great. ^^\n\n' +
+
+              `My Toc ID is ${this.userId}.`
+            );
+
+            $window.open(
+              `mailto:?to=&body=${mailBody}&subject=${mailSubject}`,
+              '_system'
+            );
           }
         }
       };

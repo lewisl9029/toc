@@ -11,7 +11,7 @@
         ng-repeat="(id, inviteMethod) in ::beginConversationModal.inviteMethods
           track by id"
         ng-model="beginConversationModal.inviteMethod"
-        ng-value="::id">
+        ng-value="::id" ng-if="::inviteMethod.isEnabled">
         <i class="icon" ng-class="::inviteMethod.icon"></i>
         {{::inviteMethod.text}}
       </ion-radio>
