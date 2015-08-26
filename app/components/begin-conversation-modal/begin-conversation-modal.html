@@ -8,7 +8,7 @@
         How would you like to start?
       </div>
       <ion-radio class="item-icon-left"
-        ng-repeat="(id, inviteMethod) in beginConversationModal.inviteMethods
+        ng-repeat="(id, inviteMethod) in ::beginConversationModal.inviteMethods
           track by id"
         ng-model="beginConversationModal.inviteMethod"
         ng-value="::id">

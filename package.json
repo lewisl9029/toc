@@ -53,7 +53,7 @@
       "ng-cordova": "npm:ng-cordova@^0.1.17-alpha",
       "node-forge": "npm:node-forge@^0.6.34",
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
-      "qr-encode": "npm:qr-encode@^0.3.0",
+      "qr-image": "npm:qr-image@^3.1.0",
       "ramda": "npm:ramda@^0.17.1",
       "remotestoragejs": "npm:remotestoragejs@^0.11.2",
       "text": "github:systemjs/plugin-text@^0.0.2"

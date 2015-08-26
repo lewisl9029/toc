@@ -4,7 +4,7 @@
       Select a cloud storage service
     </div>
     <ion-radio class="item item-avatar toc-square-avatar"
-      ng-repeat="(id, service) in cloudConnectForm.services track by id"
+      ng-repeat="(id, service) in ::cloudConnectForm.services track by id"
       ng-model="cloudConnectForm.selectedService" ng-value="::id">
       <img ng-src="assets/images/{{::service.img}}"
         alt="Avatar for {{::service.name}}" />

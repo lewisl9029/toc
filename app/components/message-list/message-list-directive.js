@@ -15,11 +15,36 @@ export default /*@ngInject*/ function tocMessageList(
     scope: {
       channelId: '@'
     },
-    link: function linkMessageList(scope) {
-      let channelCursor = state.cloud.channels
-        .select([scope.channelId]);
-      let messagesCursor = state.cloud.messages
-        .select([scope.channelId]);
+    controllerAs: 'messageList',
+    controller: /*@ngInject*/ function MessageListController(
+      $scope,
+      $state,
+      identity,
+      time,
+      messages
+    ) {
+      //TODO: refactor shared functionality into messages service
+      this.getAvatar = identity.getAvatar;
+      this.channelId = $scope.channelId;
+
+      let messagesCursor = state.cloud.messages.select([this.channelId]);
+      let channelCursor = state.cloud.channels.select([this.channelId]);
+
+      let userCursor = state.cloud.identity.select(['userInfo']);
+      let contactCursor = state.cloud.contacts.select([
+        channelCursor.get(['channelInfo', 'contactIds'])[0],
+        'userInfo'
+      ]);
+
+      let updateUser = () => {
+        this.userInfo = userCursor.get();
+      };
+      let updateContact = () => {
+        this.contactInfo = contactCursor.get();
+      };
+
+      state.addListener(userCursor, updateUser, $scope);
+      state.addListener(contactCursor, updateContact, $scope);
 
       let viewingLatestCursor = channelCursor.select(['viewingLatest']);
       let scrollToLatest = () => {
@@ -27,25 +52,25 @@ export default /*@ngInject*/ function tocMessageList(
           return;
         }
 
-        if (!navigation.isActiveView(scope.channelId)) {
+        if (!navigation.isActiveView(this.channelId)) {
           return;
         }
 
         $ionicScrollDelegate.scrollBottom(true);
 
-        if (!notifications.isDismissed(scope.channelId)) {
-          notifications.dismiss(scope.channelId);
+        if (!notifications.isDismissed(this.channelId)) {
+          notifications.dismiss(this.channelId);
         }
-        
+
         if (channelCursor.get(['unreadMessageId'])) {
           state.save(channelCursor, ['unreadMessageId'], null);
         }
       };
 
-      state.addListener(viewingLatestCursor, scrollToLatest, scope);
+      state.addListener(viewingLatestCursor, scrollToLatest, $scope);
 
       let updateMessageListPosition = () => {
-        if (!navigation.isActiveView(scope.channelId)) {
+        if (!navigation.isActiveView(this.channelId)) {
           return;
         }
 
@@ -64,12 +89,12 @@ export default /*@ngInject*/ function tocMessageList(
         }
       };
 
-      state.addListener(messagesCursor, updateMessageListPosition, scope, {
+      state.addListener(messagesCursor, updateMessageListPosition, $scope, {
         skipInitialize: true
       });
 
       $interval(() => {
-        if (!navigation.isActiveView(scope.channelId)) {
+        if (!navigation.isActiveView(this.channelId)) {
           return;
         }
         //Updates unread messages if scrolled to bottom
@@ -94,26 +119,10 @@ export default /*@ngInject*/ function tocMessageList(
           state.save(channelCursor, ['unreadMessageId'], null);
         }
 
-        if (!notifications.isDismissed(scope.channelId)) {
-          notifications.dismiss(scope.channelId);
+        if (!notifications.isDismissed(this.channelId)) {
+          notifications.dismiss(this.channelId);
         }
       }, 5000);
-    },
-    controllerAs: 'messageList',
-    controller: /*@ngInject*/ function MessageListController(
-      $scope,
-      $state,
-      identity,
-      time,
-      messages
-    ) {
-      this.getAvatar = identity.getAvatar;
-      this.channelId = $scope.channelId;
-      //TODO: refactor into messages service
-
-      let messagesCursor = state.cloud.messages.select([this.channelId]);
-      let channelCursor = state.cloud.channels
-        .select([this.channelId]);
 
       let updateMessages = () => {
         this.messages = R.pipe(
@@ -193,15 +202,12 @@ export default /*@ngInject*/ function tocMessageList(
         }
 
         let senderId = message.messageInfo.senderId;
-        let userInfo = state.cloud.identity.get().userInfo;
 
-        if (userInfo.id === senderId) {
-          return userInfo;
+        if (this.userInfo.id === senderId) {
+          return this.userInfo;
         }
-
-        let contactInfo = state.cloud.contacts.get(senderId).userInfo;
-
-        return contactInfo;
+        //FIXME: this wont work for group chats
+        return this.contactInfo;
       };
 
       this.getAvatar = (message) => {

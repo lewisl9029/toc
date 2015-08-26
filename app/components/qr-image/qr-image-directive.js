@@ -1,16 +1,17 @@
 export let directiveName = 'tocQrImage';
 export default /*@ngInject*/ function tocQrImage(
-  qrEncode
+  qrImage,
+  state,
+  $compile
 ) {
   return {
     restrict: 'E',
     link: function linkQrImage(scope, element, attrs) {
       //TODO: persist qr code dataURI
       let data = attrs.data;
-      let dataURI = qrEncode(data, {type: 7, size: 9, level: 'H'});
-      let qrImage = new Image();
-      qrImage.src = dataURI;
-      element[0].appendChild(qrImage);
+      let svgString = qrImage.imageSync(data, {type: 'svg', ec_level: 'M'});
+      let qrImageElement = $compile(svgString)(scope)[0];
+      element[0].appendChild(qrImageElement);
     }
   };
 }

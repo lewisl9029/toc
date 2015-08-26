@@ -45,12 +45,8 @@ export default /*@ngInject*/ function navigation(
       disableAnimate: false
     });
 
-    return go(destination, destinationParams)
-      .then(() => state.save(
-        state.cloud.navigation,
-        ['activeViewId'],
-        viewId
-      ));
+    return state.save(state.cloud.navigation, ['activeViewId'], viewId)
+      .then(() => go(destination, destinationParams));
   };
 
   let isActiveView = function isActiveView(viewId) {
