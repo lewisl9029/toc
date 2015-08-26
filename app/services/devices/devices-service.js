@@ -10,8 +10,8 @@ export default /*@ngInject*/ function devices(
   R,
   state
 ) {
-  let isWebApp = function isWebApp() {
-    return !$window.cordova;
+  let isCordovaApp = function isCordovaApp() {
+    return $window.cordova;
   };
 
   let updateKillFlags = function updateKillFlags() {
@@ -96,6 +96,6 @@ export default /*@ngInject*/ function devices(
 
   return {
     initialize,
-    isWebApp
+    isCordovaApp
   };
 }

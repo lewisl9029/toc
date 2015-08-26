@@ -12,15 +12,36 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
     controller: /*@ngInject*/ function BeginConversationModalController(
       $cordovaBarcodeScanner,
       $ionicPopup,
+      $log,
       $q,
+      $window,
       $scope,
       contacts,
+      devices,
+      identity,
       state
     ) {
       this.hideModal = $scope.hideModal;
       this.userId = state.cloud.identity.get().userInfo.id;
 
       this.contactId = '';
+
+      let initializeSentInvite = (contactChannel) => {
+        return state.save(
+          state.cloud.channels,
+          [contactChannel.id, 'sentInvite'],
+          true
+        )
+        .then(() => state.save(
+          state.cloud.contacts,
+          [this.contactId, 'statusId'],
+          0
+        ))
+        .then(() => {
+          this.hideModal();
+          return $q.when();
+        });
+      };
 
       this.inviteMethod = 'enter';
 
@@ -45,25 +66,16 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                   text: 'Invite',
                   type: 'button-outline button-balanced',
                   onTap: (event) => {
-                    if (!this.contactId) {
+                    if (!identity.validateId(this.contactId)) {
                       event.preventDefault();
+                      $log.error('This is not a valid Toc ID.');
                       return;
                     }
 
                     return contacts.invite(this.contactId)
-                      .then((contactChannel) => state.save(
-                        state.cloud.channels,
-                        [contactChannel.id, 'sentInvite'],
-                        true
-                      ))
-                      .then(() => state.save(
-                        state.cloud.contacts,
-                        [this.contactId, 'statusId'],
-                        0
-                      ))
+                      .then(initializeSentInvite)
                       .then(() => {
                         this.contactId = '';
-                        this.hideModal();
                       });
                   }
                 }
@@ -75,25 +87,20 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           icon: 'ion-camera',
           text: 'Scan a picture ID',
           doInvite: () => {
-            if (!$window.cordova) {
-              return;
+            if (devices.isCordovaApp()) {
+              return $cordovaBarcodeScanner.scan()
+                .then((barcodeData) => {
+                  let contactId = barcodeData.text;
+                  if (!identity.validateId(contactId)) {
+                    return $q.reject('This is not a valid Toc picture ID.');
+                  }
+
+                  return contacts.invite(contactId);
+                })
+                .then(initializeSentInvite)
+                .catch((error) => $log.error(error));
             }
-            $cordovaBarcodeScanner.scan()
-              //TODO: validate this
-              .then((barcodeData) => contacts.invite(barcodeData.text))
-              .then((contactChannel) => state.save(
-                state.cloud.channels,
-                [contactChannel.id, 'sentInvite'],
-                true
-              ))
-              .then(() => state.save(
-                state.cloud.contacts,
-                [this.contactId, 'statusId'],
-                0
-              ))
-              .then(() => {
-                this.hideModal();
-              });
+
           }
         },
         'mail': {
