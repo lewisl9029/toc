@@ -1,6 +1,7 @@
 export let serviceName = 'identity';
 export default /*@ngInject*/ function identity(
   $q,
+  $filter,
   cryptography,
   R,
   state
@@ -22,6 +23,10 @@ export default /*@ngInject*/ function identity(
 
     // default to hash of unknown-user@toc.im
     return getAvatarBase('unknown-user@toc.im');
+  };
+
+  let validateId = function validateId(id) {
+    return id.length === 64;
   };
 
   let create = function createIdentity(sessionInfo, userInfo) {
@@ -111,6 +116,7 @@ export default /*@ngInject*/ function identity(
   return {
     getAvatar,
     create,
+    validateId,
     authenticate,
     restore,
     initialize,

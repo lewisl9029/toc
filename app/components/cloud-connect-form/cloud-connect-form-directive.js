@@ -87,11 +87,9 @@ export default /*@ngInject*/ function tocCloudConnectForm() {
         }
       };
 
-      this.serviceList = [
-        this.services['remotestorage'],
-        this.services['dropbox'],
-        this.services['googledrive']
-      ];
+      this.connect = () => {
+        this.services[this.selectedService].connect();
+      }
     }
   };
 }

@@ -1,7 +1,8 @@
-<div class="toc-user-card item item-avatar">
+<div class="toc-user-card item item-avatar"
+  ng-click="userCard.dismissNotifications()">
   <img ng-src="{{userCard.avatar}}" alt="{{userCard.avatarText}}" />
   <h2>{{userCard.name}}</h2>
   <p>
-    {{userCard.summary}}
+    {{userCard.message}}
   </p>
 </div>

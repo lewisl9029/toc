@@ -1,5 +1,4 @@
 <ion-list class="toc-message-list">
-  <!-- FIXME: collection-repeat doesn't allow for variable height items -->
   <ion-item class="toc-message item-avatar"
     ng-repeat="message in messageList.messages track by message.messageInfo.id"
     ng-class="::messageList.isSenderSeparator(message) ?
@@ -7,7 +6,8 @@
       'toc-message-simple'
     ">
     <img ng-src="{{messageList.getAvatar(message)}}"
-      alt="Avatar for {{messageList.getUserInfo(message).email}}" />
+      alt="Avatar for {{messageList.getUserInfo(message).email}}"
+      ng-if="::messageList.isSenderSeparator(message)" />
     <div ng-if="::messageList.isDateSeparator(message)"
       class="toc-message-datestamp">
       {{::messageList.getDatestamp(message)}}

@@ -4,13 +4,12 @@
       Select a cloud storage service
     </div>
     <ion-radio class="item item-avatar toc-square-avatar"
-      ng-repeat="service in cloudConnectForm.serviceList track by service.id"
-      ng-model="cloudConnectForm.selectedService" ng-value="'{{service.id}}'"
-      icon="ion-checkmark">
-      <img ng-src="assets/images/{{service.img}}"
-        alt="Avatar for {{service.name}}" />
-      <h2>{{service.name}}</h2>
-      <p>{{service.description}}</p>
+      ng-repeat="(id, service) in ::cloudConnectForm.services track by id"
+      ng-model="cloudConnectForm.selectedService" ng-value="::id">
+      <img ng-src="assets/images/{{::service.img}}"
+        alt="Avatar for {{::service.name}}" />
+      <h2>{{::service.name}}</h2>
+      <p>{{::service.description}}</p>
     </ion-radio>
     <!-- <label class="item item-input item-stacked-label">
       <span class="input-label">Email</span>
@@ -30,13 +29,13 @@
 <ion-footer-bar>
   <div class="col">
     <button class="button button-block button-outline button-calm"
-      ng-click="cloudConnectForm.goBack()">
+      ng-click="::cloudConnectForm.goBack()">
       Back
     </button>
   </div>
   <div class="col">
     <button class="button button-block button-outline button-balanced"
-      ng-click="cloudConnectForm.services[cloudConnectForm.selectedService].connect()">
+      ng-click="::cloudConnectForm.connect()">
       Connect
     </button>
   </div>

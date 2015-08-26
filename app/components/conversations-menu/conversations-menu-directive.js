@@ -7,7 +7,7 @@ export default /*@ngInject*/ function tocConversationsMenu() {
     template: template,
     controllerAs: 'conversationsMenu',
     controller: /*@ngInject*/ function ConversationsMenuController(
-      $ionicPopup,
+      $ionicModal,
       $q,
       $scope,
       channels,
@@ -25,54 +25,17 @@ export default /*@ngInject*/ function tocConversationsMenu() {
         return navigation.navigate('home');
       };
 
-      let invite = (invitePopup) => {
-        return contacts.invite(invitePopup.userId)
-          .then((contactChannel) => state.save(
-            state.cloud.channels,
-            [contactChannel.id, 'sentInvite'],
-            true
-          ))
-          .then(() => state.save(
-            state.cloud.contacts,
-            [invitePopup.userId, 'statusId'],
-            0
-          ))
-          .then(() => {
-            invitePopup.userId = '';
-            return $q.when();
-          });
-      };
+      this.beginConversationModal = $ionicModal.fromTemplate(
+        `
+        <toc-begin-conversation-modal
+          hide-modal="conversationsMenu.beginConversationModal.hide()">
+        </toc-begin-conversation-modal>
+        `,
+        { scope: $scope }
+      );
 
-      $scope.invitePopup = {};
-
-      this.openInvitePopup = function openInvitePopup() {
-        let invitePopup = $ionicPopup.show({
-          template: `
-            <form novalidate>
-              <input type="text" placeholder="Your contact's user ID."
-                ng-model="invitePopup.userId" toc-auto-focus>
-            </form>`,
-          title: 'Add Contact',
-          scope: $scope,
-          buttons: [
-            {
-              text: 'Cancel',
-              type: 'button-outline button-calm'
-            },
-            {
-              text: 'Invite',
-              type: 'button-outline button-balanced',
-              onTap: (event) => {
-                if (!$scope.invitePopup.userId) {
-                  event.preventDefault();
-                  return;
-                }
-
-                return invite($scope.invitePopup);
-              }
-            }
-          ]
-        });
+      this.openBeginConversationModal = function openBeginConversationModal() {
+        this.beginConversationModal.show();
       };
     }
   };

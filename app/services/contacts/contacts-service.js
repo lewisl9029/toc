@@ -58,10 +58,11 @@ export default /*@ngInject*/ function contacts(
     let contactsCursor = state.cloud.contacts;
 
     R.pipe(
-      R.keys,
-      R.forEach((contactId) => state.save(
+      R.values,
+      R.reject(R.propEq('statusId', 0)),
+      R.forEach((contact) => state.save(
         contactsCursor,
-        [contactId, 'statusId'],
+        [contact.userInfo.id, 'statusId'],
         0
       ))
     )(contactsCursor.get());

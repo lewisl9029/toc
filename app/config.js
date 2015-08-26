@@ -26,7 +26,7 @@ System.config({
     "ng-cordova": "npm:ng-cordova@0.1.17-alpha",
     "node-forge": "npm:node-forge@0.6.34",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
-    "qr-encode": "npm:qr-encode@0.3.0",
+    "qr-image": "npm:qr-image@3.1.0",
     "ramda": "npm:ramda@0.17.1",
     "remotestoragejs": "npm:remotestoragejs@0.11.2",
     "sinon": "npm:sinon@1.15.4",
@@ -46,8 +46,11 @@ System.config({
       "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.4",
       "angular-ui-router": "github:angular-ui/ui-router@0.2.15"
     },
+    "github:jspm/nodelibs-assert@0.1.0": {
+      "assert": "npm:assert@1.3.0"
+    },
     "github:jspm/nodelibs-buffer@0.1.0": {
-      "buffer": "npm:buffer@3.3.1"
+      "buffer": "npm:buffer@3.4.3"
     },
     "github:jspm/nodelibs-events@0.1.1": {
       "events": "npm:events@1.0.2"
@@ -67,13 +70,27 @@ System.config({
     "github:jspm/nodelibs-util@0.1.0": {
       "util": "npm:util@0.10.3"
     },
+    "github:jspm/nodelibs-zlib@0.1.0": {
+      "browserify-zlib": "npm:browserify-zlib@0.1.4"
+    },
+    "npm:assert@1.3.0": {
+      "util": "npm:util@0.10.3"
+    },
     "npm:babel-runtime@5.8.20": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:baobab@1.1.2": {
       "emmett": "npm:emmett@3.1.1"
     },
-    "npm:buffer@3.3.1": {
+    "npm:browserify-zlib@0.1.4": {
+      "assert": "github:jspm/nodelibs-assert@0.1.0",
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "pako": "npm:pako@0.2.7",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "readable-stream": "npm:readable-stream@1.1.13",
+      "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:buffer@3.4.3": {
       "base64-js": "npm:base64-js@0.0.8",
       "ieee754": "npm:ieee754@1.1.6",
       "is-array": "npm:is-array@1.0.1"
@@ -196,6 +213,10 @@ System.config({
       "sys": "github:jspm/nodelibs-util@0.1.0",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
+    "npm:pako@0.2.7": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
     "npm:path-browserify@0.0.0": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
@@ -204,6 +225,13 @@ System.config({
     },
     "npm:q@1.4.1": {
       "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:qr-image@3.1.0": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "pako": "npm:pako@0.2.7",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "stream": "github:jspm/nodelibs-stream@0.1.0",
+      "zlib": "github:jspm/nodelibs-zlib@0.1.0"
     },
     "npm:ramda@0.17.1": {
       "process": "github:jspm/nodelibs-process@0.1.1"

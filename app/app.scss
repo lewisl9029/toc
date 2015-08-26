@@ -44,6 +44,10 @@ $bar-subheader-height: 75px !default;
   border-radius: 0;
 }
 
+.modal {
+  max-width: 680px;
+}
+
 .menu-content {
   box-shadow: -1px 0px 3px rgba(0, 0, 0, 0.2), 1px 0px 3px rgba(0, 0, 0, 0.2);
 }
@@ -51,7 +55,13 @@ $bar-subheader-height: 75px !default;
 .bar-footer {
   box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.2);
   border-top-color: $light;
+  .col {
+    display: flex;
+    justify-content: center;
+  }
   .button {
+    max-width: 325px;
+    width: 100%;
     margin-top: 0;
     height: 42px;
     line-height: 40px;
@@ -63,9 +73,13 @@ $bar-subheader-height: 75px !default;
   box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.2);
   padding-bottom: 0;
   .col {
+    display: flex;
+    justify-content: center;
     padding-bottom: 0;
   }
   .button {
+    max-width: 325px;
+    width: 100%;
     margin-top: 0;
     margin-bottom: 0;
     height: 42px;
@@ -79,6 +93,15 @@ $bar-subheader-height: 75px !default;
   // border-bottom: 0;
   .item {
     border-color: transparent;
+  }
+}
+
+.item-radio.item-icon-left {
+  .item-content {
+    padding-left: 54px;
+  }
+  .radio-icon {
+    left: unset;
   }
 }
 
