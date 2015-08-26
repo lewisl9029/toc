@@ -11,21 +11,22 @@
   </ion-content>
   <!-- TODO: refactor into separate component -->
   <ion-footer-bar class="toc-message-input-footer">
-    <form class="toc-message-input-form" id="toc-message-input-form"
+    <form class="toc-message-input-form"
+      id="toc-message-input-form-{{::channelView.channelId}}"
       ng-submit="channelView.send()">
     </form>
     <div class="col-80">
-      <input form="toc-message-input-form"
+      <input type="text" placeholder="Message"
+        form="toc-message-input-form-{{::channelView.channelId}}"
         class="toc-message-input-area"
-        type="text" placeholder="Message"
         ng-model="channelView.message" toc-auto-focus>
       </input>
     </div>
     <div class="col-20">
-      <button form="toc-message-input-form" type="submit"
+      <button type="submit"
+        form="toc-message-input-form-{{::channelView.channelId}}"
         class="button button-block button-outline button-balanced"
-        toc-spinner-button
-        loading-promise="channelView.sending">
+        toc-spinner-button loading-promise="channelView.sending">
         Send
         <!-- FIXME: memory leak in ion-spinner.
           see https://github.com/driftyco/ionic/issues/3583 -->
