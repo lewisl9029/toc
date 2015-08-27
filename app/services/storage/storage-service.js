@@ -3,6 +3,7 @@ export default /*@ngInject*/ function storage(
   $q,
   $log,
   $window,
+  $timeout,
   cryptography,
   R,
   remoteStorage
@@ -75,7 +76,11 @@ export default /*@ngInject*/ function storage(
 
         return clearingDb.promise;
       })
-      .then(() => $window.location.reload());
+      // add timeout 0 to let queued operations complete
+      .then(() => $timeout(() => {
+          $window.location.reload();
+        }, 0
+      ));
   };
 
   let enableLog = remoteStorage.remoteStorage.enableLog;
