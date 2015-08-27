@@ -282,8 +282,10 @@ export default /*@ngInject*/ function state(
 
   let destroy = function destroy() {
     return stateService.local.store.removeAllObjects()
-      .then(() => stateService.cloudUnencrypted.store.removeAllObjects())
-      .then(() => stateService.cloud.store.removeAllObjects())
+      // we shouldn't try to clear remote objects.
+      // sync at wrong time could cause corrupted cloud data.
+      // .then(() => stateService.cloudUnencrypted.store.removeAllObjects())
+      // .then(() => stateService.cloud.store.removeAllObjects())
       .then(() => storage.destroy());
   };
 

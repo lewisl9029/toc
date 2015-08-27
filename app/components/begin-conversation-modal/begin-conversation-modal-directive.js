@@ -71,7 +71,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                   onTap: (event) => {
                     if (!identity.validateId(this.contactId)) {
                       event.preventDefault();
-                      $log.error('This is not a valid Toc ID.');
+                      $log.error(`${this.contactId} is not a valid Toc ID.`);
                       return;
                     }
 
@@ -94,9 +94,12 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
             if (this.isCordovaApp) {
               return $cordovaBarcodeScanner.scan()
                 .then((barcodeData) => {
+                  if (barcodeData.cancelled) {
+                    return $q.reject(`QR reader was cancelled.`);
+                  }
                   let contactId = barcodeData.text;
                   if (!identity.validateId(contactId)) {
-                    return $q.reject('This is not a valid Toc picture ID.');
+                    return $q.reject(`${contactId} is not a valid Toc ID.`);
                   }
 
                   return contacts.invite(contactId);
