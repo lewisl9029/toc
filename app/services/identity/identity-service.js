@@ -94,8 +94,7 @@ export default /*@ngInject*/ function identity(
     return $q.when(existingIdentity);
   };
 
-  let initialize = function initializeIdentity(userId) {
-    state.initializeUserCursors(userId);
+  let initialize = function initializeIdentity() {
     return $q.when();
     // return state.save(
     //   state.memory.cursors.identity,
@@ -105,7 +104,6 @@ export default /*@ngInject*/ function identity(
   };
 
   let destroy = function destroyIdentity() {
-    state.destroyUserCursors();
     return $q.when();
     // return state.remove(
     //   state.memory.cursors.identity,

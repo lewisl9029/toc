@@ -62,7 +62,7 @@ export default /*@ngInject*/ function session(
 
     return network.initialize()
       .then((sessionInfo) => {
-        return identity.initialize(sessionInfo.id)
+        return identity.initialize()
           .then(() => identity.create(sessionInfo, userInfo))
           .then((newIdentity) => {
             return state.cloud.initialize(newIdentity.userInfo.id)
@@ -81,7 +81,7 @@ export default /*@ngInject*/ function session(
   };
 
   let signIn = function signIn(userCredentials, options) {
-    return identity.initialize(userCredentials.id)
+    return identity.initialize()
       .then(() => identity.authenticate(userCredentials))
       .then((existingIdentity) => {
         return state.cloud.initialize(userCredentials.id)
@@ -132,7 +132,7 @@ export default /*@ngInject*/ function session(
     existingIdentity.credentials =
       existingIdUserPair[1].savedCredentials;
 
-    return identity.initialize(existingIdentity.userInfo.id)
+    return identity.initialize()
       .then(() => identity.restore(existingIdentity))
       .then(() => state.cloud.initialize(existingIdentity.userInfo.id))
       .then(() => devices.initialize(signOut))
