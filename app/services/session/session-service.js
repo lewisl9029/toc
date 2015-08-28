@@ -97,49 +97,50 @@ export default /*@ngInject*/ function session(
   };
 
   let restore = function restore() {
-    let localUsers = state.local.cursor.get();
-
-    let existingIdUserPair;
-
-    if (R.keys(localUsers).length !== 0) {
-      existingIdUserPair = R.pipe(
-        R.toPairs,
-        R.filter((idUserPair) => idUserPair[1].session),
-        R.map((idUserPair) => [
-          idUserPair[0],
-          idUserPair[1].session
-        ]),
-        R.find((idUserPair) => idUserPair[1].savedCredentials)
-      )(localUsers);
-    }
-
-    if (!existingIdUserPair) {
-      let prepareNavigate = !navigation.at(navigation.app.public.welcome) ?
-        navigation.resetHistory({disableAnimate: true}) :
-        $q.when();
-
-      return prepareNavigate
-        .then(() => navigation.go(navigation.app.public.welcome))
-        //workaround for too early initialization
-        .then(() => $timeout(() => navigation.clearCache(), 0));
-    }
-
-    let existingIdentity = state.cloudUnencrypted.cursor.get([
-      existingIdUserPair[0],
-      'identity'
-    ]);
-
-    existingIdentity.credentials =
-      existingIdUserPair[1].savedCredentials;
-
-    return identity.initialize()
-      .then(() => identity.restore(existingIdentity))
-      .then(() => state.cloud.initialize(existingIdentity.userInfo.id))
-      .then(() => devices.initialize(signOut))
-      .then(() => contacts.initialize())
-      .then(() => initializeNetwork())
-      .then(() => updateLatest())
-      .then(() => navigation.initialize())
+    return navigation.go(navigation.app.public.welcome);
+    // let localUsers = state.local.cursor.get();
+    //
+    // let existingIdUserPair;
+    //
+    // if (R.keys(localUsers).length !== 0) {
+    //   existingIdUserPair = R.pipe(
+    //     R.toPairs,
+    //     R.filter((idUserPair) => idUserPair[1].session),
+    //     R.map((idUserPair) => [
+    //       idUserPair[0],
+    //       idUserPair[1].session
+    //     ]),
+    //     R.find((idUserPair) => idUserPair[1].savedCredentials)
+    //   )(localUsers);
+    // }
+    //
+    // if (!existingIdUserPair) {
+    //   let prepareNavigate = !navigation.at(navigation.app.public.welcome) ?
+    //     navigation.resetHistory({disableAnimate: true}) :
+    //     $q.when();
+    //
+    //   return prepareNavigate
+    //     .then(() => navigation.go(navigation.app.public.welcome))
+    //     //workaround for too early initialization
+    //     .then(() => $timeout(() => navigation.clearCache(), 0));
+    // }
+    //
+    // let existingIdentity = state.cloudUnencrypted.cursor.get([
+    //   existingIdUserPair[0],
+    //   'identity'
+    // ]);
+    //
+    // existingIdentity.credentials =
+    //   existingIdUserPair[1].savedCredentials;
+    //
+    // return identity.initialize()
+    //   .then(() => identity.restore(existingIdentity))
+    //   .then(() => state.cloud.initialize(existingIdentity.userInfo.id))
+    //   .then(() => devices.initialize(signOut))
+    //   .then(() => contacts.initialize())
+    //   .then(() => initializeNetwork())
+    //   .then(() => updateLatest())
+    //   .then(() => navigation.initialize());
   };
 
   let signOut = function signOut() {
