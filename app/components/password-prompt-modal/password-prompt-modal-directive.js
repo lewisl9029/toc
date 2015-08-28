@@ -11,10 +11,15 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
     controllerAs: 'passwordPromptModal',
     controller: /*@ngInject*/ function PasswordPromptModalController(
       $scope,
+      session,
       state
     ) {
       this.removeModal = $scope.removeModal;
       this.staySignedIn = true;
+
+      this.signUp = function signUp() {
+        return session.signUp();
+      };
     }
   };
 }

@@ -12,7 +12,11 @@ export default /*@ngInject*/ function WelcomeController(
       remove-modal="welcomeView.passwordPromptModal.hide()">
     </toc-password-prompt-modal>
     `,
-    { scope: $scope }
+    {
+      scope: $scope,
+      backdropClickToClose: false,
+      hardwareBackButtonToClose: false
+    }
   );
 
   this.openPasswordPromptModal = function openPasswordPromptModal() {

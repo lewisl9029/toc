@@ -26,59 +26,60 @@ export default /*@ngInject*/ function identity(
   };
 
   let validateId = function validateId(id) {
+    //TODO: add a regex matcher to ensure it's in hex
     return id.length === 64;
   };
 
   let create = function createIdentity(sessionInfo, userInfo) {
-    let userCredentials = {
-      id: sessionInfo.id,
-      password: userInfo.password
-    };
-
-    let newUserInfo = {
-      id: sessionInfo.id,
-      displayName: userInfo.displayName,
-      email: userInfo.email
-    };
-
-    let credentials = cryptography.initialize(userCredentials);
-
-    try {
-      newUserInfo.challenge = cryptography.encrypt(userCredentials.id);
-      cryptography.decrypt(newUserInfo.challenge);
-    } catch(error) {
-      cryptography.destroy();
-      return $q.reject(error);
-    }
-
-    let newIdentity = {
-      userInfo: newUserInfo,
-      credentials
-    };
-
-    return $q.when(newIdentity);
+    // let userCredentials = {
+    //   id: sessionInfo.id,
+    //   password: userInfo.password
+    // };
+    //
+    // let newUserInfo = {
+    //   id: sessionInfo.id,
+    //   displayName: userInfo.displayName,
+    //   email: userInfo.email
+    // };
+    //
+    // let credentials = cryptography.initialize(userCredentials);
+    //
+    // try {
+    //   newUserInfo.challenge = cryptography.encrypt(userCredentials.id);
+    //   cryptography.decrypt(newUserInfo.challenge);
+    // } catch(error) {
+    //   cryptography.destroy();
+    //   return $q.reject(error);
+    // }
+    //
+    // let newIdentity = {
+    //   userInfo: newUserInfo,
+    //   credentials
+    // };
+    //
+    // return $q.when(newIdentity);
   };
 
-  let authenticate = function authenticateIdentity(userCredentials) {
-    let userInfo = state.cloudUnencrypted.identity.get().userInfo;
-    let challenge = userInfo.challenge;
+  let authenticate = function authenticateIdentity(password) {
+    let challenge = state.cloudUnencrypted.cryptography.get(['challenge']);
+    let salt = state.cloudUnencrypted.cryptography.get(['salt']);
 
-    let credentials = cryptography.initialize(userCredentials);
-
-    try {
-      cryptography.decrypt(challenge);
-    }
-    catch(error) {
-      cryptography.destroy();
-      return $q.reject('identity: wrong password');
+    if (!password || !challenge || !salt) {
+      return $q.reject('identity: missing auth info');
     }
 
-    let existingIdentity = {
-      userInfo,
-      credentials
-    };
+    return cryptography.initialize({password, salt})
+      .then((derivedCredentials) => {
+        try {
+          cryptography.decrypt(challenge);
+        }
+        catch(error) {
+          cryptography.destroy();
+          return $q.reject('identity: wrong password');
+        }
 
-    return $q.when(existingIdentity);
+        return $q.when(derivedCredentials);
+      });
   };
 
   let restore = function restoreIdentity(existingIdentity) {

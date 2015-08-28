@@ -369,13 +369,10 @@ export default /*@ngInject*/ function network(
   let initialize = function initializeNetwork(keypair) {
     let deferredSession = $q.defer();
 
-    let telehashKeypair = {};
-    if (keypair) {
-      telehashKeypair.id = keypair;
-    }
+    let telehashOptions = keypair ? { id: keypair } : {};
 
     try {
-      telehash.init(telehashKeypair,
+      telehash.init(telehashOptions,
         function initializeTelehash(error, telehashSession) {
           if (error) {
             return deferredSession.reject(error);
@@ -389,7 +386,7 @@ export default /*@ngInject*/ function network(
     }
 
     return deferredSession.promise.then((telehashSession) => {
-      let sessionInfo = {
+      let networkInfo = {
         id: telehashSession.hashname,
         keypair: telehashSession.id
       };
@@ -400,7 +397,7 @@ export default /*@ngInject*/ function network(
 
       listen({id: channels.INVITE_CHANNEL_ID});
 
-      return sessionInfo;
+      return networkInfo;
     });
   };
 

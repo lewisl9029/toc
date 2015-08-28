@@ -6,7 +6,6 @@ export default /*@ngInject*/ function cryptography(
   //TODO: add user setting to disable encryption
   let cachedCredentials;
 
-  // for encryption + authentication with a single key
   const AES_ENCRYPTION_MODE = 'AES-GCM';
 
   const AES_KEY_STRENGTH = 128;
@@ -14,8 +13,10 @@ export default /*@ngInject*/ function cryptography(
   // From Forge docs:
   // Note: a key size of 16 bytes will use AES-128, 24 => AES-192, 32 => AES-256
   const PBKDF2_KEY_LENGTH = AES_KEY_STRENGTH / 8;
+  const PBKDF2_SALT_LENGTH = AES_KEY_STRENGTH;
 
-  // Could probably afford to use more
+  // TODO: research what the up-to-date recommendation for PBKDF2 iterations is
+  // Could probably afford to use more if needed
   const PBKDF2_ITERATIONS = 10000;
 
   const HMAC_DIGEST_ALGORITHM = 'sha256';
@@ -62,19 +63,23 @@ export default /*@ngInject*/ function cryptography(
     return base64.replace(/\./g, '/');
   };
 
-  let getRandomBase64 = function getRandomBase64(size) {
-    let deferredRandomBase64 = $q.defer();
+  let getRandomBytes = function getRandom(size) {
+    let deferredRandomBytes = $q.defer();
 
     forge.random.getBytes(size, (error, bytes) => {
       if (error) {
-        return deferredRandomBase64.reject(error);
+        return deferredRandomBytes.reject(error);
       }
 
-      let result = forge.util.encode64(bytes);
-      deferredRandomBase64.resolve(result);
+      deferredRandomBytes.resolve(bytes);
     });
 
-    return deferredRandomBase64.promise;
+    return deferredRandomBytes.promise;
+  };
+
+  let getRandomBase64 = function getRandomBase64(size) {
+    return getRandomBytes(size)
+      .then((randomBytes) => forge.util.encode64(randomBytes));
   };
 
   let checkCredentials =
@@ -172,25 +177,28 @@ export default /*@ngInject*/ function cryptography(
       return JSON.parse(decipher.output.getBytes());
     };
 
-  let deriveCredentials = function deriveCredentials(userCredentials) {
-    let salt = forge.util.hexToBytes(userCredentials.id);
+  let create = function create(rawCredentials) {
+    let salt = rawCredentials.salt || getRandomBytes(PBKDF2_SALT_LENGTH);
     let key = forge.pkcs5.pbkdf2(
-      userCredentials.password,
+      rawCredentials.password,
       salt,
       PBKDF2_ITERATIONS,
       PBKDF2_KEY_LENGTH
     );
 
-    return { key };
+    return $q.when({ key, salt });
   };
 
   let isInitialized = function isInitialized() {
     return cachedCredentials !== undefined;
   };
 
-  let initialize = function initializeCryptography(userCredentials) {
-    cachedCredentials = deriveCredentials(userCredentials);
-    return cachedCredentials;
+  let initialize = function initializeCryptography(rawCredentials) {
+    return create(rawCredentials)
+      .then((derivedCredentials) => {
+        cachedCredentials = derivedCredentials;
+        return derivedCredentials;
+      });
   };
 
   let restore = function restoreCryptography(savedCredentials) {
@@ -213,7 +221,7 @@ export default /*@ngInject*/ function cryptography(
     encryptDeterministic,
     encrypt,
     decrypt,
-    deriveCredentials,
+    create,
     isInitialized,
     initialize,
     restore,

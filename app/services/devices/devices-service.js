@@ -14,37 +14,40 @@ export default /*@ngInject*/ function devices(
     return $window.cordova;
   };
 
-  let updateKillFlags = function updateKillFlags() {
+  let disconnectOtherDevices = function disconnectOtherDevices() {
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
 
     let cloudDevices = state.cloud.devices.get() || {};
     cloudDevices[localDeviceId] = {};
 
-    let killFlagsUpdated = R.map((deviceId) => {
-      let killFlag = deviceId === localDeviceId ? 0 : 1;
+    let devicesDisconnecting = R.pipe(
+      R.keys,
+      R.map((deviceId) => {
+        let disconnect = deviceId === localDeviceId ? 0 : 1;
 
-      return state.save(
-        state.cloud.devices,
-        [deviceId, 'kill'],
-        killFlag
-      );
-    })(R.keys(cloudDevices));
+        return state.save(
+          state.cloud.devices,
+          [deviceId, 'disconnect'],
+          disconnect
+        );
+      })
+    ) (cloudDevices);
 
-    return $q.all(killFlagsUpdated);
+    return $q.all(devicesDisconnecting);
   };
 
-  let listenForKillFlags = function listenForKillFlags(signOut) {
+  let listenForDisconnects = function listenForDisconnects(destroySession) {
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
-    let localKillFlagCursor = state.cloud.devices
-      .select([localDeviceId, 'kill']);
+    let localDisconnectCursor = state.cloud.devices
+      .select([localDeviceId, 'disconnect']);
 
-    let handleKillFlagUpdate = function handleKillFlagUpdate(event) {
+    let handleDisconnects = function handleDisconnects(event) {
       if (event.data.data !== 1) {
         return;
       }
 
-      let killingDevice = $timeout(() => {
-        signOut();
+      let disconnectingDevice = $timeout(() => {
+        destroySession();
       }, 5000);
 
       let remoteLoginPopup = $ionicPopup.show({
@@ -55,47 +58,43 @@ export default /*@ngInject*/ function devices(
             text: 'Stay connected',
             type: 'button-assertive',
             onTap: (event) => {
-              $timeout.cancel(killingDevice);
-              updateKillFlags();
+              $timeout.cancel(disconnectingDevice);
+              disconnectOtherDevices();
             }
           }
         ]
       });
     };
 
-    state.addListener(localKillFlagCursor, handleKillFlagUpdate, null, {
+    state.addListener(localDisconnectCursor, handleDisconnects, null, {
       skipInitialize: true
     });
 
     return $q.when();
   };
 
-  let createDeviceId = function createDeviceId() {
-    return cryptography.getRandomBase64(16);
-  };
-
-  //Workaround for circular dependency between devices and session
-  let initialize = function initializeDevices(signOut) {
+  let create = function create() {
     let localDeviceInfo = state.local.devices.get('deviceInfo');
 
-    let deviceReady = localDeviceInfo ?
-      $q.when() :
-      createDeviceId()
+    return localDeviceInfo ?
+      $q.when(localDeviceInfo) :
+      cryptography.getRandomBase64(8)
         .then((deviceId) => state.save(
           state.local.devices,
           ['deviceInfo'],
           { id: deviceId }
-        ))
-        // needed a manual commit here because updatePing() depends on deviceId
-        .then(() => state.commit());
+        ));
+  };
 
-    return deviceReady
-      .then(updateKillFlags)
-      .then(() => listenForKillFlags(signOut));
+  //Workaround for circular dependency between devices and session
+  let initialize = function initializeDevices(destroySession) {
+    return disconnectOtherDevices()
+      .then(() => listenForDisconnects(destroySession));
   };
 
   return {
     initialize,
+    create,
     isCordovaApp
   };
 }

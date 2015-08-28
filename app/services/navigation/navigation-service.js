@@ -82,6 +82,8 @@ export default /*@ngInject*/ function navigation(
       event.preventDefault();
       return go(redirectStateName);
     });
+
+    return $q.when();
   };
 
   let clearCache = function clearCache() {

@@ -51,6 +51,8 @@ export default /*@ngInject*/ function state(
     cursor: stateService.tree.select(['cloud'])
   };
 
+  stateService.local.cryptography = stateService.local.cursor
+    .select(['cryptography']);
   stateService.local.identity = stateService.local.cursor
     .select(['identity']);
   stateService.local.session = stateService.local.cursor
@@ -254,6 +256,7 @@ export default /*@ngInject*/ function state(
     storage.cloudUnencrypted.onChange(handleChangeCloudUnencrypted);
     return initializeLocal()
       .then(() => initializeCloudUnencrypted());
+    // cloud init has to be done separately due to need for password to decrypt
   };
 
   let destroy = function destroy() {
