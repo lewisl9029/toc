@@ -60,39 +60,38 @@ export default /*@ngInject*/ function identity(
     // return $q.when(newIdentity);
   };
 
-  let authenticate = function authenticateIdentity(password) {
+  let verifyCredentials = function verifyCredentials(derivedCredentials) {
     let challenge = state.cloudUnencrypted.cryptography.get(['challenge']);
+
+    if (!challenge) {
+      return $q.reject('identity: missing auth challenge');
+    }
+
+    try {
+      cryptography.decrypt(challenge);
+    }
+    catch(error) {
+      return cryptography.destroy()
+        .then(() => $q.reject('identity: wrong password'));
+    }
+
+    return $q.when(derivedCredentials);
+  };
+
+  let authenticate = function authenticateIdentity(password) {
     let salt = state.cloudUnencrypted.cryptography.get(['salt']);
 
-    if (!password || !challenge || !salt) {
-      return $q.reject('identity: missing auth info');
+    if (!password || !salt) {
+      return $q.reject('identity: missing auth parameters');
     }
 
     return cryptography.initialize({password, salt})
-      .then((derivedCredentials) => {
-        try {
-          cryptography.decrypt(challenge);
-        }
-        catch(error) {
-          cryptography.destroy();
-          return $q.reject('identity: wrong password');
-        }
-
-        return $q.when(derivedCredentials);
-      });
+      .then(verifyCredentials);
   };
 
-  let restore = function restoreIdentity(existingIdentity) {
-    try {
-      cryptography.restore(existingIdentity.credentials);
-      cryptography.decrypt(existingIdentity.userInfo.challenge);
-    }
-    catch(error) {
-      cryptography.destroy();
-      return $q.reject('identity: wrong saved credentials');
-    }
-
-    return $q.when(existingIdentity);
+  let restore = function restoreIdentity(derivedCredentials) {
+    return cryptography.restore(derivedCredentials)
+      .then(verifyCredentials);
   };
 
   let initialize = function initializeIdentity() {

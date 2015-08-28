@@ -201,13 +201,14 @@ export default /*@ngInject*/ function cryptography(
       });
   };
 
-  let restore = function restoreCryptography(savedCredentials) {
-    cachedCredentials = savedCredentials;
-    return savedCredentials;
+  let restore = function restoreCryptography(derivedCredentials) {
+    cachedCredentials = derivedCredentials;
+    return $q.when(derivedCredentials);
   };
 
   let destroy = function destroyCryptography() {
     cachedCredentials = undefined;
+    return $q.when();
   };
 
   return {

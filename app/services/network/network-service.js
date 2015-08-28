@@ -366,8 +366,10 @@ export default /*@ngInject*/ function network(
       );
   };
 
-  let initialize = function initializeNetwork(keypair) {
+  let initialize = function initializeNetwork() {
     let deferredSession = $q.defer();
+
+    let keypair = state.cloud.network.get(['networkInfo']).keypair;
 
     let telehashOptions = keypair ? { id: keypair } : {};
 

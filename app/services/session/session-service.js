@@ -128,25 +128,27 @@ export default /*@ngInject*/ function session(
     //   .then(() => navigation.initialize());
   };
 
-  let authenticate = function authenticateSession() {
-
+  let authenticate = function authenticateSession(password) {
+    return identity.authenticate(password)
+      .then(saveDerivedCredentials)
+      .then(() => state.cloud.initialize())
+      .then(() => network.initialize())
+      .then(() => devices.initialize(destroy))
+      .then(() => channels.initialize(network.listen))
+      .then(() => status.initialize())
+      .then(() => time.initialize())
+      .then(() => navigation.initialize());
   };
 
   let restore = function restoreSession() {
-    // return identity.initialize()
-    //   .then(() => identity.authenticate(userCredentials))
-    //   .then((existingIdentity) => {
-    //     return state.cloud.initialize(userCredentials.id)
-    //       .then(() => devices.initialize(signOut))
-    //       .then(() =>
-    //         saveCredentials(existingIdentity.credentials, options.staySignedIn)
-    //       );
-    //   })
-    //   .then(() => contacts.initialize())
-    //   .then(() => initializeNetwork())
-    //   .then(() => updateLatest())
-    //   .then(() => time.initialize())
-    //   .then(() => navigation.initialize())
+    return identity.restore(password)
+      .then(() => state.cloud.initialize())
+      .then(() => network.initialize())
+      .then(() => devices.initialize(destroy))
+      .then(() => channels.initialize(network.listen))
+      .then(() => status.initialize())
+      .then(() => time.initialize())
+      .then(() => navigation.initialize());
   };
 
   let initialize = function initialize() {
