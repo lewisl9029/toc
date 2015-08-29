@@ -18,7 +18,7 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       this.staySignedIn = true;
 
       this.signUp = function signUp() {
-        return session.signUp();
+        return session.start({password: this.password}, this.staySignedIn);
       };
     }
   };

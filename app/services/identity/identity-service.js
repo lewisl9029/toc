@@ -30,37 +30,7 @@ export default /*@ngInject*/ function identity(
     return id.length === 64;
   };
 
-  let create = function createIdentity(sessionInfo, userInfo) {
-    // let userCredentials = {
-    //   id: sessionInfo.id,
-    //   password: userInfo.password
-    // };
-    //
-    // let newUserInfo = {
-    //   id: sessionInfo.id,
-    //   displayName: userInfo.displayName,
-    //   email: userInfo.email
-    // };
-    //
-    // let credentials = cryptography.initialize(userCredentials);
-    //
-    // try {
-    //   newUserInfo.challenge = cryptography.encrypt(userCredentials.id);
-    //   cryptography.decrypt(newUserInfo.challenge);
-    // } catch(error) {
-    //   cryptography.destroy();
-    //   return $q.reject(error);
-    // }
-    //
-    // let newIdentity = {
-    //   userInfo: newUserInfo,
-    //   credentials
-    // };
-    //
-    // return $q.when(newIdentity);
-  };
-
-  let verifyCredentials = function verifyCredentials(derivedCredentials) {
+  let authenticate = function authenticate(derivedCredentials) {
     let challenge = state.cloudUnencrypted.cryptography.get(['challenge']);
 
     if (!challenge) {
@@ -78,37 +48,61 @@ export default /*@ngInject*/ function identity(
     return $q.when(derivedCredentials);
   };
 
-  let authenticate = function authenticateIdentity(password) {
-    let salt = state.cloudUnencrypted.cryptography.get(['salt']);
+  let initialize = function initializeIdentity(credentials, staySignedIn) {
+    let saveCredentials = (derivedCredentials) => staySignedIn ?
+        state.save(
+          state.local.cryptography,
+          ['derivedCredentials'],
+          derivedCredentials
+        ) :
+        $q.when();
 
-    if (!password || !salt) {
-      return $q.reject('identity: missing auth parameters');
+    let verifyCredentials = (credentials) =>
+      cryptography.initialize(credentials)
+        .then(authenticate)
+        .then(saveCredentials);
+
+    if (credentials.key) {
+      return verifyCredentials(credentials);
     }
 
-    return cryptography.initialize({password, salt})
-      .then(verifyCredentials);
-  };
+    if (!credentials.password) {
+      return $q.reject('identity: no password or key provided');
+    }
 
-  let restore = function restoreIdentity(derivedCredentials) {
-    return cryptography.restore(derivedCredentials)
-      .then(verifyCredentials);
-  };
+    let existingSalt = state.cloudUnencrypted.cryptography.get(['salt']);
 
-  let initialize = function initializeIdentity() {
-    return $q.when();
-    // return state.save(
-    //   state.memory.cursors.identity,
-    //   ['currentUser'],
-    //   userId
-    // );
+    if (existingSalt) {
+      let rawCredentials = {
+        password: credentials.password,
+        salt: existingSalt
+      };
+
+      return verifyCredentials(rawCredentials);
+    }
+
+    let saveSalt = (salt) => state.save(
+      state.cloudUnencrypted.cryptography,
+      ['salt'],
+      salt
+    );
+
+    let saveChallege = (challenge) => state.save(
+      state.cloudUnencrypted.cryptography,
+      ['challenge'],
+      challenge
+    );
+
+    return cryptography.createSalt()
+      .then(saveSalt)
+      .then((salt) => cryptography.initialize(credentials)
+        .then(saveCredentials)
+        .then(() => cryptography.createChallenge(salt)))
+      .then(saveChallege);
   };
 
   let destroy = function destroyIdentity() {
     return $q.when();
-    // return state.remove(
-    //   state.memory.cursors.identity,
-    //   ['currentUser']
-    // );
   };
 
   return {

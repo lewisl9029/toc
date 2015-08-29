@@ -13,7 +13,8 @@ export default /*@ngInject*/ function cryptography(
   // From Forge docs:
   // Note: a key size of 16 bytes will use AES-128, 24 => AES-192, 32 => AES-256
   const PBKDF2_KEY_LENGTH = AES_KEY_STRENGTH / 8;
-  const PBKDF2_SALT_LENGTH = AES_KEY_STRENGTH;
+  const PBKDF2_SALT_LENGTH = PBKDF2_KEY_LENGTH;
+  const AES_IV_LENGTH = PBKDF2_KEY_LENGTH;
 
   // TODO: research what the up-to-date recommendation for PBKDF2 iterations is
   // Could probably afford to use more if needed
@@ -82,6 +83,16 @@ export default /*@ngInject*/ function cryptography(
       .then((randomBytes) => forge.util.encode64(randomBytes));
   };
 
+  let encodeBase64 = function encodeBase64(bytes) {
+    let base64 = forge.util.encode64(bytes);
+    return $q.when(base64);
+  };
+
+  let decodeBase64 = function decodeBase64(base64) {
+    let bytes = forge.util.decode64(base64);
+    return $q.when(bytes);
+  };
+
   let checkCredentials =
     function checkCredentials(credentials) {
       if (credentials && credentials.key) {
@@ -143,7 +154,7 @@ export default /*@ngInject*/ function cryptography(
     };
 
   let encrypt = function encrypt(object, credentials = cachedCredentials) {
-    let ivBytes = forge.random.getBytesSync(16);
+    let ivBytes = forge.random.getBytesSync(AES_IV_LENGTH);
 
     return encryptBase(object, ivBytes, credentials);
   };
@@ -177,8 +188,16 @@ export default /*@ngInject*/ function cryptography(
       return JSON.parse(decipher.output.getBytes());
     };
 
-  let create = function create(rawCredentials) {
-    let salt = rawCredentials.salt || getRandomBytes(PBKDF2_SALT_LENGTH);
+  let createSalt = function createSalt() {
+    return getRandomBase64(PBKDF2_SALT_LENGTH);
+  };
+
+  let createChallenge = function createChallenge(salt) {
+    return $q.when(encrypt(salt));
+  };
+
+  let derive = function derive(rawCredentials) {
+    let salt = forge.util.decode64(rawCredentials.salt);
     let key = forge.pkcs5.pbkdf2(
       rawCredentials.password,
       salt,
@@ -186,24 +205,27 @@ export default /*@ngInject*/ function cryptography(
       PBKDF2_KEY_LENGTH
     );
 
-    return $q.when({ key, salt });
+    return $q.when({ key });
   };
 
   let isInitialized = function isInitialized() {
     return cachedCredentials !== undefined;
   };
 
-  let initialize = function initializeCryptography(rawCredentials) {
-    return create(rawCredentials)
-      .then((derivedCredentials) => {
-        cachedCredentials = derivedCredentials;
-        return derivedCredentials;
-      });
-  };
+  let cache = function cache(derivedCredentials) {
+    checkCredentials(derivedCredentials);
 
-  let restore = function restoreCryptography(derivedCredentials) {
     cachedCredentials = derivedCredentials;
     return $q.when(derivedCredentials);
+  };
+
+  let initialize = function initializeCryptography(credentials) {
+    let cachingCredentials = credentials.key ?
+      cache(credentials) :
+      derive(credentials)
+        .then(cache);
+
+    return cachingCredentials;
   };
 
   let destroy = function destroyCryptography() {
@@ -216,13 +238,17 @@ export default /*@ngInject*/ function cryptography(
     UNENCRYPTED_OBJECT,
     escapeBase64,
     unescapeBase64,
+    encodeBase64,
+    decodeBase64,
     getRandomBase64,
     getHmac,
     getMd5,
     encryptDeterministic,
     encrypt,
     decrypt,
-    create,
+    createSalt,
+    createChallenge,
+    derive,
     isInitialized,
     initialize,
     restore,

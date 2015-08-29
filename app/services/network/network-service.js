@@ -371,6 +371,21 @@ export default /*@ngInject*/ function network(
 
     let keypair = state.cloud.network.get(['networkInfo']).keypair;
 
+    let saveUserInfo = (networkInfo) => {
+      let userInfo = {
+        id: networkInfo.id,
+        displayName: 'Anonymous'
+      };
+
+      return state.save(state.cloud.identity, ['userInfo'], userInfo);
+    };
+
+    //Don't save network info if already saved
+    let saveNetworkInfo = (networkInfo) => keypair ?
+      $q.when() :
+      state.save(state.cloud.network, ['networkInfo'], networkInfo)
+        .then(saveUserInfo);
+
     let telehashOptions = keypair ? { id: keypair } : {};
 
     try {
@@ -387,7 +402,7 @@ export default /*@ngInject*/ function network(
       return $q.reject(error);
     }
 
-    return deferredSession.promise.then((telehashSession) => {
+    let initializeNetworkInfo = (telehashSession) => {
       let networkInfo = {
         id: telehashSession.hashname,
         keypair: telehashSession.id
@@ -400,7 +415,11 @@ export default /*@ngInject*/ function network(
       listen({id: channels.INVITE_CHANNEL_ID});
 
       return networkInfo;
-    });
+    };
+
+    return deferredSession.promise
+      .then(initializeNetworkInfo)
+      .then(saveNewId);
   };
 
   let destroy = function destroyNetwork() {
