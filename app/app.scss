@@ -60,6 +60,11 @@ $bar-subheader-height: 75px !default;
     align-items: center;
   }
 
+  .slide-in-up {
+    -webkit-transform: translate3d(0, 200%, 0);
+    transform: translate3d(0, 200%, 0);
+  }
+
   .modal {
     width: 80%;
     height: 80%;

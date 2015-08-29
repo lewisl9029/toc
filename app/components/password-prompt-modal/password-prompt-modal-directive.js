@@ -11,14 +11,25 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
     controllerAs: 'passwordPromptModal',
     controller: /*@ngInject*/ function PasswordPromptModalController(
       $scope,
+      $q,
       session,
       state
     ) {
       this.removeModal = $scope.removeModal;
-      this.staySignedIn = true;
+
+      let staySignedIn = state.local.session.get(['staySignedIn']);
+      this.staySignedIn = staySignedIn === undefined ? true : staySignedIn;
 
       this.signUp = function signUp() {
-        return session.start({password: this.password}, this.staySignedIn);
+        let updateStaySignedIn = () => staySignedIn === this.staySignedIn ?
+          $q.when() :
+          state.save(state.local.session, ['staySignedIn'], this.staySignedIn);
+
+        return updateStaySignedIn()
+          .then(() => session.start(
+            { password: this.password },
+            this.staySignedIn
+          ));
       };
     }
   };
