@@ -16,6 +16,12 @@ export default /*@ngInject*/ function session(
   storage,
   time
 ) {
+  let preparingSession = $q.defer();
+
+  let prepare = function prepareSession() {
+    return preparingSession.promise;
+  };
+
   let start = function startSession(credentials, staySignedIn) {
     return identity.initialize(credentials, staySignedIn)
       .then(() => state.cloud.initialize())
@@ -45,7 +51,11 @@ export default /*@ngInject*/ function session(
       .then(() => state.initialize())
       .then(() => devices.create())
       .then(() => startSession())
-      .catch($log.error);
+      .then(() => preparingSession.resolve('session: ready'))
+      .catch((error) => {
+        $log.error(error);
+        return preparingSession.reject(error);
+      });
   };
 
   let destroy = function destroySession() {
@@ -57,6 +67,7 @@ export default /*@ngInject*/ function session(
   };
 
   return {
+    prepare,
     start,
     initialize,
     destroy

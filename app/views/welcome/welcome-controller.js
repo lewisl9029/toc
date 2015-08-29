@@ -4,26 +4,30 @@ export default /*@ngInject*/ function WelcomeController(
   $scope,
   R,
   state,
+  session,
   storage
 ) {
-  this.passwordPromptModal = $ionicModal.fromTemplate(
-    `
-    <toc-password-prompt-modal class="toc-modal-container"
-      remove-modal="welcomeView.passwordPromptModal.hide()">
-    </toc-password-prompt-modal>
-    `,
-    {
-      scope: $scope,
-      backdropClickToClose: false,
-      hardwareBackButtonToClose: false
-    }
-  );
+  session.prepare()
+    .then(() => {
+      this.passwordPromptModal = $ionicModal.fromTemplate(
+        `
+        <toc-password-prompt-modal class="toc-modal-container"
+          remove-modal="welcomeView.passwordPromptModal.hide()">
+        </toc-password-prompt-modal>
+        `,
+        {
+          scope: $scope,
+          backdropClickToClose: false,
+          hardwareBackButtonToClose: false
+        }
+      );
 
-  this.openPasswordPromptModal = function openPasswordPromptModal() {
-    this.passwordPromptModal.show();
-  };
+      this.openPasswordPromptModal = function openPasswordPromptModal() {
+        this.passwordPromptModal.show();
+      };
 
-  this.openPasswordPromptModal();
+      this.openPasswordPromptModal();
 
-  $scope.$on('$stateChangeStart', () => this.passwordPromptModal.remove());
+      $scope.$on('$stateChangeStart', () => this.passwordPromptModal.remove());
+    });
 }
