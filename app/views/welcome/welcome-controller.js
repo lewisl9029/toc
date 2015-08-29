@@ -7,12 +7,12 @@ export default /*@ngInject*/ function WelcomeController(
   session,
   storage
 ) {
-  session.prepare()
+  session.preparePublic()
     .then(() => {
       this.passwordPromptModal = $ionicModal.fromTemplate(
         `
         <toc-password-prompt-modal class="toc-modal-container"
-          remove-modal="welcomeView.passwordPromptModal.hide()">
+          remove-modal="welcomeView.passwordPromptModal.remove()">
         </toc-password-prompt-modal>
         `,
         {
@@ -27,7 +27,5 @@ export default /*@ngInject*/ function WelcomeController(
       };
 
       this.openPasswordPromptModal();
-
-      $scope.$on('$stateChangeStart', () => this.passwordPromptModal.remove());
     });
 }

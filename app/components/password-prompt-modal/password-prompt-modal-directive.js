@@ -11,6 +11,8 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
     controllerAs: 'passwordPromptModal',
     controller: /*@ngInject*/ function PasswordPromptModalController(
       $scope,
+      $ionicLoading,
+      $timeout,
       $q,
       session,
       state
@@ -23,6 +25,8 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       this.staySignedIn = staySignedIn === undefined ? true : staySignedIn;
 
       this.signUp = function signUp() {
+        // $ionicLoading.show();
+
         let updateStaySignedIn = () => staySignedIn === this.staySignedIn ?
           $q.when() :
           state.save(state.local.session, ['staySignedIn'], this.staySignedIn);
@@ -31,7 +35,9 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
           .then(() => session.start(
             { password: this.password },
             this.staySignedIn
-          ));
+          ))
+          .then(() => $timeout(() => this.removeModal(), 1000));
+          // .then(() => $ionicLoading.hide());
       };
     }
   };

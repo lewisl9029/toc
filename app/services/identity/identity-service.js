@@ -49,13 +49,24 @@ export default /*@ngInject*/ function identity(
   };
 
   let initialize = function initializeIdentity(credentials, staySignedIn) {
-    let saveCredentials = (derivedCredentials) => staySignedIn ?
-        state.save(
-          state.local.cryptography,
-          ['derivedCredentials'],
-          derivedCredentials
-        ) :
-        $q.when();
+    let saveCredentials = (derivedCredentials) => {
+      if (!staySignedIn) {
+        return $q.when();
+      }
+
+      let existingCredentials =
+        state.local.cryptography.get(['derivedCredentials']);
+
+      if (existingCredentials) {
+        return $q.when();
+      }
+      
+      return state.save(
+        state.local.cryptography,
+        ['derivedCredentials'],
+        derivedCredentials
+      );
+    }
 
     let verifyCredentials = (credentials) =>
       cryptography.initialize(credentials)

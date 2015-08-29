@@ -16,10 +16,15 @@ export default /*@ngInject*/ function session(
   storage,
   time
 ) {
-  let preparingSession = $q.defer();
+  let preparingPrivateSession = $q.defer();
+  let preparingPublicSession = $q.defer();
 
-  let prepare = function prepareSession() {
-    return preparingSession.promise;
+  let preparePrivate = function prepareSession() {
+    return preparingPrivateSession.promise;
+  };
+
+  let preparePublic = function prepareSession() {
+    return preparingPublicSession.promise;
   };
 
   let start = function startSession(credentials, staySignedIn) {
@@ -31,6 +36,7 @@ export default /*@ngInject*/ function session(
       .then(() => status.initialize())
       .then(() => time.initialize())
       .then(() => navigation.initialize())
+      .then(() => preparingPrivateSession.resolve('session: private ready'))
       .catch($log.error);
   };
 
@@ -40,7 +46,9 @@ export default /*@ngInject*/ function session(
         state.local.cryptography.get(['derivedCredentials']);
 
       if (!derivedCredentials) {
-        return navigation.initializePublic();
+        return navigation.initializePublic()
+          .then(() => preparingPublicSession.resolve('session: public ready'))
+          .catch($log.error);
       }
 
       return start(derivedCredentials);
@@ -50,12 +58,7 @@ export default /*@ngInject*/ function session(
       .then(() => storage.prepare())
       .then(() => state.initialize())
       .then(() => devices.create())
-      .then(() => startSession())
-      .then(() => preparingSession.resolve('session: ready'))
-      .catch((error) => {
-        $log.error(error);
-        return preparingSession.reject(error);
-      });
+      .then(() => startSession());
   };
 
   let destroy = function destroySession() {
@@ -67,7 +70,8 @@ export default /*@ngInject*/ function session(
   };
 
   return {
-    prepare,
+    preparePublic,
+    preparePrivate,
     start,
     initialize,
     destroy
