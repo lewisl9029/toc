@@ -83,13 +83,23 @@ export default /*@ngInject*/ function cryptography(
       .then((randomBytes) => forge.util.encode64(randomBytes));
   };
 
-  let encodeBase64 = function encodeBase64(bytes) {
+  let encodeBase64Sync = function encodeBase64(bytes) {
     let base64 = forge.util.encode64(bytes);
+    return base64;
+  };
+
+  let decodeBase64Sync = function decodeBase64(base64) {
+    let bytes = forge.util.decode64(base64);
+    return bytes;
+  };
+
+  let encodeBase64 = function encodeBase64(bytes) {
+    let base64 = encodeBase64Sync(bytes);
     return $q.when(base64);
   };
 
   let decodeBase64 = function decodeBase64(base64) {
-    let bytes = forge.util.decode64(base64);
+    let bytes = decodeBase64Sync(base64);
     return $q.when(bytes);
   };
 
@@ -221,11 +231,16 @@ export default /*@ngInject*/ function cryptography(
 
   let initialize = function initializeCryptography(credentials) {
     let cachingCredentials = credentials.key ?
-      cache(credentials) :
+      cache({ key: decodeBase64Sync(credentials.key) }) :
       derive(credentials)
         .then(cache);
 
-    return cachingCredentials;
+    return cachingCredentials
+      .then((derivedCredentials) => {
+        return {
+          key: encodeBase64Sync(derivedCredentials.key)
+        }
+      });
   };
 
   let destroy = function destroyCryptography() {
@@ -251,7 +266,6 @@ export default /*@ngInject*/ function cryptography(
     derive,
     isInitialized,
     initialize,
-    restore,
     destroy
   };
 }

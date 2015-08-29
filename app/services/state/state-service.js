@@ -60,6 +60,8 @@ export default /*@ngInject*/ function state(
   stateService.local.devices = stateService.local.cursor
     .select(['devices']);
 
+  stateService.cloudUnencrypted.cryptography = stateService.cloudUnencrypted
+    .cursor.select(['cryptography']);
   stateService.cloudUnencrypted.identity = stateService.cloudUnencrypted
     .cursor.select(['identity']);
   stateService.cloudUnencrypted.session = stateService.cloudUnencrypted

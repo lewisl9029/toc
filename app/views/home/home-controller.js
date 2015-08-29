@@ -29,7 +29,7 @@ export default /*@ngInject*/ function HomeController(
         return;
       }
 
-      return session.signOut();
+      return session.destroy();
     });
   };
 }

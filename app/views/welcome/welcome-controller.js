@@ -24,4 +24,6 @@ export default /*@ngInject*/ function WelcomeController(
   };
 
   this.openPasswordPromptModal();
+
+  $scope.$on('$stateChangeStart', () => this.passwordPromptModal.remove());
 }

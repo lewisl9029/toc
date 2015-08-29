@@ -95,7 +95,10 @@ export default /*@ngInject*/ function identity(
 
     return cryptography.createSalt()
       .then(saveSalt)
-      .then((salt) => cryptography.initialize(credentials)
+      .then((salt) => cryptography.initialize({
+          password: credentials.password,
+          salt: salt
+        })
         .then(saveCredentials)
         .then(() => cryptography.createChallenge(salt)))
       .then(saveChallege);
@@ -107,10 +110,8 @@ export default /*@ngInject*/ function identity(
 
   return {
     getAvatar,
-    create,
     validateId,
     authenticate,
-    restore,
     initialize,
     destroy
   };

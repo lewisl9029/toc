@@ -1,6 +1,7 @@
 export let serviceName = 'session';
 export default /*@ngInject*/ function session(
   $q,
+  $log,
   $timeout,
   $window,
   channels,
@@ -23,11 +24,12 @@ export default /*@ngInject*/ function session(
       .then(() => channels.initialize(network.listen))
       .then(() => status.initialize())
       .then(() => time.initialize())
-      .then(() => navigation.initialize());
+      .then(() => navigation.initialize())
+      .catch($log.error);
   };
 
   let initialize = function initializeSession() {
-    let initializeSession = () => {
+    let startSession = () => {
       let derivedCredentials =
         state.local.cryptography.get(['derivedCredentials']);
 
@@ -42,7 +44,8 @@ export default /*@ngInject*/ function session(
       .then(() => storage.prepare())
       .then(() => state.initialize())
       .then(() => devices.create())
-      .then(() => initializeSession());
+      .then(() => startSession())
+      .catch($log.error);
   };
 
   let destroy = function destroySession() {

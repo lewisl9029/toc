@@ -369,7 +369,7 @@ export default /*@ngInject*/ function network(
   let initialize = function initializeNetwork() {
     let deferredSession = $q.defer();
 
-    let keypair = state.cloud.network.get(['networkInfo']).keypair;
+    let keypair = state.cloud.network.get(['networkInfo', 'keypair']);
 
     let saveUserInfo = (networkInfo) => {
       let userInfo = {
@@ -402,7 +402,7 @@ export default /*@ngInject*/ function network(
       return $q.reject(error);
     }
 
-    let initializeNetworkInfo = (telehashSession) => {
+    let startNetwork = (telehashSession) => {
       let networkInfo = {
         id: telehashSession.hashname,
         keypair: telehashSession.id
@@ -418,8 +418,8 @@ export default /*@ngInject*/ function network(
     };
 
     return deferredSession.promise
-      .then(initializeNetworkInfo)
-      .then(saveNewId);
+      .then(startNetwork)
+      .then(saveNetworkInfo);
   };
 
   let destroy = function destroyNetwork() {
