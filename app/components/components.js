@@ -17,8 +17,6 @@ import notificationList from './notification-list/notification-list';
 import notificationOverlay from './notification-overlay/notification-overlay';
 import qrImage from './qr-image/qr-image';
 import conversationsMenu from './conversations-menu/conversations-menu';
-import signinForm from './signin-form/signin-form';
-import signupForm from './signup-form/signup-form';
 import spinnerButton from './spinner-button/spinner-button';
 import userCard from './user-card/user-card';
 
@@ -38,8 +36,6 @@ export default angular.module('toc.components', [
   notificationOverlay.name,
   qrImage.name,
   conversationsMenu.name,
-  signinForm.name,
-  signupForm.name,
   spinnerButton.name,
   userCard.name
 ]);
