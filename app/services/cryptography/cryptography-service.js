@@ -6,7 +6,6 @@ export default /*@ngInject*/ function cryptography(
   //TODO: add user setting to disable encryption
   let cachedCredentials;
 
-  // for encryption + authentication with a single key
   const AES_ENCRYPTION_MODE = 'AES-GCM';
 
   const AES_KEY_STRENGTH = 128;
@@ -14,8 +13,11 @@ export default /*@ngInject*/ function cryptography(
   // From Forge docs:
   // Note: a key size of 16 bytes will use AES-128, 24 => AES-192, 32 => AES-256
   const PBKDF2_KEY_LENGTH = AES_KEY_STRENGTH / 8;
+  const PBKDF2_SALT_LENGTH = PBKDF2_KEY_LENGTH;
+  const AES_IV_LENGTH = PBKDF2_KEY_LENGTH;
 
-  // Could probably afford to use more
+  // TODO: research what the up-to-date recommendation for PBKDF2 iterations is
+  // Could probably afford to use more if needed
   const PBKDF2_ITERATIONS = 10000;
 
   const HMAC_DIGEST_ALGORITHM = 'sha256';
@@ -62,19 +64,43 @@ export default /*@ngInject*/ function cryptography(
     return base64.replace(/\./g, '/');
   };
 
-  let getRandomBase64 = function getRandomBase64(size) {
-    let deferredRandomBase64 = $q.defer();
+  let getRandomBytes = function getRandom(size) {
+    let deferredRandomBytes = $q.defer();
 
     forge.random.getBytes(size, (error, bytes) => {
       if (error) {
-        return deferredRandomBase64.reject(error);
+        return deferredRandomBytes.reject(error);
       }
 
-      let result = forge.util.encode64(bytes);
-      deferredRandomBase64.resolve(result);
+      deferredRandomBytes.resolve(bytes);
     });
 
-    return deferredRandomBase64.promise;
+    return deferredRandomBytes.promise;
+  };
+
+  let getRandomBase64 = function getRandomBase64(size) {
+    return getRandomBytes(size)
+      .then((randomBytes) => forge.util.encode64(randomBytes));
+  };
+
+  let encodeBase64Sync = function encodeBase64(bytes) {
+    let base64 = forge.util.encode64(bytes);
+    return base64;
+  };
+
+  let decodeBase64Sync = function decodeBase64(base64) {
+    let bytes = forge.util.decode64(base64);
+    return bytes;
+  };
+
+  let encodeBase64 = function encodeBase64(bytes) {
+    let base64 = encodeBase64Sync(bytes);
+    return $q.when(base64);
+  };
+
+  let decodeBase64 = function decodeBase64(base64) {
+    let bytes = decodeBase64Sync(base64);
+    return $q.when(bytes);
   };
 
   let checkCredentials =
@@ -138,7 +164,7 @@ export default /*@ngInject*/ function cryptography(
     };
 
   let encrypt = function encrypt(object, credentials = cachedCredentials) {
-    let ivBytes = forge.random.getBytesSync(16);
+    let ivBytes = forge.random.getBytesSync(AES_IV_LENGTH);
 
     return encryptBase(object, ivBytes, credentials);
   };
@@ -172,34 +198,54 @@ export default /*@ngInject*/ function cryptography(
       return JSON.parse(decipher.output.getBytes());
     };
 
-  let deriveCredentials = function deriveCredentials(userCredentials) {
-    let salt = forge.util.hexToBytes(userCredentials.id);
+  let createSalt = function createSalt() {
+    return getRandomBase64(PBKDF2_SALT_LENGTH);
+  };
+
+  let createChallenge = function createChallenge(salt) {
+    return $q.when(encrypt(salt));
+  };
+
+  let derive = function derive(rawCredentials) {
+    let salt = forge.util.decode64(rawCredentials.salt);
     let key = forge.pkcs5.pbkdf2(
-      userCredentials.password,
+      rawCredentials.password,
       salt,
       PBKDF2_ITERATIONS,
       PBKDF2_KEY_LENGTH
     );
 
-    return { key };
+    return $q.when({ key });
   };
 
   let isInitialized = function isInitialized() {
     return cachedCredentials !== undefined;
   };
 
-  let initialize = function initializeCryptography(userCredentials) {
-    cachedCredentials = deriveCredentials(userCredentials);
-    return cachedCredentials;
+  let cache = function cache(derivedCredentials) {
+    checkCredentials(derivedCredentials);
+
+    cachedCredentials = derivedCredentials;
+    return $q.when(derivedCredentials);
   };
 
-  let restore = function restoreCryptography(savedCredentials) {
-    cachedCredentials = savedCredentials;
-    return savedCredentials;
+  let initialize = function initializeCryptography(credentials) {
+    let cachingCredentials = credentials.key ?
+      cache({ key: decodeBase64Sync(credentials.key) }) :
+      derive(credentials)
+        .then(cache);
+
+    return cachingCredentials
+      .then((derivedCredentials) => {
+        return {
+          key: encodeBase64Sync(derivedCredentials.key)
+        }
+      });
   };
 
   let destroy = function destroyCryptography() {
     cachedCredentials = undefined;
+    return $q.when();
   };
 
   return {
@@ -207,16 +253,19 @@ export default /*@ngInject*/ function cryptography(
     UNENCRYPTED_OBJECT,
     escapeBase64,
     unescapeBase64,
+    encodeBase64,
+    decodeBase64,
     getRandomBase64,
     getHmac,
     getMd5,
     encryptDeterministic,
     encrypt,
     decrypt,
-    deriveCredentials,
+    createSalt,
+    createChallenge,
+    derive,
     isInitialized,
     initialize,
-    restore,
     destroy
   };
 }

@@ -4,6 +4,7 @@ export default /*@ngInject*/ function navigation(
   $q,
   $rootScope,
   $state,
+  $timeout,
   R,
   state
 ) {
@@ -82,6 +83,8 @@ export default /*@ngInject*/ function navigation(
       event.preventDefault();
       return go(redirectStateName);
     });
+
+    return $q.when();
   };
 
   let clearCache = function clearCache() {
@@ -103,6 +106,17 @@ export default /*@ngInject*/ function navigation(
       disableAnimate: options.disableAnimate
     });
     return $q.when();
+  };
+
+  let initializePublic = function initializePublic() {
+    let prepareNavigate = !at(app.public.welcome) ?
+      resetHistory({disableAnimate: true}) :
+      $q.when();
+
+    return prepareNavigate
+      .then(() => go(app.public.welcome))
+      //workaround for too early initialization
+      .then(() => $timeout(() => clearCache(), 0));
   };
 
   let initialize =
@@ -134,13 +148,14 @@ export default /*@ngInject*/ function navigation(
   return {
     app,
     go,
+    at,
     navigate,
     isActiveView,
-    at,
     isPrivateState,
     clearCache,
     setupRedirect,
     resetHistory,
+    initializePublic,
     initialize
   };
 }

@@ -26,99 +26,103 @@ export default /*@ngInject*/ function identity(
   };
 
   let validateId = function validateId(id) {
+    //TODO: add a regex matcher to ensure it's in hex
     return id.length === 64;
   };
 
-  let create = function createIdentity(sessionInfo, userInfo) {
-    let userCredentials = {
-      id: sessionInfo.id,
-      password: userInfo.password
-    };
+  let authenticate = function authenticate(derivedCredentials) {
+    let challenge = state.cloudUnencrypted.cryptography.get(['challenge']);
 
-    let newUserInfo = {
-      id: sessionInfo.id,
-      displayName: userInfo.displayName,
-      email: userInfo.email
-    };
-
-    let credentials = cryptography.initialize(userCredentials);
-
-    try {
-      newUserInfo.challenge = cryptography.encrypt(userCredentials.id);
-      cryptography.decrypt(newUserInfo.challenge);
-    } catch(error) {
-      cryptography.destroy();
-      return $q.reject(error);
+    if (!challenge) {
+      return $q.reject('identity: missing auth challenge');
     }
-
-    let newIdentity = {
-      userInfo: newUserInfo,
-      credentials
-    };
-
-    return $q.when(newIdentity);
-  };
-
-  let authenticate = function authenticateIdentity(userCredentials) {
-    let userInfo = state.cloudUnencrypted.identity.get().userInfo;
-    let challenge = userInfo.challenge;
-
-    let credentials = cryptography.initialize(userCredentials);
 
     try {
       cryptography.decrypt(challenge);
     }
     catch(error) {
-      cryptography.destroy();
-      return $q.reject('identity: wrong password');
+      return cryptography.destroy()
+        .then(() => $q.reject('identity: wrong password'));
     }
 
-    let existingIdentity = {
-      userInfo,
-      credentials
-    };
-
-    return $q.when(existingIdentity);
+    return $q.when(derivedCredentials);
   };
 
-  let restore = function restoreIdentity(existingIdentity) {
-    try {
-      cryptography.restore(existingIdentity.credentials);
-      cryptography.decrypt(existingIdentity.userInfo.challenge);
-    }
-    catch(error) {
-      cryptography.destroy();
-      return $q.reject('identity: wrong saved credentials');
+  let initialize = function initializeIdentity(credentials, staySignedIn) {
+    let saveCredentials = (derivedCredentials) => {
+      if (!staySignedIn) {
+        return $q.when();
+      }
+
+      let existingCredentials =
+        state.local.cryptography.get(['derivedCredentials']);
+
+      if (existingCredentials) {
+        return $q.when();
+      }
+      
+      return state.save(
+        state.local.cryptography,
+        ['derivedCredentials'],
+        derivedCredentials
+      );
     }
 
-    return $q.when(existingIdentity);
-  };
+    let verifyCredentials = (credentials) =>
+      cryptography.initialize(credentials)
+        .then(authenticate)
+        .then(saveCredentials);
 
-  let initialize = function initializeIdentity(userId) {
-    state.initializeUserCursors(userId);
-    return $q.when();
-    // return state.save(
-    //   state.memory.cursors.identity,
-    //   ['currentUser'],
-    //   userId
-    // );
+    if (credentials.key) {
+      return verifyCredentials(credentials);
+    }
+
+    if (!credentials.password) {
+      return $q.reject('identity: no password or key provided');
+    }
+
+    let existingSalt = state.cloudUnencrypted.cryptography.get(['salt']);
+
+    if (existingSalt) {
+      let rawCredentials = {
+        password: credentials.password,
+        salt: existingSalt
+      };
+
+      return verifyCredentials(rawCredentials);
+    }
+
+    let saveSalt = (salt) => state.save(
+      state.cloudUnencrypted.cryptography,
+      ['salt'],
+      salt
+    );
+
+    let saveChallege = (challenge) => state.save(
+      state.cloudUnencrypted.cryptography,
+      ['challenge'],
+      challenge
+    );
+
+    return cryptography.createSalt()
+      .then(saveSalt)
+      .then((salt) => cryptography.initialize({
+          password: credentials.password,
+          salt: salt
+        })
+        .then(saveCredentials)
+        .then(() => cryptography.createChallenge(salt)))
+      .then(saveChallege);
   };
 
   let destroy = function destroyIdentity() {
-    state.destroyUserCursors();
     return $q.when();
-    // return state.remove(
-    //   state.memory.cursors.identity,
-    //   ['currentUser']
-    // );
   };
 
   return {
     getAvatar,
-    create,
     validateId,
     authenticate,
-    restore,
     initialize,
     destroy
   };

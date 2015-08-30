@@ -51,61 +51,44 @@ export default /*@ngInject*/ function state(
     cursor: stateService.tree.select(['cloud'])
   };
 
-  let initializeUserCursors = function initializeUserCursors(userId) {
-    stateService.local.identity = stateService.local.cursor
-      .select([userId, 'identity']);
-    stateService.local.session = stateService.local.cursor
-      .select([userId, 'session']);
-    stateService.local.devices = stateService.local.cursor
-      .select([userId, 'devices']);
+  stateService.local.cryptography = stateService.local.cursor
+    .select(['cryptography']);
+  stateService.local.identity = stateService.local.cursor
+    .select(['identity']);
+  stateService.local.session = stateService.local.cursor
+    .select(['session']);
+  stateService.local.devices = stateService.local.cursor
+    .select(['devices']);
 
-    stateService.cloudUnencrypted.identity = stateService.cloudUnencrypted
-      .cursor.select([userId, 'identity']);
-    stateService.cloudUnencrypted.session = stateService.cloudUnencrypted
-      .cursor.select([userId, 'session']);
-    stateService.cloudUnencrypted.state = stateService.cloudUnencrypted.cursor
-      .select([userId, 'state']);
+  stateService.cloudUnencrypted.cryptography = stateService.cloudUnencrypted
+    .cursor.select(['cryptography']);
+  stateService.cloudUnencrypted.identity = stateService.cloudUnencrypted
+    .cursor.select(['identity']);
+  stateService.cloudUnencrypted.session = stateService.cloudUnencrypted
+    .cursor.select(['session']);
+  stateService.cloudUnencrypted.state = stateService.cloudUnencrypted
+    .cursor.select(['state']);
 
-    stateService.cloud.identity = stateService.cloud.cursor
-      .select([userId, 'identity']);
-    stateService.cloud.contacts = stateService.cloud.cursor
-      .select([userId, 'contacts']);
-    stateService.cloud.channels = stateService.cloud.cursor
-      .select([userId, 'channels']);
-    stateService.cloud.messages = stateService.cloud.cursor
-      .select([userId, 'messages']);
-    stateService.cloud.devices = stateService.cloud.cursor
-      .select([userId, 'devices']);
-    stateService.cloud.network = stateService.cloud.cursor
-      .select([userId, 'network']);
-    stateService.cloud.navigation = stateService.cloud.cursor
-      .select([userId, 'navigation']);
-    stateService.cloud.notifications = stateService.cloud.cursor
-      .select([userId, 'notifications']);
-    stateService.cloud.session = stateService.cloud.cursor
-      .select([userId, 'session']);
-    stateService.cloud.status = stateService.cloud.cursor
-      .select([userId, 'status']);
-  };
-
-  let destroyUserCursors = function destroyUserCursors() {
-    stateService.local.identity = undefined;
-    stateService.local.session = undefined;
-    stateService.local.devices = undefined;
-
-    stateService.cloudUnencrypted.identity = undefined;
-    stateService.cloudUnencrypted.session = undefined;
-    stateService.cloudUnencrypted.state = undefined;
-
-    stateService.cloud.identity = undefined;
-    stateService.cloud.contacts = undefined;
-    stateService.cloud.devices = undefined;
-    stateService.cloud.network = undefined;
-    stateService.cloud.navigation = undefined;
-    stateService.cloud.session = undefined;
-    stateService.cloud.channels = undefined;
-    stateService.cloud.status = undefined;
-  };
+  stateService.cloud.identity = stateService.cloud.cursor
+    .select(['identity']);
+  stateService.cloud.contacts = stateService.cloud.cursor
+    .select(['contacts']);
+  stateService.cloud.channels = stateService.cloud.cursor
+    .select(['channels']);
+  stateService.cloud.messages = stateService.cloud.cursor
+    .select(['messages']);
+  stateService.cloud.devices = stateService.cloud.cursor
+    .select(['devices']);
+  stateService.cloud.network = stateService.cloud.cursor
+    .select(['network']);
+  stateService.cloud.navigation = stateService.cloud.cursor
+    .select(['navigation']);
+  stateService.cloud.notifications = stateService.cloud.cursor
+    .select(['notifications']);
+  stateService.cloud.session = stateService.cloud.cursor
+    .select(['session']);
+  stateService.cloud.status = stateService.cloud.cursor
+    .select(['status']);
 
   let saveVolatile =
     function saveVolatile(cursor, relativePath, object) {
@@ -234,9 +217,6 @@ export default /*@ngInject*/ function state(
     return initializeStore(stateService.cloudUnencrypted);
   };
 
-  stateService.initializeUserCursors = initializeUserCursors;
-  stateService.destroyUserCursors = destroyUserCursors;
-
   stateService.memory.save = saveVolatile;
   stateService.local.save = savePersistent;
   stateService.cloudUnencrypted.save = savePersistent;
@@ -278,6 +258,7 @@ export default /*@ngInject*/ function state(
     storage.cloudUnencrypted.onChange(handleChangeCloudUnencrypted);
     return initializeLocal()
       .then(() => initializeCloudUnencrypted());
+    // cloud init has to be done separately due to need for password to decrypt
   };
 
   let destroy = function destroy() {

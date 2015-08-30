@@ -21,7 +21,8 @@ export default /*@ngInject*/ function HomeController(
       title: 'Sign Out',
       template: 'Are you sure?',
       okText: 'Sign out',
-      okType: 'button-assertive button-outline'
+      okType: 'button-assertive button-outline',
+      cancelType: 'button-calm button-outline'
     });
 
     signoutPopup.then((response) => {
@@ -29,7 +30,7 @@ export default /*@ngInject*/ function HomeController(
         return;
       }
 
-      return session.signOut();
+      return session.destroy();
     });
   };
 }

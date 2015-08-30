@@ -366,16 +366,30 @@ export default /*@ngInject*/ function network(
       );
   };
 
-  let initialize = function initializeNetwork(keypair) {
+  let initialize = function initializeNetwork() {
     let deferredSession = $q.defer();
 
-    let telehashKeypair = {};
-    if (keypair) {
-      telehashKeypair.id = keypair;
-    }
+    let keypair = state.cloud.network.get(['networkInfo', 'keypair']);
+
+    let saveUserInfo = (networkInfo) => {
+      let userInfo = {
+        id: networkInfo.id,
+        displayName: 'Anonymous'
+      };
+
+      return state.save(state.cloud.identity, ['userInfo'], userInfo);
+    };
+
+    //Don't save network info if already saved
+    let saveNetworkInfo = (networkInfo) => keypair ?
+      $q.when() :
+      state.save(state.cloud.network, ['networkInfo'], networkInfo)
+        .then(saveUserInfo);
+
+    let telehashOptions = keypair ? { id: keypair } : {};
 
     try {
-      telehash.init(telehashKeypair,
+      telehash.init(telehashOptions,
         function initializeTelehash(error, telehashSession) {
           if (error) {
             return deferredSession.reject(error);
@@ -388,8 +402,8 @@ export default /*@ngInject*/ function network(
       return $q.reject(error);
     }
 
-    return deferredSession.promise.then((telehashSession) => {
-      let sessionInfo = {
+    let startNetwork = (telehashSession) => {
+      let networkInfo = {
         id: telehashSession.hashname,
         keypair: telehashSession.id
       };
@@ -400,8 +414,12 @@ export default /*@ngInject*/ function network(
 
       listen({id: channels.INVITE_CHANNEL_ID});
 
-      return sessionInfo;
-    });
+      return networkInfo;
+    };
+
+    return deferredSession.promise
+      .then(startNetwork)
+      .then(saveNetworkInfo);
   };
 
   let destroy = function destroyNetwork() {

@@ -27,7 +27,7 @@ export default /*@ngInject*/ function tocConversationsMenu() {
 
       this.beginConversationModal = $ionicModal.fromTemplate(
         `
-        <toc-begin-conversation-modal
+        <toc-begin-conversation-modal class="toc-modal-container"
           hide-modal="conversationsMenu.beginConversationModal.hide()">
         </toc-begin-conversation-modal>
         `,

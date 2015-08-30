@@ -1,34 +1,31 @@
 export let controllerName = 'WelcomeController';
 export default /*@ngInject*/ function WelcomeController(
-  $ionicPopup,
+  $ionicModal,
   $scope,
   R,
   state,
+  session,
   storage
 ) {
-  this.isStorageConnected = storage.isConnected;
+  session.preparePublic()
+    .then(() => {
+      this.passwordPromptModal = $ionicModal.fromTemplate(
+        `
+        <toc-password-prompt-modal class="toc-modal-container"
+          remove-modal="welcomeView.passwordPromptModal.remove()">
+        </toc-password-prompt-modal>
+        `,
+        {
+          scope: $scope,
+          backdropClickToClose: false,
+          hardwareBackButtonToClose: false
+        }
+      );
 
-  let savedUsersCursor = state.cloudUnencrypted.cursor;
-  let updateSavedUsers = () => {
-    this.users = R.keys(savedUsersCursor.get()).length;
-  };
+      this.openPasswordPromptModal = function openPasswordPromptModal() {
+        this.passwordPromptModal.show();
+      };
 
-  state.addListener(savedUsersCursor, updateSavedUsers, $scope);
-
-  this.showResetConfirm = function showResetConfirm() {
-    let resetPopup = $ionicPopup.confirm({
-      title: 'Reset App State',
-      template: 'Are you sure?',
-      okText: 'Reset',
-      okType: 'button-assertive button-outline'
+      this.openPasswordPromptModal();
     });
-
-    resetPopup.then((response) => {
-      if (!response) {
-        return;
-      }
-
-      return state.destroy();
-    });
-  };
 }
