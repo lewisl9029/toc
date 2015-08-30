@@ -12,6 +12,7 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
     controller: /*@ngInject*/ function PasswordPromptModalController(
       $scope,
       $ionicLoading,
+      $log,
       $timeout,
       $q,
       session,
@@ -36,7 +37,9 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
             { password: this.password },
             this.staySignedIn
           ))
-          .then(() => $timeout(() => this.removeModal(), 1000));
+          //modal doesnt animate out if removed immediately
+          .then(() => $timeout(() => this.removeModal(), 1000))
+          .catch($log.error);
           // .then(() => $ionicLoading.hide());
       };
     }

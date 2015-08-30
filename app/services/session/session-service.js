@@ -36,8 +36,7 @@ export default /*@ngInject*/ function session(
       .then(() => status.initialize())
       .then(() => time.initialize())
       .then(() => navigation.initialize())
-      .then(() => preparingPrivateSession.resolve('session: private ready'))
-      .catch($log.error);
+      .then(() => preparingPrivateSession.resolve('session: private ready'));
   };
 
   let initialize = function initializeSession() {
@@ -48,7 +47,6 @@ export default /*@ngInject*/ function session(
       if (!derivedCredentials) {
         return navigation.initializePublic()
           .then(() => preparingPublicSession.resolve('session: public ready'))
-          .catch($log.error);
       }
 
       return start(derivedCredentials);
@@ -58,7 +56,8 @@ export default /*@ngInject*/ function session(
       .then(() => storage.prepare())
       .then(() => state.initialize())
       .then(() => devices.create())
-      .then(() => startSession());
+      .then(() => startSession())
+      .catch($log.error);
   };
 
   let destroy = function destroySession() {
