@@ -40,6 +40,10 @@ $bar-subheader-height: 75px !default;
 @import 'views/views';
 @import 'components/components';
 
+form.ng-pristine button[type='submit'] {
+  opacity: 1;
+}
+
 .item-input-wrapper {
   border-radius: 0;
 }
