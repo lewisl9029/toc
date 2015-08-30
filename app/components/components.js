@@ -3,6 +3,7 @@ import angular from 'angular';
 import autoFocus from './auto-focus/auto-focus';
 import autoSelect from './auto-select/auto-select';
 import equalTo from './equal-to/equal-to';
+import editProfileModal from './edit-profile-modal/edit-profile-modal';
 import beginConversationModal from
   './begin-conversation-modal/begin-conversation-modal';
 import passwordPromptModal from
@@ -24,6 +25,7 @@ export default angular.module('toc.components', [
   autoFocus.name,
   autoSelect.name,
   equalTo.name,
+  editProfileModal.name,
   beginConversationModal.name,
   passwordPromptModal.name,
   channelCard.name,
