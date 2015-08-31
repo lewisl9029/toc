@@ -142,10 +142,6 @@ export default /*@ngInject*/ function network(
           return $q.when();
         }
 
-        let contactName = state.cloud.contacts.get(
-          [senderId, 'userInfo', 'displayName']
-        );
-
         let updatingUnreadPointer =
           !channelCursor.get(['unreadMessageId']) ?
             state.save(
@@ -373,8 +369,7 @@ export default /*@ngInject*/ function network(
 
     let saveUserInfo = (networkInfo) => {
       let userInfo = {
-        id: networkInfo.id,
-        displayName: 'Anonymous'
+        id: networkInfo.id
       };
 
       return state.save(state.cloud.identity, ['userInfo'], userInfo);

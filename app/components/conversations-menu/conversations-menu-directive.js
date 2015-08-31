@@ -25,16 +25,16 @@ export default /*@ngInject*/ function tocConversationsMenu() {
         return navigation.navigate('home');
       };
 
-      this.beginConversationModal = $ionicModal.fromTemplate(
-        `
-        <toc-begin-conversation-modal class="toc-modal-container"
-          hide-modal="conversationsMenu.beginConversationModal.hide()">
-        </toc-begin-conversation-modal>
-        `,
-        { scope: $scope }
-      );
-
       this.openBeginConversationModal = function openBeginConversationModal() {
+        this.beginConversationModal = $ionicModal.fromTemplate(
+          `
+          <toc-begin-conversation-modal class="toc-modal-container"
+            remove-modal="conversationsMenu.beginConversationModal.remove()">
+          </toc-begin-conversation-modal>
+          `,
+          { scope: $scope }
+        );
+
         this.beginConversationModal.show();
       };
     }

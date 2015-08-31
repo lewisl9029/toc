@@ -17,6 +17,7 @@ $button-border-radius: 0 !default;
 $button-bar-button-font-size: 15px !default;
 
 $card-border-radius: 0 !default;
+$popover-border-radius: 0 !default;
 
 $popup-button-border-radius: 0 !default;
 $popup-background-color: #fff !default;
@@ -42,6 +43,10 @@ $bar-subheader-height: 75px !default;
 
 form.ng-pristine button[type='submit'] {
   opacity: 1;
+}
+
+.popup-body {
+  text-align: center;
 }
 
 .item-input-wrapper {

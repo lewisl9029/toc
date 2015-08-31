@@ -6,7 +6,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
     restrict: 'E',
     template: template,
     scope: {
-      hideModal: '&'
+      removeModal: '&'
     },
     controllerAs: 'beginConversationModal',
     controller: /*@ngInject*/ function BeginConversationModalController(
@@ -21,7 +21,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
       identity,
       state
     ) {
-      this.hideModal = $scope.hideModal;
+      this.removeModal = $scope.removeModal;
       this.userInfo = state.cloud.identity.get().userInfo;
       this.userId = this.userInfo.id;
       this.isCordovaApp = devices.isCordovaApp();
@@ -40,7 +40,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           0
         ))
         .then(() => {
-          this.hideModal();
+          this.removeModal();
           return $q.when();
         });
       };
@@ -133,7 +133,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
               '_system'
             );
 
-            this.hideModal();
+            this.removeModal();
           }
         }
       };

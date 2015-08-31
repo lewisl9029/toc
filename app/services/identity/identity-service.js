@@ -6,6 +6,9 @@ export default /*@ngInject*/ function identity(
   R,
   state
 ) {
+  let getUserExists = () =>
+    state.cloudUnencrypted.cryptography.get() !== undefined;
+
   let getAvatarBase = R.memoize(function getAvatarBase(identifier) {
     let identifierHash = cryptography.getMd5(identifier);
 
@@ -60,7 +63,7 @@ export default /*@ngInject*/ function identity(
       if (existingCredentials) {
         return $q.when();
       }
-      
+
       return state.save(
         state.local.cryptography,
         ['derivedCredentials'],
@@ -120,6 +123,7 @@ export default /*@ngInject*/ function identity(
   };
 
   return {
+    getUserExists,
     getAvatar,
     validateId,
     authenticate,

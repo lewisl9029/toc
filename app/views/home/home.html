@@ -16,18 +16,19 @@
         </toc-qr-image>
       </div> -->
   </ion-content>
-  <div class="bar bar-subfooter" ng-if="!homeView.isStorageConnected()">
+  <div class="bar bar-subfooter">
     <div class="col">
-      <button ui-sref="app.private.cloud" class="button button-block button-outline button-royal">
-        Connect a cloud account
+      <button class="button button-block button-outline button-royal"
+        ng-click="homeView.showUpdateProfileModal()">
+        Update your profile
       </button>
     </div>
   </div>
   <ion-footer-bar>
     <div class="col">
-      <button class="button button-block button-outline button-assertive"
-        ng-click="homeView.showSignoutConfirm()">
-        Sign out
+      <button class="button button-block button-outline button-balanced"
+        ng-click="homeView.openBeginConversationModal()">
+        Start a conversation
       </button>
     </div>
   </ion-footer-bar>
