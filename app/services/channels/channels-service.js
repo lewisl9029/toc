@@ -2,7 +2,8 @@ export let serviceName = 'channels';
 export default /*@ngInject*/ function channels(
   $q,
   R,
-  state
+  state,
+  cryptography
 ) {
   const CHANNEL_ID_PREFIX = 'toc-';
   const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
@@ -13,7 +14,12 @@ export default /*@ngInject*/ function channels(
         userId + '-' + contactId :
         contactId + '-' + userId;
 
-      return CHANNEL_ID_PREFIX + channelId;
+      //channel ids need to be somewhat short because they're prefixed on
+      // most storage keys (including on every message), so there are huge
+      // storage usage implications
+      let shortChannelId = cryptography.getSha256(channelId).substr(0, 32);
+
+      return CHANNEL_ID_PREFIX + shortChannelId;
     };
 
   let generateGroupChannelId =

@@ -1,6 +1,7 @@
 export let serviceName = 'cryptography';
 export default /*@ngInject*/ function cryptography(
   $q,
+  $window,
   forge
 ) {
   //TODO: add user setting to disable encryption
@@ -132,6 +133,13 @@ export default /*@ngInject*/ function cryptography(
     return md5.digest().toHex();
   };
 
+  let getSha256 = function getSha256(plaintext) {
+    let sha256 = forge.md.sha256.create();
+    sha256.update(plaintext);
+
+    return sha256.digest().toHex();
+  };
+
   let encryptBase =
     function encryptBase(object, ivBytes, credentials = cachedCredentials) {
       checkCredentials(credentials);
@@ -248,7 +256,7 @@ export default /*@ngInject*/ function cryptography(
     return $q.when();
   };
 
-  return {
+  let cryptographyService = {
     ENCRYPTED_OBJECT,
     UNENCRYPTED_OBJECT,
     escapeBase64,
@@ -258,6 +266,7 @@ export default /*@ngInject*/ function cryptography(
     getRandomBase64,
     getHmac,
     getMd5,
+    getSha256,
     encryptDeterministic,
     encrypt,
     decrypt,
@@ -268,4 +277,8 @@ export default /*@ngInject*/ function cryptography(
     initialize,
     destroy
   };
+
+  $window.tocCrypto = cryptographyService;
+
+  return cryptographyService;
 }
