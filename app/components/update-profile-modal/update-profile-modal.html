@@ -2,25 +2,40 @@
   <ion-header-bar class="bar-royal">
     <h1 class="title">Update Profile</h1>
   </ion-header-bar>
-  <ion-content>
+  <ion-content class="has-subfooter">
     <div class="list">
       <div class="item item-divider item-calm item-clear">
         What would you like to change?
       </div>
+      <div class="item item-avatar">
+        <img ng-src="{{updateProfileModal.getNewAvatar()}}" alt="New avatar"/>
+        <h2>{{updateProfileModal.newUserInfo.displayName}}</h2>
+        <p>Your new user card will look like this</p>
+      </div>
+      <div class="item item-input item-stacked-label">
+        <span class="input-label">Your name</span>
+        <input type="text" ng-model="updateProfileModal.newUserInfo.displayName"
+          placeholder="The name that will appear in contact lists">
+      </div>
+      <div class="item item-input item-stacked-label">
+        <span class="input-label">Your email</span>
+        <input type="email" ng-model="updateProfileModal.newUserInfo.email"
+          placeholder="Your avatar is generated from this email">
+      </div>
     </div>
   </ion-content>
-  <!-- <div class="bar bar-subfooter">
+  <div class="bar bar-subfooter">
     <div class="col">
       <button type="button" ng-click="::beginConversationModal.showIdPopup()"
         class="button button-outline button-block button-royal">
-        Show your own ID
+        Update your email avatar
       </button>
     </div>
-  </div> -->
+  </div>
   <ion-footer-bar>
     <div class="col">
       <button class="button button-block button-outline button-calm"
-        ng-click="::updateProfileModal.hideModal()">
+        ng-click="::updateProfileModal.removeModal()">
         Cancel
       </button>
     </div>
