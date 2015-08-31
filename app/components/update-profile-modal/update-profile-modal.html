@@ -1,4 +1,6 @@
 <ion-modal-view>
+  <form name="tocUpdateProfileForm" id="toc-update-profile-form"
+    ng-submit="updateProfileModal.updateProfile()" novalidate>
   <ion-header-bar class="bar-royal">
     <h1 class="title">Update Profile</h1>
   </ion-header-bar>
@@ -17,11 +19,13 @@
       <div class="item item-input item-stacked-label">
         <span class="input-label">Your name</span>
         <input type="text" ng-model="updateProfileModal.userInfo.displayName"
+          form="toc-update-profile-form"
           placeholder="Your friends will see this in their contact lists">
       </div>
       <div class="item item-input item-stacked-label">
         <span class="input-label">Your email</span>
         <input type="email" ng-model="updateProfileModal.userInfo.email"
+          form="toc-update-profile-form"
           placeholder="Your avatar will be generated from this email"
           ng-model-options="{
             updateOn: 'default blur',
@@ -32,10 +36,10 @@
   </ion-content>
   <div class="bar bar-subfooter">
     <div class="col">
-      <button type="button" ng-click="::beginConversationModal.showIdPopup()"
+      <a onclick="window.open('https://www.libravatar.org/', '_system');"
         class="button button-outline button-block button-royal">
         Update your email avatar
-      </button>
+      </a>
     </div>
   </div>
   <ion-footer-bar>
@@ -46,10 +50,12 @@
       </button>
     </div>
     <div class="col">
-      <button class="button button-block button-outline button-balanced"
-        ng-click="::updateProfileModal.updateProfile()">
+      <button type="submit" form="toc-update-profile-form"
+        class="button button-block button-outline button-balanced"
+        ng-disabled="tocUpdateProfileForm.$invalid">
         Update
       </button>
     </div>
   </ion-footer-bar>
+  </form>
 </ion-modal-view>
