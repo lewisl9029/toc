@@ -1,0 +1,53 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-royal">
+    <h1 class="title">Connect a Cloud Service</h1>
+  </ion-header-bar>
+  <ion-content class="has-subfooter">
+    <div class="list">
+      <div class="item item-divider item-calm item-clear">
+        Where would you like to store your data?
+      </div>
+      <ion-radio class="item item-avatar toc-square-avatar"
+        ng-repeat="(id, service) in ::cloudConnectModal.services track by id"
+        ng-model="cloudConnectModal.selectedService" ng-value="::id">
+        <img ng-src="assets/images/{{::service.img}}"
+          alt="Icon for {{::service.name}}" />
+        <h2>{{::service.name}}</h2>
+        <p>{{::service.description}}</p>
+      </ion-radio>
+      <!-- <label class="item item-input item-stacked-label">
+        <span class="input-label">Email</span>
+        <input type="password" placeholder="Your remoteStorage.io email."
+          ng-model="cloudConnectModal.email" toc-auto-focus>
+      </label> -->
+    </div>
+    <div class="card">
+      <div class="item item-text-wrap">
+        <p>Your data will stay private even on the cloud.</p>
+        <p>No one can access it without your password.</p>
+      </div>
+    </div>
+  </ion-content>
+  <div class="bar bar-subfooter">
+    <div class="col">
+      <a onclick="window.open('https://remotestorage.io/get/', '_system');"
+        class="button button-block button-outline button-royal">
+        Get a storage account
+      </a>
+    </div>
+  </div>
+  <ion-footer-bar>
+    <div class="col">
+      <button class="button button-block button-outline button-calm"
+        ng-click="::cloudConnectModal.removeModal()">
+        Cancel
+      </button>
+    </div>
+    <div class="col">
+      <button class="button button-block button-outline button-balanced"
+        ng-click="::cloudConnectModal.connect()">
+        Connect
+      </button>
+    </div>
+  </ion-footer-bar>
+</ion-modal-view>

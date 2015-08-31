@@ -10,8 +10,7 @@ import passwordPromptModal from
   './password-prompt-modal/password-prompt-modal';
 import channelCard from './channel-card/channel-card';
 import channelList from './channel-list/channel-list';
-import cloudConnectForm from './cloud-connect-form/cloud-connect-form';
-import cloudManageForm from './cloud-manage-form/cloud-manage-form';
+import cloudConnectModal from './cloud-connect-modal/cloud-connect-modal';
 import messageList from './message-list/message-list';
 import notificationCard from './notification-card/notification-card';
 import notificationList from './notification-list/notification-list';
@@ -31,8 +30,7 @@ export default angular.module('toc.components', [
   passwordPromptModal.name,
   channelCard.name,
   channelList.name,
-  cloudConnectForm.name,
-  cloudManageForm.name,
+  cloudConnectModal.name,
   messageList.name,
   notificationCard.name,
   notificationList.name,

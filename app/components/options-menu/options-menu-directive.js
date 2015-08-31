@@ -8,9 +8,24 @@ export default /*@ngInject*/ function tocOptionsMenu() {
     controllerAs: 'optionsMenu',
     controller: /*@ngInject*/ function OptionsMenuController(
       $ionicPopup,
+      $ionicModal,
+      $scope,
       session,
       state
     ) {
+      this.showCloudConnectModal = function showCloudConnectModal() {
+        this.cloudConnectModal = $ionicModal.fromTemplate(
+          `
+          <toc-cloud-connect-modal class="toc-modal-container"
+            remove-modal="optionsMenu.cloudConnectModal.remove()">
+          </toc-cloud-connect-modal>
+          `,
+          { scope: $scope }
+        );
+
+        this.cloudConnectModal.show();
+      };
+
       this.showDeleteDataConfirm = function showDeleteDataConfirm() {
         let deleteDataPopup = $ionicPopup.confirm({
           title: 'Remove Data',

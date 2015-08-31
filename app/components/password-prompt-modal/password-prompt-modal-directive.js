@@ -12,15 +12,17 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
     controller: /*@ngInject*/ function PasswordPromptModalController(
       $scope,
       $ionicLoading,
+      $ionicModal,
       $log,
       $timeout,
       $q,
       session,
+      identity,
       state
     ) {
       this.removeModal = $scope.removeModal;
 
-      this.userExists = state.cloudUnencrypted.cryptography.get() !== undefined;
+      this.userExists = identity.getUserExists();
 
       let staySignedIn = state.local.session.get(['staySignedIn']);
       this.staySignedIn = staySignedIn === undefined ? true : staySignedIn;
@@ -41,6 +43,19 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
           .then(() => $timeout(() => this.removeModal(), 1000))
           .catch($log.error);
           // .then(() => $ionicLoading.hide());
+      };
+
+      this.showCloudConnectModal = function showCloudConnectModal() {
+        this.cloudConnectModal = $ionicModal.fromTemplate(
+          `
+          <toc-cloud-connect-modal class="toc-modal-container"
+            remove-modal="passwordPromptModal.cloudConnectModal.remove()">
+          </toc-cloud-connect-modal>
+          `,
+          { scope: $scope }
+        );
+
+        this.cloudConnectModal.show();
       };
     }
   };
