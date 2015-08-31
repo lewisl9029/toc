@@ -8,19 +8,25 @@
         What would you like to change?
       </div>
       <div class="item item-avatar">
-        <img ng-src="{{updateProfileModal.getNewAvatar()}}" alt="New avatar"/>
-        <h2>{{updateProfileModal.newUserInfo.displayName}}</h2>
+        <img alt="New avatar"
+          ng-src="{{updateProfileModal.getAvatar(updateProfileModal.userInfo)}}"
+          />
+        <h2>{{updateProfileModal.userInfo.displayName || 'Anonymous'}}</h2>
         <p>Your new user card will look like this</p>
       </div>
       <div class="item item-input item-stacked-label">
         <span class="input-label">Your name</span>
-        <input type="text" ng-model="updateProfileModal.newUserInfo.displayName"
-          placeholder="The name that will appear in contact lists">
+        <input type="text" ng-model="updateProfileModal.userInfo.displayName"
+          placeholder="Your friends will see this in their contact lists">
       </div>
       <div class="item item-input item-stacked-label">
         <span class="input-label">Your email</span>
-        <input type="email" ng-model="updateProfileModal.newUserInfo.email"
-          placeholder="Your avatar is generated from this email">
+        <input type="email" ng-model="updateProfileModal.userInfo.email"
+          placeholder="Your avatar will be generated from this email"
+          ng-model-options="{
+            updateOn: 'default blur',
+            debounce: { default: 1000, blur: 0}
+          }">
       </div>
     </div>
   </ion-content>

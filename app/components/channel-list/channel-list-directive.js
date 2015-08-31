@@ -44,7 +44,7 @@ export default /*@ngInject*/ function tocChannelList() {
           let contact =
             state.cloud.contacts.get([channel.channelInfo.contactIds[0]]);
           return $ionicPopup.show({
-            template: `Accept invite from ${contact.userInfo.displayName}?`,
+            template: `Accept invite from ${contact.userInfo.displayName || 'Anonymous'}?`,
             title: 'Accept Invite',
             buttons: [
               {

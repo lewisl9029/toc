@@ -15,7 +15,7 @@
     <div ng-if="messageList.isUnread(message)"
       class="toc-message-unread-marker">
     </div>
-    <h2>{{messageList.getUserInfo(message).displayName}}</h2>
+    <h2>{{messageList.getUserInfo(message).displayName || 'Anonymous'}}</h2>
     <p class="toc-message-content">{{::message.messageInfo.content}}</p>
     <div ng-if="::messageList.isMinuteSeparator(message)"
       class="toc-message-timestamp">

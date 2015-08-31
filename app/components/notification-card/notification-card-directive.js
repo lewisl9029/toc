@@ -46,8 +46,8 @@ export default /*@ngInject*/ function tocNotificationCard() {
       let updateContactInfo = () => {
         let contactInfo = contactInfoCursor.get();
         this.icon = identity.getAvatar(contactInfo);
-        this.iconText = `Avatar for ${contactInfo.displayName}`;
-        this.title = contactInfo.displayName;
+        this.iconText = `Avatar for ${contactInfo.displayName || 'Anonymous'}`;
+        this.title = contactInfo.displayName || 'Anonymous';
       };
       state.addListener(contactInfoCursor, updateContactInfo, $scope);
     }

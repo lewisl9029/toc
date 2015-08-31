@@ -25,8 +25,8 @@ export default /*@ngInject*/ function tocUserCard(
       let updateUserInfo = () => {
         let userInfo = userInfoCursor.get();
         this.avatar = identity.getAvatar(userInfo);
-        this.avatarText = `Avatar for ${userInfo.displayName}`;
-        this.name = userInfoCursor.get(['displayName']);
+        this.avatarText = `Avatar for ${userInfo.displayName || 'Anonymous'}`;
+        this.name = userInfoCursor.get(['displayName']) || 'Anonymous';
       };
       state.addListener(userInfoCursor, updateUserInfo, $scope);
 

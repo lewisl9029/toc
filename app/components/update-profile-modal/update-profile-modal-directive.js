@@ -10,9 +10,14 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
     },
     controllerAs: 'updateProfileModal',
     controller: /*@ngInject*/ function UpdateProfileModalController(
-      $scope
+      $scope,
+      identity,
+      state
     ) {
       this.removeModal = $scope.removeModal;
+
+      this.getAvatar = identity.getAvatar;
+      this.userInfo = state.cloud.identity.get(['userInfo']);
     }
   };
 }
