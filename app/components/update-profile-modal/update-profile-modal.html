@@ -10,9 +10,7 @@
         What would you like to change?
       </div>
       <div class="item item-avatar">
-        <img alt="New avatar"
-          ng-src="{{updateProfileModal.getAvatar(updateProfileModal.userInfo)}}"
-          />
+        <img alt="New avatar" ng-src="{{updateProfileModal.getNewAvatar()}}" />
         <h2>{{updateProfileModal.userInfo.displayName || 'Anonymous'}}</h2>
         <p>Your new user card will look like this</p>
       </div>
@@ -38,13 +36,14 @@
     <div class="col">
       <a onclick="window.open('https://www.libravatar.org/', '_system');"
         class="button button-outline button-block button-royal">
-        Update your email avatar
+        Change your email avatar
       </a>
     </div>
   </div>
   <ion-footer-bar>
     <div class="col">
-      <button class="button button-block button-outline button-calm"
+      <button type="button"
+        class="button button-block button-outline button-calm"
         ng-click="::updateProfileModal.removeModal()">
         Cancel
       </button>
