@@ -1,6 +1,6 @@
 export let controllerName = 'HomeController';
 export default /*@ngInject*/ function HomeController(
-  $ionicPopup,
+  $ionicModal,
   $scope,
   session,
   state,
@@ -16,10 +16,23 @@ export default /*@ngInject*/ function HomeController(
   //FIXME: this should probably go into state.memory if possible
   this.isStorageConnected = storage.isConnected;
 
+  this.beginConversationModal = $ionicModal.fromTemplate(
+    `
+    <toc-begin-conversation-modal class="toc-modal-container"
+      hide-modal="homeView.beginConversationModal.hide()">
+    </toc-begin-conversation-modal>
+    `,
+    { scope: $scope }
+  );
+
+  this.openBeginConversationModal = function openBeginConversationModal() {
+    this.beginConversationModal.show();
+  };
+
   this.updateProfileModal = $ionicModal.fromTemplate(
     `
     <toc-update-profile-modal class="toc-modal-container"
-      remove-modal="homeView.updateProfileModal.remove()">
+      hide-modal="homeView.updateProfileModal.hide()">
     </toc-update-profile-modal>
     `,
     { scope: $scope }

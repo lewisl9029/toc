@@ -13,9 +13,12 @@ export default /*@ngInject*/ function tocOptionsMenu() {
     ) {
       this.showDeleteDataConfirm = function showDeleteDataConfirm() {
         let deleteDataPopup = $ionicPopup.confirm({
-          title: 'Delete Data',
-          template: 'Absolutely sure you\'d like to delete all local data?',
-          okText: 'Delete local data',
+          title: 'Remove Data',
+          template: `
+            <p>All local data will be gone.</p>
+            <p>Are you absolutely sure?</p>
+          `,
+          okText: 'Remove',
           okType: 'button-assertive button-outline',
           cancelType: 'button-calm button-outline'
         });
@@ -32,7 +35,10 @@ export default /*@ngInject*/ function tocOptionsMenu() {
       this.showSignoutConfirm = function showSignoutConfirm() {
         let signoutPopup = $ionicPopup.confirm({
           title: 'Sign Out',
-          template: 'Are you sure you\'d like to sign out of Toc?',
+          template: `
+            <p>You'll have to sign in again.</p>
+            <p>Are you sure?</p>
+          `,
           okText: 'Sign out',
           okType: 'button-assertive button-outline',
           cancelType: 'button-calm button-outline'

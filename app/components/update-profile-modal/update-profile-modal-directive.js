@@ -6,11 +6,13 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
     restrict: 'E',
     template: template,
     scope: {
-      removeModal: '&'
+      hideModal: '&'
     },
     controllerAs: 'updateProfileModal',
     controller: /*@ngInject*/ function UpdateProfileModalController(
+      $scope
     ) {
+      this.hideModal = $scope.hideModal;
     }
   };
 }

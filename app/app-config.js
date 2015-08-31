@@ -1,5 +1,6 @@
 import template from 'app.html!text';
 import menuTemplate from 'app-menu.html!text';
+import controller, { controllerName } from 'app-controller';
 
 export default /*@ngInject*/ function configApp(
   $ionicConfigProvider,
@@ -28,6 +29,7 @@ export default /*@ngInject*/ function configApp(
   $stateProvider.state('app.private', {
     url: '/private',
     abstract: true,
+    controller: controllerName + ' as appView',
     template: menuTemplate
   });
 }

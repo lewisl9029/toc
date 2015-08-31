@@ -3,14 +3,17 @@
 </ion-header-bar>
 <ion-content>
   <div class="list">
+    <div class="item" ng-click="optionsMenu.showCloudConnectModal()">
+      Connect a cloud account
+    </div>
     <div class="item" ng-click="optionsMenu.showDeleteDataConfirm()">
-      Delete local data
+      Remove your data from this device
     </div>
   </div>
 </ion-content>
 <ion-footer-bar>
   <div class="col">
-    <button class="button button-block button-outline button-balanced"
+    <button class="button button-block button-outline button-assertive"
       ng-click="optionsMenu.showSignoutConfirm()">
       Sign out
     </button>

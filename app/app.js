@@ -7,6 +7,7 @@ import views from './views/views';
 
 import run from './app-run';
 import config from './app-config';
+import controller, { controllerName } from './app-controller';
 
 let appName = 'toc';
 
@@ -17,7 +18,8 @@ export default angular.module(appName, [
     views.name,
   ])
   .config(config)
-  .run(run);
+  .run(run)
+  .controller(controllerName, controller);
 
 export function initialize() {
   angular.element(document)
