@@ -3,7 +3,8 @@
     <toc-user-card enable-dismiss-notifications>
     </toc-user-card>
   </div>
-  <ion-content class="has-subheader has-subfooter">
+  <ion-content class="has-subheader"
+    ng-class="{'has-subfooter': !homeView.isStorageConnected()}">
     <toc-notification-list></toc-notification-list>
 
       <!-- <label class="item item-input item-stacked-label">
@@ -18,16 +19,17 @@
   </ion-content>
   <div class="bar bar-subfooter" ng-if="!homeView.isStorageConnected()">
     <div class="col">
-      <button ui-sref="app.private.cloud" class="button button-block button-outline button-royal">
+      <button class="button button-block button-outline button-royal"
+        ng-click="homeView.showCloudConnectModal()">
         Connect a cloud account
       </button>
     </div>
   </div>
   <ion-footer-bar>
     <div class="col">
-      <button class="button button-block button-outline button-assertive"
-        ng-click="homeView.showSignoutConfirm()">
-        Sign out
+      <button class="button button-block button-outline button-balanced"
+        ng-click="homeView.showUpdateProfileModal()">
+        Update your profile
       </button>
     </div>
   </ion-footer-bar>

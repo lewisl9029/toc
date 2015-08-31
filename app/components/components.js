@@ -3,7 +3,7 @@ import angular from 'angular';
 import autoFocus from './auto-focus/auto-focus';
 import autoSelect from './auto-select/auto-select';
 import equalTo from './equal-to/equal-to';
-import editProfileModal from './edit-profile-modal/edit-profile-modal';
+import updateProfileModal from './update-profile-modal/update-profile-modal';
 import beginConversationModal from
   './begin-conversation-modal/begin-conversation-modal';
 import passwordPromptModal from
@@ -18,6 +18,7 @@ import notificationList from './notification-list/notification-list';
 import notificationOverlay from './notification-overlay/notification-overlay';
 import qrImage from './qr-image/qr-image';
 import conversationsMenu from './conversations-menu/conversations-menu';
+import optionsMenu from './options-menu/options-menu';
 import spinnerButton from './spinner-button/spinner-button';
 import userCard from './user-card/user-card';
 
@@ -25,7 +26,7 @@ export default angular.module('toc.components', [
   autoFocus.name,
   autoSelect.name,
   equalTo.name,
-  editProfileModal.name,
+  updateProfileModal.name,
   beginConversationModal.name,
   passwordPromptModal.name,
   channelCard.name,
@@ -38,6 +39,7 @@ export default angular.module('toc.components', [
   notificationOverlay.name,
   qrImage.name,
   conversationsMenu.name,
+  optionsMenu.name,
   spinnerButton.name,
   userCard.name
 ]);

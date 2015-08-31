@@ -10,7 +10,8 @@
         </button>
       </ion-nav-buttons>
       <ion-nav-buttons side="right">
-        <button class="button button-icon button-clear ion-navicon">
+        <button menu-toggle="right"
+          class="button button-icon button-clear ion-navicon">
         </button>
       </ion-nav-buttons>
     </ion-nav-bar>
@@ -19,5 +20,8 @@
   </ion-side-menu-content>
   <ion-side-menu side="left" expose-aside-when="large">
     <toc-conversations-menu></toc-conversations-menu>
+  </ion-side-menu>
+  <ion-side-menu side="right" expose-aside-when="large">
+    <toc-options-menu></toc-options-menu>
   </ion-side-menu>
 </ion-side-menus>
