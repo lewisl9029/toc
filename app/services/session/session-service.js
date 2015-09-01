@@ -4,6 +4,7 @@ export default /*@ngInject*/ function session(
   $log,
   $timeout,
   $window,
+  buffer,
   channels,
   contacts,
   devices,
@@ -34,6 +35,7 @@ export default /*@ngInject*/ function session(
       .then(() => devices.initialize(destroy))
       .then(() => channels.initialize(network.listen))
       .then(() => status.initialize())
+      .then(() => buffer.initialize(network))
       .then(() => time.initialize())
       .then(() => navigation.initialize())
       .then(() => preparingPrivateSession.resolve('session: private ready'));

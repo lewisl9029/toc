@@ -310,10 +310,10 @@ export default /*@ngInject*/ function network(
 
   let sendMessage = function sendMessage(channelId, messageId) {
     let messageCursor = state.cloud.messages.select([channelId, messageId]);
-    let channelCursor = state.cloud.messages.select([channelId]);
+    let channelCursor = state.cloud.channels.select([channelId]);
 
     let messageInfo = messageCursor.get(['messageInfo']);
-    let channelInfo = messageCursor.get(['channelInfo']);
+    let channelInfo = channelCursor.get(['channelInfo']);
 
     if (!messageInfo) {
       return $q.reject('network: message doesn\'t exist');
@@ -323,8 +323,8 @@ export default /*@ngInject*/ function network(
       let receivedTime = ack.r;
 
       return state.save(
-          messagesCursor,
-          [messageId, 'receivedTime'],
+          messageCursor,
+          ['receivedTime'],
           receivedTime
         )
         .then(() => buffer.removeMessage(messageId));

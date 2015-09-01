@@ -1,5 +1,6 @@
 import angular from 'angular';
 
+import buffer from './buffer/buffer';
 import channels from './channels/channels';
 import contacts from './contacts/contacts';
 import cryptography from './cryptography/cryptography';
@@ -16,6 +17,7 @@ import storage from './storage/storage';
 import time from './time/time';
 
 export default angular.module('toc.services', [
+  buffer.name,
   channels.name,
   contacts.name,
   cryptography.name,

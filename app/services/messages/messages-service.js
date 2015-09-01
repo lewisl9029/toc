@@ -8,11 +8,13 @@ export default /*@ngInject*/ function messages(
   state,
   R
 ) {
-  let saveReceivedMessage = saveReceivedMessage() {
+  let saveReceivedMessage = function saveReceivedMessage() {
 
   };
 
-  let saveSendingMessage = saveSendingMessage(channelId, messageContent) {
+  let saveSendingMessage = function saveSendingMessage(
+    channelId, messageContent
+  ) {
     if (!messageContent) {
       return $q.reject('messages: message must not be empty');
     }
@@ -43,7 +45,7 @@ export default /*@ngInject*/ function messages(
 
     let saveMessageInfo = () => state.save(
       state.cloud.messages,
-      [channelId, 'messageInfo'],
+      [channelId, messageId, 'messageInfo'],
       messageInfo
     );
 

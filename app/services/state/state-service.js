@@ -69,6 +69,8 @@ export default /*@ngInject*/ function state(
   stateService.cloudUnencrypted.state = stateService.cloudUnencrypted
     .cursor.select(['state']);
 
+  stateService.cloud.buffer = stateService.cloud.cursor
+    .select(['buffer']);
   stateService.cloud.identity = stateService.cloud.cursor
     .select(['identity']);
   stateService.cloud.contacts = stateService.cloud.cursor

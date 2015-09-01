@@ -1,7 +1,9 @@
 export let serviceName = 'buffer';
 export default /*@ngInject*/ function buffer(
   $interval,
-  state
+  $q,
+  state,
+  R
 ) {
   let network;
 
@@ -45,8 +47,8 @@ export default /*@ngInject*/ function buffer(
   let initialize = function initialize(networkService) {
     network = networkService;
 
-    let messageBuffersCursor = state.cloud.buffer.select(['messages']);
-    let messageBuffers = messageBuffersCursor.get();
+    let bufferedMessagesCursor = state.cloud.buffer.select(['messages']);
+    let bufferedMessage = bufferedMessagesCursor.get();
 
     sendAttempts.messages = R.mapObj((messageBuffer) => {
       let channelId = messageBuffer.channelId;
@@ -54,7 +56,9 @@ export default /*@ngInject*/ function buffer(
 
       network.sendMessage(channelId, messageId);
       return $interval(() => network.sendMessage(channelId, messageId), 20000);
-    })(messageBuffers);
+    })(bufferedMessage);
+
+    return $q.when();
   };
 
   return {
