@@ -6,8 +6,10 @@ export default /*@ngInject*/ function network(
   buffer,
   channels,
   notifications,
+  messages,
   R,
   state,
+  time,
   telehash
 ) {
   let activeSession;
@@ -87,74 +89,7 @@ export default /*@ngInject*/ function network(
   };
 
   let handleMessage = function handleMessage(messagePayload, messageMetadata) {
-    let messageContent = messagePayload.c;
-    let receivedLogicalClock = messagePayload.l;
-    let sentTime = messageMetadata.sentTime;
-    let receivedTime = messageMetadata.receivedTime;
-    let senderId = messageMetadata.senderId;
-    let channelId = messageMetadata.channelId;
-
-    let messageId = sentTime + '-' + senderId;
-
-    let message = {
-      id: messageId,
-      //TODO: find main contact endpoint id from sender userId
-      // when using multi-endpoint contacts
-      senderId: senderId,
-      receivedTime: receivedTime,
-      sentTime: sentTime,
-      logicalClock: receivedLogicalClock,
-      content: messageContent
-    };
-
-    let channelCursor = state.cloud.channels.select(
-      [channelId]
-    );
-
-    let messagesCursor = state.cloud.messages.select(
-      [channelId]
-    );
-
-    let existingLogicalClock = channelCursor.get('logicalClock');
-
-    let currentLogicalClock = receivedLogicalClock >= existingLogicalClock ?
-      receivedLogicalClock : existingLogicalClock;
-
-    return state.save(
-        channelCursor,
-        ['logicalClock'],
-        currentLogicalClock + 1
-      )
-      .then(() => state.save(
-        messagesCursor,
-        [messageId, 'messageInfo'],
-        message
-      ))
-      .then(() => state.save(
-        channelCursor,
-        ['latestMessageId'],
-        messageId
-      ))
-      .then(() => {
-        let activeViewId =
-          state.cloud.navigation.get(['activeViewId']);
-        if (activeViewId === channelId &&
-          channelCursor.get(['viewingLatest'])) {
-          return $q.when();
-        }
-
-        let updatingUnreadPointer =
-          !channelCursor.get(['unreadMessageId']) ?
-            state.save(
-              channelCursor,
-              ['unreadMessageId'],
-              messageId
-            ) :
-            $q.when();
-
-        return updatingUnreadPointer
-          .then(() => notifications.notify(channelId));
-      });
+    return messages.saveReceivedMessage(messagePayload, messageMetadata);
   };
 
   let listen = function listen(channelInfo, session = activeSession) {
@@ -166,7 +101,7 @@ export default /*@ngInject*/ function network(
 
         let senderId = packet.from.hashname;
         let channelId = channel.type.substr(1); //removes leading underscore
-        let receivedTime = Date.now();
+        let receivedTime = time.getTime();
         let sentTime = packet.js.t;
 
         let ackPayload = packet.js.a;
@@ -279,7 +214,7 @@ export default /*@ngInject*/ function network(
 
     let payload = {
       i: userInfo,
-      t: Date.now()
+      t: time.getTime()
     };
 
     return send(inviteChannel, payload);
@@ -299,7 +234,7 @@ export default /*@ngInject*/ function network(
 
     let payload = {
       s: statusId,
-      t: Date.now()
+      t: time.getTime()
     };
 
     return send(contactChannel, payload)

@@ -34,7 +34,10 @@ export default /*@ngInject*/ function ChannelController(
 
   this.message = '';
 
-  this.send = () => messages.saveSendingMessage(this.channelId, this.message);
+  this.send = () => messages.saveSendingMessage(this.channelId, this.message)
+    .then(() => {
+      this.message = '';
+    });
 
   //TODO: add to offline message queue instead of blocking further input
   // this.send = () => {
