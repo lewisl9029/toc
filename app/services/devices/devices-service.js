@@ -17,8 +17,9 @@ export default /*@ngInject*/ function devices(
   let disconnectOtherDevices = function disconnectOtherDevices() {
     let localDeviceId = state.local.devices.get(['deviceInfo', 'id']);
 
-    let cloudDevices = state.cloud.devices.get() || {};
-    cloudDevices[localDeviceId] = {};
+    let existingCloudDevices = state.cloud.devices.get() || {};
+
+    let cloudDevices = R.assoc(localDeviceId, {})(existingCloudDevices);
 
     let devicesDisconnecting = R.pipe(
       R.keys,
@@ -42,7 +43,7 @@ export default /*@ngInject*/ function devices(
       .select([localDeviceId, 'disconnect']);
 
     let handleDisconnects = function handleDisconnects(event) {
-      if (event.data.data !== 1) {
+      if (event.data.currentData !== 1) {
         return;
       }
 

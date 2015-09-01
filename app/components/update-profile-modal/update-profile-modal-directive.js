@@ -13,11 +13,12 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
       $scope,
       $q,
       identity,
-      state
+      state,
+      R
     ) {
       this.removeModal = $scope.removeModal;
 
-      this.userInfo = state.cloud.identity.get(['userInfo']);
+      this.userInfo = R.clone(state.cloud.identity.get(['userInfo']));
 
       this.getNewAvatar = function getNewAvatar() {
         return identity.getAvatar(this.userInfo);

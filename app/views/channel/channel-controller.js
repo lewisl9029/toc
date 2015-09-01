@@ -29,15 +29,17 @@ export default /*@ngInject*/ function ChannelController(
   state.addListener(contactCursor, updateContact, $scope);
 
   this.viewLatest = () => {
-    $ionicScrollDelegate.scrollBottom(true);
+    $ionicScrollDelegate.$getByHandle(this.channelId).scrollBottom(true);
   };
 
   this.message = '';
 
-  this.send = () => messages.saveSendingMessage(this.channelId, this.message)
-    .then(() => {
-      this.message = '';
-    });
+  this.send = () => {
+    let message = this.message;
+    this.message = '';
+
+    return messages.saveSendingMessage(this.channelId, message);
+  };
 
   //TODO: add to offline message queue instead of blocking further input
   // this.send = () => {

@@ -2,12 +2,12 @@ import template from './message-list.html!text';
 
 export let directiveName = 'tocMessageList';
 export default /*@ngInject*/ function tocMessageList(
-  $interval,
   $ionicScrollDelegate,
+  $interval,
   navigation,
   notifications,
-  R,
-  state
+  state,
+  R
 ) {
   return {
     restrict: 'E',
@@ -15,13 +15,100 @@ export default /*@ngInject*/ function tocMessageList(
     scope: {
       channelId: '@'
     },
+    link: function link(scope, element, attributes) {
+      //workaround for dynamic delegate-handle on ion-content not working
+      let scrollDelegate = R.find((delegateInstance) => {
+        return element.parent().parent()[0] === delegateInstance.element;
+      })($ionicScrollDelegate._instances);
+
+      let messagesCursor = state.cloud.messages.select([scope.channelId]);
+      let channelCursor = state.cloud.channels.select([scope.channelId]);
+
+      let viewingLatestCursor = channelCursor.select(['viewingLatest']);
+      let scrollToLatest = () => {
+        if (!viewingLatestCursor.get()) {
+          return;
+        }
+
+        if (!navigation.isActiveView(scope.channelId)) {
+          return;
+        }
+
+        scrollDelegate.scrollBottom(true);
+
+        if (!notifications.isDismissed(scope.channelId)) {
+          notifications.dismiss(scope.channelId);
+        }
+
+        if (channelCursor.get(['unreadMessageId'])) {
+          state.save(channelCursor, ['unreadMessageId'], null);
+        }
+      };
+
+      state.addListener(viewingLatestCursor, scrollToLatest, scope);
+
+      let updateMessageListPosition = () => {
+        if (!navigation.isActiveView(scope.channelId)) {
+          return;
+        }
+
+        let scrollView = scrollDelegate.getScrollView();
+
+        if (scrollView.__scrollTop < scrollView.__maxScrollTop) {
+          return;
+        }
+
+        if (!channelCursor.get(['viewingLatest'])) {
+          state.save(channelCursor, ['viewingLatest'], true);
+        }
+
+        if (channelCursor.get(['unreadMessageId'])) {
+          state.save(channelCursor, ['unreadMessageId'], null);
+        }
+      };
+
+      state.addListener(messagesCursor, updateMessageListPosition, scope, {
+        skipInitialize: true
+      });
+
+      $interval(() => {
+        if (!navigation.isActiveView(scope.channelId)) {
+          return;
+        }
+        //Updates unread messages if scrolled to bottom
+        //TODO: write a more robust version that moves unread marker granularly
+        let scrollView = scrollDelegate.getScrollView();
+
+        //Don't do anything if not at scrolled to bottom
+        if (scrollView.__scrollTop < scrollView.__maxScrollTop) {
+          if (!channelCursor.get(['viewingLatest'])) {
+            return;
+          }
+
+          return state.save(channelCursor, ['viewingLatest'], false);
+        }
+
+        //Otherwise update pointers and dismiss notification
+        if (!channelCursor.get(['viewingLatest'])) {
+          state.save(channelCursor, ['viewingLatest'], true);
+        }
+
+        if (channelCursor.get(['unreadMessageId'])) {
+          state.save(channelCursor, ['unreadMessageId'], null);
+        }
+
+        if (!notifications.isDismissed(scope.channelId)) {
+          notifications.dismiss(scope.channelId);
+        }
+      }, 5000);
+    },
     controllerAs: 'messageList',
     controller: /*@ngInject*/ function MessageListController(
       $scope,
       $state,
       identity,
-      time,
-      messages
+      messages,
+      time
     ) {
       //TODO: refactor shared functionality into messages service
       this.getAvatar = identity.getAvatar;
@@ -46,98 +133,12 @@ export default /*@ngInject*/ function tocMessageList(
       state.addListener(userCursor, updateUser, $scope);
       state.addListener(contactCursor, updateContact, $scope);
 
-      let viewingLatestCursor = channelCursor.select(['viewingLatest']);
-      let scrollToLatest = () => {
-        if (!viewingLatestCursor.get()) {
-          return;
-        }
 
-        if (!navigation.isActiveView(this.channelId)) {
-          return;
-        }
-
-        $ionicScrollDelegate.scrollBottom(true);
-
-        if (!notifications.isDismissed(this.channelId)) {
-          notifications.dismiss(this.channelId);
-        }
-
-        if (channelCursor.get(['unreadMessageId'])) {
-          state.save(channelCursor, ['unreadMessageId'], null);
-        }
-      };
-
-      state.addListener(viewingLatestCursor, scrollToLatest, $scope);
-
-      let updateMessageListPosition = () => {
-        if (!navigation.isActiveView(this.channelId)) {
-          return;
-        }
-
-        let scrollView = $ionicScrollDelegate.getScrollView();
-
-        if (scrollView.__scrollTop < scrollView.__maxScrollTop) {
-          return;
-        }
-
-        if (!channelCursor.get(['viewingLatest'])) {
-          state.save(channelCursor, ['viewingLatest'], true);
-        }
-
-        if (channelCursor.get(['unreadMessageId'])) {
-          state.save(channelCursor, ['unreadMessageId'], null);
-        }
-      };
-
-      state.addListener(messagesCursor, updateMessageListPosition, $scope, {
-        skipInitialize: true
-      });
-
-      $interval(() => {
-        if (!navigation.isActiveView(this.channelId)) {
-          return;
-        }
-        //Updates unread messages if scrolled to bottom
-        //TODO: write a more robust version that moves unread marker granularly
-        let scrollView = $ionicScrollDelegate.getScrollView();
-
-        //Don't do anything if not at scrolled to bottom
-        if (scrollView.__scrollTop < scrollView.__maxScrollTop) {
-          if (!channelCursor.get(['viewingLatest'])) {
-            return;
-          }
-
-          return state.save(channelCursor, ['viewingLatest'], false);
-        }
-
-        //Otherwise update pointers and dismiss notification
-        if (!channelCursor.get(['viewingLatest'])) {
-          state.save(channelCursor, ['viewingLatest'], true);
-        }
-
-        if (channelCursor.get(['unreadMessageId'])) {
-          state.save(channelCursor, ['unreadMessageId'], null);
-        }
-
-        if (!notifications.isDismissed(this.channelId)) {
-          notifications.dismiss(this.channelId);
-        }
-      }, 5000);
 
       let updateMessages = () => {
         this.messages = R.pipe(
           R.values,
-          R.sort((message1, message2) => {
-            let logicalClockDiff =
-              message1.messageInfo.logicalClock -
-              message2.messageInfo.logicalClock;
-
-            if (logicalClockDiff === 0) {
-              return message1.messageInfo.id > message2.messageInfo.id ? 1 : -1;
-            }
-
-            return logicalClockDiff;
-          })
+          R.sort(messages.compareMessages)
         )(messagesCursor.get());;
       };
 
