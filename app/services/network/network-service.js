@@ -3,6 +3,7 @@ export default /*@ngInject*/ function network(
   $interval,
   $q,
   $window,
+  buffer,
   channels,
   notifications,
   R,
@@ -307,41 +308,32 @@ export default /*@ngInject*/ function network(
       );
   };
 
-  let sendMessage = function sendMessage(channelInfo, messageContent,
-    logicalClock) {
-    if (!messageContent || !logicalClock) {
-      return $q.reject('Invalid message format.');
+  let sendMessage = function sendMessage(channelId, messageId) {
+    let messageCursor = state.cloud.messages.select([channelId, messageId]);
+    let channelCursor = state.cloud.messages.select([channelId]);
+
+    let messageInfo = messageCursor.get(['messageInfo']);
+    let channelInfo = messageCursor.get(['channelInfo']);
+
+    if (!messageInfo) {
+      return $q.reject('network: message doesn\'t exist');
     }
 
     let handleMessageAck = (ack) => {
-      let sentTime = ack.s;
       let receivedTime = ack.r;
 
-      let userId = state.cloud.identity.get().userInfo.id;
-      let messageId = sentTime + '-' + userId;
-
-      let message = {
-        id: messageId,
-        //TODO: find main contact userId from sender userId for multi-signon
-        senderId: userId,
-        receivedTime: receivedTime,
-        sentTime: sentTime,
-        logicalClock: logicalClock,
-        content: messageContent
-      };
-      let messagesCursor = state.cloud.messages.select([channelInfo.id]);
-
       return state.save(
-        messagesCursor,
-        [messageId, 'messageInfo'],
-        message
-      );
+          messagesCursor,
+          [messageId, 'receivedTime'],
+          receivedTime
+        )
+        .then(() => buffer.removeMessage(messageId));
     };
 
     let contactId = channelInfo.contactIds[0];
 
     let previousContactStatusId = state.cloud.contacts
-      .select([contactId]).get(['statusId']);
+      .get([contactId, 'statusId']);
 
     if (previousContactStatusId === undefined) {
       return $q.when();
@@ -349,10 +341,10 @@ export default /*@ngInject*/ function network(
 
     let payload = {
       m: {
-        c: messageContent,
-        l: logicalClock
+        c: messageInfo.content,
+        l: messageInfo.logicalClock
       },
-      t: Date.now()
+      t: messageInfo.sentTime
     };
 
     return send(channelInfo, payload)

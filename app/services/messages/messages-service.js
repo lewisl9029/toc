@@ -1,6 +1,8 @@
 export let serviceName = 'messages';
 export default /*@ngInject*/ function messages(
   $q,
+  buffer,
+  cryptography,
   network,
   time,
   state,
@@ -15,17 +17,19 @@ export default /*@ngInject*/ function messages(
       return $q.reject('messages: message must not be empty');
     }
 
-    let userId = state.cloud.identity.get(['userInfo', 'id']);
+    let senderId = state.cloud.identity.get(['userInfo', 'id']);
     let logicalClock = state.cloud.channels.get([channelId, 'logicalClock']);
     let newLogicalClock = logicalClock + 1;
     let sentTime = time.getTime();
-    let contactIds = state.cloud.channels.get([channelId, 'contactIds']);
 
-    let messageId = `${sentTime}-${userId}`;
+    let messageIdBase = cryptography.getSha256(`${channelId}-${senderId}`)
+      .substr(0, 32);
+
+    let messageId = `${sentTime}-${messageIdBase}`;
 
     let messageInfo = {
       id: messageId,
-      senderId: userId,
+      senderId: senderId,
       sentTime: sentTime,
       logicalClock: newLogicalClock,
       content: messageContent
@@ -43,15 +47,9 @@ export default /*@ngInject*/ function messages(
       messageInfo
     );
 
-    let addToMessageBuffer = () => $q.all(R.map((contactId) => state.save(
-      state.cloud.buffer,
-      ['messages', contactId, messageId],
-      { messageId, channelId, contactId }
-    ))(contactIds));
-
     return bumpLogicalClock()
       .then(saveMessageInfo)
-      .then(addToMessageBuffer);
+      .then(() => buffer.addMessage(messageId, channelId));
   };
 
   return {

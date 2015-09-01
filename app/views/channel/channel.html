@@ -14,7 +14,6 @@
     <form class="toc-message-input-form"
       id="toc-message-input-form-{{::channelView.channelId}}"
       ng-submit="channelView.send()">
-    </form>
     <div class="col-80">
       <input type="text" placeholder="Message"
         form="toc-message-input-form-{{::channelView.channelId}}"
@@ -25,14 +24,10 @@
     <div class="col-20">
       <button type="submit"
         form="toc-message-input-form-{{::channelView.channelId}}"
-        class="button button-block button-outline button-balanced"
-        toc-spinner-button loading-promise="channelView.sending">
+        class="button button-block button-outline button-balanced">
         Send
-        <!-- FIXME: memory leak in ion-spinner.
-          see https://github.com/driftyco/ionic/issues/3583 -->
-        <!-- <ion-spinner icon="ripple" class="spinner-light toc-send-spinner">
-        </ion-spinner> -->
       </button>
     </div>
+    </form>
   </ion-footer-bar>
 </ion-view>

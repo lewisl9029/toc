@@ -6,6 +6,7 @@ export default /*@ngInject*/ function ChannelController(
   $ionicScrollDelegate,
   identity,
   network,
+  messages,
   state
 ) {
   this.channelId = $stateParams.channelId;
@@ -32,48 +33,51 @@ export default /*@ngInject*/ function ChannelController(
   };
 
   this.message = '';
+
+  this.send = () => messages.saveSendingMessage(this.channelId, this.message);
+
   //TODO: add to offline message queue instead of blocking further input
-  this.send = () => {
-    const MAX_ATTEMPTS = 3;
-    let attemptCount = 0;
-    let recursivelySendMessage = () => {
-      let logicalClock = channelCursor.get(['logicalClock']);
-
-      return network.sendMessage(
-          channelCursor.get(['channelInfo']),
-          this.message,
-          logicalClock + 1
-        )
-        .then(() => {
-          let currentLogicalClock = channelCursor
-            .get(['logicalClock']);
-
-          return state.save(
-            channelCursor,
-            ['logicalClock'],
-            currentLogicalClock + 1
-          );
-        })
-        .catch((error) => {
-          if (error !== 'timeout') {
-            return $q.reject(error);
-          }
-
-          attemptCount++;
-          if (attemptCount === MAX_ATTEMPTS) {
-            return $q.reject('Message sending has timed out.');
-          }
-
-          return recursivelySendMessage();
-        });
-    };
-
-    this.sending = recursivelySendMessage()
-      .then(() => {
-        this.message = '';
-        return $q.when();
-      });
-
-    return this.sending;
-  };
+  // this.send = () => {
+  //   const MAX_ATTEMPTS = 3;
+  //   let attemptCount = 0;
+  //   let recursivelySendMessage = () => {
+  //     let logicalClock = channelCursor.get(['logicalClock']);
+  //
+  //     return network.sendMessage(
+  //         channelCursor.get(['channelInfo']),
+  //         this.message,
+  //         logicalClock + 1
+  //       )
+  //       .then(() => {
+  //         let currentLogicalClock = channelCursor
+  //           .get(['logicalClock']);
+  //
+  //         return state.save(
+  //           channelCursor,
+  //           ['logicalClock'],
+  //           currentLogicalClock + 1
+  //         );
+  //       })
+  //       .catch((error) => {
+  //         if (error !== 'timeout') {
+  //           return $q.reject(error);
+  //         }
+  //
+  //         attemptCount++;
+  //         if (attemptCount === MAX_ATTEMPTS) {
+  //           return $q.reject('Message sending has timed out.');
+  //         }
+  //
+  //         return recursivelySendMessage();
+  //       });
+  //   };
+  //
+  //   this.sending = recursivelySendMessage()
+  //     .then(() => {
+  //       this.message = '';
+  //       return $q.when();
+  //     });
+  //
+  //   return this.sending;
+  // };
 }
