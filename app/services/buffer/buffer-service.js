@@ -54,11 +54,35 @@ export default /*@ngInject*/ function buffer(
   };
 
   let addProfile = function addProfile(channelId) {
+    if (sendAttempts.profiles[channelId]) {
+      return;
+    }
 
+    return state.save(
+        state.cloud.buffer,
+        ['profiles', channelId],
+        {channelId}
+      )
+      .then(() => {
+        network.sendProfile(channelId);
+        sendAttempts.profiles[channelId] =
+          $interval(() => network.sendProfile(channelId), 20000);
+      });
   };
 
   let removeProfile = function removeProfile(channelId) {
+    if (!sendAttempts.profiles[channelId]) {
+      return;
+    }
 
+    return state.remove(
+        state.cloud.buffer,
+        ['profiles', channelId]
+      )
+      .then(() => {
+        $interval.cancel(sendAttempts.profiles[channelId]);
+        sendAttempts.profiles[channelId] = undefined;
+      });
   };
 
   let initialize = function initialize(networkService) {
