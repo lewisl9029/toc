@@ -53,18 +53,25 @@ export default /*@ngInject*/ function tocMessageList(
         }
 
         let scrollView = scrollDelegate.getScrollView();
+        let scrollTop = scrollDelegate.getScrollPosition().top;
+        let scrollMax = scrollView.getScrollMax().top;
 
-        if (scrollView.__scrollTop < scrollView.__maxScrollTop) {
+        if (scrollTop < scrollMax) {
           return;
-        }
-
-        if (!channelCursor.get(['viewingLatest'])) {
-          state.save(channelCursor, ['viewingLatest'], true);
         }
 
         if (channelCursor.get(['unreadMessageId'])) {
           state.save(channelCursor, ['unreadMessageId'], null);
         }
+
+        if (!channelCursor.get(['viewingLatest'])) {
+          //changing viewingLatest will trigger scroll
+          // don't need to trigger manually
+          return state.save(channelCursor, ['viewingLatest'], true);
+        }
+
+        //otherwise scroll to bottom to see latest message
+        scrollDelegate.scrollBottom(true);
       };
 
       state.addListener(messagesCursor, updateMessageListPosition, scope, {
@@ -78,9 +85,10 @@ export default /*@ngInject*/ function tocMessageList(
         //Updates unread messages if scrolled to bottom
         //TODO: write a more robust version that moves unread marker granularly
         let scrollView = scrollDelegate.getScrollView();
-
-        //Don't do anything if not at scrolled to bottom
-        if (scrollView.__scrollTop < scrollView.__maxScrollTop) {
+        let scrollTop = scrollDelegate.getScrollPosition().top;
+        let scrollMax = scrollView.getScrollMax().top;
+        //Don't do anything if not scrolled to bottom
+        if (scrollTop < scrollMax) {
           if (!channelCursor.get(['viewingLatest'])) {
             return;
           }
@@ -177,6 +185,10 @@ export default /*@ngInject*/ function tocMessageList(
           message.messageInfo.sentTime,
           previousMessage.messageInfo.sentTime
         );
+      };
+
+      this.isMessageSending = (message) => {
+        return message.receivedTime === undefined;
       };
 
       this.isDateSeparator = (message) => {

@@ -9,6 +9,7 @@ export default /*@ngInject*/ function buffer(
 
   let sendAttempts = {
     messages: undefined,
+    invites: undefined,
     profiles: undefined
   };
 
@@ -44,6 +45,22 @@ export default /*@ngInject*/ function buffer(
       });
   };
 
+  let addInvite = function addInvite(contactId) {
+
+  };
+
+  let removeInvite = function removeInvite(contactId) {
+
+  };
+
+  let addProfile = function addProfile(channelId) {
+
+  };
+
+  let removeProfile = function removeProfile(channelId) {
+
+  };
+
   let initialize = function initialize(networkService) {
     network = networkService;
 
@@ -54,6 +71,7 @@ export default /*@ngInject*/ function buffer(
       let channelId = messageBuffer.channelId;
       let messageId = messageBuffer.messageId;
 
+      //TODO: stagger the initial send and retry intervals
       network.sendMessage(channelId, messageId);
       return $interval(() => network.sendMessage(channelId, messageId), 20000);
     })(bufferedMessage);

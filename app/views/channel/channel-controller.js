@@ -29,7 +29,7 @@ export default /*@ngInject*/ function ChannelController(
   state.addListener(contactCursor, updateContact, $scope);
 
   this.viewLatest = () => {
-    $ionicScrollDelegate.$getByHandle(this.channelId).scrollBottom(true);
+    $ionicScrollDelegate.scrollBottom(true);
   };
 
   this.message = '';

@@ -52,6 +52,20 @@
     font-size: 12px;
     width: 100%;
   }
+  .toc-message-sending-indicator {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    text-align: right;
+    color: $dark;
+    // font-size: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+    width: 100%;
+    // .spinner svg {
+    //   height: 20px;
+    // }
+  }
 }
 
 .toc-message-avatar {

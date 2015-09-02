@@ -7,9 +7,6 @@ export default /*@ngInject*/ function contacts(
   R,
   state
 ) {
-  //TODO: add sentLatestProfile flag to each contact
-  // reset when profile updates
-
   let invite = function inviteContact(contactId) {
     let userInfo = state.cloud.identity.get('userInfo');
     let contactChannel = channels.createContactChannel(userInfo.id, contactId);

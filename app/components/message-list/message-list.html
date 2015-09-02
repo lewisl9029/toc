@@ -1,14 +1,14 @@
 <ion-list class="toc-message-list">
   <ion-item class="toc-message item-avatar"
     ng-repeat="message in messageList.messages track by message.messageInfo.id"
-    ng-class="::messageList.isSenderSeparator(message) ?
+    ng-class="messageList.isSenderSeparator(message) ?
       'toc-message-avatar' :
       'toc-message-simple'
     ">
     <img ng-src="{{messageList.getAvatar(message)}}"
       alt="Avatar for {{messageList.getUserInfo(message).email}}"
-      ng-if="::messageList.isSenderSeparator(message)" />
-    <div ng-if="::messageList.isDateSeparator(message)"
+      ng-if="messageList.isSenderSeparator(message)" />
+    <div ng-if="messageList.isDateSeparator(message)"
       class="toc-message-datestamp">
       {{::messageList.getDatestamp(message)}}
     </div>
@@ -17,9 +17,14 @@
     </div>
     <h2>{{messageList.getUserInfo(message).displayName || 'Anonymous'}}</h2>
     <p class="toc-message-content">{{::message.messageInfo.content}}</p>
-    <div ng-if="::messageList.isMinuteSeparator(message)"
+    <div ng-if="messageList.isMinuteSeparator(message)"
+      ng-hide="messageList.isMessageSending(message)"
       class="toc-message-timestamp">
       {{::messageList.getTimestamp(message)}}
+    </div>
+    <div class="toc-message-sending-indicator"
+      ng-if="messageList.isMessageSending(message)">
+      ...
     </div>
   </ion-item>
 </ion-list>

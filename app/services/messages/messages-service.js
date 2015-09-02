@@ -67,12 +67,14 @@ export default /*@ngInject*/ function messages(
 
     let updateLatestMessageId = () => {
       let latestMessageId = channelCursor.get(['latestMessageId']);
-      let latestMessage = messagesCursor.get([latestMessageId]);
-      let message = {messageInfo};
+      if (latestMessageId) {
+        let latestMessage = messagesCursor.get([latestMessageId]);
+        let message = {messageInfo};
 
-      //do nothing if message is earlier than latest message
-      if (compareMessages(message, latestMessage) < 0) {
-        return $q.when();
+        //do nothing if message is earlier than latest message
+        if (compareMessages(message, latestMessage) < 0) {
+          return $q.when();
+        }
       }
 
       return state.save(channelCursor, ['latestMessageId'], messageId);
