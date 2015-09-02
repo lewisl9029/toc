@@ -89,19 +89,17 @@ export default /*@ngInject*/ function messages(
 
       let updateUnreadPointer = () => {
         let unreadMessageId = channelCursor.get(['unreadMessageId']);
-        if (!unreadMessageId) {
-          return $q.when();
+        if (unreadMessageId) {
+          let unreadMessage = messagesCursor.get([unreadMessageId]);
+          let message = {messageInfo};
+
+          //do nothing if message is later than unread message
+          if (compareMessages(message, unreadMessage) > 0) {
+            return $q.when();
+          }
         }
 
-        let unreadMessage = messagesCursor.get([unreadMessageId]);
-        let message = {messageInfo};
-
-        //do nothing if message is later than unread message
-        if (compareMessages(message, unreadMessage) > 0) {
-          return $q.when();
-        }
-
-        return state.save(channelCursor, ['latestMessageId'], messageId);
+        return state.save(channelCursor, ['unreadMessageId'], messageId);
       }
 
       return updateUnreadPointer()

@@ -119,6 +119,7 @@ export default /*@ngInject*/ function tocMessageList(
       time
     ) {
       //TODO: refactor shared functionality into messages service
+      //TODO: memoize what can be memoized
       this.getAvatar = identity.getAvatar;
       this.channelId = $scope.channelId;
 
@@ -141,8 +142,6 @@ export default /*@ngInject*/ function tocMessageList(
       state.addListener(userCursor, updateUser, $scope);
       state.addListener(contactCursor, updateContact, $scope);
 
-
-
       let updateMessages = () => {
         this.messages = R.pipe(
           R.values,
@@ -157,6 +156,16 @@ export default /*@ngInject*/ function tocMessageList(
           .get([this.channelId, 'unreadMessageId']);
 
         return unreadMessageId === message.messageInfo.id;
+      };
+
+      this.isByUser = (message) => {
+        if (!message) {
+          return;
+        }
+
+        let senderId = message.messageInfo.senderId;
+
+        return this.userInfo.id === senderId;
       };
 
       this.isSenderSeparator = (message) => {

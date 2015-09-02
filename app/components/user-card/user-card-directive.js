@@ -51,8 +51,11 @@ export default /*@ngInject*/ function tocUserCard(
           return;
         }
 
+        let hasMultipleNotifications = this.notificationCount > 1;
+        let notificationEnding = hasMultipleNotifications ? 's' : '';
+
         this.message = this.notificationCount + ' new notification' +
-          this.notificationCount > 1 ? 's' : '';
+          notificationEnding;
       };
       state.addListener(notificationsCursor, updateSummary, $scope);
 
