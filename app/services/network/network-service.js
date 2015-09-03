@@ -22,21 +22,21 @@ export default /*@ngInject*/ function network(
     throw new Error('network: no active session');
   };
 
-  let handleInvite = function handleInvite(invitePayload) {
-    let contactInfo = invitePayload;
+  let handleProfile = function handleProfile(profilePayload) {
+    let contactInfo = profilePayload;
 
     let userId =
       state.cloud.identity.get(['userInfo']).id;
 
     let channel = channels.createContactChannel(userId, contactInfo.id);
 
-    // if channel already exists, this invite packet indicates acceptance
+    // if channel already exists, this profile packet indicates acceptance
     let existingChannel = state.cloud.channels
       .get([channel.id, 'channelInfo']);
 
     let statusId = 1; //online
 
-    let receivedInvite = !existingChannel;
+    let receivedProfile = !existingChannel;
 
     return state.save(
         state.cloud.contacts,
@@ -54,7 +54,7 @@ export default /*@ngInject*/ function network(
         channel
       ))
       .then(() => {
-        if (receivedInvite) {
+        if (receivedProfile) {
           return state.save(
             state.cloud.channels,
             [channel.id, 'receivedInvite'],
@@ -105,7 +105,7 @@ export default /*@ngInject*/ function network(
         let sentTime = packet.js.t;
 
         let ackPayload = packet.js.a;
-        let invitePayload = packet.js.i;
+        let profilePayload = packet.js.p;
         let statusPayload = packet.js.s;
         let messagePayload = packet.js.m;
 
@@ -124,8 +124,8 @@ export default /*@ngInject*/ function network(
 
         if (ackPayload) {
           return $q.when();
-        } else if (invitePayload) {
-          return handleInvite(invitePayload);
+        } else if (profilePayload) {
+          return handleProfile(profilePayload);
         } else if (statusPayload !== undefined) {
           return handleStatus(statusPayload, senderId);
         } else if (messagePayload) {
@@ -206,18 +206,18 @@ export default /*@ngInject*/ function network(
       );
     };
 
-  let sendInvite = function sendInvite(contactId, userInfo) {
-    let inviteChannel = {
+  let sendProfile = function sendProfile(contactId, userInfo) {
+    let profileChannel = {
       id: channels.INVITE_CHANNEL_ID,
       contactIds: [contactId]
     };
 
     let payload = {
-      i: userInfo,
+      p: userInfo,
       t: time.getTime()
     };
 
-    return send(inviteChannel, payload);
+    return send(profileChannel, payload);
   };
 
   let sendStatus = function sendStatus(contactId, statusId) {
@@ -364,7 +364,7 @@ export default /*@ngInject*/ function network(
   let networkService = {
     listen,
     send,
-    sendInvite,
+    sendProfile,
     sendStatus,
     sendMessage,
     initialize,

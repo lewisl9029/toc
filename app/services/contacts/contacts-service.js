@@ -1,12 +1,41 @@
 export let serviceName = 'contacts';
 export default /*@ngInject*/ function contacts(
   $q,
+  buffer,
   channels,
   identity,
   network,
   R,
   state
 ) {
+  let saveSendingInvite = function saveSendingInvite(contactId) {
+    let userInfo = state.cloud.identity.get('userInfo');
+    let contactChannel = channels.createContactChannel(userInfo.id, contactId);
+    let existingContact = state.cloud.contacts.get([contactId, 'userInfo']);
+
+    let contact = existingContact || {
+      id: contactId
+    };
+    
+    return buffer.addProfile(contactChannel.id)
+      .then(() => state.save(
+        state.cloud.contacts,
+        [contactId, 'userInfo'],
+        contact
+      ))
+      .then(() => state.save(
+        state.cloud.channels,
+        [contactChannel.id, 'channelInfo'],
+        contactChannel
+      ))
+      .then(() => channels.initializeChannel(contactChannel))
+      .then(() => network.listen(contactChannel));
+  };
+
+  let saveSendingProfile = function saveSendingProfile(channelId) {
+
+  };
+
   let invite = function inviteContact(contactId) {
     let userInfo = state.cloud.identity.get('userInfo');
     let contactChannel = channels.createContactChannel(userInfo.id, contactId);
