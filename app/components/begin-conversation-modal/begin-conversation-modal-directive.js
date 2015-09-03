@@ -30,19 +30,19 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
 
       let initializeSentInvite = (contactChannel) => {
         return state.save(
-          state.cloud.channels,
-          [contactChannel.id, 'sentInvite'],
-          true
-        )
-        .then(() => state.save(
-          state.cloud.contacts,
-          [this.contactId, 'statusId'],
-          0
-        ))
-        .then(() => {
-          this.removeModal();
-          return $q.when();
-        });
+            state.cloud.channels,
+            [contactChannel.id, 'sentInvite'],
+            true
+          )
+          .then(() => state.save(
+            state.cloud.contacts,
+            [this.contactId, 'statusId'],
+            0
+          ))
+          .then(() => {
+            this.removeModal();
+            return $q.when();
+          });
       };
 
       this.inviteMethod = 'enter';

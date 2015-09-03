@@ -17,8 +17,8 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
       R
     ) {
       this.removeModal = $scope.removeModal;
-
-      this.userInfo = R.clone(state.cloud.identity.get(['userInfo']));
+      let userInfo = state.cloud.identity.get(['userInfo']);
+      this.userInfo = R.assoc('version', userInfo.version + 1, userInfo);
 
       this.getNewAvatar = function getNewAvatar() {
         return identity.getAvatar(this.userInfo);

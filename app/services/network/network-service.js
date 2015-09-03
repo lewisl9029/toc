@@ -3,7 +3,6 @@ export default /*@ngInject*/ function network(
   $interval,
   $q,
   $window,
-  buffer,
   channels,
   notifications,
   messages,
@@ -22,12 +21,10 @@ export default /*@ngInject*/ function network(
     throw new Error('network: no active session');
   };
 
-  let handleProfile = function handleProfile(profilePayload) {
+  let handleProfile = function handleProfile(profilePayload, channelId) {
     let contactInfo = profilePayload;
 
-    let userId =
-      state.cloud.identity.get(['userInfo']).id;
-
+    let userId = state.cloud.identity.get(['userInfo']).id;
     let channel = channels.createContactChannel(userId, contactInfo.id);
 
     // if channel already exists, this profile packet indicates acceptance
@@ -38,21 +35,7 @@ export default /*@ngInject*/ function network(
 
     let receivedProfile = !existingChannel;
 
-    return state.save(
-        state.cloud.contacts,
-        [contactInfo.id, 'userInfo'],
-        contactInfo
-      )
-      .then(() => state.save(
-        state.cloud.contacts,
-        [contactInfo.id, 'statusId'],
-        statusId
-      ))
-      .then(() => state.save(
-        state.cloud.channels,
-        [channel.id, 'channelInfo'],
-        channel
-      ))
+    return
       .then(() => {
         if (receivedProfile) {
           return state.save(
@@ -125,7 +108,7 @@ export default /*@ngInject*/ function network(
         if (ackPayload) {
           return $q.when();
         } else if (profilePayload) {
-          return handleProfile(profilePayload);
+          return handleProfile(profilePayload, channelId);
         } else if (statusPayload !== undefined) {
           return handleStatus(statusPayload, senderId);
         } else if (messagePayload) {
@@ -206,18 +189,13 @@ export default /*@ngInject*/ function network(
       );
     };
 
-  let sendProfile = function sendProfile(contactId, userInfo) {
-    let profileChannel = {
-      id: channels.INVITE_CHANNEL_ID,
-      contactIds: [contactId]
-    };
-
+  let sendProfile = function sendProfile(channelInfo, userInfo) {
     let payload = {
       p: userInfo,
       t: time.getTime()
     };
 
-    return send(profileChannel, payload);
+    return send(channelInfo, payload);
   };
 
   let sendStatus = function sendStatus(contactId, statusId) {
@@ -243,28 +221,7 @@ export default /*@ngInject*/ function network(
       );
   };
 
-  let sendMessage = function sendMessage(channelId, messageId) {
-    let messageCursor = state.cloud.messages.select([channelId, messageId]);
-    let channelCursor = state.cloud.channels.select([channelId]);
-
-    let messageInfo = messageCursor.get(['messageInfo']);
-    let channelInfo = channelCursor.get(['channelInfo']);
-
-    if (!messageInfo) {
-      return $q.reject('network: message doesn\'t exist');
-    }
-
-    let handleMessageAck = (ack) => {
-      let receivedTime = ack.r;
-
-      return state.save(
-          messageCursor,
-          ['receivedTime'],
-          receivedTime
-        )
-        .then(() => buffer.removeMessage(messageId));
-    };
-
+  let sendMessage = function sendMessage(channelInfo, messageInfo) {
     let contactId = channelInfo.contactIds[0];
 
     let previousContactStatusId = state.cloud.contacts
@@ -283,10 +240,7 @@ export default /*@ngInject*/ function network(
     };
 
     return send(channelInfo, payload)
-      .then(handleMessageAck)
-      .catch((error) =>
-        handleSendTimeout(error, contactId, previousContactStatusId)
-      );
+      .then(handleMessageAck);
   };
 
   let initialize = function initializeNetwork() {
@@ -296,6 +250,7 @@ export default /*@ngInject*/ function network(
 
     let saveUserInfo = (networkInfo) => {
       let userInfo = {
+        version: 1,
         id: networkInfo.id
       };
 
