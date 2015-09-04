@@ -4,6 +4,7 @@ export default /*@ngInject*/ function network(
   $q,
   $window,
   channels,
+  contacts,
   notifications,
   messages,
   R,
@@ -21,35 +22,12 @@ export default /*@ngInject*/ function network(
     throw new Error('network: no active session');
   };
 
-  let handleProfile = function handleProfile(profilePayload, channelId) {
-    let contactInfo = profilePayload;
+  let handleInvite = function handleInvite(invitePayload) {
+    return contacts.saveReceivedInvite(invitePayload);
+  };
 
-    let userId = state.cloud.identity.get(['userInfo']).id;
-    let channel = channels.createContactChannel(userId, contactInfo.id);
-
-    // if channel already exists, this profile packet indicates acceptance
-    let existingChannel = state.cloud.channels
-      .get([channel.id, 'channelInfo']);
-
-    let statusId = 1; //online
-
-    let receivedProfile = !existingChannel;
-
-    return
-      .then(() => {
-        if (receivedProfile) {
-          return state.save(
-            state.cloud.channels,
-            [channel.id, 'receivedInvite'],
-            true
-          );
-        }
-
-        return state.remove(
-          state.cloud.channels,
-          [channel.id, 'sentInvite']
-        );
-      });
+  let handleProfile = function handleProfile(profilePayload) {
+    return contacts.saveReceivedProfile(profilePayload);
   };
 
   let handleStatus = function handleStatus(statusPayload, contactId) {
@@ -88,6 +66,7 @@ export default /*@ngInject*/ function network(
         let sentTime = packet.js.t;
 
         let ackPayload = packet.js.a;
+        let invitePayload = packet.js.i;
         let profilePayload = packet.js.p;
         let statusPayload = packet.js.s;
         let messagePayload = packet.js.m;
@@ -107,8 +86,10 @@ export default /*@ngInject*/ function network(
 
         if (ackPayload) {
           return $q.when();
+        } else if (invitePayload) {
+          return handleInvite(invitePayload);
         } else if (profilePayload) {
-          return handleProfile(profilePayload, channelId);
+          return handleProfile(profilePayload);
         } else if (statusPayload !== undefined) {
           return handleStatus(statusPayload, senderId);
         } else if (messagePayload) {
@@ -188,6 +169,15 @@ export default /*@ngInject*/ function network(
         0
       );
     };
+
+  let sendInvite = function sendInvite(channelInfo, userInfo) {
+    let payload = {
+      i: userInfo,
+      t: time.getTime()
+    };
+
+    return send(channelInfo, payload);
+  };
 
   let sendProfile = function sendProfile(channelInfo, userInfo) {
     let payload = {
