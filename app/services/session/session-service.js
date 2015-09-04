@@ -37,7 +37,7 @@ export default /*@ngInject*/ function session(
       .then(() => devices.initialize(sessionService))
       .then(() => channels.initialize(network))
       .then(() => status.initialize())
-      .then(() => contacts.initialize(status))
+      .then(() => contacts.initialize(status, network))
       .then(() => messages.initialize())
       .then(() => notifications.initialize())
       .then(() => buffer.initialize(network))

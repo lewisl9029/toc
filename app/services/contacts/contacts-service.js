@@ -8,12 +8,15 @@ export default /*@ngInject*/ function contacts(
   state
 ) {
   let status;
+  let network;
 
   let saveContactInfo = function saveContactInfo(contactInfo) {
     let contactCursor = state.cloud.contacts.select([contactInfo.id]);
     let existingContactInfo = contactCursor.get(['userInfo']);
 
-    if (existingContactInfo.version > contactInfo.version) {
+    if (existingContactInfo &&
+      existingContactInfo.version > contactInfo.version
+    ) {
       return $q.when();
     }
 
@@ -39,26 +42,39 @@ export default /*@ngInject*/ function contacts(
 
     let existingChannel = channelCursor.get();
 
-    if (existingChannel && existingChannel.inviteStatus === 'received') {
+    if (!existingChannel) {
+      return saveContactInfo(contactInfo)
+        .then(() => state.save(contactCursor, ['statusId'], -1))
+        .then(() => state.save(channelCursor, ['channelInfo'], newChannelInfo))
+        .then(() => state.save(channelCursor, ['inviteStatus'], 'received'));
+    }
+
+    if (existingChannel.inviteStatus === 'sent') {
       return saveContactInfo(contactInfo)
         .then(() => state.remove(channelCursor, ['inviteStatus']))
+        .then(() => state.save(contactCursor, ['statusId'], 1))
         .then(() => channels.initializeChannel(existingChannel.channelInfo))
         .then(() => network.listen(existingChannel.channelInfo))
         .then(() => status.initializeUpdates(contactInfo.id));
     }
 
-    return saveContactInfo(contactInfo)
-      .then(() => state.save(contactCursor, ['statusId'], -1))
-      .then(() => state.save(channelCursor, ['channelInfo'], newChannelInfo))
-      .then(() => state.save(channelCursor, ['inviteStatus'], 'received'));
+    return $q.when();
   };
 
   let saveAcceptingInvite = function saveAcceptingInvite(channelId) {
     let channelCursor = state.cloud.channels.select([channelId]);
-    let channelInfo = channelCursor.get(['channelInfo']);
+    let existingChannel = channelCursor.get();
 
-    return state.save(channelCursor, ['inviteStatus'], 'accepting')
-      .then(() => buffer.addInvite(channelId));
+    if (!existingChannel) {
+      return $q.reject('missing existing channel for invite accept');
+    }
+
+    if (existingChannel.inviteStatus === 'received') {
+      return state.save(channelCursor, ['inviteStatus'], 'accepting')
+        .then(() => buffer.addInvite(channelId));
+    }
+
+    return $q.when();
   };
 
   let saveSendingInvite = function saveSendingInvite(contactId) {
@@ -66,6 +82,12 @@ export default /*@ngInject*/ function contacts(
     let contactChannel = channels.createContactChannel(userInfo.id, contactId);
     let contactCursor = state.cloud.contacts.select([contactId]);
     let channelCursor = state.cloud.channels.select([contactChannel.id]);
+
+    let existingChannel = channelCursor.get();
+
+    if (existingChannel) {
+      return $q.when();
+    }
 
     let contactInfo = {
       version: 0,
@@ -91,8 +113,9 @@ export default /*@ngInject*/ function contacts(
     return $q.all(savingSendingProfiles);
   };
 
-  let initialize = function initializeContacts(statusService) {
+  let initialize = function initializeContacts(statusService, networkService) {
     status = statusService;
+    network = networkService;
 
     let allContacts = state.cloud.contacts.get();
 

@@ -58,20 +58,27 @@ export default /*@ngInject*/ function buffer(
   };
 
   let sendInvite = function sendInvite(channelId, userInfo) {
-    let channelCursor = state.cloud.channels.select([channelId])
+    let channelCursor = state.cloud.channels.select([channelId]);
     let existingChannel = channelCursor.get();
     let channelInfo = existingChannel.channelInfo;
+    let contactId = channelInfo.contactIds[0];
+    let contactCursor = state.cloud.contacts.select([contactId]);
 
     let handleInviteAck = (ack) => {
       let initializeChannel = () => {
-        if (existingChannel.inviteStatus !== 'accepting') {
-          return $q.when();
+        if (existingChannel.inviteStatus === 'sending') {
+          return state.save(channelCursor, ['inviteStatus'], 'sent');
         }
 
-        return state.remove(channelCursor, ['inviteStatus'])
-          .then(() => channels.initializeChannel(channelInfo))
-          .then(() => network.listen(channelInfo))
-          .then(() => status.initializeUpdates(channelInfo.contactIds[0]));
+        if (existingChannel.inviteStatus === 'accepting') {
+          return state.remove(channelCursor, ['inviteStatus'])
+            .then(() => state.save(contactCursor, ['statusId'], 1))
+            .then(() => channels.initializeChannel(channelInfo))
+            .then(() => network.listen(channelInfo))
+            .then(() => status.initializeUpdates(contactId));
+        }
+
+        return $q.when();
       };
 
       return removeInvite(channelInfo.id)

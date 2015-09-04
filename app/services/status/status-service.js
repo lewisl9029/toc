@@ -2,6 +2,7 @@ export let serviceName = 'status';
 export default /*@ngInject*/ function status(
   $interval,
   $q,
+  $log,
   $window,
   network,
   R,
