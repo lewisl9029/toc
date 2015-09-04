@@ -74,6 +74,18 @@ export default /*@ngInject*/ function contacts(
       .then(() => buffer.addInvite(channelId));
   };
 
+  let saveProfileUpdates = function saveProfileUpdates() {
+    let userInfo = state.cloud.identity.get('userInfo');
+    let existingChannels = state.cloud.channels.get();
+
+    let savingSendingProfiles = R.pipe(
+      R.values,
+      R.map((channel) => saveSendingProfile(channel.channelInfo.id))
+    ) (existingChannels);
+
+    return $q.all(savingSendingProfiles);
+  };
+
   let initialize = function initializeContacts() {
     let allContacts = state.cloud.contacts.get();
 
@@ -97,6 +109,7 @@ export default /*@ngInject*/ function contacts(
     saveReceivedInvite,
     saveAcceptingInvite,
     saveSendingInvite,
+    saveProfileUpdates,
     initialize
   };
 }

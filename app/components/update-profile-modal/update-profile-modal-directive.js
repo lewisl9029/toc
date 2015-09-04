@@ -12,6 +12,8 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
     controller: /*@ngInject*/ function UpdateProfileModalController(
       $scope,
       $q,
+      $log,
+      contacts,
       identity,
       state,
       R
@@ -30,10 +32,12 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
             ['userInfo'],
             this.userInfo
           )
+          .then(() => contacts.saveProfileUpdates())
           .then(() => {
             this.removeModal();
             return $q.when();
-          });
+          })
+          .catch($log.error);
       };
     }
   };

@@ -2,11 +2,12 @@ export let serviceName = 'buffer';
 export default /*@ngInject*/ function buffer(
   $interval,
   $q,
+  $log,
   state,
   R
 ) {
   let network;
-
+  //TODO: don't anything in buffer if contact status is offline
   let sendAttempts = {
     messages: undefined,
     invites: undefined,
@@ -25,6 +26,7 @@ export default /*@ngInject*/ function buffer(
         .then(() => removeMessage(messageInfo.id));
     };
 
+    $log.debug(`sending message ${messageInfo.content} to ${channelId}`);
     return network.sendMessage(channelInfo, messageInfo)
       .then(handleMessageAck);
   };
@@ -79,6 +81,7 @@ export default /*@ngInject*/ function buffer(
       contactIds: channelInfo.contactIds
     };
 
+    $log.debug(`sending invite v${userInfo.version} to ${channelId}`);
     return network.sendInvite(inviteChannelInfo, userInfo)
       .then(handleInviteAck);
   };
@@ -117,6 +120,7 @@ export default /*@ngInject*/ function buffer(
       return removeProfile(channelInfo.id);
     };
 
+    $log.debug(`sending profile v${userInfo.version} to ${channelId}`);
     return network.sendProfile(channelInfo, userInfo)
       .then(handleProfileAck);
   };
@@ -162,12 +166,24 @@ export default /*@ngInject*/ function buffer(
       return $interval(() => sendMessage(messageId, channelId), 20000);
     })(bufferedMessages);
 
+    let bufferedProfiles = state.cloud.buffer.get(['profiles']);
+    let userInfo = state.cloud.identity.get(['userInfo']);
+
+    sendAttempts.profiles = R.mapObj((profileBuffer) => {
+      let channelId = profileBuffer.channelId;
+
+      //TODO: stagger the initial send and retry intervals
+      sendProfile(channelId, userInfo);
+      return $interval(() => sendProfile(channelId, userInfo), 20000);
+    })(bufferedProfiles);
+
     return $q.when();
   };
 
   return {
     addMessage,
-    removeMessage,
+    addProfile,
+    addInvite,
     initialize
   };
 }
