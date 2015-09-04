@@ -18,11 +18,14 @@ export default /*@ngInject*/ function state(
   $window.baobab = Baobab;
 
   stateService.tree = new Baobab({
-    memory: {},
-    local: {},
-    cloudUnencrypted: {},
-    cloud: {}
-  });
+      memory: {},
+      local: {},
+      cloudUnencrypted: {},
+      cloud: {}
+    },
+    {
+      // immutable: false
+    });
 
   //TODO: test baobab event batching and tweak manual commit timing
   stateService.tree.on('update',
@@ -69,6 +72,8 @@ export default /*@ngInject*/ function state(
   stateService.cloudUnencrypted.state = stateService.cloudUnencrypted
     .cursor.select(['state']);
 
+  stateService.cloud.buffer = stateService.cloud.cursor
+    .select(['buffer']);
   stateService.cloud.identity = stateService.cloud.cursor
     .select(['identity']);
   stateService.cloud.contacts = stateService.cloud.cursor
@@ -94,11 +99,6 @@ export default /*@ngInject*/ function state(
     function saveVolatile(cursor, relativePath, object) {
       return $q.when()
         .then(() => {
-          if (cursor.get() === undefined) {
-            cursor.tree.set(cursor.path, {});
-            cursor.tree.commit();
-          }
-
           cursor.set(relativePath, object);
           return object;
         });
@@ -112,14 +112,6 @@ export default /*@ngInject*/ function state(
 
       return store.storeObject(storageKey, object)
         .then(object => {
-          //FIXME: workaround for setting nonexistant cursors
-          // this can't be very performant
-          // migrating to baobab v2 should make this obsolete
-          if (cursor.get() === undefined) {
-            cursor.tree.set(cursor.path, {});
-            cursor.tree.commit();
-          }
-
           cursor.set(relativePath, object);
           return object;
         });

@@ -5,7 +5,7 @@
     }
     > :last-child {
       box-shadow: unset;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
   }
 }
@@ -15,6 +15,7 @@
   background-color: transparent;
   padding-right: 72px;
   min-height: unset;
+
   .toc-message-content {
     white-space: normal;
   }
@@ -23,24 +24,35 @@
     right: 16px;
     top: 16px;
   }
-  .toc-message-unread-marker {
+  .toc-message-unread {
     position: absolute;
-    top: 0px;
+    bottom: 0px;
     left: 0px;
-    height: 3px;
+    padding-left: 72px;
+    padding-right: 72px;
+    height: 20px;
     text-align: left;
-    color: $assertive;
-    //FIXME: pick a less jarring unread marker style
-    // box-shadow: 0 1px 2px $assertive inset;
     font-size: 10px;
-    width: 110%;
+    width: 100%;
+    z-index: -1;
+  }
+  .toc-message-unread-marker {
+    background-size: 100% 5px;
+    background-repeat: no-repeat;
+    background-image: radial-gradient(
+      ellipse 50% 40%,
+      $energized,
+      $light
+    );
+    height: 100%;
+    width: 100%;
   }
   .toc-message-timestamp {
     position: absolute;
     bottom: 0px;
     left: 0px;
     text-align: right;
-    color: $dark;
+    color: $royal;
     font-size: 12px;
     padding-left: 16px;
     padding-right: 16px;
@@ -51,6 +63,20 @@
     color: $royal;
     font-size: 12px;
     width: 100%;
+  }
+  .toc-message-sending-indicator {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    text-align: right;
+    color: $energized;
+    // font-size: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+    width: 100%;
+    // .spinner svg {
+    //   height: 20px;
+    // }
   }
 }
 
@@ -72,4 +98,14 @@
   h2 {
     display: none;
   }
+}
+
+.toc-message-user {
+  > :not(.toc-message-datestamp){
+    opacity: 0.8;
+  }
+}
+
+.toc-message-contact {
+
 }

@@ -18,11 +18,20 @@
   font-style: italic;
 }
 
-.toc-contact-status-0 {
+.toc-contact-status-unknown {
+  border: 2px solid lighten($dark, 50);
+  background-color: lighten($dark, 50);
+}
+
+.toc-contact-status-pending {
+  border: 2px solid lighten($dark, 50);
+}
+
+.toc-contact-status-offline {
   border: 2px solid $balanced;
 }
 
-.toc-contact-status-1 {
+.toc-contact-status-online {
   border: 2px solid $balanced;
   background-color: $balanced;
 }

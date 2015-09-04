@@ -4,9 +4,12 @@ export default /*@ngInject*/ function network(
   $q,
   $window,
   channels,
+  contacts,
   notifications,
+  messages,
   R,
   state,
+  time,
   telehash
 ) {
   let activeSession;
@@ -20,50 +23,11 @@ export default /*@ngInject*/ function network(
   };
 
   let handleInvite = function handleInvite(invitePayload) {
-    let contactInfo = invitePayload;
+    return contacts.saveReceivedInvite(invitePayload);
+  };
 
-    let userId =
-      state.cloud.identity.get(['userInfo']).id;
-
-    let channel = channels.createContactChannel(userId, contactInfo.id);
-
-    // if channel already exists, this invite packet indicates acceptance
-    let existingChannel = state.cloud.channels
-      .get([channel.id, 'channelInfo']);
-
-    let statusId = 1; //online
-
-    let receivedInvite = !existingChannel;
-
-    return state.save(
-        state.cloud.contacts,
-        [contactInfo.id, 'userInfo'],
-        contactInfo
-      )
-      .then(() => state.save(
-        state.cloud.contacts,
-        [contactInfo.id, 'statusId'],
-        statusId
-      ))
-      .then(() => state.save(
-        state.cloud.channels,
-        [channel.id, 'channelInfo'],
-        channel
-      ))
-      .then(() => {
-        if (receivedInvite) {
-          return state.save(
-            state.cloud.channels,
-            [channel.id, 'receivedInvite'],
-            true
-          );
-        }
-
-        return state.remove(
-          state.cloud.channels,
-          [channel.id, 'sentInvite']
-        );
-      });
+  let handleProfile = function handleProfile(profilePayload) {
+    return contacts.saveReceivedProfile(profilePayload);
   };
 
   let handleStatus = function handleStatus(statusPayload, contactId) {
@@ -86,74 +50,7 @@ export default /*@ngInject*/ function network(
   };
 
   let handleMessage = function handleMessage(messagePayload, messageMetadata) {
-    let messageContent = messagePayload.c;
-    let receivedLogicalClock = messagePayload.l;
-    let sentTime = messageMetadata.sentTime;
-    let receivedTime = messageMetadata.receivedTime;
-    let senderId = messageMetadata.senderId;
-    let channelId = messageMetadata.channelId;
-
-    let messageId = sentTime + '-' + senderId;
-
-    let message = {
-      id: messageId,
-      //TODO: find main contact endpoint id from sender userId
-      // when using multi-endpoint contacts
-      senderId: senderId,
-      receivedTime: receivedTime,
-      sentTime: sentTime,
-      logicalClock: receivedLogicalClock,
-      content: messageContent
-    };
-
-    let channelCursor = state.cloud.channels.select(
-      [channelId]
-    );
-
-    let messagesCursor = state.cloud.messages.select(
-      [channelId]
-    );
-
-    let existingLogicalClock = channelCursor.get('logicalClock');
-
-    let currentLogicalClock = receivedLogicalClock >= existingLogicalClock ?
-      receivedLogicalClock : existingLogicalClock;
-
-    return state.save(
-        channelCursor,
-        ['logicalClock'],
-        currentLogicalClock + 1
-      )
-      .then(() => state.save(
-        messagesCursor,
-        [messageId, 'messageInfo'],
-        message
-      ))
-      .then(() => state.save(
-        channelCursor,
-        ['latestMessageId'],
-        messageId
-      ))
-      .then(() => {
-        let activeViewId =
-          state.cloud.navigation.get(['activeViewId']);
-        if (activeViewId === channelId &&
-          channelCursor.get(['viewingLatest'])) {
-          return $q.when();
-        }
-
-        let updatingUnreadPointer =
-          !channelCursor.get(['unreadMessageId']) ?
-            state.save(
-              channelCursor,
-              ['unreadMessageId'],
-              messageId
-            ) :
-            $q.when();
-
-        return updatingUnreadPointer
-          .then(() => notifications.notify(channelId));
-      });
+    return messages.saveReceivedMessage(messagePayload, messageMetadata);
   };
 
   let listen = function listen(channelInfo, session = activeSession) {
@@ -165,11 +62,12 @@ export default /*@ngInject*/ function network(
 
         let senderId = packet.from.hashname;
         let channelId = channel.type.substr(1); //removes leading underscore
-        let receivedTime = Date.now();
+        let receivedTime = time.getTime();
         let sentTime = packet.js.t;
 
         let ackPayload = packet.js.a;
         let invitePayload = packet.js.i;
+        let profilePayload = packet.js.p;
         let statusPayload = packet.js.s;
         let messagePayload = packet.js.m;
 
@@ -190,6 +88,8 @@ export default /*@ngInject*/ function network(
           return $q.when();
         } else if (invitePayload) {
           return handleInvite(invitePayload);
+        } else if (profilePayload) {
+          return handleProfile(profilePayload);
         } else if (statusPayload !== undefined) {
           return handleStatus(statusPayload, senderId);
         } else if (messagePayload) {
@@ -270,18 +170,22 @@ export default /*@ngInject*/ function network(
       );
     };
 
-  let sendInvite = function sendInvite(contactId, userInfo) {
-    let inviteChannel = {
-      id: channels.INVITE_CHANNEL_ID,
-      contactIds: [contactId]
-    };
-
+  let sendInvite = function sendInvite(channelInfo, userInfo) {
     let payload = {
       i: userInfo,
-      t: Date.now()
+      t: time.getTime()
     };
 
-    return send(inviteChannel, payload);
+    return send(channelInfo, payload);
+  };
+
+  let sendProfile = function sendProfile(channelInfo, userInfo) {
+    let payload = {
+      p: userInfo,
+      t: time.getTime()
+    };
+
+    return send(channelInfo, payload);
   };
 
   let sendStatus = function sendStatus(contactId, statusId) {
@@ -298,7 +202,7 @@ export default /*@ngInject*/ function network(
 
     let payload = {
       s: statusId,
-      t: Date.now()
+      t: time.getTime()
     };
 
     return send(contactChannel, payload)
@@ -307,41 +211,11 @@ export default /*@ngInject*/ function network(
       );
   };
 
-  let sendMessage = function sendMessage(channelInfo, messageContent,
-    logicalClock) {
-    if (!messageContent || !logicalClock) {
-      return $q.reject('Invalid message format.');
-    }
-
-    let handleMessageAck = (ack) => {
-      let sentTime = ack.s;
-      let receivedTime = ack.r;
-
-      let userId = state.cloud.identity.get().userInfo.id;
-      let messageId = sentTime + '-' + userId;
-
-      let message = {
-        id: messageId,
-        //TODO: find main contact userId from sender userId for multi-signon
-        senderId: userId,
-        receivedTime: receivedTime,
-        sentTime: sentTime,
-        logicalClock: logicalClock,
-        content: messageContent
-      };
-      let messagesCursor = state.cloud.messages.select([channelInfo.id]);
-
-      return state.save(
-        messagesCursor,
-        [messageId, 'messageInfo'],
-        message
-      );
-    };
-
+  let sendMessage = function sendMessage(channelInfo, messageInfo) {
     let contactId = channelInfo.contactIds[0];
 
     let previousContactStatusId = state.cloud.contacts
-      .select([contactId]).get(['statusId']);
+      .get([contactId, 'statusId']);
 
     if (previousContactStatusId === undefined) {
       return $q.when();
@@ -349,17 +223,13 @@ export default /*@ngInject*/ function network(
 
     let payload = {
       m: {
-        c: messageContent,
-        l: logicalClock
+        c: messageInfo.content,
+        l: messageInfo.logicalClock
       },
-      t: Date.now()
+      t: messageInfo.sentTime
     };
 
-    return send(channelInfo, payload)
-      .then(handleMessageAck)
-      .catch((error) =>
-        handleSendTimeout(error, contactId, previousContactStatusId)
-      );
+    return send(channelInfo, payload);
   };
 
   let initialize = function initializeNetwork() {
@@ -369,6 +239,7 @@ export default /*@ngInject*/ function network(
 
     let saveUserInfo = (networkInfo) => {
       let userInfo = {
+        version: 1,
         id: networkInfo.id
       };
 
@@ -438,6 +309,7 @@ export default /*@ngInject*/ function network(
     listen,
     send,
     sendInvite,
+    sendProfile,
     sendStatus,
     sendMessage,
     initialize,

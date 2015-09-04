@@ -12,12 +12,15 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
     controller: /*@ngInject*/ function UpdateProfileModalController(
       $scope,
       $q,
+      $log,
+      contacts,
       identity,
-      state
+      state,
+      R
     ) {
       this.removeModal = $scope.removeModal;
-
-      this.userInfo = state.cloud.identity.get(['userInfo']);
+      let userInfo = state.cloud.identity.get(['userInfo']);
+      this.userInfo = R.assoc('version', userInfo.version + 1, userInfo);
 
       this.getNewAvatar = function getNewAvatar() {
         return identity.getAvatar(this.userInfo);
@@ -29,10 +32,12 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
             ['userInfo'],
             this.userInfo
           )
+          .then(() => contacts.saveProfileUpdates())
           .then(() => {
             this.removeModal();
             return $q.when();
-          });
+          })
+          .catch($log.error);
       };
     }
   };

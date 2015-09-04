@@ -5,6 +5,7 @@ export default /*@ngInject*/ function channels(
   state,
   cryptography
 ) {
+  let network;
   const CHANNEL_ID_PREFIX = 'toc-';
   const INVITE_CHANNEL_ID = CHANNEL_ID_PREFIX + 'invite';
 
@@ -58,16 +59,17 @@ export default /*@ngInject*/ function channels(
   };
 
   //Workaround for circular dependency between network and channel...
-  let initialize = function initialize(networkListen) {
+  let initialize = function initialize(networkService) {
+    network = networkService;
     let existingChannels = state.cloud.channels.get();
 
     let initializingChannels = $q.all(R.pipe(
       R.values,
-      R.filter((channel) => !channel.receivedInvite),
+      R.reject(R.prop('inviteStatus')),
       R.map(R.prop('channelInfo')),
       R.map((channelInfo) => {
         return initializeChannel(channelInfo)
-          .then(() => networkListen(channelInfo));
+          .then(() => network.listen(channelInfo));
       })
     )(existingChannels));
 

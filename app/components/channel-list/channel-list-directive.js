@@ -36,13 +36,18 @@ export default /*@ngInject*/ function tocChannelList() {
       state.addListener(contactsCursor, updateContacts, $scope);
 
       this.handleClick = function handleChannelClick(channel) {
-        if (channel.sentInvite) {
+        if (channel.inviteStatus === 'sent' ||
+          channel.inviteStatus === 'sending' ||
+          channel.inviteStatus === 'accepting'
+        ) {
           return;
         }
 
-        if (channel.receivedInvite) {
-          let contact =
-            state.cloud.contacts.get([channel.channelInfo.contactIds[0]]);
+        if (channel.inviteStatus === 'received') {
+          let contactId = channel.channelInfo.contactIds[0];
+          let channelId = channel.channelInfo.id;
+          let contact = state.cloud.contacts.get([contactId]);
+
           return $ionicPopup.show({
             template: `Accept invite from ${contact.userInfo.displayName || 'Anonymous'}?`,
             title: 'Accept Invite',
@@ -55,11 +60,7 @@ export default /*@ngInject*/ function tocChannelList() {
                 text: 'Accept',
                 type: 'button-outline button-balanced',
                 onTap: (event) => {
-                  return contacts.invite(channel.channelInfo.contactIds[0])
-                    .then(() => state.remove(
-                      state.cloud.channels,
-                      [channel.channelInfo.id, 'receivedInvite']
-                    ));
+                  return contacts.saveAcceptingInvite(channelId);
                 }
               }
             ]

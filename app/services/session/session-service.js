@@ -4,12 +4,15 @@ export default /*@ngInject*/ function session(
   $log,
   $timeout,
   $window,
+  buffer,
   channels,
   contacts,
   devices,
   identity,
   navigation,
   network,
+  notifications,
+  messages,
   R,
   state,
   status,
@@ -31,9 +34,13 @@ export default /*@ngInject*/ function session(
     return identity.initialize(credentials, staySignedIn)
       .then(() => state.cloud.initialize())
       .then(() => network.initialize())
-      .then(() => devices.initialize(destroy))
-      .then(() => channels.initialize(network.listen))
+      .then(() => devices.initialize(sessionService))
+      .then(() => channels.initialize(network))
       .then(() => status.initialize())
+      .then(() => contacts.initialize(status, network))
+      .then(() => messages.initialize())
+      .then(() => notifications.initialize())
+      .then(() => buffer.initialize(network, status))
       .then(() => time.initialize())
       .then(() => navigation.initialize())
       .then(() => preparingPrivateSession.resolve('session: private ready'));
@@ -68,11 +75,13 @@ export default /*@ngInject*/ function session(
       .then(() => $q.when($window.location.reload()));
   };
 
-  return {
+  let sessionService = {
     preparePublic,
     preparePrivate,
     start,
     initialize,
     destroy
   };
+
+  return sessionService;
 };
