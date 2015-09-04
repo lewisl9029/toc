@@ -40,7 +40,7 @@ export default /*@ngInject*/ function session(
       .then(() => contacts.initialize(status, network))
       .then(() => messages.initialize())
       .then(() => notifications.initialize())
-      .then(() => buffer.initialize(network))
+      .then(() => buffer.initialize(network, status))
       .then(() => time.initialize())
       .then(() => navigation.initialize())
       .then(() => preparingPrivateSession.resolve('session: private ready'));

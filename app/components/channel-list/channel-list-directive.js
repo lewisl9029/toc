@@ -45,6 +45,7 @@ export default /*@ngInject*/ function tocChannelList() {
 
         if (channel.inviteStatus === 'received') {
           let contactId = channel.channelInfo.contactIds[0];
+          let channelId = channel.channelInfo.id;
           let contact = state.cloud.contacts.get([contactId]);
 
           return $ionicPopup.show({

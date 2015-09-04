@@ -123,7 +123,7 @@ export default /*@ngInject*/ function contacts(
       R.values,
       R.filter(R.propEq('statusId', 1)),
       R.map((contact) => state.save(
-        contactsCursor,
+        state.cloud.contacts,
         [contact.userInfo.id, 'statusId'],
         0
       ))

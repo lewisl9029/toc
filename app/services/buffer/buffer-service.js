@@ -8,6 +8,8 @@ export default /*@ngInject*/ function buffer(
   R
 ) {
   let network;
+  let status;
+
   //TODO: don't anything in buffer if contact status is offline
   let sendAttempts = {
     messages: undefined,
@@ -161,8 +163,9 @@ export default /*@ngInject*/ function buffer(
     return state.remove(state.cloud.buffer, ['profiles', channelId]);
   };
 
-  let initialize = function initialize(networkService) {
+  let initialize = function initialize(networkService, statusService) {
     network = networkService;
+    status = statusService;
 
     let bufferedMessages = state.cloud.buffer.get(['messages']);
 
