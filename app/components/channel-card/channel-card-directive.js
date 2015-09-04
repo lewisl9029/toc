@@ -25,16 +25,46 @@ export default /*@ngInject*/ function tocChannelCard() {
         this.contact = contactCursor.get(
           this.channel.channelInfo.contactIds[0]
         );
+        updateStatus();
       };
 
-      let updateQuote = () => {
-        if (this.channel.sentInvite) {
-          this.quote = `ID: ${this.channel.channelInfo.contactIds[0]}`;
+      let updateStatus = () => {
+        if (this.contact.statusId === -1) {
+          this.status = 'toc-contact-status-pending';
           return;
         }
 
-        if (this.channel.receivedInvite) {
-          this.quote = 'New invite';
+        if (this.contact.statusId === 0) {
+          this.status = 'toc-contact-status-offline';
+          return;
+        }
+
+        if (this.contact.statusId === 1) {
+          this.status = 'toc-contact-status-online';
+          return;
+        }
+
+        this.status = 'toc-contact-status-unknown';
+      };
+
+      let updateQuote = () => {
+        if (this.channel.inviteStatus === 'accepting') {
+          this.quote = `Accepting invite`;
+          return;
+        }
+
+        if (this.channel.inviteStatus === 'sending') {
+          this.quote = `Sending invite`;
+          return;
+        }
+
+        if (this.channel.inviteStatus === 'sent') {
+          this.quote = `Sent invite`;
+          return;
+        }
+
+        if (this.channel.inviteStatus === 'received') {
+          this.quote = 'Received invite';
           return;
         }
 

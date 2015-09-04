@@ -36,11 +36,14 @@ export default /*@ngInject*/ function tocChannelList() {
       state.addListener(contactsCursor, updateContacts, $scope);
 
       this.handleClick = function handleChannelClick(channel) {
-        if (channel.sentInvite) {
+        if (channel.inviteStatus === 'sent' ||
+          channel.inviteStatus === 'sending' ||
+          channel.inviteStatus === 'accepting'
+        ) {
           return;
         }
 
-        if (channel.receivedInvite) {
+        if (channel.inviteStatus === 'received') {
           let contact =
             state.cloud.contacts.get([channel.channelInfo.contactIds[0]]);
           return $ionicPopup.show({

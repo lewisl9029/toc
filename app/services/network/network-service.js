@@ -308,6 +308,7 @@ export default /*@ngInject*/ function network(
   let networkService = {
     listen,
     send,
+    sendInvite,
     sendProfile,
     sendStatus,
     sendMessage,

@@ -15,8 +15,8 @@ export default /*@ngInject*/ function status(
   const STATUS_UPDATE_INTERVAL = 15000;
 
   let sendUpdate = function sendUpdate(contactId) {
-    //TODO: only send updates to initialized contacts (not existing new invites)
     //TODO: send current custom status rather than static ONLINE status
+    $log.debug(`Status: Sending status update to ${contactId}`);
     return network.sendStatus(contactId, ONLINE)
       .catch((error) => {
         if (error === 'timeout') {
@@ -28,27 +28,28 @@ export default /*@ngInject*/ function status(
   };
 
   let initializeUpdates = function initializeUpdates(contactId) {
-    let sendStatusUpdate = () => sendUpdate(contactId);
-
-    sendStatusUpdate();
+    sendUpdate(contactId);
     activeStatusUpdates[contactId] =
-      $interval(sendStatusUpdate, STATUS_UPDATE_INTERVAL);
+      $interval(() => sendUpdate(contactId), STATUS_UPDATE_INTERVAL);
 
     return $q.when();
   };
 
   let initialize = function initialize() {
     let contacts = state.cloud.contacts.get();
+
     R.pipe(
-      R.keys,
-      R.forEach(initializeUpdates)
+      R.values,
+      R.reject(R.propEq('statusId', -1)),
+      R.forEach((contact) => initializeUpdates(contact.userInfo.id))
     )(contacts);
 
     //FIXME: won't be appropriate when simultaneous login is implemented
     $window.onbeforeunload = () => {
       R.pipe(
-        R.keys,
-        R.forEach((contactId) => network.sendStatus(contactId, OFFLINE))
+        R.values,
+        R.reject(R.propEq('statusId', -1)),
+        R.forEach((contact) => network.sendStatus(contact.userInfo.id, OFFLINE))
       )(contacts);
     };
 

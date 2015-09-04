@@ -156,9 +156,14 @@ export default /*@ngInject*/ function messages(
       .catch($log.error);
   };
 
+  let initialize = function initialize() {
+    return $q.when();
+  };
+
   return {
     compareMessages,
     saveSendingMessage,
-    saveReceivedMessage
+    saveReceivedMessage,
+    initialize
   };
 }

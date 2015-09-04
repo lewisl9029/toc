@@ -3,6 +3,7 @@ export default /*@ngInject*/ function buffer(
   $interval,
   $q,
   $log,
+  channels,
   state,
   R
 ) {
@@ -26,7 +27,7 @@ export default /*@ngInject*/ function buffer(
         .then(() => removeMessage(messageInfo.id));
     };
 
-    $log.debug(`sending message ${messageInfo.content} to ${channelId}`);
+    $log.debug(`Buffer: Sending message ${messageInfo.content} to ${channelId}`);
     return network.sendMessage(channelInfo, messageInfo)
       .then(handleMessageAck);
   };
@@ -69,7 +70,8 @@ export default /*@ngInject*/ function buffer(
 
         return state.remove(channelCursor, ['inviteStatus'])
           .then(() => channels.initializeChannel(channelInfo))
-          .then(() => network.listen(channelInfo));
+          .then(() => network.listen(channelInfo))
+          .then(() => status.initializeUpdates(channelInfo.contactIds[0]));
       };
 
       return removeInvite(channelInfo.id)
@@ -81,7 +83,7 @@ export default /*@ngInject*/ function buffer(
       contactIds: channelInfo.contactIds
     };
 
-    $log.debug(`sending invite v${userInfo.version} to ${channelId}`);
+    $log.debug(`Buffer: Sending invite v${userInfo.version} to ${channelId}`);
     return network.sendInvite(inviteChannelInfo, userInfo)
       .then(handleInviteAck);
   };
@@ -120,7 +122,7 @@ export default /*@ngInject*/ function buffer(
       return removeProfile(channelInfo.id);
     };
 
-    $log.debug(`sending profile v${userInfo.version} to ${channelId}`);
+    $log.debug(`Buffer: Sending profile v${userInfo.version} to ${channelId}`);
     return network.sendProfile(channelInfo, userInfo)
       .then(handleProfileAck);
   };
@@ -176,6 +178,16 @@ export default /*@ngInject*/ function buffer(
       sendProfile(channelId, userInfo);
       return $interval(() => sendProfile(channelId, userInfo), 20000);
     })(bufferedProfiles);
+
+    let bufferedInvites = state.cloud.buffer.get(['invites']);
+
+    sendAttempts.invites = R.mapObj((inviteBuffer) => {
+      let channelId = inviteBuffer.channelId;
+
+      //TODO: stagger the initial send and retry intervals
+      sendInvite(channelId, userInfo);
+      return $interval(() => sendInvite(channelId, userInfo), 20000);
+    })(bufferedInvites);
 
     return $q.when();
   };

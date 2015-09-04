@@ -1,12 +1,11 @@
 <div class="toc-channel-card item item-avatar" ng-class="{
-  'toc-channel-pending':
-    channelCard.channel.sentInvite || channelCard.channel.receivedInvite
-}">
+    'toc-channel-pending': channelCard.contact.statusId === -1
+  }">
   <img class="toc-channel-card-avatar"
     ng-src="{{channelCard.getAvatar(channelCard.contact.userInfo)}}">
   </img>
   <div class="toc-channel-card-status-indicator"
-    ng-class="'toc-contact-status-' + channelCard.contact.statusId">
+    ng-class="channelCard.status">
   </div>
   <h2>{{channelCard.contact.userInfo.displayName || 'Anonymous'}}</h2>
   <p class="toc-channel-card-quote" ng-class="{

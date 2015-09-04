@@ -10,6 +10,8 @@ export default /*@ngInject*/ function devices(
   R,
   state
 ) {
+  let session;
+
   let isCordovaApp = function isCordovaApp() {
     return $window.cordova;
   };
@@ -88,9 +90,11 @@ export default /*@ngInject*/ function devices(
   };
 
   //Workaround for circular dependency between devices and session
-  let initialize = function initializeDevices(destroySession) {
+  let initialize = function initializeDevices(sessionService) {
+    session = sessionService;
+
     return disconnectOtherDevices()
-      .then(() => listenForDisconnects(destroySession));
+      .then(() => listenForDisconnects(session.destroy));
   };
 
   return {

@@ -7,6 +7,8 @@ export default /*@ngInject*/ function contacts(
   R,
   state
 ) {
+  let status;
+
   let saveContactInfo = function saveContactInfo(contactInfo) {
     let contactCursor = state.cloud.contacts.select([contactInfo.id]);
     let existingContactInfo = contactCursor.get(['userInfo']);
@@ -41,11 +43,12 @@ export default /*@ngInject*/ function contacts(
       return saveContactInfo(contactInfo)
         .then(() => state.remove(channelCursor, ['inviteStatus']))
         .then(() => channels.initializeChannel(existingChannel.channelInfo))
-        .then(() => network.listen(existingChannel.channelInfo));
+        .then(() => network.listen(existingChannel.channelInfo))
+        .then(() => status.initializeUpdates(contactInfo.id));
     }
 
     return saveContactInfo(contactInfo)
-      .then(() => state.save(contactCursor, ['statusId'], 1))
+      .then(() => state.save(contactCursor, ['statusId'], -1))
       .then(() => state.save(channelCursor, ['channelInfo'], newChannelInfo))
       .then(() => state.save(channelCursor, ['inviteStatus'], 'received'));
   };
@@ -59,6 +62,7 @@ export default /*@ngInject*/ function contacts(
   };
 
   let saveSendingInvite = function saveSendingInvite(contactId) {
+    let userInfo = state.cloud.identity.get('userInfo');
     let contactChannel = channels.createContactChannel(userInfo.id, contactId);
     let contactCursor = state.cloud.contacts.select([contactId]);
     let channelCursor = state.cloud.channels.select([contactChannel.id]);
@@ -69,9 +73,10 @@ export default /*@ngInject*/ function contacts(
     };
 
     return state.save(contactCursor, ['userInfo'], contactInfo)
+      .then(() => state.save(contactCursor, ['statusId'], -1))
       .then(() => state.save(channelCursor, ['channelInfo'], contactChannel))
       .then(() => state.save(channelCursor, ['inviteStatus'], 'sending'))
-      .then(() => buffer.addInvite(channelId));
+      .then(() => buffer.addInvite(contactChannel.id));
   };
 
   let saveProfileUpdates = function saveProfileUpdates() {
@@ -86,12 +91,14 @@ export default /*@ngInject*/ function contacts(
     return $q.all(savingSendingProfiles);
   };
 
-  let initialize = function initializeContacts() {
+  let initialize = function initializeContacts(statusService) {
+    status = statusService;
+
     let allContacts = state.cloud.contacts.get();
 
     let settingContactsToOffline = R.pipe(
       R.values,
-      R.reject(R.propEq('statusId', 0)),
+      R.filter(R.propEq('statusId', 1)),
       R.map((contact) => state.save(
         contactsCursor,
         [contact.userInfo.id, 'statusId'],

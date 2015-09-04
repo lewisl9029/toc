@@ -28,23 +28,6 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
 
       this.contactId = '';
 
-      let initializeSentInvite = (contactChannel) => {
-        return state.save(
-            state.cloud.channels,
-            [contactChannel.id, 'sentInvite'],
-            true
-          )
-          .then(() => state.save(
-            state.cloud.contacts,
-            [this.contactId, 'statusId'],
-            0
-          ))
-          .then(() => {
-            this.removeModal();
-            return $q.when();
-          });
-      };
-
       this.inviteMethod = 'enter';
 
       this.inviteMethods = {
@@ -75,10 +58,11 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                       return;
                     }
 
-                    return contacts.invite(this.contactId)
-                      .then(initializeSentInvite)
+                    return contacts.saveSendingInvite(this.contactId)
                       .then(() => {
+                        this.removeModal();
                         this.contactId = '';
+                        return $q.when();
                       });
                   }
                 }
@@ -102,9 +86,12 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                     return $q.reject(`${contactId} is not a valid Toc ID.`);
                   }
 
-                  return contacts.invite(contactId);
+                  return contacts.saveSendingInvite(contactId);
                 })
-                .then(initializeSentInvite)
+                .then(() => {
+                  this.removeModal();
+                  return $q.when();
+                })
                 .catch((error) => $log.error(error));
             }
 

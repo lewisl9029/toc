@@ -1,5 +1,6 @@
 export let serviceName = 'notifications';
 export default /*@ngInject*/ function notifications(
+  $q,
   state
 ) {
   let notify = function notify(notificationId) {
@@ -27,9 +28,14 @@ export default /*@ngInject*/ function notifications(
     return state.cloud.notifications.get([notificationId, 'dismissed']);
   };
 
+  let initialize = function initialize() {
+    return $q.when();
+  };
+
   return {
     isDismissed,
     notify,
-    dismiss
+    dismiss,
+    initialize
   };
 }
