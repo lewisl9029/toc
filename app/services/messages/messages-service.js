@@ -130,6 +130,11 @@ export default /*@ngInject*/ function messages(
       .substr(0, 32);
     let messageId = `${sentTime}-${messageIdBase}`;
 
+    let existingMessage = state.cloud.messages.get([channelId, messageId]);
+    if (existingMessage) {
+      return $q.when();
+    }
+
     let messageInfo = {
       id: messageId,
       senderId: senderId,
