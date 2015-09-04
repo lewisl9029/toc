@@ -229,8 +229,7 @@ export default /*@ngInject*/ function network(
       t: messageInfo.sentTime
     };
 
-    return send(channelInfo, payload)
-      .then(handleMessageAck);
+    return send(channelInfo, payload);
   };
 
   let initialize = function initializeNetwork() {

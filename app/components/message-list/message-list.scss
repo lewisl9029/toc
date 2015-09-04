@@ -101,19 +101,11 @@
 }
 
 .toc-message-user {
-  h2 {
-    color: lighten($dark, 20);
-  }
-  p {
-    color: lighten($dark, 20);
+  > :not(.toc-message-datestamp){
+    opacity: 0.8;
   }
 }
 
 .toc-message-contact {
-  h2 {
-    color: $dark;
-  }
-  p {
-    color: $dark;
-  }
+
 }

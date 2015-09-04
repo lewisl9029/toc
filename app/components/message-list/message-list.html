@@ -10,14 +10,14 @@
     <img ng-src="{{messageList.getAvatar(message)}}"
       alt="Avatar for {{messageList.getUserInfo(message).email}}"
       ng-if="messageList.isSenderSeparator(message)" />
-    <div ng-if="messageList.isDateSeparator(message)"
-      class="toc-message-datestamp">
-      {{::messageList.getDatestamp(message)}}
-    </div>
     <div ng-if="messageList.isUnread(message)"
       class="toc-message-unread">
       <div class="toc-message-unread-marker">
       </div>
+    </div>
+    <div ng-if="messageList.isDateSeparator(message)"
+      class="toc-message-datestamp">
+      {{::messageList.getDatestamp(message)}}
     </div>
     <h2>
       {{messageList.getUserInfo(message).displayName || 'Anonymous'}}
