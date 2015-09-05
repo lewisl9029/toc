@@ -37,11 +37,12 @@
     z-index: -1;
   }
   .toc-message-unread-marker {
-    background-size: 100% 5px;
+    background-position-y: 2px;
+    background-size: 100% 2px;
     background-repeat: no-repeat;
     background-image: radial-gradient(
-      ellipse 50% 40%,
-      $energized,
+      ellipse 60% 100%,
+      transparentize($energized, 0.5),
       $light
     );
     height: 100%;

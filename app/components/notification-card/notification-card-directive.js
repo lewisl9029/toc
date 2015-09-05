@@ -11,6 +11,7 @@ export default /*@ngInject*/ function tocNotificationCard() {
     controllerAs: 'notificationCard',
     controller: /*@ngInject*/ function NotificationCardController(
       $scope,
+      $ionicPopup,
       identity,
       contacts,
       navigation,
@@ -54,25 +55,7 @@ export default /*@ngInject*/ function tocNotificationCard() {
 
       this.click = () => {
         if (channelCursor.get(['inviteStatus'])  === 'received') {
-          let contact = contactCursor.get();
-
-          return $ionicPopup.show({
-            template: `Accept invite from ${contact.userInfo.displayName || 'Anonymous'}?`,
-            title: 'Accept Invite',
-            buttons: [
-              {
-                text: 'Cancel',
-                type: 'button-outline button-calm'
-              },
-              {
-                text: 'Accept',
-                type: 'button-outline button-balanced',
-                onTap: (event) => {
-                  return contacts.saveAcceptingInvite(channelId);
-                }
-              }
-            ]
-          });
+          return contacts.showAcceptInviteDialog(channelId);
         }
 
         return navigation.navigate(channelId)

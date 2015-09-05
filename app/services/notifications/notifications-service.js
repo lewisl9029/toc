@@ -17,6 +17,10 @@ export default /*@ngInject*/ function notifications(
   };
 
   let dismiss = function dismiss(notificationId) {
+    if (isDismissed(notificationId)) {
+      return $q.when();
+    }
+    
     return state.save(
       state.cloud.notifications,
       [notificationId, 'dismissed'],
