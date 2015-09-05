@@ -41,6 +41,17 @@ $bar-subheader-height: 75px !default;
 @import 'views/views';
 @import 'components/components';
 
+.toc-notification-badge {
+  margin-right: 0 !important;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  text-align: center;
+  color: $light;
+  font-size: 12px;
+};
+
 form.ng-pristine button[type='submit'] {
   opacity: 1;
 }
