@@ -10,7 +10,10 @@
       <ion-nav-buttons side="left">
         <button menu-toggle="left"
           class="button button-icon button-clear ion-ios-chatbubble-outline">
-          <span class="toc-notification-badge">20</span>
+          <span class="toc-notification-badge"
+            ng-if="appView.notificationCount !== 0">
+            {{appView.notificationCount}}
+          </span>
         </button>
       </ion-nav-buttons>
       <ion-nav-buttons side="right">
