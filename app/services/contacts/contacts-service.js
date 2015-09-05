@@ -1,14 +1,41 @@
 export let serviceName = 'contacts';
 export default /*@ngInject*/ function contacts(
   $q,
+  $ionicPopup,
   buffer,
   channels,
   identity,
+  notifications,
   R,
   state
 ) {
   let status;
   let network;
+
+  let showAcceptInviteDialog = function showAcceptInviteDialog(channelId) {
+    let contactId = state.cloud.channels
+      .get([channelId, 'channelInfo', 'contactIds'])[0];
+    let contact = state.cloud.contacts.get([contactId]);
+
+    return notifications.dismiss(channelId)
+      .then(() => $ionicPopup.show({
+        template: `Accept invite from ${contact.userInfo.displayName || 'Anonymous'}?`,
+        title: 'Accept Invite',
+        buttons: [
+          {
+            text: 'Cancel',
+            type: 'button-outline button-calm'
+          },
+          {
+            text: 'Accept',
+            type: 'button-outline button-balanced',
+            onTap: (event) => {
+              return saveAcceptingInvite(channelId);
+            }
+          }
+        ]
+      }));
+  };
 
   let saveContactInfo = function saveContactInfo(contactInfo) {
     let contactCursor = state.cloud.contacts.select([contactInfo.id]);
@@ -46,7 +73,8 @@ export default /*@ngInject*/ function contacts(
       return saveContactInfo(contactInfo)
         .then(() => state.save(contactCursor, ['statusId'], -1))
         .then(() => state.save(channelCursor, ['channelInfo'], newChannelInfo))
-        .then(() => state.save(channelCursor, ['inviteStatus'], 'received'));
+        .then(() => state.save(channelCursor, ['inviteStatus'], 'received'))
+        .then(() => notifications.notify(newChannelInfo.id));
     }
 
     if (existingChannel.inviteStatus === 'sent') {
@@ -133,6 +161,7 @@ export default /*@ngInject*/ function contacts(
   };
 
   return {
+    showAcceptInviteDialog,
     saveContactInfo,
     saveReceivedProfile,
     saveSendingProfile,

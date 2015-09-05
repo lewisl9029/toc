@@ -11,7 +11,9 @@ export default /*@ngInject*/ function tocNotificationCard() {
     controllerAs: 'notificationCard',
     controller: /*@ngInject*/ function NotificationCardController(
       $scope,
+      $ionicPopup,
       identity,
+      contacts,
       navigation,
       state
     ) {
@@ -22,13 +24,13 @@ export default /*@ngInject*/ function tocNotificationCard() {
       let channelId = this.notificationId;
       let channelCursor = state.cloud.channels.select([channelId]);
 
-      this.click = () => {
-        return navigation.navigate(channelId)
-          .then(() => state.save(channelCursor, ['viewingLatest'], true));
-      };
-
       let messageIdCursor = channelCursor.select(['latestMessageId']);
       let updateMessage = () => {
+        if (channelCursor.get(['inviteStatus']) === 'received') {
+          this.message = 'New invite received!';
+          return;
+        }
+
         let messageId = messageIdCursor.get();
         if (!messageId) {
           return;
@@ -37,7 +39,7 @@ export default /*@ngInject*/ function tocNotificationCard() {
           channelId, messageId, 'messageInfo', 'content'
         ]);
       };
-      state.addListener(messageIdCursor, updateMessage, $scope);
+      state.addListener(channelCursor, updateMessage, $scope);
 
       let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
       let contactCursor = state.cloud.contacts.select(contactId);
@@ -50,6 +52,15 @@ export default /*@ngInject*/ function tocNotificationCard() {
         this.title = contactInfo.displayName || 'Anonymous';
       };
       state.addListener(contactInfoCursor, updateContactInfo, $scope);
+
+      this.click = () => {
+        if (channelCursor.get(['inviteStatus'])  === 'received') {
+          return contacts.showAcceptInviteDialog(channelId);
+        }
+
+        return navigation.navigate(channelId)
+          .then(() => state.save(channelCursor, ['viewingLatest'], true));
+      };
     }
   };
 }
