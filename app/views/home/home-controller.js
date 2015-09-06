@@ -2,6 +2,7 @@ export let controllerName = 'HomeController';
 export default /*@ngInject*/ function HomeController(
   $ionicModal,
   $scope,
+  navigation,
   session,
   state,
   storage
@@ -13,32 +14,29 @@ export default /*@ngInject*/ function HomeController(
 
   state.addListener(currentUserCursor, updateCurrentUser, $scope);
 
-  //FIXME: this should probably go into state.memory if possible
   this.isStorageConnected = storage.isConnected;
 
   this.openBeginConversationModal = function openBeginConversationModal() {
-    this.beginConversationModal = $ionicModal.fromTemplate(
-      `
+    let modalTemplate = `
       <toc-begin-conversation-modal class="toc-modal-container"
         remove-modal="homeView.beginConversationModal.remove()">
       </toc-begin-conversation-modal>
-      `,
-      { scope: $scope }
-    );
+    `;
 
-    this.beginConversationModal.show();
+    let modalName = 'beginConversationModal';
+
+    return navigation.showModal(modalName, modalTemplate, this, $scope);
   };
 
   this.showUpdateProfileModal = function showUpdateProfileModal() {
-    this.updateProfileModal = $ionicModal.fromTemplate(
-      `
+    let modalTemplate = `
       <toc-update-profile-modal class="toc-modal-container"
         remove-modal="homeView.updateProfileModal.remove()">
       </toc-update-profile-modal>
-      `,
-      { scope: $scope }
-    );
+    `;
 
-    this.updateProfileModal.show();
+    let modalName = 'updateProfileModal';
+
+    return navigation.showModal(modalName, modalTemplate, this, $scope);
   };
 }

@@ -10,20 +10,20 @@ export default /*@ngInject*/ function tocOptionsMenu() {
       $ionicPopup,
       $ionicModal,
       $scope,
+      navigation,
       session,
       state
     ) {
       this.showCloudConnectModal = function showCloudConnectModal() {
-        this.cloudConnectModal = $ionicModal.fromTemplate(
-          `
+        let modalTemplate = `
           <toc-cloud-connect-modal class="toc-modal-container"
             remove-modal="optionsMenu.cloudConnectModal.remove()">
           </toc-cloud-connect-modal>
-          `,
-          { scope: $scope }
-        );
+        `;
 
-        this.cloudConnectModal.show();
+        let modalName = 'cloudConnectModal';
+
+        return navigation.showModal(modalName, modalTemplate, this, $scope);
       };
 
       this.showDeleteDataConfirm = function showDeleteDataConfirm() {
