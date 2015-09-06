@@ -26,16 +26,15 @@ export default /*@ngInject*/ function tocConversationsMenu() {
       };
 
       this.openBeginConversationModal = function openBeginConversationModal() {
-        this.beginConversationModal = $ionicModal.fromTemplate(
-          `
+        let modalTemplate = `
           <toc-begin-conversation-modal class="toc-modal-container"
             remove-modal="conversationsMenu.beginConversationModal.remove()">
           </toc-begin-conversation-modal>
-          `,
-          { scope: $scope }
-        );
+        `;
 
-        this.beginConversationModal.show();
+        let modalName = 'beginConversationModal';
+
+        return navigation.showModal(modalName, modalTemplate, this, $scope);
       };
     }
   };

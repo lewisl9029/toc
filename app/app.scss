@@ -65,19 +65,32 @@ form.ng-pristine button[type='submit'] {
 }
 
 @media (min-width: 680px) {
-  .modal-wrapper {
+  .modal-backdrop {
     width: 100%;
     height: 100%;
-    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.hide {
+      display: none;
+    }
+  }
+
+  .modal-wrapper {
+    width: 80%;
+    height: 80%;
+    max-width: 400px;
+    max-height: 550px;
+    z-index: 11;
+    // pointer-events: none;
   }
 
   .toc-modal-container {
     width: 100%;
     height: 100%;
-    pointer-events: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: inherit;
+    // position: inherit;?
   }
 
   .slide-in-up {
@@ -86,10 +99,8 @@ form.ng-pristine button[type='submit'] {
   }
 
   .modal {
-    width: 80%;
-    height: 80%;
-    max-width: 400px;
-    max-height: 550px;
+    width: 100%;
+    height: 100%;
     position: inherit;
   }
 }

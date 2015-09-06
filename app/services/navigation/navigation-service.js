@@ -1,6 +1,7 @@
 export let serviceName = 'navigation';
 export default /*@ngInject*/ function navigation(
   $ionicHistory,
+  $ionicModal,
   $q,
   $rootScope,
   $state,
@@ -60,6 +61,16 @@ export default /*@ngInject*/ function navigation(
 
   let at = function at(stateName, parameters) {
     return $state.is(stateName, parameters);
+  };
+
+  let showModal = function showModal(modalName, template, controller, scope) {
+    //clean up existing modal if it was hidden instead of removed
+    if (controller[modalName]) {
+      controller[modalName].remove();
+    }
+
+    controller[modalName] = $ionicModal.fromTemplate(template, { scope });
+    return controller[modalName].show();
   };
 
   let setupRedirect = function setupRedirect() {
@@ -152,6 +163,7 @@ export default /*@ngInject*/ function navigation(
     navigate,
     isActiveView,
     isPrivateState,
+    showModal,
     clearCache,
     setupRedirect,
     resetHistory,

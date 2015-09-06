@@ -17,6 +17,7 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       $timeout,
       $q,
       session,
+      navigation,
       identity,
       state
     ) {
@@ -46,16 +47,15 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       };
 
       this.showCloudConnectModal = function showCloudConnectModal() {
-        this.cloudConnectModal = $ionicModal.fromTemplate(
-          `
+        let modalTemplate = `
           <toc-cloud-connect-modal class="toc-modal-container"
             remove-modal="passwordPromptModal.cloudConnectModal.remove()">
           </toc-cloud-connect-modal>
-          `,
-          { scope: $scope }
-        );
+        `;
 
-        this.cloudConnectModal.show();
+        let modalName = 'cloudConnectModal';
+
+        return navigation.showModal(modalName, modalTemplate, this, $scope);
       };
     }
   };
