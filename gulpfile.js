@@ -11,10 +11,8 @@ var htmlhint = require('gulp-htmlhint');
 var scsslint = require('gulp-scsslint');
 var jsbeautifier = require('gulp-jsbeautifier');
 var minifyCss = require('gulp-minify-css');
-var karma = require('karma')
-  .server;
-var argv = require('yargs')
-  .argv;
+var karma = require('karma').server;
+var argv = require('yargs').argv;
 var shell = require('gulp-shell');
 var uglify = require('gulp-uglify');
 var runSequence = require('run-sequence');
