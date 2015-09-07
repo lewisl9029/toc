@@ -35,7 +35,7 @@ module.exports = function(config) {
       serveFiles: [
         basePaths.dev + '**/*.js'
       ],
-      config: basePaths.dev + 'config.js'
+      config: basePaths.dev + 'jspm-config.js'
     },
 
     proxies: {

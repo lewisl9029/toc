@@ -4,8 +4,7 @@ var gulpif = require('gulp-if');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
-var autoprefixer = require('autoprefixer-core');
-var cssgrace = require('cssgrace');
+var autoprefixer = require('autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
 var jshint = require('gulp-jshint');
 var htmlhint = require('gulp-htmlhint');
@@ -93,7 +92,9 @@ gulp.task('clean-package', function cleanPackage(done) {
 gulp.task('build', function build(done) {
   return runSequence(
     'clean-build',
+    'uncache-jspm',
     ['build-js', 'build-html', 'build-asset'],
+    'cache-jspm',
     done
   );
 });
@@ -130,7 +131,7 @@ gulp.task('run', function run() {
 gulp.task('build-js', ['build-jspm'], function buildJs() {
   return gulp.src([
       basePaths.dev + 'dependencies/system.src.js',
-      basePaths.dev + 'config.js',
+      basePaths.dev + 'jspm-config.js',
       basePaths.dev + 'initialize.js',
     ], {
       base: basePaths.dev
@@ -149,8 +150,23 @@ gulp.task('build-jspm', ['bundle-jspm'], function buildJspm() {
 gulp.task('bundle-jspm', ['build-sass'], function bundleJspm() {
   return gulp.src('')
     .pipe(shell([
+      //clear depcache config first
       'jspm bundle app ' + basePaths.prod +
         'app.js --skip-source-maps'
+    ]));
+});
+
+gulp.task('uncache-jspm', function uncacheJspm() {
+  return gulp.src('')
+    .pipe(shell([
+      'jspm unbundle'
+    ]));
+});
+
+gulp.task('cache-jspm', function cacheJspm() {
+  return gulp.src('')
+    .pipe(shell([
+      'jspm depcache app'
     ]));
 });
 
@@ -178,8 +194,7 @@ gulp.task('build-sass', function buildSass() {
     // .pipe(postcss([
     //   autoprefixer({
     //     browsers: ['last 2 version']
-    //   }),
-    //   cssgrace
+    //   })
     // ]))
     .pipe(gulpif(!argv.prod, sourcemaps.write()))
     .pipe(gulpif(argv.prod, minifyCss()))

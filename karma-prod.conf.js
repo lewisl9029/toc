@@ -31,7 +31,7 @@ module.exports = function(config) {
       serveFiles: [
         'prod/www/**/*.js'
       ],
-      config: 'prod/www/config.js'
+      config: 'prod/www/jspm-config.js'
     },
 
     proxies: {
