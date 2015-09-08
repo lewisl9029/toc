@@ -2533,7 +2533,8 @@ function($rootScope, $ionicBody, $compile, $timeout, $ionicPlatform, $ionicTempl
       $timeout(function() {
         if (!self._isShown) return;
         modalEl.addClass('ng-enter-active');
-        ionic.trigger('resize');
+        //EDIT: fix for side-menu closing on modal open
+        // ionic.trigger('resize');
         self.scope.$parent && self.scope.$parent.$broadcast(self.viewType + '.shown', self);
         self.el.classList.add('active');
         self.scope.$broadcast('$ionicHeader.align');
@@ -7224,6 +7225,8 @@ function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody, $io
    * Toggle the right menu to open 100%
    */
   self.toggleRight = function(shouldOpen) {
+    //EDIT: fix for right side menu not toggling when exposeAsideWhen is used
+    // if (isAsideExposed || !self.right.isEnabled) return;
     if (!self.right.isEnabled) return;
     var openAmount = self.getOpenAmount();
     if (arguments.length === 0) {
