@@ -25,7 +25,7 @@ export default /*@ngInject*/ function tocConversationsMenu() {
         return navigation.navigate('home');
       };
 
-      this.openBeginConversationModal = function openBeginConversationModal() {
+      this.showBeginConversationModal = function showBeginConversationModal() {
         let modalTemplate = `
           <toc-begin-conversation-modal class="toc-modal-container"
             remove-modal="conversationsMenu.beginConversationModal.remove()">

@@ -16,7 +16,7 @@ export default /*@ngInject*/ function HomeController(
 
   this.isStorageConnected = storage.isConnected;
 
-  this.openBeginConversationModal = function openBeginConversationModal() {
+  this.showBeginConversationModal = function showBeginConversationModal() {
     let modalTemplate = `
       <toc-begin-conversation-modal class="toc-modal-container"
         remove-modal="homeView.beginConversationModal.remove()">
