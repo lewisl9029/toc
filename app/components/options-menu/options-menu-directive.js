@@ -8,12 +8,50 @@ export default /*@ngInject*/ function tocOptionsMenu() {
     controllerAs: 'optionsMenu',
     controller: /*@ngInject*/ function OptionsMenuController(
       $ionicPopup,
-      $ionicModal,
       $scope,
       navigation,
       session,
       state
     ) {
+      this.userInfo = state.cloud.identity.get().userInfo;
+      this.userId = this.userInfo.id;
+
+      this.showIdPopup = () => {
+        $ionicPopup.show({
+          title: 'Your ID',
+          cssClass: 'toc-id-popup',
+          scope: $scope,
+          buttons: [{
+            text: 'Ok',
+            type: 'button-balanced button-outline'
+          }],
+          template: `
+            <div class="list">
+              <label class="toc-id-input item item-input">
+                <input type="text" ng-model="::optionsMenu.userId"
+                  readonly toc-auto-select>
+              </label>
+              <div class="item item-image">
+                <toc-qr-image data="{{::optionsMenu.userId}}">
+                </toc-qr-image>
+              </div>
+            </div>
+          `
+        });
+      };
+
+      this.showBeginConversationModal = function showBeginConversationModal() {
+        let modalTemplate = `
+          <toc-begin-conversation-modal class="toc-modal-container"
+            remove-modal="optionsMenu.beginConversationModal.remove()">
+          </toc-begin-conversation-modal>
+        `;
+
+        let modalName = 'beginConversationModal';
+
+        return navigation.showModal(modalName, modalTemplate, this, $scope);
+      };
+
       this.showCloudConnectModal = function showCloudConnectModal() {
         let modalTemplate = `
           <toc-cloud-connect-modal class="toc-modal-container"

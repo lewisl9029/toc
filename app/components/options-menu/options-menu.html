@@ -4,28 +4,32 @@
 <ion-content>
   <div class="list">
     <div class="item">
-      Start a conversation
-    </div>
-    <div class="item" ng-click="optionsMenu.showCloudConnectModal()">
-      Use this account on other devices
-    </div>
-    <div class="item" ng-click="optionsMenu.showDeleteDataConfirm()">
-      Remove your data from this device
-    </div>
-    <div class="item">
-      Show hints
-    </div>
-    <div class="item">
       <!-- TODO: add open source licenses here -->
       About Toc
+    </div>
+    <div class="item">
+      <!-- TODO: renable onboarding procedure here -->
+      Show hints
+    </div>
+    <div class="item" ng-click="optionsMenu.showIdPopup()">
+      Show your ID
+    </div>
+    <div class="item" ng-click="optionsMenu.showCloudConnectModal()">
+      Use this account elsewhere
+    </div>
+    <div class="item" ng-click="optionsMenu.showDeleteDataConfirm()">
+      Clear data from this device
+    </div>
+    <div class="item" ng-click="optionsMenu.showSignoutConfirm()">
+      Sign out
     </div>
   </div>
 </ion-content>
 <ion-footer-bar>
   <div class="col">
-    <button class="button button-block button-outline button-assertive"
-      ng-click="optionsMenu.showSignoutConfirm()">
-      Sign out
+    <button class="button button-block button-outline button-balanced"
+      ng-click="optionsMenu.showBeginConversationModal()">
+      Start a conversation
     </button>
   </div>
 </ion-footer-bar>
