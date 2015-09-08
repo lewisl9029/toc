@@ -33,6 +33,7 @@
     "karma-jspm": "^2.0.1",
     "karma-mocha": "^0.2.0",
     "mocha": "^2.3.0",
+    "node-sass": "^3.3.2",
     "postcss": "^5.0.4",
     "run-sequence": "^1.1.2",
     "yargs": "^3.24.0"
@@ -46,7 +47,10 @@
     },
     "configFile": "app/jspm-config.js",
     "dependencies": {
-      "angular": "github:angular/bower-angular@^1.4.0",
+      "angular": "github:angular/bower-angular@^1.4.5",
+      "angular-animate": "github:angular/bower-angular-animate@^1.4.5",
+      "angular-sanitize": "github:angular/bower-angular-sanitize@^1.4.5",
+      "angular-ui-router": "github:angular-ui/ui-router@^0.2.15",
       "angular/bower-angular": "github:angular/bower-angular@^1.4.0",
       "baobab": "npm:baobab@2.0.0-rc1",
       "driftyco/ionic": "github:driftyco/ionic@1.1.0",
