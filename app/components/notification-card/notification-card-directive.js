@@ -20,38 +20,17 @@ export default /*@ngInject*/ function tocNotificationCard() {
       //TODO: reduce volume of update events in other services
       // by limiting scope of listening cursors as done here
       this.notificationId = $scope.notificationId;
-
-      let channelId = this.notificationId;
-      let channelCursor = state.cloud.channels.select([channelId]);
-
-      let messageIdCursor = channelCursor.select(['latestMessageId']);
-      let updateMessage = () => {
-        if (channelCursor.get(['inviteStatus']) === 'received') {
-          this.message = 'New invite received!';
-          return;
-        }
-
-        let messageId = messageIdCursor.get();
-        if (!messageId) {
-          return;
-        }
-        this.message = state.cloud.messages.get([
-          channelId, messageId, 'messageInfo', 'content'
-        ]);
+      let notificationInfoCursor = state.cloud.notifications.get([
+        this.notificationId, 'notificationInfo'
+      ]);
+      let updateNotificationInfo = () => {
+        let notificationInfo = notificationInfoCursor.get();
+        this.title = notificationInfo.title;
+        this.message = notificationInfo.message;
+        this.icon = notificationInfo.icon;
+        this.iconText = notificationInfo.iconText;
       };
-      state.addListener(channelCursor, updateMessage, $scope);
-
-      let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
-      let contactCursor = state.cloud.contacts.select(contactId);
-
-      let contactInfoCursor = contactCursor.select(['userInfo']);
-      let updateContactInfo = () => {
-        let contactInfo = contactInfoCursor.get();
-        this.icon = identity.getAvatar(contactInfo);
-        this.iconText = `Avatar for ${contactInfo.displayName || 'Anonymous'}`;
-        this.title = contactInfo.displayName || 'Anonymous';
-      };
-      state.addListener(contactInfoCursor, updateContactInfo, $scope);
+      state.addListener(notificationInfoCursor, updateNotificationInfo, $scope);
 
       this.click = () => {
         if (channelCursor.get(['inviteStatus'])  === 'received') {

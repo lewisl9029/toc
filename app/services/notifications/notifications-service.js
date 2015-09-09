@@ -2,31 +2,87 @@ export let serviceName = 'notifications';
 export default /*@ngInject*/ function notifications(
   $cordovaLocalNotification,
   $q,
+  devices,
   state
 ) {
   // cordovaLocalNotification uses number IDs
   // notificationId is just channelId, and has the form toc-{32hex-chars}
   // we translate channelId to cordovaNotificationId by parsing the last 8 hex
-  // because js ints lack the precision to represent more than 52 bits
-  // FIXME: there is a non-negligible chance for collisions here
-  // but I can't think of any good alternatives atm
+  // because js numbers lack the precision to represent more than 52 bits
   let getCordovaNotificationId = (notificationId) => {
     let lastEightHex = notificationId.substr(notificationId.length - 8);
     return parseInt(lastEightHex, 16);
   };
 
+  let getNotificationMessage = function getNotificationMessage(notificationId) {
+    let channelId = notificationId;
+    let channelCursor = state.cloud.channels.select([channelId]);
+
+    let notificationMessage;
+    if (channelCursor.get(['inviteStatus']) === 'received') {
+      return 'New invite received!';
+    }
+
+    let messageIdCursor = channelCursor.select(['latestMessageId']);
+    let messageId = messageIdCursor.get();
+    if (!messageId) {
+      return '';
+    }
+
+    return state.cloud.messages.get([
+      channelId, messageId, 'messageInfo', 'content'
+    ]);
+  };
+
+  let getNotificationTitle = function getNotificationTitle(notificationId) {
+
+  };
+
+  let notifyCordova = function notifyCordova(notificationInfo) {
+    return $cordovaLocalNotification.schedule({
+      id: notificationInfo.cordovaNotificationId,
+      title: notificationInfo.title,
+      text: notificationInfo.message
+    });
+  };
+
+  let notifyWeb = function notifyWeb(notificationInfo) {
+    return $q.when();
+  };
+
   let notify = function notify(notificationId) {
-    let cordovaId = getCordovaNotificationId(notificationId);
-    return state.save(
-        state.cloud.notifications,
-        [notificationId, 'notificationInfo'],
-        { id: notificationId, cordovaId }
-      )
+    let cordovaNotificationId = getCordovaNotificationId(notificationId);
+
+    let notifyNative = devices.isCordovaApp ? notifyCordova : notifyWeb;
+
+    let notificationCursor = state.cloud.notifications.select([notificationId]);
+
+    let channelId = notificationId;
+    let channelCursor = state.cloud.channels.select([channelId]);
+    let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
+    let contactCursor = state.cloud.contacts.select(contactId);
+    let contactInfo = contactCursor.get('userInfo');
+
+    let icon = identity.getAvatar(contactInfo);
+    let iconText = `Avatar for ${contactInfo.displayName || 'Anonymous'}`;
+    let title = contactInfo.displayName || 'Anonymous';
+
+    let message = getNotificationMessage(notificationId);
+
+    let notificationInfo = {
+      id: notificationId,
+      cordovaNotificationId,
+      title,
+      message,
+      icon,
+      iconText
+    };
+
+    return notifyNative(notificationInfo)
       .then(() => state.save(
-        state.cloud.notifications,
-        [notificationId, 'dismissed'],
-        false
-      ));
+        notificationCursor, ['notificationInfo'], notificationInfo
+      ))
+      .then(() => state.save(notificationCursor, ['dismissed'], false));
   };
 
   let dismiss = function dismiss(notificationId) {
