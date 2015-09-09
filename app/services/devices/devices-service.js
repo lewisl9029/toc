@@ -25,7 +25,7 @@ export default /*@ngInject*/ function devices(
   };
 
   let isInForeground = function isInForeground() {
-    return isCordovaApp ?
+    return isCordovaApp() ?
       !$window.cordova.plugins.backgroundMode.isActive() :
       // TODO: figure out how to detect foreground mode in browser
       true;

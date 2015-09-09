@@ -3,6 +3,7 @@ export default /*@ngInject*/ function messages(
   $q,
   $log,
   buffer,
+  devices,
   cryptography,
   time,
   state,
@@ -83,7 +84,8 @@ export default /*@ngInject*/ function messages(
     let notifyMessage = () => {
       //dont notify or update unread pointer if viewing latest message
       let activeViewId = state.cloud.navigation.get(['activeViewId']);
-      if (activeViewId === channelId && channelCursor.get(['viewingLatest'])) {
+      if (activeViewId === channelId && channelCursor.get(['viewingLatest']) &&
+        devices.isInForeground()) {
         return $q.when();
       }
 

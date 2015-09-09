@@ -122,7 +122,7 @@ export default /*@ngInject*/ function notifications(
       cordovaNotificationId
     };
 
-    return dismissNative()
+    return dismissNative(notificationInfo)
       .then(() => state.save(notificationCursor, ['dismissed'], true));
   };
 
