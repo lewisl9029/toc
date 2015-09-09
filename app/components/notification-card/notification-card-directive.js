@@ -17,8 +17,6 @@ export default /*@ngInject*/ function tocNotificationCard() {
       navigation,
       state
     ) {
-      //TODO: reduce volume of update events in other services
-      // by limiting scope of listening cursors as done here
       this.notificationId = $scope.notificationId;
 
       let channelId = this.notificationId;

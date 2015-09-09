@@ -134,7 +134,6 @@
     "com.ionic.keyboard",
     "cordova-plugin-crosswalk-webview",
     "cordova-plugin-inappbrowser",
-    "de.appplant.cordova.plugin.background-mode",
     {
       "locator": "https://github.com/katzer/cordova-plugin-local-notifications",
       "id": "de.appplant.cordova.plugin.local-notification"
@@ -142,7 +141,9 @@
     {
       "locator": "https://github.com/phonegap/phonegap-plugin-barcodescanner.git",
       "id": "phonegap-plugin-barcodescanner"
-    }
+    },
+    "com.tonikorin.cordova.plugin.autostart",
+    "de.appplant.cordova.plugin.background-mode"
   ],
   "cordovaPlatforms": [
     "android",

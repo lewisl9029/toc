@@ -16,20 +16,21 @@
   animation-name: tocFadeInRight;
   animation-duration: 1s;
   animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
 }
 
 .toc-notification-overlay.ng-hide-add {
   animation-name: tocFadeOutLeft;
   animation-duration: 1s;
   animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
 }
 
 // slightly edited forms from https://github.com/ShakrMedia/tuesday
 @keyframes tocFadeInRight {
   0% {
     opacity: 0;
-    transform: translateX(-10px);
-    animation-timing-function: cubic-bezier(0.2, 0.590, 0.375, 0.7);
+    transform: translateX(-100px);
   }
 
   100% {
@@ -42,11 +43,10 @@
   0% {
     opacity: 1;
     transform: translateX(0);
-    animation-timing-function: cubic-bezier(0.2, 0.590, 0.375, 0.7);
   }
 
   100% {
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translateX(-100px);
   }
 }

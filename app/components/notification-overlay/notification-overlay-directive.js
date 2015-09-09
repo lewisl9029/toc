@@ -52,6 +52,7 @@ export default /*@ngInject*/ function tocNotificationOverlay() {
 
       let isFirstRun = true;
       let updateListeners = () => {
+        //adds listeners for each new notificationId
         this.notifications = R.pipe(
           R.keys,
           R.reject(R.has(R.__, watchingNotifications)),

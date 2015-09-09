@@ -13,7 +13,22 @@ export default /*@ngInject*/ function devices(
   let session;
 
   let isCordovaApp = function isCordovaApp() {
-    return $window.cordova;
+    return $window.cordova ? true : false;
+  };
+
+  let isAndroidApp = function isAndroidApp() {
+    if (!isCordovaApp()) {
+      return false;
+    }
+
+    return $window.cordova.platformId === 'android';
+  };
+
+  let isInForeground = function isInForeground() {
+    return isCordovaApp() ?
+      !$window.cordova.plugins.backgroundMode.isActive() :
+      // TODO: figure out how to detect foreground mode in browser
+      true;
   };
 
   let disconnectOtherDevices = function disconnectOtherDevices() {
@@ -100,6 +115,8 @@ export default /*@ngInject*/ function devices(
   return {
     initialize,
     create,
+    isAndroidApp,
+    isInForeground,
     isCordovaApp
   };
 }
