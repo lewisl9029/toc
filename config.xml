@@ -21,6 +21,7 @@
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
   <platform name="android">
+    <preference name="KeepRunning" value="true"/>
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
     <icon src="resources/android/icon/drawable-mdpi-icon.png" density="mdpi"/>
     <icon src="resources/android/icon/drawable-hdpi-icon.png" density="hdpi"/>

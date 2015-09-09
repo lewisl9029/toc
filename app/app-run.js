@@ -13,6 +13,10 @@ export default /*@ngInject*/ function runApp(
       // org.apache.cordova.statusbar required
       $window.StatusBar.styleDefault();
     }
+    if ($window.cordova && $window.cordova.plugins.backgroundMode) {
+      // de.appplant.cordova.plugin.background-mode required
+      $window.cordova.plugins.backgroundMode.enable();
+    }
 
     session.initialize();
   });
