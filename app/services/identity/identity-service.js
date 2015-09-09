@@ -11,8 +11,8 @@ export default /*@ngInject*/ function identity(
 
   let getAvatarBase = R.memoize(function getAvatarBase(identifier) {
     let identifierHash = cryptography.getMd5(identifier);
-
-    return `http://cdn.libravatar.org/avatar/${identifierHash}?d=identicon`;
+    // cordova app crashes if we don't add the .jpg
+    return `http://cdn.libravatar.org/avatar/${identifierHash}.jpg?s=192&d=identicon`;
   });
 
   let getAvatar = function getAvatar(userInfo) {

@@ -3,6 +3,7 @@ export default /*@ngInject*/ function notifications(
   $cordovaLocalNotification,
   $q,
   devices,
+  identity,
   state
 ) {
   // cordovaLocalNotification uses number IDs
@@ -34,16 +35,27 @@ export default /*@ngInject*/ function notifications(
     ]);
   };
 
-  let getNotificationTitle = function getNotificationTitle(notificationId) {
-
-  };
-
   let notifyCordova = function notifyCordova(notificationInfo) {
-    return $cordovaLocalNotification.schedule({
+    let channelId = notificationInfo.id;
+    let channelCursor = state.cloud.channels.select([channelId]);
+    let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
+    let contactCursor = state.cloud.contacts.select(contactId);
+    let contactInfo = contactCursor.get('userInfo');
+
+    let icon = identity.getAvatar(contactInfo);
+    let title = contactInfo.displayName || 'Anonymous';
+    let text = getNotificationMessage(notificationInfo.id);
+
+    let cordovaNotificationInfo = {
       id: notificationInfo.cordovaNotificationId,
-      title: notificationInfo.title,
-      text: notificationInfo.message
-    });
+      title,
+      text,
+      icon,
+      sound: 'res://platform_default',
+      smallIcon: 'res://icon.png'
+    };
+
+    return $cordovaLocalNotification.schedule(cordovaNotificationInfo);
   };
 
   let notifyWeb = function notifyWeb(notificationInfo) {
@@ -57,25 +69,9 @@ export default /*@ngInject*/ function notifications(
 
     let notificationCursor = state.cloud.notifications.select([notificationId]);
 
-    let channelId = notificationId;
-    let channelCursor = state.cloud.channels.select([channelId]);
-    let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
-    let contactCursor = state.cloud.contacts.select(contactId);
-    let contactInfo = contactCursor.get('userInfo');
-
-    let icon = identity.getAvatar(contactInfo);
-    let iconText = `Avatar for ${contactInfo.displayName || 'Anonymous'}`;
-    let title = contactInfo.displayName || 'Anonymous';
-
-    let message = getNotificationMessage(notificationId);
-
     let notificationInfo = {
       id: notificationId,
-      cordovaNotificationId,
-      title,
-      message,
-      icon,
-      iconText
+      cordovaNotificationId
     };
 
     return notifyNative(notificationInfo)
