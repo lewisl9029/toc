@@ -8,8 +8,6 @@ export default /*@ngInject*/ function notifications(
 ) {
   // cordovaLocalNotification uses number IDs
   // notificationId is just channelId, and has the form toc-{32hex-chars}
-  // we translate channelId to cordovaNotificationId by parsing the last 8 hex
-  // because js numbers lack the precision to represent more than 52 bits
   let getCordovaNotificationId = (notificationId) => {
     let lastEightHex = notificationId.substr(notificationId.length - 8);
     return parseInt(lastEightHex, 16);
@@ -65,7 +63,15 @@ export default /*@ngInject*/ function notifications(
   let notify = function notify(notificationId) {
     let cordovaNotificationId = getCordovaNotificationId(notificationId);
 
-    let notifyNative = devices.isCordovaApp ? notifyCordova : notifyWeb;
+    let notifyNative = (notificationInfo) => {
+      if (devices.isInForeground()) {
+        return $q.when();
+      }
+
+      return devices.isCordovaApp() ?
+        notifyCordova(notificationInfo) :
+        notifyWeb(notificationInfo);
+    };
 
     let notificationCursor = state.cloud.notifications.select([notificationId]);
 
@@ -79,6 +85,14 @@ export default /*@ngInject*/ function notifications(
         notificationCursor, ['notificationInfo'], notificationInfo
       ))
       .then(() => state.save(notificationCursor, ['dismissed'], false));
+  };
+
+  let dismissCordova = function dismissCordova(notificationInfo) {
+    return $cordovaNotification
+  };
+
+  let dismissWeb = function dismissWeb(notificationInfo) {
+    return $q.when();
   };
 
   let dismiss = function dismiss(notificationId) {

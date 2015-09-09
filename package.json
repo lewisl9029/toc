@@ -142,7 +142,8 @@
     {
       "locator": "https://github.com/phonegap/phonegap-plugin-barcodescanner.git",
       "id": "phonegap-plugin-barcodescanner"
-    }
+    },
+    "com.tonikorin.cordova.plugin.autostart"
   ],
   "cordovaPlatforms": [
     "android",
