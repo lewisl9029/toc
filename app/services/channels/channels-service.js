@@ -73,7 +73,7 @@ export default /*@ngInject*/ function channels(
       })
     )(existingChannels));
 
-    return initializingChannels;
+    return $q.when();
   };
 
   return {
