@@ -16,6 +16,10 @@ export default /*@ngInject*/ function devices(
     return $window.cordova ? true : false;
   };
 
+  let isAndroidApp = function isAndroidApp() {
+    return $window.cordova.platformId === 'android';
+  };
+
   let isInForeground = function isInForeground() {
     return isCordovaApp ?
       !$window.cordova.plugins.backgroundMode.isActive() :
@@ -107,6 +111,7 @@ export default /*@ngInject*/ function devices(
   return {
     initialize,
     create,
+    isAndroidApp,
     isInForeground,
     isCordovaApp
   };

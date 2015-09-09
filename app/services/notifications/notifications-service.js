@@ -1,10 +1,14 @@
 export let serviceName = 'notifications';
 export default /*@ngInject*/ function notifications(
   $cordovaLocalNotification,
+  $rootScope,
   $q,
   devices,
   identity,
-  state
+  contacts,
+  navigation,
+  state,
+  R
 ) {
   // cordovaLocalNotification uses number IDs
   // notificationId is just channelId, and has the form toc-{32hex-chars}
@@ -50,7 +54,8 @@ export default /*@ngInject*/ function notifications(
       text,
       icon,
       sound: 'res://platform_default',
-      smallIcon: 'res://icon.png'
+      smallIcon: 'res://icon.png',
+      data: notificationInfo
     };
 
     return $cordovaLocalNotification.schedule(cordovaNotificationInfo);
@@ -87,11 +92,11 @@ export default /*@ngInject*/ function notifications(
       .then(() => state.save(notificationCursor, ['dismissed'], false));
   };
 
-  let dismissCordova = function dismissCordova(notificationInfo) {
-    return $cordovaNotification
+  let dismissAllCordova = function dismissAllCordova() {
+    return $cordovaLocalNotification.clearAll();
   };
 
-  let dismissWeb = function dismissWeb(notificationInfo) {
+  let dismissAllWeb = function dismissAllWeb() {
     return $q.when();
   };
 
@@ -111,7 +116,58 @@ export default /*@ngInject*/ function notifications(
     return state.cloud.notifications.get([notificationId, 'dismissed']);
   };
 
+  $rootScope.$on('$cordovaLocalNotification:click', (event, notification) => {
+    let channelId = JSON.parse(notification.data).id;
+    let channelCursor = state.cloud.channels.select([channelId]);
+
+    if (channelCursor.get(['inviteStatus'])  === 'received') {
+      return contacts.showAcceptInviteDialog(channelId);
+    }
+
+    return navigation.navigate(channelId)
+      .then(() => state.save(channelCursor, ['viewingLatest'], true));
+  });
+
   let initialize = function initialize() {
+    if (devices.isAndroidApp()) {
+      let notificationsCursor = state.cloud.notifications;
+      let updateOngoingNotification = () => {
+        let notificationCount = R.pipe(
+          R.values,
+          R.reject(R.prop('dismissed'))
+        )(notificationsCursor.get()).length;
+
+        let message;
+        if (notificationCount === 0) {
+          message = 'No new notifications';
+        }
+        else if(notificationCount === 1) {
+          message = '1 new notification';
+        }
+        else {
+          message = `${notificationCount} new notifications`;
+        }
+
+        return $cordovaLocalNotification.schedule({
+          id: 0,
+          title: 'Toc Messenger',
+          text: message,
+          sound: 'res://platform_default',
+          icon: 'res://icon.png',
+          smallIcon: 'res://icon.png',
+          ongoing: true
+        });
+      };
+
+      state.addListener(notificationsCursor, updateOngoingNotification, $scope);
+    }
+
+    if (devices.isCordovaApp()) {
+      $window.corcova.plugins.backgroundMode.ondeactivate = () => {
+        return dismissAllCordova();
+      };
+    }
+
     return $q.when();
   };
 

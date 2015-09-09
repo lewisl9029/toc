@@ -16,11 +16,7 @@ export default /*@ngInject*/ function runApp(
     if ($window.cordova && $window.cordova.plugins.backgroundMode) {
       // enables background operation
       // de.appplant.cordova.plugin.background-mode required
-      $window.cordova.plugins.backgroundMode.setDefaults({
-        title: 'Toc Messenger',
-        ticker: 'Toc is still running',
-        text: 'Toc is still running'
-      });
+      $window.cordova.plugins.backgroundMode.configure({ silent: true });
       $window.cordova.plugins.backgroundMode.enable();
     }
     if ($window.cordova && $window.cordova.plugins.autoStart) {
