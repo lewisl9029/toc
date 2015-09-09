@@ -109,6 +109,7 @@ export default /*@ngInject*/ function buffer(
         sendInvite(channelId, userInfo);
         sendAttempts.invites[channelId] =
           $interval(() => sendInvite(channelId, userInfo), 20000);
+        return $q.when();
       })
       .then(() => state.save(
         state.cloud.buffer,
@@ -148,6 +149,7 @@ export default /*@ngInject*/ function buffer(
         sendProfile(channelId, userInfo);
         sendAttempts.profiles[channelId] =
           $interval(() => sendProfile(channelId, userInfo), 20000);
+        return $q.when();
       })
       .then(() => state.save(
         state.cloud.buffer,

@@ -317,7 +317,13 @@ export default /*@ngInject*/ function network(
 
     return connectToNetwork()
       .then(startNetwork)
-      .then(saveNetworkInfo);
+      .then(saveNetworkInfo)
+      .catch((error) => {
+        if (error === 'offline') {
+          return $q.reject('New accounts cannot be created offline');
+        }
+        return $q.reject(error);
+      });
   };
 
   let destroy = function destroyNetwork() {
