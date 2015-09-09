@@ -2,14 +2,15 @@ export let serviceName = 'notifications';
 export default /*@ngInject*/ function notifications(
   $cordovaLocalNotification,
   $rootScope,
+  $window,
   $q,
   devices,
   identity,
-  contacts,
   navigation,
   state,
   R
 ) {
+  let contacts;
   // cordovaLocalNotification uses number IDs
   // notificationId is just channelId, and has the form toc-{32hex-chars}
   let getCordovaNotificationId = (notificationId) => {
@@ -92,24 +93,37 @@ export default /*@ngInject*/ function notifications(
       .then(() => state.save(notificationCursor, ['dismissed'], false));
   };
 
-  let dismissAllCordova = function dismissAllCordova() {
-    return $cordovaLocalNotification.clearAll();
+  let dismissCordova = function dismissCordova(notificationInfo) {
+    return $cordovaLocalNotification
+      .clear(notificationInfo.cordovaNotificationId);
   };
 
-  let dismissAllWeb = function dismissAllWeb() {
+  let dismissWeb = function dismissWeb(notificationInfo) {
     return $q.when();
   };
 
   let dismiss = function dismiss(notificationId) {
+    let cordovaNotificationId = getCordovaNotificationId(notificationId);
+
     if (isDismissed(notificationId)) {
       return $q.when();
     }
 
-    return state.save(
-      state.cloud.notifications,
-      [notificationId, 'dismissed'],
-      true
-    );
+    let dismissNative = (notificationInfo) => {
+      return devices.isCordovaApp() ?
+        dismissCordova(notificationInfo) :
+        dismissWeb(notificationInfo);
+    };
+
+    let notificationCursor = state.cloud.notifications.select([notificationId]);
+
+    let notificationInfo = {
+      id: notificationId,
+      cordovaNotificationId
+    };
+
+    return dismissNative()
+      .then(() => state.save(notificationCursor, ['dismissed'], true));
   };
 
   let isDismissed = function isDismissed(notificationId) {
@@ -117,7 +131,13 @@ export default /*@ngInject*/ function notifications(
   };
 
   $rootScope.$on('$cordovaLocalNotification:click', (event, notification) => {
-    let channelId = JSON.parse(notification.data).id;
+    let viewId = JSON.parse(notification.data).id;
+
+    if (viewId === 'home') {
+      return navigation.navigate(viewId);
+    }
+
+    let channelId = viewId;
     let channelCursor = state.cloud.channels.select([channelId]);
 
     if (channelCursor.get(['inviteStatus'])  === 'received') {
@@ -128,8 +148,10 @@ export default /*@ngInject*/ function notifications(
       .then(() => state.save(channelCursor, ['viewingLatest'], true));
   });
 
-  let initialize = function initialize() {
-    if (devices.isAndroidApp()) {
+  let initialize = function initialize(contactsService) {
+    contacts = contactsService;
+
+    if (devices.isCordovaApp()) {
       let notificationsCursor = state.cloud.notifications;
       let updateOngoingNotification = () => {
         let notificationCount = R.pipe(
@@ -155,17 +177,12 @@ export default /*@ngInject*/ function notifications(
           sound: 'res://platform_default',
           icon: 'res://icon.png',
           smallIcon: 'res://icon.png',
-          ongoing: true
+          data: { id: 'home' },
+          ongoing: devices.isAndroidApp()
         });
       };
 
-      state.addListener(notificationsCursor, updateOngoingNotification, $scope);
-    }
-
-    if (devices.isCordovaApp()) {
-      $window.corcova.plugins.backgroundMode.ondeactivate = () => {
-        return dismissAllCordova();
-      };
+      state.addListener(notificationsCursor, updateOngoingNotification);
     }
 
     return $q.when();
