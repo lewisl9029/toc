@@ -12,6 +12,7 @@ export default /*@ngInject*/ function network(
   time,
   telehash
 ) {
+  let activatingSession = $q.defer();
   let activeSession;
 
   let checkSession = function checkSession(session) {
@@ -109,26 +110,33 @@ export default /*@ngInject*/ function network(
       let listenResult = session.listen(channelInfo.id, handlePacket);
       return $q.when(listenResult);
     } catch(error) {
+      // if session is not active, defer listening until it becomes active
+      if (error.message === 'network: no active session') {
+        return activatingSession.promise.then((newSession) => {
+          let listenResult = newSession.listen(channelInfo.id, handlePacket);
+          return $q.when(listenResult);
+        });
+      }
       return $q.reject(error);
     }
   };
 
   let send =
     function send(channelInfo, payload, session = activeSession) {
-      let sendingMessage = $q.defer();
+      let sendingPacket = $q.defer();
 
       let handleAck = (error, packet, channel, callback) => {
         if (error) {
-          return sendingMessage.reject(error);
+          return sendingPacket.reject(error);
         }
 
         let ackPayload = packet.js.a;
         if (!ackPayload) {
-          return sendingMessage.reject('Unrecognized message ack format');
+          return sendingPacket.reject('Unrecognized message ack format');
         }
 
         callback(true);
-        return sendingMessage.resolve(ackPayload);
+        return sendingPacket.resolve(ackPayload);
       };
 
       try {
@@ -140,10 +148,10 @@ export default /*@ngInject*/ function network(
           handleAck
         );
       } catch(error) {
-        sendingMessage.reject(error);
+        sendingPacket.reject(error);
       }
 
-      return sendingMessage.promise;
+      return sendingPacket.promise;
     };
 
   let handleSendTimeout =
@@ -233,8 +241,6 @@ export default /*@ngInject*/ function network(
   };
 
   let initialize = function initializeNetwork() {
-    let deferredSession = $q.defer();
-
     let keypair = state.cloud.network.get(['networkInfo', 'keypair']);
 
     let saveUserInfo = (networkInfo) => {
@@ -254,20 +260,6 @@ export default /*@ngInject*/ function network(
 
     let telehashOptions = keypair ? { id: keypair } : {};
 
-    try {
-      telehash.init(telehashOptions,
-        function initializeTelehash(error, telehashSession) {
-          if (error) {
-            return deferredSession.reject(error);
-          }
-
-          return deferredSession.resolve(telehashSession);
-        }
-      );
-    } catch(error) {
-      return $q.reject(error);
-    }
-
     let startNetwork = (telehashSession) => {
       let networkInfo = {
         id: telehashSession.hashname,
@@ -280,12 +272,58 @@ export default /*@ngInject*/ function network(
 
       listen({id: channels.INVITE_CHANNEL_ID});
 
+      activatingSession.resolve(activeSession);
+
       return networkInfo;
     };
 
-    return deferredSession.promise
+    let connectToNetwork = () => {
+      let deferredSession = $q.defer();
+
+      try {
+        telehash.init(telehashOptions,
+          function initializeTelehash(error, telehashSession) {
+            if (error) {
+              return deferredSession.reject(error);
+            }
+
+            return deferredSession.resolve(telehashSession);
+          }
+        );
+      } catch(error) {
+        return $q.reject(error);
+      }
+
+      return deferredSession.promise;
+    };
+
+    // don't block on network connection attempt if user already initialized
+    if (keypair) {
+      let attemptBackgroundConnection = () => {
+        return connectToNetwork()
+          .then(startNetwork)
+          .catch((error) => {
+            // abort if network connection fails for reasons other than offline
+            if (error !== 'offline') {
+              return $q.reject(error);
+            }
+            return attemptBackgroundConnection();
+          });
+      };
+      attemptBackgroundConnection();
+
+      return $q.when();
+    }
+
+    return connectToNetwork()
       .then(startNetwork)
-      .then(saveNetworkInfo);
+      .then(saveNetworkInfo)
+      .catch((error) => {
+        if (error === 'offline') {
+          return $q.reject('New accounts cannot be created offline');
+        }
+        return $q.reject(error);
+      });
   };
 
   let destroy = function destroyNetwork() {
