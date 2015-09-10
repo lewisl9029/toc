@@ -1,0 +1,18 @@
+<form class="toc-message-input-form"
+  id="toc-message-input-form-{{::messageInputArea.channelId}}"
+  ng-submit="::messageInputArea.send()">
+  <div class="toc-message-input-field-container">
+    <input type="text" placeholder="Message"
+      form="toc-message-input-form-{{::messageInputArea.channelId}}"
+      class="toc-message-input-field"
+      ng-model="messageInputArea.message" toc-auto-focus>
+    </input>
+  </div>
+  <div class="toc-message-input-send-container">
+    <button type="submit"
+      form="toc-message-input-form-{{::messageInputArea.channelId}}"
+      class="button button-block button-outline button-balanced">
+      Send
+    </button>
+  </div>
+</form>

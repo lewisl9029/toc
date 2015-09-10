@@ -9,27 +9,11 @@
     <toc-message-list channel-id="{{::channelView.channelId}}">
     </toc-message-list>
   </ion-content>
-  <!-- TODO: refactor into separate component -->
-  <form class="toc-message-input-form"
-    id="toc-message-input-form-{{::channelView.channelId}}"
-    ng-submit="channelView.send()">
-  <ion-footer-bar class="toc-message-input-footer">
 
-    <div class="col-80">
-      <input type="text" placeholder="Message"
-        form="toc-message-input-form-{{::channelView.channelId}}"
-        class="toc-message-input-area"
-        ng-model="channelView.message" toc-auto-focus>
-      </input>
-    </div>
-    <div class="col-20">
-      <button type="submit"
-        form="toc-message-input-form-{{::channelView.channelId}}"
-        class="button button-block button-outline button-balanced">
-        Send
-      </button>
-    </div>
+  <ion-footer-bar class="toc-message-input-footer"
+    ng-click="channelView.viewLatest()">
+    <toc-message-input-area class="toc-message-input-area"
+      channel-id="{{::channelView.channelId}}">
+    </toc-message-input-area>
   </ion-footer-bar>
-
-  </form>
 </ion-view>
