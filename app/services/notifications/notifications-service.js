@@ -185,6 +185,14 @@ export default /*@ngInject*/ function notifications(
       state.addListener(notificationsCursor, updateOngoingNotification);
     }
 
+    if (devices.isWebApp()) {
+      if (!$window.Notification) {
+        return $q.when();
+      }
+
+      $window.Notification.requestPermission();
+    }
+
     return $q.when();
   };
 
