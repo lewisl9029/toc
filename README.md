@@ -1,5 +1,7 @@
 # Toc Messenger
 
+[![Stories in Ready](https://badge.waffle.io/lewisl9029/toc.png?label=ready&title=Ready)](https://waffle.io/lewisl9029/toc)
+
 VERY ROUGH DRAFT:
 
 An Instant Messaging platform that respects its users.
