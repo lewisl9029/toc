@@ -31,6 +31,7 @@ export default /*@ngInject*/ function session(
   };
 
   let start = function startSession(credentials, staySignedIn) {
+    // passing services into initialize as workaround for circular dependencies
     return identity.initialize(credentials, staySignedIn)
       .then(() => state.cloud.initialize())
       .then(() => network.initialize())

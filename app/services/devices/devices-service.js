@@ -16,6 +16,10 @@ export default /*@ngInject*/ function devices(
     return $window.cordova ? true : false;
   };
 
+  let isWebApp = function isWebApp() {
+    return $window.cordova ? false : true;
+  };
+
   let isAndroidApp = function isAndroidApp() {
     if (!isCordovaApp()) {
       return false;
@@ -104,7 +108,6 @@ export default /*@ngInject*/ function devices(
         ));
   };
 
-  //Workaround for circular dependency between devices and session
   let initialize = function initializeDevices(sessionService) {
     session = sessionService;
 
@@ -117,6 +120,7 @@ export default /*@ngInject*/ function devices(
     create,
     isAndroidApp,
     isInForeground,
-    isCordovaApp
+    isCordovaApp,
+    isWebApp
   };
 }
