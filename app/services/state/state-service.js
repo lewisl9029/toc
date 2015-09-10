@@ -107,6 +107,7 @@ export default /*@ngInject*/ function state(
   let savePersistent =
     function savePersistent(cursor, relativePath, object, store) {
       let storageKey = storage.getStorageKey(
+        // path[0] is the store namespace i.e. memory, local, cloud, etc
         R.concat(R.drop(1, cursor.path), relativePath)
       );
 
@@ -250,7 +251,7 @@ export default /*@ngInject*/ function state(
     storage.cloudUnencrypted.onChange(handleChangeCloudUnencrypted);
     return initializeLocal()
       .then(() => initializeCloudUnencrypted());
-    // cloud init has to be done separately due to need for password to decrypt
+    // cloud init has to be done later due to need for password to decrypt
   };
 
   let destroy = function destroy() {

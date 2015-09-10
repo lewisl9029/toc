@@ -11,7 +11,7 @@ export default /*@ngInject*/ function tocMessageInputArea() {
     controllerAs: 'messageInputArea',
     controller: /*@ngInject*/ function MessageInputAreaController(
       $scope,
-      message
+      messages
     ) {
       this.channelId = $scope.channelId;
 

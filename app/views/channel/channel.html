@@ -12,6 +12,8 @@
 
   <ion-footer-bar class="toc-message-input-footer"
     ng-click="channelView.viewLatest()">
-    <toc-message-input-area></toc-message-input-area>
+    <toc-message-input-area class="toc-message-input-area"
+      channel-id="{{::channelView.channelId}}">
+    </toc-message-input-area>
   </ion-footer-bar>
 </ion-view>

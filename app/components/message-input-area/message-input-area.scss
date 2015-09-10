@@ -1,5 +1,20 @@
 .toc-message-input-form {
-  // display: none;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.toc-message-input-field-container {
+  flex-grow: 1;
+  padding: 3px 5px;
+}
+
+.toc-message-input-send-container {
+  flex-basis: 75px;
+  padding: 3px 5px;
+  .button {
+    margin-bottom: 0;
+  }
 }
 
 .toc-message-input-field {
@@ -9,7 +24,7 @@
   padding: 4px 12px !important;
   width: 100%;
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 0;
   resize: none;
   line-height: unset !important;
 }
