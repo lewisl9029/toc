@@ -41,7 +41,7 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
             this.staySignedIn
           ))
           //modal doesnt animate out if removed immediately
-          .then(() => $timeout(() => this.removeModal(), 1000))
+          .then(() => $timeout(() => this.removeModal(), 1000, false))
           .catch($log.error);
           // .then(() => $ionicLoading.hide());
       };

@@ -108,7 +108,7 @@ export default /*@ngInject*/ function tocMessageList(
         if (!notifications.isDismissed(scope.channelId)) {
           notifications.dismiss(scope.channelId);
         }
-      }, 5000);
+      }, 5000, 0, false);
     },
     controllerAs: 'messageList',
     controller: /*@ngInject*/ function MessageListController(

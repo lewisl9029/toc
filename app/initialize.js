@@ -1,5 +1,12 @@
 (function initialize() {
-  //TODO: optimize spinner removal timing UX
+  var disableLogging = function disableLogging() {
+    window.console.log = function () {};
+    window.console.debug = function () {};
+  };
+  // need to brute force this since telehash v2 has no config option for logging
+  // disableLogging();
+
+  //TODO: optimize spinner removal timing
   // Record time here
   var loadingIndicator;
   var loadingStartTime;

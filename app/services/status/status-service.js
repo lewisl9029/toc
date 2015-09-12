@@ -31,7 +31,7 @@ export default /*@ngInject*/ function status(
   let initializeUpdates = function initializeUpdates(contactId) {
     sendUpdate(contactId);
     activeStatusUpdates[contactId] =
-      $interval(() => sendUpdate(contactId), STATUS_UPDATE_INTERVAL);
+      $interval(() => sendUpdate(contactId), STATUS_UPDATE_INTERVAL, 0, false);
 
     return $q.when();
   };

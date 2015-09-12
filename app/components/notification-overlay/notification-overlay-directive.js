@@ -30,7 +30,7 @@ export default /*@ngInject*/ function tocNotificationOverlay() {
         this.activeNotificationTimeout = $timeout(() => {
           this.activeNotificationId = null;
           this.activeNotificationTimeout = null;
-        }, delay);
+        }, delay, false);
       };
 
       let updateActiveNotification =

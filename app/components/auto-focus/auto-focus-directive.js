@@ -6,7 +6,7 @@ export default /*@ngInject*/ function tocAutoFocus(
   return {
     restrict: 'A',
     link: function linkAutoFocus(scope, element) {
-      $timeout(() => element[0].focus(), 500);
+      $timeout(() => element[0].focus(), 500, false);
     }
   };
 }
