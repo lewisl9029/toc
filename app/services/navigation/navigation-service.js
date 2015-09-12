@@ -127,7 +127,7 @@ export default /*@ngInject*/ function navigation(
     return prepareNavigate
       .then(() => go(app.public.welcome))
       //workaround for too early initialization
-      .then(() => $timeout(() => clearCache(), 0));
+      .then(() => $timeout(() => clearCache(), 0, false));
   };
 
   let initialize =

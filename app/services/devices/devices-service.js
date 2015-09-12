@@ -70,7 +70,7 @@ export default /*@ngInject*/ function devices(
 
       let disconnectingDevice = $timeout(() => {
         destroySession();
-      }, 5000);
+      }, 5000, false);
 
       let remoteLoginPopup = $ionicPopup.show({
         title: 'Another device has connected',

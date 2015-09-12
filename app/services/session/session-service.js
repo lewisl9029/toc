@@ -30,6 +30,15 @@ export default /*@ngInject*/ function session(
     return preparingPublicSession.promise;
   };
 
+  let enableLogging = function enableLogging(loggingEnabled) {
+    if (loggingEnabled) {
+      return storage.enableLogging();
+    }
+
+    $window.console.log = function () {};
+    $window.console.debug = function () {};
+  };
+
   let start = function startSession(credentials, staySignedIn) {
     // passing services into initialize as workaround for circular dependencies
     return identity.initialize(credentials, staySignedIn)
@@ -77,6 +86,7 @@ export default /*@ngInject*/ function session(
   };
 
   let sessionService = {
+    enableLogging,
     preparePublic,
     preparePrivate,
     start,

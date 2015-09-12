@@ -22,6 +22,12 @@ export default /*@ngInject*/ function buffer(
     let messageInfo = messageCursor.get(['messageInfo']);
     let channelInfo = state.cloud.channels.get([channelId, 'channelInfo']);
 
+    let contactId = channelInfo.contactIds[0];
+    let contactStatusId = state.cloud.contacts.get([contactId, 'statusId']);
+    if (contactStatusId === 0) {
+      return;
+    }
+
     let handleMessageAck = (ack) => {
       let receivedTime = ack.r;
 
@@ -41,7 +47,7 @@ export default /*@ngInject*/ function buffer(
 
     sendMessage(messageId, channelId);
     sendAttempts.messages[messageId] =
-      $interval(() => sendMessage(messageId, channelId), 20000);
+      $interval(() => sendMessage(messageId, channelId), 20000, 0, false);
     return state.save(
       state.cloud.buffer,
       ['messages', messageId],
@@ -108,7 +114,7 @@ export default /*@ngInject*/ function buffer(
       .then(() => {
         sendInvite(channelId, userInfo);
         sendAttempts.invites[channelId] =
-          $interval(() => sendInvite(channelId, userInfo), 20000);
+          $interval(() => sendInvite(channelId, userInfo), 20000, 0, false);
         return $q.when();
       })
       .then(() => state.save(
@@ -127,6 +133,12 @@ export default /*@ngInject*/ function buffer(
 
   let sendProfile = function sendProfile(channelId, userInfo) {
     let channelInfo = state.cloud.channels.get([channelId, 'channelInfo']);
+    
+    let contactId = channelInfo.contactIds[0];
+    let contactStatusId = state.cloud.contacts.get([contactId, 'statusId']);
+    if (contactStatusId === 0) {
+      return;
+    }
 
     let handleProfileAck = (ack) => {
       return removeProfile(channelInfo.id);
@@ -148,7 +160,7 @@ export default /*@ngInject*/ function buffer(
       .then(() => {
         sendProfile(channelId, userInfo);
         sendAttempts.profiles[channelId] =
-          $interval(() => sendProfile(channelId, userInfo), 20000);
+          $interval(() => sendProfile(channelId, userInfo), 20000, 0, false);
         return $q.when();
       })
       .then(() => state.save(
@@ -177,7 +189,7 @@ export default /*@ngInject*/ function buffer(
 
       //TODO: stagger the initial send and retry intervals
       sendMessage(messageId, channelId);
-      return $interval(() => sendMessage(messageId, channelId), 20000);
+      return $interval(() => sendMessage(messageId, channelId), 20000, 0, false);
     })(bufferedMessages);
 
     let bufferedProfiles = state.cloud.buffer.get(['profiles']);
@@ -188,7 +200,7 @@ export default /*@ngInject*/ function buffer(
 
       //TODO: stagger the initial send and retry intervals
       sendProfile(channelId, userInfo);
-      return $interval(() => sendProfile(channelId, userInfo), 20000);
+      return $interval(() => sendProfile(channelId, userInfo), 20000, 0, false);
     })(bufferedProfiles);
 
     let bufferedInvites = state.cloud.buffer.get(['invites']);
@@ -198,7 +210,7 @@ export default /*@ngInject*/ function buffer(
 
       //TODO: stagger the initial send and retry intervals
       sendInvite(channelId, userInfo);
-      return $interval(() => sendInvite(channelId, userInfo), 20000);
+      return $interval(() => sendInvite(channelId, userInfo), 60000, 0, false);
     })(bufferedInvites);
 
     return $q.when();

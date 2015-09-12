@@ -79,11 +79,11 @@ export default /*@ngInject*/ function storage(
       // add timeout 0 to let queued operations complete
       .then(() => $timeout(() => {
           $window.location.reload();
-        }, 0
+        }, 0, false
       ));
   };
 
-  let enableLog = remoteStorage.remoteStorage.enableLog;
+  let enableLogging = remoteStorage.remoteStorage.enableLog;
 
   let enableCaching = function enableCaching(moduleName) {
     remoteStorage.remoteStorage.caching
@@ -421,6 +421,7 @@ export default /*@ngInject*/ function storage(
 
   let storageService = {
     KEY_SEPARATOR,
+    enableLogging,
     prepare,
     getStorageKey,
     connect,
@@ -432,8 +433,6 @@ export default /*@ngInject*/ function storage(
   };
 
   let initialize = function initialize() {
-    enableLog();
-
     storageService.local = createLocal();
     storageService.cloud = createCloud();
     storageService.cloud.initialize();

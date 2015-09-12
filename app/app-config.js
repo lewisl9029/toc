@@ -4,9 +4,12 @@ import controller, { controllerName } from 'app-controller';
 
 export default /*@ngInject*/ function configApp(
   $ionicConfigProvider,
+  $logProvider,
   $stateProvider,
   $urlRouterProvider
 ) {
+  $logProvider.debugEnabled(true);
+
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.backButton.previousTitleText(false);
   $ionicConfigProvider.views.transition('android');
