@@ -433,6 +433,8 @@ export default /*@ngInject*/ function storage(
   };
 
   let initialize = function initialize() {
+    enableLogging();
+
     storageService.local = createLocal();
     storageService.cloud = createCloud();
     storageService.cloud.initialize();

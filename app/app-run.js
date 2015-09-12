@@ -3,7 +3,6 @@ export default /*@ngInject*/ function runApp(
   $window,
   session
 ) {
-  session.enableLogging(false);
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default
     // Remove this to show the accessory bar above the keyboard for form inputs
