@@ -34,5 +34,5 @@
         }, FADEOUT_DURATION);
       }, QUERY_DURATION - queryElapsedTime);
     })
-    .catch(console.onerror);
+    .catch(console.error.bind(console));
 })();

@@ -4,6 +4,7 @@ export let directiveName = 'tocMessageList';
 export default /*@ngInject*/ function tocMessageList(
   $ionicScrollDelegate,
   $interval,
+  devices,
   navigation,
   notifications,
   state,
@@ -25,12 +26,13 @@ export default /*@ngInject*/ function tocMessageList(
       let channelCursor = state.cloud.channels.select([scope.channelId]);
 
       let viewingLatestCursor = channelCursor.select(['viewingLatest']);
-      let scrollToLatest = () => {
-        if (!viewingLatestCursor.get()) {
-          return;
-        }
+      if (viewingLatestCursor.get()) {
+        scrollDelegate.scrollBottom(true);
+      }
 
-        if (!navigation.isActiveView(scope.channelId)) {
+      let scrollToLatest = () => {
+        if (!viewingLatestCursor.get() || !devices.isInForeground() ||
+          !navigation.isActiveView(scope.channelId)) {
           return;
         }
 
@@ -48,7 +50,8 @@ export default /*@ngInject*/ function tocMessageList(
       state.addListener(viewingLatestCursor, scrollToLatest, scope);
 
       let updateMessageListPosition = () => {
-        if (!navigation.isActiveView(scope.channelId)) {
+        if (!navigation.isActiveView(scope.channelId) ||
+          !devices.isInForeground()) {
           return;
         }
 
@@ -79,7 +82,8 @@ export default /*@ngInject*/ function tocMessageList(
       });
 
       $interval(() => {
-        if (!navigation.isActiveView(scope.channelId)) {
+        if (!navigation.isActiveView(scope.channelId) ||
+          !devices.isInForeground()) {
           return;
         }
         //Updates unread messages if scrolled to bottom

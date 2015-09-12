@@ -29,10 +29,19 @@ export default /*@ngInject*/ function devices(
   };
 
   let isInForeground = function isInForeground() {
-    return isCordovaApp() ?
-      !$window.cordova.plugins.backgroundMode.isActive() :
-      // TODO: figure out how to detect foreground mode in browser
-      true;
+    if (isCordovaApp()) {
+      return !$window.cordova.plugins.backgroundMode.isActive();
+    }
+
+    // fallback for when page visibility api isnt supported
+    if ($window.hidden === undefined) {
+      if ($window.document.hasFocus === undefined) {
+        return true;
+      }
+      return $window.document.hasFocus();
+    }
+
+    return !$window.hidden;
   };
 
   let disconnectOtherDevices = function disconnectOtherDevices() {

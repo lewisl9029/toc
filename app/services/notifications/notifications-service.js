@@ -3,6 +3,7 @@ export default /*@ngInject*/ function notifications(
   $cordovaLocalNotification,
   $rootScope,
   $window,
+  $timeout,
   $q,
   devices,
   identity,
@@ -11,6 +12,7 @@ export default /*@ngInject*/ function notifications(
   R
 ) {
   let contacts;
+  let activeWebNotifications = {};
   // cordovaLocalNotification uses number IDs
   // notificationId is just channelId, and has the form toc-{32hex-chars}
   let getCordovaNotificationId = (notificationId) => {
@@ -63,6 +65,34 @@ export default /*@ngInject*/ function notifications(
   };
 
   let notifyWeb = function notifyWeb(notificationInfo) {
+    if (!$window.Notification) {
+      return $q.when();
+    }
+    let channelId = notificationInfo.id;
+    let channelCursor = state.cloud.channels.select([channelId]);
+    let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
+    let contactCursor = state.cloud.contacts.select(contactId);
+    let contactInfo = contactCursor.get('userInfo');
+
+    let webNotificationOptions = {
+      body: getNotificationMessage(notificationInfo.id),
+      icon: identity.getAvatar(contactInfo),
+      tag: notificationInfo.id
+    };
+
+    let notificationTitle = contactInfo.displayName || 'Anonymous';
+
+    activeWebNotifications[notificationInfo.id] =
+      new Notification(notificationTitle, webNotificationOptions);
+
+    let notificationInstance = activeWebNotifications[notificationInfo.id];
+    notificationInstance.addEventListener('click',
+      () => handleNotificationClick(notificationInfo.id));
+
+    $timeout(() => {
+      notificationInstance.close();
+    }, 5000, false);
+
     return $q.when();
   };
 
@@ -99,6 +129,14 @@ export default /*@ngInject*/ function notifications(
   };
 
   let dismissWeb = function dismissWeb(notificationInfo) {
+    if (!$window.Notification) {
+      return $q.when();
+    }
+    if (activeWebNotifications[notificationInfo.id] === undefined) {
+      return $q.when();
+    }
+
+    activeWebNotifications[notificationInfo.id].close();
     return $q.when();
   };
 
@@ -130,14 +168,7 @@ export default /*@ngInject*/ function notifications(
     return state.cloud.notifications.get([notificationId, 'dismissed']);
   };
 
-  $rootScope.$on('$cordovaLocalNotification:click', (event, notification) => {
-    let viewId = JSON.parse(notification.data).id;
-
-    if (viewId === 'home') {
-      return navigation.navigate(viewId);
-    }
-
-    let channelId = viewId;
+  let handleNotificationClick = function handleNotificationClick(channelId) {
     let channelCursor = state.cloud.channels.select([channelId]);
 
     if (channelCursor.get(['inviteStatus'])  === 'received') {
@@ -146,6 +177,17 @@ export default /*@ngInject*/ function notifications(
 
     return navigation.navigate(channelId)
       .then(() => state.save(channelCursor, ['viewingLatest'], true));
+  };
+
+  $rootScope.$on('$cordovaLocalNotification:click', (event, notification) => {
+    let viewId = JSON.parse(notification.data).id;
+
+    if (viewId === 'home') {
+      return navigation.navigate(viewId);
+    }
+
+    let channelId = viewId;
+    return handleNotificationClick(channelId);
   });
 
   let initialize = function initialize(contactsService) {
@@ -183,6 +225,14 @@ export default /*@ngInject*/ function notifications(
       };
 
       state.addListener(notificationsCursor, updateOngoingNotification);
+    }
+
+    if (devices.isWebApp()) {
+      if (!$window.Notification) {
+        return $q.when();
+      }
+
+      $window.Notification.requestPermission();
     }
 
     return $q.when();
