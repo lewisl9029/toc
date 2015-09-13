@@ -54,6 +54,9 @@ export default /*@ngInject*/ function state(
     cursor: stateService.tree.select(['cloud'])
   };
 
+  stateService.memory.notifications = stateService.memory.cursor
+    .select(['notifications']);
+
   stateService.local.cryptography = stateService.local.cursor
     .select(['cryptography']);
   stateService.local.identity = stateService.local.cursor

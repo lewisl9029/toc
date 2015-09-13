@@ -16,6 +16,8 @@ import messageList from './message-list/message-list';
 import notificationCard from './notification-card/notification-card';
 import notificationList from './notification-list/notification-list';
 import notificationOverlay from './notification-overlay/notification-overlay';
+import systemMessageOverlay from
+  './system-message-overlay/system-message-overlay';
 import qrImage from './qr-image/qr-image';
 import conversationsMenu from './conversations-menu/conversations-menu';
 import optionsMenu from './options-menu/options-menu';
@@ -37,6 +39,7 @@ export default angular.module('toc.components', [
   notificationCard.name,
   notificationList.name,
   notificationOverlay.name,
+  systemMessageOverlay.name,
   qrImage.name,
   conversationsMenu.name,
   optionsMenu.name,
