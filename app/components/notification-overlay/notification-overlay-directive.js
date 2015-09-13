@@ -19,6 +19,7 @@ export default /*@ngInject*/ function tocNotificationOverlay() {
       let notificationsCursor = state.cloud.notifications;
 
       let watchingNotifications = {};
+      this.showNotificationOverlay = false;
       this.activeNotificationId = null;
       this.activeNotificationTimeout = null;
 
@@ -28,9 +29,9 @@ export default /*@ngInject*/ function tocNotificationOverlay() {
         }
 
         this.activeNotificationTimeout = $timeout(() => {
-          this.activeNotificationId = null;
+          this.showNotificationOverlay = false;
           this.activeNotificationTimeout = null;
-        }, delay, false);
+        }, delay);
       };
 
       let updateActiveNotification =
@@ -47,6 +48,7 @@ export default /*@ngInject*/ function tocNotificationOverlay() {
             return;
           }
           this.activeNotificationId = notificationId;
+          this.showNotificationOverlay = true;
           resetNotificationTimeout(5000);
         };
 

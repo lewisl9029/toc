@@ -11,7 +11,17 @@
 }
 
 .toc-system-message-overlay {
-  opacity: 0.7;
-  width: 100%;
+  display: block;
   max-width: 600px;
+  animation-timing-function: $toc-animation-timing-function;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+.toc-system-message-overlay.ng-hide-remove {
+  animation-name: tocFadeInRight;
+}
+
+.toc-system-message-overlay.ng-hide-add {
+  animation-name: tocFadeOutRight;
 }

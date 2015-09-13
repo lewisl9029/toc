@@ -30,7 +30,7 @@ export default /*@ngInject*/ function tocSystemMessageOverlay() {
 
         hidingSystemMessage = $timeout(() => {
           this.showSystemMessage = false;
-        }, 5000, false);
+        }, 5000);
       };
       state.addListener(systemMessageCursor, updateSystemMessage, $scope);
     }
