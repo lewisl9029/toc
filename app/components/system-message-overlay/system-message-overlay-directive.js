@@ -11,7 +11,7 @@ export default /*@ngInject*/ function tocSystemMessageOverlay() {
       $timeout,
       state
     ) {
-      let hidingSystemMessage;
+      let hidingSystemMessage = null;
       this.showSystemMessage = false;
 
       let systemMessageCursor = state.memory.notifications
@@ -23,12 +23,22 @@ export default /*@ngInject*/ function tocSystemMessageOverlay() {
           return;
         }
 
-        this.showSystemMessage = true;
         if (hidingSystemMessage) {
           $timeout.cancel(hidingSystemMessage);
+          this.showSystemMessage = false;
+          // let existing notification animate out, then animate in new one
+          return $timeout(() => {
+            this.showSystemMessage = true;
+            hidingSystemMessage = $timeout(() => {
+              hidingSystemMessage = null;
+              this.showSystemMessage = false;
+            }, 5000);
+          }, 1000);
         }
 
+        this.showSystemMessage = true;
         hidingSystemMessage = $timeout(() => {
+          hidingSystemMessage = null;
           this.showSystemMessage = false;
         }, 5000);
       };

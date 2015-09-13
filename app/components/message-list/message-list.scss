@@ -1,12 +1,10 @@
 .toc-message-list {
-  .list {
-    > :first-child {
-      box-shadow: unset;
-    }
-    > :last-child {
-      box-shadow: unset;
-      margin-bottom: 20px;
-    }
+  > :first-child {
+    box-shadow: unset;
+  }
+  > :last-child {
+    box-shadow: unset;
+    margin-bottom: 20px;
   }
 }
 
@@ -23,6 +21,7 @@
     position: absolute;
     right: 16px;
     top: 16px;
+    pointer-events: none;
   }
   .toc-message-unread {
     position: absolute;
@@ -35,6 +34,7 @@
     font-size: 10px;
     width: 100%;
     z-index: -1;
+    pointer-events: none;
   }
   .toc-message-unread-marker {
     background-position-y: 2px;
@@ -47,40 +47,49 @@
     );
     height: 100%;
     width: 100%;
+    pointer-events: none;
   }
   .toc-message-timestamp {
     position: absolute;
     bottom: 0px;
-    left: 0px;
+    right: 0px;
     text-align: right;
     color: $royal;
     font-size: 12px;
-    padding-left: 16px;
     padding-right: 16px;
-    width: 100%;
+    width: 72px;
+    // non-standard, but necessary to enable text selection on chrome
+    -webkit-user-select: auto;
   }
   .toc-message-datestamp {
     text-align: center;
     color: $royal;
     font-size: 12px;
     width: 100%;
+    // non-standard, but necessary to enable text selection on chrome
+    -webkit-user-select: auto;
   }
   .toc-message-sending-indicator {
     position: absolute;
     bottom: 0px;
-    left: 0px;
+    right: 0px;
     text-align: right;
     color: $energized;
     // font-size: 12px;
-    padding-left: 16px;
     padding-right: 16px;
-    width: 100%;
+    width: 72px;
     // .spinner svg {
     //   height: 20px;
     // }
   }
   p {
     margin-bottom: 0;
+    // non-standard, but necessary to enable text selection on chrome
+    -webkit-user-select: auto;
+  }
+  h2 {
+    // non-standard, but necessary to enable text selection on chrome
+    -webkit-user-select: auto;
   }
 }
 
