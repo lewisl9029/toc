@@ -4,6 +4,7 @@ export default /*@ngInject*/ function state(
   $q,
   $rootScope,
   $window,
+  $timeout,
   Baobab,
   R,
   storage
@@ -27,9 +28,10 @@ export default /*@ngInject*/ function state(
       // immutable: false
     });
 
-  //TODO: test baobab event batching and tweak manual commit timing
+  // baobab update events are batched, so this approach is reasonably performant
+  // TODO: try updating on requestAnimationFrame instead?
   stateService.tree.on('update',
-    () => setTimeout(() => $rootScope.$apply())
+    () => $timeout(() => $rootScope.$apply(), 0, false)
   );
 
   stateService.version = '0.3.0';
@@ -175,8 +177,6 @@ export default /*@ngInject*/ function state(
     );
   };
 
-  // TODO: refactor to use single password per storage account
-  // to reduce dependence on this (only unencrypted data will be the salt)
   let handleChangeCloudUnencrypted =
     function handleChangeCloudUnencrypted(event) {
       if (event.oldValue === event.newValue) {

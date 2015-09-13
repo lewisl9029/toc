@@ -268,7 +268,7 @@ export default /*@ngInject*/ function network(
 
       activeSession = telehashSession;
       //DEBUG
-      window.tocSession = activeSession;
+      $window.tocSession = activeSession;
 
       listen({id: channels.INVITE_CHANNEL_ID});
 

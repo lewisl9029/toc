@@ -17,9 +17,17 @@ export default /*@ngInject*/ function storage(
   let getStorageKey = R.join(KEY_SEPARATOR);
 
   let connect = function connect(email) {
-    return remoteStorage.remoteStorage.connect(email, 'https://toc.im');
-    //FIXME: next version will have a different arity
-    // remoteStorage.remoteStorage.connect(email, null, 'https://toc.im');
+    //FIXME: .connect uses XHR so this try catch wont actually work
+    try {
+      //FIXME: next version will have redirectURI as config
+      // remoteStorage.remoteStorage.connect(email, null, 'https://toc.im');
+      remoteStorage.remoteStorage.connect(email, 'https://toc.im');
+    }
+    catch(error) {
+      return $q.reject(error);
+    }
+
+    return $q.when();
   };
 
   let isConnected = function isConnected() {

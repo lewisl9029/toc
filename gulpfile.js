@@ -85,8 +85,6 @@ gulp.task('clean-package', function cleanPackage(done) {
   ], done);
 });
 
-//TODO: add node-webkit build steps
-//TODO: append version + latest folders for each build
 gulp.task('build', function build(done) {
   return runSequence(
     'clean-build',

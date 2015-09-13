@@ -10,7 +10,6 @@ export default /*@ngInject*/ function buffer(
   let network;
   let status;
 
-  //TODO: don't anything in buffer if contact status is offline
   let sendAttempts = {
     messages: undefined,
     invites: undefined,
@@ -133,7 +132,7 @@ export default /*@ngInject*/ function buffer(
 
   let sendProfile = function sendProfile(channelId, userInfo) {
     let channelInfo = state.cloud.channels.get([channelId, 'channelInfo']);
-    
+
     let contactId = channelInfo.contactIds[0];
     let contactStatusId = state.cloud.contacts.get([contactId, 'statusId']);
     if (contactStatusId === 0) {
@@ -187,7 +186,9 @@ export default /*@ngInject*/ function buffer(
       let channelId = messageBuffer.channelId;
       let messageId = messageBuffer.messageId;
 
-      //TODO: stagger the initial send and retry intervals
+      //TODO: try staggering the initial send and retry intervals
+      // may not actually be more performant because it would trigger more
+      // digest cycles in angular
       sendMessage(messageId, channelId);
       return $interval(() => sendMessage(messageId, channelId), 20000, 0, false);
     })(bufferedMessages);
@@ -198,7 +199,6 @@ export default /*@ngInject*/ function buffer(
     sendAttempts.profiles = R.mapObj((profileBuffer) => {
       let channelId = profileBuffer.channelId;
 
-      //TODO: stagger the initial send and retry intervals
       sendProfile(channelId, userInfo);
       return $interval(() => sendProfile(channelId, userInfo), 20000, 0, false);
     })(bufferedProfiles);
@@ -208,7 +208,6 @@ export default /*@ngInject*/ function buffer(
     sendAttempts.invites = R.mapObj((inviteBuffer) => {
       let channelId = inviteBuffer.channelId;
 
-      //TODO: stagger the initial send and retry intervals
       sendInvite(channelId, userInfo);
       return $interval(() => sendInvite(channelId, userInfo), 60000, 0, false);
     })(bufferedInvites);
