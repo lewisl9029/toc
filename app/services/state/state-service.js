@@ -25,7 +25,7 @@ export default /*@ngInject*/ function state(
       cloud: {}
     },
     {
-      // immutable: false
+      immutable: !$window.tocProd
     });
 
   // baobab update events are batched, so this approach is reasonably performant

@@ -4,7 +4,9 @@
     window.console.debug = function () {};
   };
   // need to brute force this since telehash v2 has no config option for logging
-  // disableLogging();
+  if (window.tocProd) {
+    disableLogging();
+  }
 
   //TODO: optimize spinner removal timing
   // Record time here

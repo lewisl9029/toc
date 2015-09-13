@@ -7,6 +7,7 @@ var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
 var jshint = require('gulp-jshint');
+var header = require('gulp-header');
 var htmlhint = require('gulp-htmlhint');
 var scsslint = require('gulp-scsslint');
 var jsbeautifier = require('gulp-jsbeautifier');
@@ -90,6 +91,7 @@ gulp.task('build', function build(done) {
     'clean-build',
     'uncache-jspm',
     ['build-js', 'build-html', 'build-asset'],
+    'inject-js',
     // 'cache-jspm',
     done
   );
@@ -133,6 +135,16 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
       base: basePaths.dev
     })
     .pipe(gulpif(argv.prod, uglify()))
+    .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('inject-js', function injectJs() {
+  return gulp.src([
+      basePaths.prod + 'initialize.js',
+    ], {
+      base: basePaths.prod
+    })
+    .pipe(gulpif(argv.prod, header('window.tocProd=true;')))
     .pipe(gulp.dest(basePaths.prod));
 });
 
