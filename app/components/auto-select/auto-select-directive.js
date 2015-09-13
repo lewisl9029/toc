@@ -18,12 +18,33 @@ export default /*@ngInject*/ function tocAutoSelect(
 
       element.bind('click', function(event) {
         event.preventDefault();
-        element[0].select();
+        if (element[0].select) {
+          element[0].select();
+        }
+        else {
+          if ($window.getSelection) {
+            let selection = $window.getSelection();
+            let range = $window.document.createRange();
+            range.selectNodeContents(element[0]);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        }
 
         try {
           $window.document.execCommand('copy');
           notifications.notifySystem('Copied to clipboard!');
+          if (element[0].select) {
+            element[0].blur();
+          }
+          else {
+            if ($window.getSelection) {
+              let selection = $window.getSelection();
+              selection.removeAllRanges();
+            }
+          }
         } catch (error) {
+          // don't clear selection as fallback to allow users to copy manually
           $log.error(error);
         }
       });
