@@ -26,7 +26,15 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
         return identity.getAvatar(this.userInfo);
       };
 
-      this.updateProfile = function updateProfile() {
+      this.updateProfile = function updateProfile(updateProfileForm) {
+        if (updateProfileForm.$invalid) {
+          if (updateProfileForm.$error.email) {
+            return notifications.notifySystem('Please enter a valid email.');
+          }
+
+          return notifications.notifyGenericError(updateProfileForm.$error);
+        }
+
         return state.save(
             state.cloud.identity,
             ['userInfo'],
@@ -37,7 +45,7 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
             this.removeModal();
             return $q.when();
           })
-          .catch($log.error);
+          .catch(notifications.notifyGenericError);
       };
     }
   };

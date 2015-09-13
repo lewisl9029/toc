@@ -109,7 +109,6 @@ export default /*@ngInject*/ function cryptography(
       if (credentials && credentials.key) {
         return;
       }
-      //FIXME: Throw error object instead?
       throw new Error('cryptography: mising credentials');
     };
 

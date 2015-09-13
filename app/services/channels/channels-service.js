@@ -58,7 +58,6 @@ export default /*@ngInject*/ function channels(
     return $q.when();
   };
 
-  //Workaround for circular dependency between network and channel...
   let initialize = function initialize(networkService) {
     network = networkService;
     let existingChannels = state.cloud.channels.get();

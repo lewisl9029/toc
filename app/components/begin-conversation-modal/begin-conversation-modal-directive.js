@@ -74,7 +74,8 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           doInvite: () => {
             let invitePopup = $ionicPopup.show({
               template: `
-                <form ng-submit="beginConversationModal.sendInvite()">
+                <form ng-submit="beginConversationModal.sendInvite()"
+                  novalidate>
                 <input type="text" placeholder="Your contact's user ID."
                   ng-model="beginConversationModal.contactId" toc-auto-focus>
                 </form>

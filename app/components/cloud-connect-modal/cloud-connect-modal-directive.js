@@ -13,6 +13,7 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
       $ionicPopup,
       $scope,
       identity,
+      notifications,
       storage
     ) {
       this.removeModal = $scope.removeModal;
@@ -21,12 +22,21 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
 
       this.remoteStorageEmail = '';
 
-      this.submitRemoteStorageEmail = () => {
+      this.submitRemoteStorageEmail = (event) => {
         if (!this.remoteStorageEmail) {
+          if (event) {
+            event.preventDefault();
+          }
+
           //validation is already done by angular form's email input
           // email will be undefined if it didn't pass validation
-          return;
+          return notifications.notifySystem(
+            `Please enter a valid email.`
+          );
         }
+        let handleConnectionError = (error) => {
+          return notifications.notifyGenericError(error);
+        };
 
         if (this.userExists) {
           return $ionicPopup.confirm({
@@ -43,11 +53,13 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
               if (!response) {
                 return;
               }
-              storage.connect(this.remoteStorageEmail);
+              storage.connect(this.remoteStorageEmail)
+                .catch(handleConnectionError);
             });
         }
 
-        storage.connect(this.remoteStorageEmail);
+        storage.connect(this.remoteStorageEmail)
+          .catch(handleConnectionError);
       };
 
       this.services = {
@@ -76,12 +88,7 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
                   text: 'Connect',
                   type: 'button-outline button-balanced',
                   onTap: (event) => {
-                    if (!this.remoteStorageEmail) {
-                      event.preventDefault();
-                      return;
-                    }
-
-                    this.submitRemoteStorageEmail();
+                    this.submitRemoteStorageEmail(event);
                   }
                 }
               ]
