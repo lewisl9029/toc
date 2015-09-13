@@ -1,0 +1,17 @@
+.toc-system-message-overlay-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  display: flex;
+  padding-bottom: 120px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.toc-system-message-overlay {
+  opacity: 0.7;
+  width: 100%;
+  max-width: 600px;
+}

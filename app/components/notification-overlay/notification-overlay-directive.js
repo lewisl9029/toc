@@ -66,12 +66,13 @@ export default /*@ngInject*/ function tocNotificationOverlay() {
             watchingNotifications[notificationId] = true;
             // don't fire notifications on app init
             if (isFirstRun) {
-              isFirstRun = false;
               return;
             }
             updateActiveNotification(null, notificationId);
           })
         )(notificationsCursor.get() || {});
+
+        isFirstRun = false;
       };
       state.addListener(notificationsCursor, updateListeners, $scope);
     }
