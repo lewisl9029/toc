@@ -18,6 +18,9 @@ export default /*@ngInject*/ function tocNotificationCard() {
       state
     ) {
       this.notificationId = $scope.notificationId;
+      if (!this.notificationId) {
+        return;
+      }
 
       let channelId = this.notificationId;
       let channelCursor = state.cloud.channels.select([channelId]);

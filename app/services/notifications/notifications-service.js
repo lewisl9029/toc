@@ -123,6 +123,12 @@ export default /*@ngInject*/ function notifications(
       .then(() => state.save(notificationCursor, ['dismissed'], false));
   };
 
+  let notifySystem = function notifySystem(message) {
+    let notificationsCursor = state.memory.notifications;
+
+    return state.save(notificationsCursor, ['systemMessage'], message);
+  };
+
   let dismissCordova = function dismissCordova(notificationInfo) {
     return $cordovaLocalNotification
       .clear(notificationInfo.cordovaNotificationId);
@@ -241,6 +247,7 @@ export default /*@ngInject*/ function notifications(
   return {
     isDismissed,
     notify,
+    notifySystem,
     dismiss,
     initialize
   };

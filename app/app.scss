@@ -34,12 +34,50 @@ $bar-subheader-height: 75px !default;
 // .card .item-input {
 //   padding: 6px 0 6px 16px;
 // }
+$toc-animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
 
 // Library imports
 @import 'libraries/libraries';
 // App imports
 @import 'views/views';
 @import 'components/components';
+
+// slightly edited forms from https://github.com/ShakrMedia/tuesday
+@keyframes tocFadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes tocFadeOutLeft {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+}
+
+@keyframes tocFadeOutRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+}
 
 .toc-notification-badge {
   margin-right: 0 !important;
@@ -194,17 +232,3 @@ form.ng-pristine button[type='submit'] {
 //   background-color: $light;
 //   z-index: 2;
 // }
-
-.toc-hidden {
-  display: none;
-}
-
-.toc-fadein {
-  opacity: 1;
-  transition: opacity 0.75s ease-in;
-}
-
-.toc-fadeout {
-  opacity: 0;
-  transition: opacity 0.75s ease-in;
-}

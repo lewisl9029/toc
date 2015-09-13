@@ -191,7 +191,9 @@ export default /*@ngInject*/ function storage(
 
     let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
-        if (!cryptography.isInitialized()) {
+        // no need to handle local change events fired on startup
+        // we're already loading data manually in state service initialization
+        if (!cryptography.isInitialized() || event.origin === 'local') {
           return;
         }
 
@@ -209,6 +211,8 @@ export default /*@ngInject*/ function storage(
           event.oldValue = event.oldValue ?
             cryptography.decrypt(event.oldValue) :
             event.oldValue;
+
+          $log.debug(`Cloud: Received object ${JSON.stringify(event.newValue)} at ${event.relativePath}`);
 
           handleChange(event);
         }
@@ -309,6 +313,12 @@ export default /*@ngInject*/ function storage(
 
     let onChange = function onChange(handleChange) {
       privateClient.on('change', function handleStorageChange(event) {
+        // no need to handle local change events fired on startup
+        // we're already loading data manually in state service initialization
+        if (event.origin === 'local') {
+          return;
+        }
+
         event.newValue = event.newValue ?
           JSON.parse(event.newValue.pt) :
           event.newValue;
@@ -316,6 +326,8 @@ export default /*@ngInject*/ function storage(
         event.oldValue = event.oldValue ?
           JSON.parse(event.oldValue.pt) :
           event.oldValue;
+
+        $log.debug(`CloudUnencrypted: Received object ${JSON.stringify(event.newValue)} at ${event.relativePath}`);
 
         handleChange(event);
       });

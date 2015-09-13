@@ -1,6 +1,9 @@
 .toc-notification-overlay {
   // visibility: hidden;
   box-shadow: none !important;
+  animation-timing-function: $toc-animation-timing-function;
+  animation-duration: 1s;
+  animation-fill-mode: both;
 }
 
 .toc-notification-overlay-card {
@@ -14,39 +17,8 @@
 
 .toc-notification-overlay.ng-hide-remove {
   animation-name: tocFadeInRight;
-  animation-duration: 1s;
-  animation-fill-mode: both;
-  animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
 }
 
 .toc-notification-overlay.ng-hide-add {
   animation-name: tocFadeOutLeft;
-  animation-duration: 1s;
-  animation-fill-mode: both;
-  animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
-}
-
-// slightly edited forms from https://github.com/ShakrMedia/tuesday
-@keyframes tocFadeInRight {
-  0% {
-    opacity: 0;
-    transform: translateX(-100px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes tocFadeOutLeft {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateX(-100px);
-  }
 }
