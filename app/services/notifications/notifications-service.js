@@ -129,10 +129,14 @@ export default /*@ngInject*/ function notifications(
     return state.save(notificationsCursor, ['systemMessage'], message);
   };
 
-  let notifyGenericError = () => notifySystem(
-    'Something went wrong. ' +
-    'Please contact the developers for further troubleshooting.'
-  );
+  let notifyGenericError = function notifyGenericError(error) {
+    $log.error(error);
+
+    return notifySystem(
+      'Something went wrong. ' +
+      'Please contact the developers for further troubleshooting.'
+    );
+  };
 
   let dismissCordova = function dismissCordova(notificationInfo) {
     return $cordovaLocalNotification

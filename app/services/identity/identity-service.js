@@ -29,8 +29,8 @@ export default /*@ngInject*/ function identity(
   };
 
   let validateId = function validateId(id) {
-    //TODO: add a regex matcher to ensure it's in hex
-    return id.length === 64;
+    let idRegex = /^[a-f0-9]{64}$/i;
+    return idRegex.test(id);
   };
 
   let authenticate = function authenticate(derivedCredentials) {

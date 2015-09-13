@@ -94,7 +94,7 @@ export default /*@ngInject*/ function contacts(
     let existingChannel = channelCursor.get();
 
     if (!existingChannel) {
-      return $q.reject('missing existing channel for invite accept');
+      return $q.reject('contact: missing existing channel');
     }
 
     if (existingChannel.inviteStatus === 'received') {
@@ -107,6 +107,10 @@ export default /*@ngInject*/ function contacts(
 
   let saveSendingInvite = function saveSendingInvite(contactId) {
     let userInfo = state.cloud.identity.get('userInfo');
+    if (contactId === userInfo.id) {
+      return $q.reject('contact: cannot invite self');
+    }
+
     let contactChannel = channels.createContactChannel(userInfo.id, contactId);
     let contactCursor = state.cloud.contacts.select([contactId]);
     let channelCursor = state.cloud.channels.select([contactChannel.id]);
@@ -114,7 +118,7 @@ export default /*@ngInject*/ function contacts(
     let existingChannel = channelCursor.get();
 
     if (existingChannel) {
-      return $q.when();
+      return $q.reject('contact: contact already exists');
     }
 
     let contactInfo = {

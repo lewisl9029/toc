@@ -34,7 +34,6 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       this.staySignedIn = staySignedIn === undefined ? true : staySignedIn;
 
       this.begin = function begin(passwordPromptForm) {
-        // $ionicLoading.show();
         if (passwordPromptForm.$invalid) {
           if (passwordPromptForm.$error.required[1]) {
             return notifications.notifySystem('Please enter a password.');
@@ -48,7 +47,7 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
             return notifications.notifySystem('Please enter a password.');
           }
 
-          return notifications.notifyGenericError();
+          return notifications.notifyGenericError(passwordPromptForm.$error);
         }
 
         let updateStaySignedIn = () => staySignedIn === this.staySignedIn ?
@@ -65,7 +64,6 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
           //modal doesnt animate out if removed immediately
           .then(() => $timeout(() => this.removeModal(), 1000, false))
           .catch((error) => {
-            $log.error(error);
             this.showModal();
             let showErrorMessage = () => {
               if (error === 'identity: wrong password') {
@@ -74,12 +72,11 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
                 );
               }
 
-              return notifications.notifyGenericError();
+              return notifications.notifyGenericError(error);
             };
 
             return $timeout(showErrorMessage, 1000, false);
           });
-          // .then(() => $ionicLoading.hide());
       };
 
       this.showCloudConnectModal = function showCloudConnectModal() {

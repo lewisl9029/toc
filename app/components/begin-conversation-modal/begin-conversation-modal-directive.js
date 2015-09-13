@@ -17,6 +17,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
       $window,
       $scope,
       contacts,
+      notifications,
       devices,
       identity,
       state
@@ -30,6 +31,41 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
 
       this.inviteMethod = 'enter';
 
+      let handleInviteError = (error) => {
+        if (error === 'contact: cannot invite self') {
+          return notifications.notifySystem(
+            'You just tried to invite yourself ._.'
+          );
+        }
+
+        if (error === 'contact: contact already exists') {
+          return notifications.notifySystem(
+            'This contact already exists'
+          );
+        }
+
+        return notifications.notifyGenericError(error);
+      };
+
+      this.sendInvite = (event) => {
+        if (!identity.validateId(this.contactId)) {
+          if (event) {
+            event.preventDefault();
+          }
+          return notifications.notifySystem(
+            `Please enter a valid Toc ID.`
+          );
+        }
+
+        return contacts.saveSendingInvite(this.contactId)
+          .then(() => {
+            this.removeModal();
+            this.contactId = '';
+            return $q.when();
+          })
+          .catch(handleInviteError);
+      };
+
       this.inviteMethods = {
         'enter': {
           icon: 'ion-ios-compose',
@@ -38,8 +74,10 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           doInvite: () => {
             let invitePopup = $ionicPopup.show({
               template: `
+                <form ng-submit="beginConversationModal.sendInvite()">
                 <input type="text" placeholder="Your contact's user ID."
                   ng-model="beginConversationModal.contactId" toc-auto-focus>
+                </form>
               `,
               title: 'Enter ID',
               scope: $scope,
@@ -52,18 +90,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                   text: 'Invite',
                   type: 'button-outline button-balanced',
                   onTap: (event) => {
-                    if (!identity.validateId(this.contactId)) {
-                      event.preventDefault();
-                      $log.error(`${this.contactId} is not a valid Toc ID.`);
-                      return;
-                    }
-
-                    return contacts.saveSendingInvite(this.contactId)
-                      .then(() => {
-                        this.removeModal();
-                        this.contactId = '';
-                        return $q.when();
-                      });
+                    return this.sendInvite(event);
                   }
                 }
               ]
@@ -83,7 +110,9 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                   }
                   let contactId = barcodeData.text;
                   if (!identity.validateId(contactId)) {
-                    return $q.reject(`${contactId} is not a valid Toc ID.`);
+                    return notifications.notifySystem(
+                      `Please enter a valid Toc ID.`
+                    );
                   }
 
                   return contacts.saveSendingInvite(contactId);
@@ -92,7 +121,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                   this.removeModal();
                   return $q.when();
                 })
-                .catch((error) => $log.error(error));
+                .catch(handleInviteError);
             }
 
           }
