@@ -13,7 +13,9 @@ export default /*@ngInject*/ function WelcomeController(
         this.passwordPromptModal = $ionicModal.fromTemplate(
           `
           <toc-password-prompt-modal class="toc-modal-container"
-            remove-modal="welcomeView.passwordPromptModal.remove()">
+            remove-modal="welcomeView.passwordPromptModal.remove()"
+            show-modal="welcomeView.passwordPromptModal.show()"
+            hide-modal="welcomeView.passwordPromptModal.hide()">
           </toc-password-prompt-modal>
           `,
           {
