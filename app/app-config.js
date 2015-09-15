@@ -11,6 +11,7 @@ export default /*@ngInject*/ function configApp(
   $logProvider.debugEnabled(true);
 
   $ionicConfigProvider.tabs.position('bottom');
+  $ionicConfigProvider.form.toggle('large');
   $ionicConfigProvider.backButton.previousTitleText(false);
   $ionicConfigProvider.views.transition('android');
   $ionicConfigProvider.navBar.alignTitle('center');

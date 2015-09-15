@@ -35,7 +35,8 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
 
       this.begin = function begin(passwordPromptForm) {
         if (passwordPromptForm.$invalid) {
-          if (passwordPromptForm.$error.required[1]) {
+          if (passwordPromptForm.$error.required &&
+            passwordPromptForm.$error.required[1]) {
             return notifications.notifySystem('Please enter a password.');
           }
           if (passwordPromptForm.$error.equalTo) {
