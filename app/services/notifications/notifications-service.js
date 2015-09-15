@@ -3,6 +3,7 @@ export default /*@ngInject*/ function notifications(
   $cordovaLocalNotification,
   $rootScope,
   $window,
+  $log,
   $timeout,
   $q,
   devices,
