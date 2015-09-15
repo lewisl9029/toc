@@ -1,11 +1,11 @@
 <form class="toc-message-input-form"
   id="toc-message-input-form-{{::messageInputArea.channelId}}"
-  ng-submit="::messageInputArea.send()">
+  ng-submit="::messageInputArea.send()" novalidate>
   <div class="toc-message-input-field-container">
-    <input type="text" placeholder="Message"
+    <input class="toc-message-input-field" type="text" placeholder="Message"
       form="toc-message-input-form-{{::messageInputArea.channelId}}"
-      class="toc-message-input-field"
-      ng-model="messageInputArea.message" toc-auto-focus>
+      ng-model="messageInputArea.message" ng-trim="false"
+      toc-auto-focus required>
     </input>
   </div>
   <div class="toc-message-input-send-container">
