@@ -12,6 +12,7 @@ export default /*@ngInject*/ function tocNotificationCard() {
     controller: /*@ngInject*/ function NotificationCardController(
       $scope,
       $ionicPopup,
+      $timeout,
       $ionicSlideBoxDelegate,
       identity,
       contacts,
@@ -22,6 +23,11 @@ export default /*@ngInject*/ function tocNotificationCard() {
       if (!this.notificationId) {
         return;
       }
+
+      $timeout(() =>{
+        let slideBoxDelegate =
+        $ionicSlideBoxDelegate.$getByHandle(this.notificationId);
+      });
 
       let channelId = this.notificationId;
       let channelCursor = state.cloud.channels.select([channelId]);
