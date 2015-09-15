@@ -1,33 +1,201 @@
-.toc-loading-screen {
-  background-color: #ffffff;
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 3;
-}
+// .toc-loading-screen {
+//   background-color: #ffffff;
+//   height: 100%;
+//   left: 0;
+//   position: absolute;
+//   top: 0;
+//   width: 100%;
+//   z-index: 3;
+// }
+//
+// .toc-fadeout-loading-screen {
+//   opacity: 0;
+//   transition: opacity 1.5s ease-in; //same timing as loading indicator queryend
+// }
+//
+// .toc-non-interactive {
+//   pointer-events: none;
+// }
+//
+// .toc-spinner-area {
+//   bottom: 0;
+//   height: 56px;
+//   left: 0;
+//   margin: auto;
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   width: 56px;
+//   .spinner svg {
+//     height: 56px;
+//     width: 56px;
+//   }
+// }
 
-.toc-fadeout-loading-screen {
-  opacity: 0;
-  transition: opacity 1.5s ease-in; //same timing as loading indicator queryend
-}
+$toc-tablet-width: 768px;
+$toc-notebook-half-width: 940px;
+$toc-notebook-width: 1200px;
+$toc-desktop-width: 1600px;
 
-.toc-non-interactive {
-  pointer-events: none;
-}
+@mixin toc-landing-font($font-size) {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: $font-size * 3/4;
 
-.toc-spinner-area {
-  bottom: 0;
-  height: 56px;
-  left: 0;
-  margin: auto;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 56px;
-  .spinner svg {
-    height: 56px;
-    width: 56px;
+  @media (min-width: $toc-tablet-width) {
+    font-size: $font-size;
   }
+}
+
+@mixin toc-margin-bottom($margin-size) {
+  margin-bottom: $margin-size * 3/4;
+
+  @media (min-width: $toc-tablet-width) {
+    margin-bottom: $margin-size;
+  }
+}
+
+$toc-primary-color: #387EF5;
+$toc-light-color: #D9E7FF;
+$toc-white-color: #FFFFFF;
+
+.toc-body {
+  margin: 0;
+  // overflow: hidden;
+}
+
+.toc-landing-content {
+  // overflow: scroll;
+}
+
+.toc-fullscreen-section {
+  background-color: $toc-light-color;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.toc-button {
+  display: block;
+  box-sizing: border-box;
+  color: $toc-light-color;
+  border: 2px solid $toc-light-color;
+  background: none;
+  box-shadow: none;
+  font-weight: 300;
+  width: 100%;
+  padding: 9px 18px;
+  text-decoration: none;
+  @media (min-width: $toc-tablet-width) {
+    padding: 12px 24px;
+  }
+  @include toc-landing-font(24px);
+
+  transition: 0.1s linear;
+
+  &:hover {
+    color: $toc-white-color;
+    border-color: $toc-white-color;
+  }
+
+  &:active {
+    background: $toc-white-color;
+    color: $toc-primary-color;
+  }
+}
+
+.toc-primary-button {
+  background: $toc-light-color;
+  color: $toc-primary-color;
+  padding: 9px 18px;
+  @media (min-width: $toc-tablet-width) {
+    padding: 12px 24px;
+  }
+  @include toc-landing-font(24px);
+
+  &:hover {
+    color: $toc-primary-color;
+    background: $toc-white-color;
+    border-color: $toc-white-color;
+  }
+
+  &:active {
+    background: none;
+    color: $toc-light-color;
+  }
+}
+
+#toc-call-to-action-section {
+  background-color: $toc-primary-color;
+}
+
+.toc-fullscreen-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+}
+
+.toc-call-to-action-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 400px;
+  padding: 25px;
+}
+
+.toc-call-to-action-heading {
+  @include toc-margin-bottom(24px);
+
+  h1 {
+    @include toc-landing-font(40px);
+    color: $toc-light-color;
+    font-weight: 300;
+    margin: 0;
+  }
+}
+
+.toc-call-to-action-message {
+  @include toc-margin-bottom(24px);
+
+  p {
+    @include toc-landing-font(24px);
+    @include toc-margin-bottom(16px);
+    margin-top: 0;
+    color: $toc-light-color;
+  }
+}
+
+.toc-call-to-action-actions {
+  max-width: 400px;
+  width: 90%;
+}
+
+.toc-call-to-action-action {
+  flex: 1 1 auto;
+  @include toc-margin-bottom(16px);
+}
+
+.toc-call-to-action-hidden-action {
+}
+
+.toc-call-to-action-images {
+  flex: 1 1 200px;
+  display: flex;
+  padding: 25px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.toc-call-to-action-image-phone {
+  width: 200px;
+  height: 405px;
+  background: url(assets/images/phone.svg);
+  background-size: cover;
 }

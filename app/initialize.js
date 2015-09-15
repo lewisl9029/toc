@@ -1,4 +1,4 @@
-(function initialize() {
+var initialize = function initialize() {
   var disableLogging = function disableLogging() {
     window.console.log = function () {};
     window.console.debug = function () {};
@@ -37,4 +37,4 @@
       }, QUERY_DURATION - queryElapsedTime);
     })
     .catch(console.error.bind(console));
-})();
+};
