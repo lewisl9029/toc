@@ -1,0 +1,14 @@
+.toc-notification-list-item {
+  display: block;
+  animation-timing-function: $toc-animation-timing-function;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  &.ng-enter {
+    animation-name: tocFadeInRight;
+  }
+  // FIXME: ng-leave animation doesnt work for some reason
+  // a workaround could be to just do a slidebox transition on dismiss
+  &.ng-leave {
+    animation-name: tocFadeOutLeft;
+  }
+}

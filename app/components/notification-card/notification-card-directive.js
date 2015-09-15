@@ -29,8 +29,10 @@ export default /*@ngInject*/ function tocNotificationCard() {
         let slideBoxDelegate =
           $ionicSlideBoxDelegate.$getByHandle(this.notificationId);
 
-
-      });
+        this.swipe = () => {
+          return notifications.dismiss(this.notificationId);
+        };
+      }, 0, false);
 
       let channelId = this.notificationId;
       let channelCursor = state.cloud.channels.select([channelId]);
@@ -71,10 +73,6 @@ export default /*@ngInject*/ function tocNotificationCard() {
 
         return navigation.navigate(channelId)
           .then(() => state.save(channelCursor, ['viewingLatest'], true));
-      };
-
-      this.swipe = () => {
-        return notifications.dismiss(this.notificationId);
       };
     }
   };

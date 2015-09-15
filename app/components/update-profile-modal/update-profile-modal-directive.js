@@ -15,6 +15,7 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
       $log,
       contacts,
       identity,
+      notifications,
       state,
       R
     ) {
