@@ -1,11 +1,22 @@
-<div class="toc-notification-card item item-avatar"
-  ng-click="notificationCard.click()">
-  <!-- TODO: refactor templates to have minimal nested properties and logic -->
-  <img class="toc-notification-card-icon"
-    ng-src="{{notificationCard.icon}}">
-  </img>
-  <h2>{{notificationCard.title}}</h2>
-  <p class="toc-notification-card-message">
-    {{notificationCard.message}}
-  </p>
-</div>
+<ion-slide-box class="toc-notification-card-slidebox"
+  delegate-handle="{{::notificationCard.notificationId}}" show-pager="false"
+  active-slide="1" on-slide-changed="notificationCard.swipe()">
+  <ion-slide>
+    <div class="toc-notification-card-swiped"></div>
+  </ion-slide>
+  <ion-slide>
+    <div class="toc-notification-card item item-avatar"
+      ng-click="notificationCard.click()">
+      <img class="toc-notification-card-icon"
+        ng-src="{{notificationCard.icon}}">
+      </img>
+      <h2>{{notificationCard.title}}</h2>
+      <p class="toc-notification-card-message">
+        {{notificationCard.message}}
+      </p>
+    </div>
+  </ion-slide>
+  <ion-slide>
+    <div class="toc-notification-card-swiped"></div>
+  </ion-slide>
+</ion-slide-box>

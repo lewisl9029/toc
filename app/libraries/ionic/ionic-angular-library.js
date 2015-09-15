@@ -12478,6 +12478,9 @@ function($timeout, $compile, $ionicSlideBoxDelegate, $ionicHistory, $ionicScroll
       pagerClick: '&',
       disableScroll: '@',
       onSlideChanged: '&',
+      //EDIT: adding dynamic delegate-handle support
+      // https://github.com/driftyco/ionic/issues/1865#issuecomment-50409035
+      delegateHandle: '@',
       activeSlide: '=?'
     },
     controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
@@ -12548,7 +12551,10 @@ function($timeout, $compile, $ionicSlideBoxDelegate, $ionicHistory, $ionicScroll
       this.__slider = slider;
 
       var deregisterInstance = $ionicSlideBoxDelegate._registerInstance(
-        slider, $attrs.delegateHandle, function() {
+      //EDIT: adding dynamic delegate-handle support
+      // https://github.com/driftyco/ionic/issues/1865#issuecomment-50409035
+        slider, $scope.delegateHandle, function() {
+        // slider, $attrs.delegateHandle, function() {
           return $ionicHistory.isActiveScope($scope);
         }
       );

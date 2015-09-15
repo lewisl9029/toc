@@ -1,24 +1,14 @@
 .toc-notification-overlay {
-  // visibility: hidden;
+  display: block;
+  background-color: transparent;
   box-shadow: none !important;
   animation-timing-function: $toc-animation-timing-function;
   animation-duration: 1s;
   animation-fill-mode: both;
-}
-
-.toc-notification-overlay-card {
-  // visibility: visible;
-}
-
-.toc-notification-overlay.ng-hide-add,
-.toc-notification-overlay.ng-hide-remove {
-  // display: block !important;
-}
-
-.toc-notification-overlay.ng-hide-remove {
-  animation-name: tocFadeInRight;
-}
-
-.toc-notification-overlay.ng-hide-add {
-  animation-name: tocFadeOutLeft;
+  &.ng-enter {
+    animation-name: tocFadeInRight;
+  }
+  &.ng-leave {
+    animation-name: tocFadeOutLeft;
+  }
 }

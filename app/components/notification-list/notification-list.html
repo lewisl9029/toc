@@ -1,6 +1,8 @@
-<ion-list>
-  <toc-notification-card
-    notification-id="{{::notification.notificationInfo.id}}"
+<div class="toc-notification-list list">
+  <div class="toc-notification-list-item"
     ng-repeat="notification in notificationList.notifications track by notification.notificationInfo.id">
-  </toc-notification-card>
-</ion-list>
+    <toc-notification-card
+      notification-id="{{::notification.notificationInfo.id}}">
+    </toc-notification-card>
+  </div>
+</div>
