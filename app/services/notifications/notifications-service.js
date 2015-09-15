@@ -208,38 +208,17 @@ export default /*@ngInject*/ function notifications(
   let initialize = function initialize(contactsService) {
     contacts = contactsService;
 
-    if (devices.isCordovaApp()) {
-      let notificationsCursor = state.cloud.notifications;
-      let updateOngoingNotification = () => {
-        let notificationCount = R.pipe(
-          R.values,
-          R.reject(R.prop('dismissed'))
-        )(notificationsCursor.get()).length;
-
-        let message;
-        if (notificationCount === 0) {
-          message = 'No new notifications';
-        }
-        else if(notificationCount === 1) {
-          message = '1 new notification';
-        }
-        else {
-          message = `${notificationCount} new notifications`;
-        }
-
-        return $cordovaLocalNotification.schedule({
-          id: 0,
-          title: 'Toc Messenger',
-          text: message,
-          sound: 'res://platform_default',
-          icon: 'res://icon.png',
-          smallIcon: 'res://icon.png',
-          data: { id: 'home' },
-          ongoing: devices.isAndroidApp()
-        });
-      };
-
-      state.addListener(notificationsCursor, updateOngoingNotification);
+    if (devices.isAndroidApp()) {
+      $cordovaLocalNotification.schedule({
+        id: 0,
+        title: 'Toc Messenger',
+        text: 'Online',
+        sound: 'res://platform_default',
+        icon: 'res://icon.png',
+        smallIcon: 'res://icon.png',
+        data: { id: 'home' },
+        ongoing: true
+      });
     }
 
     if (devices.isWebApp()) {
