@@ -12,6 +12,7 @@ export default /*@ngInject*/ function tocNotificationCard() {
     controller: /*@ngInject*/ function NotificationCardController(
       $scope,
       $ionicPopup,
+      $ionicSlideBoxDelegate,
       identity,
       contacts,
       navigation,
