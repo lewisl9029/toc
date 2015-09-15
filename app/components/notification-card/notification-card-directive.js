@@ -17,6 +17,7 @@ export default /*@ngInject*/ function tocNotificationCard() {
       identity,
       contacts,
       navigation,
+      notifications,
       state
     ) {
       this.notificationId = $scope.notificationId;
@@ -26,7 +27,9 @@ export default /*@ngInject*/ function tocNotificationCard() {
 
       $timeout(() =>{
         let slideBoxDelegate =
-        $ionicSlideBoxDelegate.$getByHandle(this.notificationId);
+          $ionicSlideBoxDelegate.$getByHandle(this.notificationId);
+
+
       });
 
       let channelId = this.notificationId;
@@ -68,6 +71,10 @@ export default /*@ngInject*/ function tocNotificationCard() {
 
         return navigation.navigate(channelId)
           .then(() => state.save(channelCursor, ['viewingLatest'], true));
+      };
+
+      this.swipe = () => {
+        return notifications.dismiss(this.notificationId);
       };
     }
   };
