@@ -7,7 +7,7 @@
   <author email="dev@lewisl.net" href="https://github.com/lewisl9029">
       Lewis Liu
   </author>
-  <content src="index.html"/>
+  <content src="app/index.html"/>
   <access origin="*"/>
   <allow-navigation href="file://*/*"/>
   <preference name="webviewbounce" value="false"/>

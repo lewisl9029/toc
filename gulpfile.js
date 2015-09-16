@@ -11,7 +11,9 @@ var header = require('gulp-header');
 var htmlhint = require('gulp-htmlhint');
 var scsslint = require('gulp-scsslint');
 var jsbeautifier = require('gulp-jsbeautifier');
+var imagemin = require('gulp-imagemin');
 var minifyCss = require('gulp-minify-css');
+var minifyHtml = require('gulp-minify-html');
 var karma = require('karma').server;
 var argv = require('yargs').argv;
 var shell = require('gulp-shell');
@@ -27,7 +29,8 @@ function handleError(error) {
 };
 
 var basePaths = {
-  dev: './app/',
+  dev: './toc/',
+  app: './toc/app/',
   prod: './www/',
   mobile: './mobile/',
   platforms: './platforms/'
@@ -35,27 +38,29 @@ var basePaths = {
 
 var paths = {
   sass: [
-    basePaths.dev + 'components/**/*.scss',
-    basePaths.dev + 'libraries/**/*.scss',
-    basePaths.dev + 'views/**/*.scss',
-    basePaths.dev + 'app.scss',
-    basePaths.dev + 'initialize.scss'
+    basePaths.app + 'components/**/*.scss',
+    basePaths.app + 'libraries/**/*.scss',
+    basePaths.app + 'views/**/*.scss',
+    basePaths.app + 'app.scss',
+    basePaths.dev + 'landing.scss'
   ],
   js: [
-    basePaths.dev + 'components/**/*.js',
-    basePaths.dev + 'libraries/**/*.js',
-    basePaths.dev + 'services/**/*.js',
-    basePaths.dev + 'views/**/*.js',
+    basePaths.app + 'components/**/*.js',
+    basePaths.app + 'libraries/**/*.js',
+    basePaths.app + 'services/**/*.js',
+    basePaths.app + 'views/**/*.js',
+    basePaths.app + '*.js',
     basePaths.dev + '*.js',
     './*.js'
   ],
   html: [
-    basePaths.dev + 'components/**/*.html',
-    basePaths.dev + 'views/**/*.html',
+    basePaths.app + 'components/**/*.html',
+    basePaths.app + 'views/**/*.html',
+    basePaths.app + '*.html',
     basePaths.dev + '*.html'
   ],
   asset: [
-    basePaths.dev + 'assets/**'
+    basePaths.app + 'assets/**'
   ]
 };
 
@@ -128,9 +133,10 @@ gulp.task('run', function run() {
 
 gulp.task('build-js', ['build-jspm'], function buildJs() {
   return gulp.src([
-      basePaths.dev + 'dependencies/system.src.js',
-      basePaths.dev + 'jspm-config.js',
-      basePaths.dev + 'initialize.js',
+      basePaths.app + 'dependencies/system.src.js',
+      basePaths.app + 'jspm-config.js',
+      basePaths.app + 'initialize.js',
+      basePaths.dev + 'landing.js',
     ], {
       base: basePaths.dev
     })
@@ -140,7 +146,7 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
 
 gulp.task('inject-js', function injectJs() {
   return gulp.src([
-      basePaths.prod + 'initialize.js',
+      basePaths.prod + 'app/initialize.js',
     ], {
       base: basePaths.prod
     })
@@ -149,7 +155,7 @@ gulp.task('inject-js', function injectJs() {
 });
 
 gulp.task('build-jspm', ['bundle-jspm'], function buildJspm() {
-  return gulp.src(basePaths.prod + 'app.js')
+  return gulp.src(basePaths.prod + 'app/app.js')
     .pipe(gulpif(argv.prod, ngAnnotate()))
     .pipe(gulpif(argv.prod, uglify()))
     .pipe(gulp.dest(basePaths.prod));
@@ -160,7 +166,7 @@ gulp.task('bundle-jspm', ['build-sass'], function bundleJspm() {
     .pipe(shell([
       //clear depcache config first
       'jspm bundle app ' + basePaths.prod +
-        'app.js --skip-source-maps'
+        'app/app.js --skip-source-maps'
     ]));
 });
 
@@ -179,31 +185,49 @@ gulp.task('cache-jspm', function cacheJspm() {
 });
 
 gulp.task('build-html', function buildHtml() {
-  return gulp.src(basePaths.dev + 'index.html')
+  return gulp.src([
+      basePaths.app + 'index.html',
+      basePaths.dev + 'index.html',
+    ], {
+      base: basePaths.dev
+    })
+    .pipe(minifyHtml)
     .pipe(gulp.dest(basePaths.prod));
 });
 
 gulp.task('build-asset', function buildAsset() {
-  return gulp.src(basePaths.dev + 'assets/**', {
+  return gulp.src([
+      basePaths.app + 'assets/**'
+    ], {
       base: basePaths.dev
     })
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('build-sass', function buildSass() {
-  //TODO: explore uncss viability
+//not part of build because this only needs to run occassionaly for new images
+gulp.task('build-image', function buildImage() {
   return gulp.src([
-      basePaths.dev + 'app.scss',
-      basePaths.dev + 'initialize.scss'
-    ])
+      basePaths.app + 'assets/images/**'
+    ], {
+      base: basePaths.dev
+    })
+    .pipe(imagemin({
+      optimizationLevel: 7,
+      multipass: true
+    }))
+    .pipe(gulp.dest(basePaths.dev));
+});
+
+gulp.task('build-sass', function buildSass() {
+  return gulp.src([
+      basePaths.app + 'app.scss',
+      basePaths.dev + 'landing.scss'
+    ], {
+      base: basePaths.dev
+    })
     .pipe(gulpif(!argv.prod, sourcemaps.init()))
     .pipe(sass())
     .on('error', handleError)
-    // .pipe(postcss([
-    //   autoprefixer({
-    //     browsers: ['last 2 version']
-    //   })
-    // ]))
     .pipe(gulpif(!argv.prod, sourcemaps.write()))
     .pipe(gulpif(argv.prod, minifyCss()))
     .pipe(gulp.dest(basePaths.dev))
