@@ -1,5 +1,5 @@
 System.config({
-  baseURL: "toc/app",
+  baseURL: ".",
   defaultJSExtensions: true,
   transpiler: "babel",
   babelOptions: {

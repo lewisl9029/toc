@@ -3,8 +3,8 @@
   "app_id": "7ab6b3ea",
   "documentRoot": "toc",
   "gulpStartupTasks": [
-    "build-sass",
-    "watch"
+    "watch",
+    "build-sass"
   ],
   "watchPatterns": [
     "toc/app/components/**/*",

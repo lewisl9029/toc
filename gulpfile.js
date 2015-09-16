@@ -32,6 +32,7 @@ var basePaths = {
   dev: './toc/',
   app: './toc/app/',
   prod: './www/',
+  prodApp: './www/app/',
   mobile: './mobile/',
   platforms: './platforms/'
 };
@@ -41,7 +42,7 @@ var paths = {
     basePaths.app + 'components/**/*.scss',
     basePaths.app + 'libraries/**/*.scss',
     basePaths.app + 'views/**/*.scss',
-    basePaths.app + 'app.scss',
+    basePaths.app + '*.scss',
     basePaths.dev + 'landing.scss'
   ],
   js: [
@@ -146,16 +147,16 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
 
 gulp.task('inject-js', function injectJs() {
   return gulp.src([
-      basePaths.prod + 'app/initialize.js',
+      basePaths.prodApp + 'initialize.js',
     ], {
-      base: basePaths.prod
+      base: basePaths.prodApp
     })
     .pipe(gulpif(argv.prod, header('window.tocProd=true;')))
-    .pipe(gulp.dest(basePaths.prod));
+    .pipe(gulp.dest(basePaths.prodApp));
 });
 
 gulp.task('build-jspm', ['bundle-jspm'], function buildJspm() {
-  return gulp.src(basePaths.prod + 'app/app.js')
+  return gulp.src(basePaths.prodApp + 'app.js')
     .pipe(gulpif(argv.prod, ngAnnotate()))
     .pipe(gulpif(argv.prod, uglify()))
     .pipe(gulp.dest(basePaths.prod));
@@ -165,8 +166,8 @@ gulp.task('bundle-jspm', ['build-sass'], function bundleJspm() {
   return gulp.src('')
     .pipe(shell([
       //clear depcache config first
-      'jspm bundle app ' + basePaths.prod +
-        'app/app.js --skip-source-maps'
+      'jspm bundle app ' + basePaths.prodApp +
+        'app.js --skip-source-maps'
     ]));
 });
 
@@ -191,7 +192,7 @@ gulp.task('build-html', function buildHtml() {
     ], {
       base: basePaths.dev
     })
-    .pipe(minifyHtml)
+    .pipe(gulpif(argv.prod, minifyHtml()))
     .pipe(gulp.dest(basePaths.prod));
 });
 
@@ -221,6 +222,7 @@ gulp.task('build-image', function buildImage() {
 gulp.task('build-sass', function buildSass() {
   return gulp.src([
       basePaths.app + 'app.scss',
+      basePaths.app + 'initialize.scss',
       basePaths.dev + 'landing.scss'
     ], {
       base: basePaths.dev
