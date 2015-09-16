@@ -1,0 +1,193 @@
+$toc-tablet-width: 768px;
+$toc-notebook-half-width: 940px;
+$toc-notebook-width: 1200px;
+$toc-desktop-width: 1600px;
+
+@mixin toc-landing-font($font-size) {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: $font-size * 3/4;
+
+  @media (min-width: $toc-tablet-width) {
+    font-size: $font-size;
+  }
+}
+
+@mixin toc-margin-bottom($margin-size) {
+  margin-bottom: $margin-size * 3/4;
+
+  @media (min-width: $toc-tablet-width) {
+    margin-bottom: $margin-size;
+  }
+}
+
+$toc-primary-bg-color-dark: #011727;
+$toc-secondary-bg-color-dark: #01354c;
+$toc-primary-bg-color-light: #eef1f0;
+$toc-secondary-bg-color-light: #e5edeb;
+// $toc-primary-bg-color-light: #a0a6aa;
+// $toc-secondary-bg-color-light: #a1b8c1;
+
+$toc-primary-text-color-light: #f8f9fa;
+$toc-secondary-text-color-light: #e5edeb;
+$toc-primary-text-color-dark: #113f51;
+$toc-secondary-text-color-dark: #00718f;
+$toc-highlight-text-color-dark: #6eaeba;
+
+$toc-background-gradient-dark: radial-gradient(
+  ellipse farthest-corner at 0px 0px,
+  $toc-secondary-bg-color-dark 0%,
+  $toc-primary-bg-color-dark 100%
+);
+
+$toc-background-gradient-light: radial-gradient(
+  ellipse farthest-corner at 0px 0px,
+  $toc-secondary-bg-color-light 0%,
+  $toc-primary-bg-color-light 100%
+);
+
+$toc-light-color: #fcfcfc;
+$toc-white-color: #FFFFFF;
+
+.toc-body {
+  margin: 0;
+  // overflow: hidden;
+}
+
+.toc-landing-content {
+  // overflow: scroll;
+}
+
+.toc-fullscreen-section {
+  background-color: $toc-primary-bg-color-light;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.toc-button-light {
+  display: block;
+  box-sizing: border-box;
+  color: transparentize($toc-primary-text-color-light, 0.2);
+  border: none;
+  outline: 2px solid transparentize($toc-primary-text-color-light, 0.2);
+  background: none;
+  box-shadow: 0px 0px 10px $toc-primary-text-color-light;
+  font-weight: 300;
+  width: 100%;
+  padding: 9px 18px;
+  text-decoration: none;
+  @media (min-width: $toc-tablet-width) {
+    padding: 12px 24px;
+  }
+  @include toc-landing-font(24px);
+
+  transition: 0.1s linear;
+
+  &:hover {
+    color: $toc-primary-text-color-light;
+    outline-color: $toc-primary-text-color-light;
+  }
+
+  &:active {
+    background: $toc-primary-text-color-light;
+    color: $toc-primary-text-color-dark;
+  }
+}
+
+.toc-primary-button-light {
+  background: transparentize($toc-primary-text-color-light, 0.2);
+  border: none;
+  color: $toc-primary-text-color-dark;
+  padding: 9px 18px;
+  @media (min-width: $toc-tablet-width) {
+    padding: 12px 24px;
+  }
+  @include toc-landing-font(24px);
+
+  &:hover {
+    color: $toc-primary-text-color-dark;
+    background: $toc-primary-text-color-light;
+    outline-color: $toc-primary-text-color-light;
+  }
+
+  &:active {
+    background: none;
+    color: $toc-primary-text-color-light;
+  }
+}
+
+#toc-call-to-action-section {
+  background-image: $toc-background-gradient-dark;
+}
+
+.toc-fullscreen-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+}
+
+.toc-call-to-action-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 400px;
+  padding: 25px;
+}
+
+.toc-call-to-action-heading {
+  @include toc-margin-bottom(24px);
+
+  h1 {
+    @include toc-landing-font(40px);
+    color: $toc-primary-text-color-light;
+    font-weight: 300;
+    margin: 0;
+  }
+}
+
+.toc-call-to-action-message {
+  @include toc-margin-bottom(24px);
+
+  p {
+    @include toc-landing-font(24px);
+    @include toc-margin-bottom(16px);
+    margin-top: 0;
+    color: $toc-secondary-text-color-light;
+  }
+}
+
+.toc-call-to-action-actions {
+  max-width: 400px;
+  width: 90%;
+}
+
+.toc-call-to-action-action {
+  flex: 1 1 auto;
+  @include toc-margin-bottom(16px);
+}
+
+.toc-call-to-action-hidden-action {
+}
+
+.toc-call-to-action-images {
+  flex: 1 1 200px;
+  display: flex;
+  padding: 25px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.toc-call-to-action-image-phone {
+  width: 200px;
+  height: 405px;
+  background: url(app/assets/images/phone.svg);
+  background-size: cover;
+}

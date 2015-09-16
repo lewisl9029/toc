@@ -23,6 +23,7 @@ System.config({
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "baobab": "npm:baobab@2.0.0-rc1",
     "core-js": "npm:core-js@0.9.18",
+    "css": "github:systemjs/plugin-css@0.1.16",
     "driftyco/ionic": "github:driftyco/ionic@1.1.0",
     "moment": "npm:moment@2.10.6",
     "ng-cordova": "npm:ng-cordova@0.1.17-alpha",

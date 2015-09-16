@@ -1,12 +1,13 @@
 .idea
 /.vagrant
-/app/*.css
+/toc/app/*.css
+/toc/*.css
 /www
 /mobile
 /bundle
 /platforms
 /plugins
 /node_modules
-/app/dependencies
-/app/cordova.js
-/app/cordova_plugins.js
+/toc/app/dependencies
+/toc/cordova.js
+/toc/cordova_plugins.js
