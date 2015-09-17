@@ -44,8 +44,7 @@
       "angular-sanitize": "github:angular/bower-angular-sanitize@^1.4.5",
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.15",
       "angular/bower-angular": "github:angular/bower-angular@^1.4.0",
-      "baobab": "npm:baobab@2.0.0-rc1",
-      "css": "github:systemjs/plugin-css@^0.1.16",
+      "baobab": "npm:baobab@2.0.0-rc2",
       "driftyco/ionic": "github:driftyco/ionic@1.1.0",
       "moment": "npm:moment@^2.10.6",
       "ng-cordova": "npm:ng-cordova@^0.1.17-alpha",
@@ -57,9 +56,9 @@
       "text": "github:systemjs/plugin-text@^0.0.2"
     },
     "devDependencies": {
-      "babel": "npm:babel-core@^5.1.13",
-      "babel-runtime": "npm:babel-runtime@^5.1.13",
-      "core-js": "npm:core-js@^0.9.4"
+      "babel": "npm:babel-core@^5.8.23",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
     },
     "overrides": {
       "github:driftyco/ionic@1.1.0": {

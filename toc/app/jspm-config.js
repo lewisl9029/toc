@@ -14,16 +14,15 @@ System.config({
   },
 
   map: {
-    "angular": "github:angular/bower-angular@1.4.5",
-    "angular-animate": "github:angular/bower-angular-animate@1.4.5",
-    "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.5",
+    "angular": "github:angular/bower-angular@1.4.6",
+    "angular-animate": "github:angular/bower-angular-animate@1.4.6",
+    "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.6",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
-    "angular/bower-angular": "github:angular/bower-angular@1.4.5",
-    "babel": "npm:babel-core@5.8.23",
-    "babel-runtime": "npm:babel-runtime@5.8.20",
-    "baobab": "npm:baobab@2.0.0-rc1",
-    "core-js": "npm:core-js@0.9.18",
-    "css": "github:systemjs/plugin-css@0.1.16",
+    "angular/bower-angular": "github:angular/bower-angular@1.4.6",
+    "babel": "npm:babel-core@5.8.24",
+    "babel-runtime": "npm:babel-runtime@5.8.24",
+    "baobab": "npm:baobab@2.0.0-rc2",
+    "core-js": "npm:core-js@1.1.4",
     "driftyco/ionic": "github:driftyco/ionic@1.1.0",
     "moment": "npm:moment@2.10.6",
     "ng-cordova": "npm:ng-cordova@0.1.17-alpha",
@@ -32,28 +31,27 @@ System.config({
     "qr-image": "npm:qr-image@3.1.0",
     "ramda": "npm:ramda@0.17.1",
     "remotestoragejs": "npm:remotestoragejs@0.11.2",
-    "sinon": "npm:sinon@1.16.1",
     "text": "github:systemjs/plugin-text@0.0.2",
     "github:angular-ui/ui-router@0.2.15": {
-      "angular": "github:angular/bower-angular@1.4.5"
+      "angular": "github:angular/bower-angular@1.4.6"
     },
-    "github:angular/bower-angular-animate@1.4.5": {
-      "angular": "github:angular/bower-angular@1.4.5"
+    "github:angular/bower-angular-animate@1.4.6": {
+      "angular": "github:angular/bower-angular@1.4.6"
     },
-    "github:angular/bower-angular-sanitize@1.4.5": {
-      "angular": "github:angular/bower-angular@1.4.5"
+    "github:angular/bower-angular-sanitize@1.4.6": {
+      "angular": "github:angular/bower-angular@1.4.6"
     },
     "github:driftyco/ionic@1.1.0": {
-      "angular": "github:angular/bower-angular@1.4.5",
-      "angular-animate": "github:angular/bower-angular-animate@1.4.5",
-      "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.5",
+      "angular": "github:angular/bower-angular@1.4.6",
+      "angular-animate": "github:angular/bower-angular-animate@1.4.6",
+      "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.6",
       "angular-ui-router": "github:angular-ui/ui-router@0.2.15"
     },
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
     "github:jspm/nodelibs-buffer@0.1.0": {
-      "buffer": "npm:buffer@3.4.3"
+      "buffer": "npm:buffer@3.5.0"
     },
     "github:jspm/nodelibs-events@0.1.1": {
       "events": "npm:events@1.0.2"
@@ -79,21 +77,21 @@ System.config({
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
     },
-    "npm:babel-runtime@5.8.20": {
+    "npm:babel-runtime@5.8.24": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
-    "npm:baobab@2.0.0-rc1": {
+    "npm:baobab@2.0.0-rc2": {
       "emmett": "npm:emmett@3.1.1"
     },
     "npm:browserify-zlib@0.1.4": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "pako": "npm:pako@0.2.7",
+      "pako": "npm:pako@0.2.8",
       "process": "github:jspm/nodelibs-process@0.1.1",
       "readable-stream": "npm:readable-stream@1.1.13",
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
-    "npm:buffer@3.4.3": {
+    "npm:buffer@3.5.0": {
       "base64-js": "npm:base64-js@0.0.8",
       "ieee754": "npm:ieee754@1.1.6",
       "is-array": "npm:is-array@1.0.1"
@@ -105,7 +103,7 @@ System.config({
       "lodash.assign": "npm:lodash.assign@2.4.1",
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
-    "npm:core-js@0.9.18": {
+    "npm:core-js@1.1.4": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
@@ -128,10 +126,6 @@ System.config({
       "stream-combiner": "npm:stream-combiner@0.0.4",
       "through": "npm:through@2.3.8",
       "util": "github:jspm/nodelibs-util@0.1.0"
-    },
-    "npm:formatio@1.1.1": {
-      "process": "github:jspm/nodelibs-process@0.1.1",
-      "samsam": "npm:samsam@1.1.2"
     },
     "npm:from@0.1.3": {
       "process": "github:jspm/nodelibs-process@0.1.1",
@@ -205,7 +199,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:ng-cordova@0.1.17-alpha": {
-      "angular": "github:angular/bower-angular@1.4.5",
+      "angular": "github:angular/bower-angular@1.4.6",
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "child_process": "github:jspm/nodelibs-child_process@0.1.0",
       "conventional-changelog": "npm:conventional-changelog@0.0.11",
@@ -216,7 +210,7 @@ System.config({
       "sys": "github:jspm/nodelibs-util@0.1.0",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
-    "npm:pako@0.2.7": {
+    "npm:pako@0.2.8": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
@@ -231,7 +225,7 @@ System.config({
     },
     "npm:qr-image@3.1.0": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "pako": "npm:pako@0.2.7",
+      "pako": "npm:pako@0.2.8",
       "process": "github:jspm/nodelibs-process@0.1.1",
       "stream": "github:jspm/nodelibs-stream@0.1.0",
       "zlib": "github:jspm/nodelibs-zlib@0.1.0"
@@ -248,13 +242,6 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1",
       "stream-browserify": "npm:stream-browserify@1.0.0",
       "string_decoder": "npm:string_decoder@0.10.31"
-    },
-    "npm:sinon@1.16.1": {
-      "formatio": "npm:formatio@1.1.1",
-      "lolex": "npm:lolex@1.3.1",
-      "process": "github:jspm/nodelibs-process@0.1.1",
-      "samsam": "npm:samsam@1.1.2",
-      "util": "npm:util@0.10.3"
     },
     "npm:split@0.2.10": {
       "process": "github:jspm/nodelibs-process@0.1.1",
