@@ -10,7 +10,6 @@ var header = require('gulp-header');
 var imagemin = require('gulp-imagemin');
 var minifyCss = require('gulp-minify-css');
 var minifyHtml = require('gulp-minify-html');
-var karma = require('karma').server;
 var argv = require('yargs').argv;
 var shell = require('gulp-shell');
 var uglify = require('gulp-uglify');
