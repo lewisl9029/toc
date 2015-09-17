@@ -1,0 +1,1 @@
+window.tocProd=true;!function(){var n=function(){var n=function(){window.console.log=function(){},window.console.debug=function(){}};window.tocProd&&n(),System["import"]("app").then(function(n){return n.initialize()})["catch"](console.error.bind(console))};n()}();
