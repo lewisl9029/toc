@@ -159,7 +159,7 @@ gulp.task('build-jspm', ['bundle-jspm'], function buildJspm() {
   return gulp.src(basePaths.prodApp + 'app.js')
     .pipe(gulpif(argv.prod, ngAnnotate()))
     .pipe(gulpif(argv.prod, uglify()))
-    .pipe(gulp.dest(basePaths.prod));
+    .pipe(gulp.dest(basePaths.prodApp));
 });
 
 gulp.task('bundle-jspm', ['build-sass'], function bundleJspm() {
