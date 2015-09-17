@@ -66,7 +66,7 @@ var paths = {
 };
 
 gulp.task('watch', function watch() {
-  gulp.watch(paths.sass, ['build-sass']);
+  gulp.watch(paths.sass, ['bundle-sass']);
 });
 
 gulp.task('serve', function serve() {
@@ -96,9 +96,9 @@ gulp.task('build', function build(done) {
   return runSequence(
     'clean-build',
     'uncache-jspm',
-    ['build-js', 'build-html', 'build-asset'],
+    ['build-js', 'build-html', 'build-sass', 'build-asset'],
     'inject-js',
-    // 'cache-jspm',
+    'cache-jspm',
     done
   );
 });
@@ -159,10 +159,10 @@ gulp.task('build-jspm', ['bundle-jspm'], function buildJspm() {
   return gulp.src(basePaths.prodApp + 'app.js')
     .pipe(gulpif(argv.prod, ngAnnotate()))
     .pipe(gulpif(argv.prod, uglify()))
-    .pipe(gulp.dest(basePaths.prod));
+    .pipe(gulp.dest(basePaths.prodApp));
 });
 
-gulp.task('bundle-jspm', ['build-sass'], function bundleJspm() {
+gulp.task('bundle-jspm', function bundleJspm() {
   return gulp.src('')
     .pipe(shell([
       //clear depcache config first
@@ -219,7 +219,19 @@ gulp.task('build-image', function buildImage() {
     .pipe(gulp.dest(basePaths.dev));
 });
 
-gulp.task('build-sass', function buildSass() {
+gulp.task('build-sass', ['bundle-sass'], function buildSass() {
+  return gulp.src([
+      basePaths.app + 'app.css',
+      basePaths.app + 'initialize.css',
+      basePaths.dev + 'landing.css'
+    ], {
+      base: basePaths.dev
+    })
+    .pipe(gulp.dest(basePaths.prod))
+    .on('error', handleError);
+});
+
+gulp.task('bundle-sass', function bundleSass() {
   return gulp.src([
       basePaths.app + 'app.scss',
       basePaths.app + 'initialize.scss',
@@ -233,8 +245,6 @@ gulp.task('build-sass', function buildSass() {
     .pipe(gulpif(!argv.prod, sourcemaps.write()))
     .pipe(gulpif(argv.prod, minifyCss()))
     .pipe(gulp.dest(basePaths.dev))
-    .on('error', handleError)
-    .pipe(gulp.dest(basePaths.prod))
     .on('error', handleError);
 });
 

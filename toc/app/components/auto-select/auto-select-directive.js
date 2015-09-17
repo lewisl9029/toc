@@ -7,6 +7,9 @@ export default /*@ngInject*/ function tocAutoSelect(
 ) {
   return {
     restrict: 'A',
+    scope: {
+      notifyCopied: '@'
+    },
     link: function linkAutoSelect(scope, element) {
       // Auto select interferes with tap-hold selection
       // and doesn't bring up copy dialog on cordova android
@@ -33,7 +36,9 @@ export default /*@ngInject*/ function tocAutoSelect(
 
         try {
           $window.document.execCommand('copy');
-          notifications.notifySystem('Copied to clipboard!');
+          if (scope.notifyCopied) {
+            notifications.notifySystem('Copied to clipboard!');
+          }
           if (element[0].select) {
             element[0].blur();
           }

@@ -4,7 +4,7 @@
   "documentRoot": "toc",
   "gulpStartupTasks": [
     "watch",
-    "build-sass"
+    "bundle-sass"
   ],
   "watchPatterns": [
     "toc/app/components/**/*",
