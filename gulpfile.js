@@ -6,11 +6,7 @@ var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
-var jshint = require('gulp-jshint');
 var header = require('gulp-header');
-var htmlhint = require('gulp-htmlhint');
-var scsslint = require('gulp-scsslint');
-var jsbeautifier = require('gulp-jsbeautifier');
 var imagemin = require('gulp-imagemin');
 var minifyCss = require('gulp-minify-css');
 var minifyHtml = require('gulp-minify-html');
@@ -115,14 +111,6 @@ gulp.task('package', ['build', 'clean-package'], function package() {
     //FIXME: release build throws error on install
     // .pipe(shell('ionic build android' + (argv.prod ? ' --release' : '')))
 });
-
-gulp.task('style', ['style-js', 'style-html']);
-
-gulp.task('verify', ['test', 'lint']);
-
-gulp.task('test', ['test-unit', 'test-e2e']);
-
-gulp.task('lint', ['lint-js', 'lint-html', 'lint-sass']);
 
 gulp.task('run', function run() {
   return gulp.src('')
@@ -247,68 +235,3 @@ gulp.task('bundle-sass', function bundleSass() {
     .pipe(gulp.dest(basePaths.dev))
     .on('error', handleError);
 });
-
-gulp.task('test-unit', function test(done) {
-  var configFile = argv.prod ? 'karma-prod.conf.js' : 'karma.conf.js';
-  return karma.start({
-    configFile: __dirname + '/' + configFile,
-    singleRun: !argv.dev
-  }, done);
-});
-
-gulp.task('test-e2e', ['build-sass'], function test() {
-  if (argv.ci) {
-    return;
-  }
-
-  var serverPath = argv.prod ? basePaths.prod : basePaths.dev;
-
-  return gulp.src('')
-    .pipe(shell(
-      'http-server ' + serverPath + ' -p 8100 -s & protractor;' +
-      ' if [ $? != 0 ]; then pkill node && exit 1; else pkill node; fi'
-    ));
-});
-
-gulp.task('lint-js', function lintJs() {
-  return gulp.src(paths.js)
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'))
-    .pipe(jshint.reporter('fail'));
-});
-
-gulp.task('lint-html', function lintHtml() {
-  return gulp.src(paths.html)
-    .pipe(htmlhint({
-      htmlhintrc: './.htmlhintrc'
-    }))
-    .pipe(htmlhint.reporter())
-    .pipe(htmlhint.failReporter());
-});
-
-gulp.task('lint-sass', function lintSass() {
-  return gulp.src(paths.sass)
-    .pipe(scsslint())
-    .pipe(scsslint.reporter())
-    .pipe(scsslint.reporter('fail'));
-});
-
-var makeStyleTask = function makeStyleTask(paths) {
-  var style = function style() {
-    return gulp.src(paths, {
-        base: './'
-      })
-      .pipe(jsbeautifier({
-        config: './.jsbeautifyrc'
-      }))
-      .pipe(gulp.dest('./'));
-  };
-
-  return style;
-};
-
-gulp.task('style-js', makeStyleTask(paths.js));
-
-gulp.task('style-html', makeStyleTask(paths.html));
-
-//gulp.task('style-sass', makeStyleTask(paths.sass));
