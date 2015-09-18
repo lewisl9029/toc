@@ -15,9 +15,9 @@ export default /*@ngInject*/ function tocSystemMessageOverlay() {
       this.showSystemMessage = false;
 
       let systemMessageCursor = state.memory.notifications
-        .select('systemMessage');
+        .select(['system', 'notificationInfo']);
       let updateSystemMessage = () => {
-        this.message = systemMessageCursor.get();
+        this.message = systemMessageCursor.get(['message']);
         if (!this.message) {
           this.showSystemMessage = false;
           return;
@@ -33,7 +33,7 @@ export default /*@ngInject*/ function tocSystemMessageOverlay() {
               hidingSystemMessage = null;
               this.showSystemMessage = false;
             }, 5000);
-          }, 1000);
+          }, 1100);
         }
 
         this.showSystemMessage = true;
