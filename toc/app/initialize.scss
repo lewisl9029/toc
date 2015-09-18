@@ -19,24 +19,41 @@ $toc-background-gradient-dark: radial-gradient(
 @keyframes tocFadeInTop {
   0% {
     opacity: 0;
-    transform: translateY(-300px);
+    transform: translate3d(0, -100px, 0);
   }
 
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes tocFadeInBottom {
   0% {
     opacity: 0;
-    transform: translateY(50px);
+    transform: translate3d(0, 100px, 0);
   }
 
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tocBounceBottom {
+  0% {
+    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+    transform: translate3d(0,0,0);
+  }
+
+  50% {
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    transform: translate3d(0, 10px, 0);
+  }
+
+  100% {
+    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+    transform: translate3d(0,0,0);
   }
 }
 
@@ -76,15 +93,23 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocFadeInTop 1s 1s $toc-animation-timing-function both;
+  animation: tocFadeInTop 1s $toc-animation-timing-function both;
   background: url(assets/images/logo-loading-base.svg);
   background-size: cover;
 }
+
+.toc-loading-screen-logo-dots {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: tocFadeInBottom 1s 1s $toc-animation-timing-function both;
+}
+
 .toc-loading-screen-logo-dot-1 {
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocFadeInBottom 1s 1.1s $toc-animation-timing-function both;
+  animation: tocBounceBottom 1s 0.1s infinite both;
   background: url(assets/images/logo-loading-dot-1.svg);
   background-size: cover;
 }
@@ -92,7 +117,7 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocFadeInBottom 1s 1.2s $toc-animation-timing-function both;
+  animation: tocBounceBottom 1s 0.2s infinite both;
   background: url(assets/images/logo-loading-dot-2.svg);
   background-size: cover;
 }
@@ -100,7 +125,7 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocFadeInBottom 1s 1.3s $toc-animation-timing-function both;
+  animation: tocBounceBottom 1s 0.3s infinite both;
   background: url(assets/images/logo-loading-dot-3.svg);
   background-size: cover;
 }
