@@ -134,9 +134,11 @@ $toc-white-color: #FFFFFF;
 .toc-call-to-action-logo {
   width: 100px;
   height: 100px;
+  margin-bottom: 20px;
   @media (min-width: $toc-tablet-width) {
     width: 150px;
     height: 150px;
+    margin-bottom: 30px;
   }
   background: url(app/assets/images/logo-large.svg);
   background-size: cover;

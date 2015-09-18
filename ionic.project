@@ -3,22 +3,20 @@
   "app_id": "7ab6b3ea",
   "documentRoot": "toc",
   "gulpStartupTasks": [
-    "watch",
-    "bundle-sass"
+    "bundle-sass", "watch"
   ],
   "watchPatterns": [
     "toc/app/components/**/*",
     "toc/app/libraries/**/*",
     "toc/app/services/**/*",
     "toc/app/views/**/*",
-    "toc/app/*",
-    "toc/*",
+    "toc/app/*.**",
+    "toc/*.**",
     "!toc/app/components/**/*.scss",
     "!toc/app/libraries/**/*.scss",
     "!toc/app/views/**/*.scss",
     "!toc/app/*.scss",
-    "!toc/*.scss",
-    "!toc/app/services/**/*-test.unit.js"
+    "!toc/*.scss"
   ],
   "browsers": [
     {

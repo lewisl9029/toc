@@ -1,5 +1,13 @@
 .idea
 /.vagrant
+/.vagrant.vmware
+/.vagrant.virtualbox
+/secrets
+/cache/*
+!/cache/bundle
+/cache/bundle/*
+!/cache/bundle/placeholder
+
 /toc/app/*.css
 /toc/*.css
 /www

@@ -13,7 +13,43 @@ Designed to preserve your sanity. User-friendly interface, available on all clie
 Designed to pave a way towards a better future for messaging applications. Fully open source implementation, well-documented message protocol and data format, designed to be interoperable from the start.
 
 ## Contributing
-TODO. See [lewisl9029/toc-env](https://github.com/lewisl9029/toc-env) for details.
+
+### Environment Setup
+
+The entire development environment for Toc is fully reproducible using the Vagrantfile and Dockerfile provided in this repository.
+
+The provided Vagrant VM can be used to build the Docker container from the [Dockerfile](Dockerfile) or pull the Docker container from [DockerHub's automated builds](https://hub.docker.com/r/lewisl9029/toc-dev/).
+
+Setup instructions:
+
+1. Install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/) (VMWare Workstation and Hyper-V have also been configured and tested to work)
+2. Clone this repository
+3. Open terminal and navigate to this repository
+4. Start and provision the development VM and build the docker container:
+  ```
+  vagrant up
+  ```
+
+5. SSH into the development VM:
+  ```
+  vagrant ssh
+  ```
+
+6. To pull the prebuilt container:
+  ```
+  toc-pull
+  ```
+
+  To build a container locally from the Dockerfile:
+  ```
+  toc-build
+  ```
+
+7. You're now ready to develop!
+
+  There are several aliases provided in the Vagrant VM for quick access to common workflows (such as `toc-pull` and `toc-build` above, as well as tasks like serving, building, running the docker container interactively, etc). See their implementations in [vagrant-provision.sh](vagrant-provision.sh).
+
+You can also choose to set up dependencies manually on your machine using the Dockerfile and Vagrantfile in this repository as reference.
 
 ## License
 ```
