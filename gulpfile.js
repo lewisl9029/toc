@@ -33,13 +33,20 @@ var basePaths = {
 };
 
 var paths = {
-  sass: [
-    basePaths.app + 'components/**/*.scss',
-    basePaths.app + 'libraries/**/*.scss',
-    basePaths.app + 'views/**/*.scss',
-    basePaths.app + '*.scss',
-    basePaths.dev + 'landing.scss'
-  ],
+  sass: {
+    app: [
+      basePaths.app + 'components/**/*.scss',
+      basePaths.app + 'libraries/**/*.scss',
+      basePaths.app + 'views/**/*.scss',
+      basePaths.app + 'app.scss'
+    ],
+    init: [
+      basePaths.app + 'initialize.scss'
+    ],
+    landing: [
+      basePaths.dev + 'landing.scss'
+    ]
+  },
   js: [
     basePaths.app + 'components/**/*.js',
     basePaths.app + 'libraries/**/*.js',
@@ -61,7 +68,9 @@ var paths = {
 };
 
 gulp.task('watch', function watch() {
-  gulp.watch(paths.sass, ['bundle-sass']);
+  gulp.watch(paths.sass.app, ['bundle-sass-app']);
+  gulp.watch(paths.sass.init, ['bundle-sass-init']);
+  gulp.watch(paths.sass.landing, ['bundle-sass-landing']);
 });
 
 gulp.task('serve', function serve() {
@@ -218,14 +227,14 @@ gulp.task('build-sass', ['bundle-sass'], function buildSass() {
     .on('error', handleError);
 });
 
-gulp.task('bundle-sass', function bundleSass() {
-  return gulp.src([
-      basePaths.app + 'app.scss',
-      basePaths.app + 'initialize.scss',
-      basePaths.dev + 'landing.scss'
-    ], {
-      base: basePaths.dev
-    })
+gulp.task('bundle-sass', [
+  'bundle-sass-app',
+  'bundle-sass-init',
+  'bundle-sass-landing'
+]);
+
+var makeSassTask = function makeSassTask(sassPath) {
+  return gulp.src(sassPath, { base: basePaths.dev })
     .pipe(gulpif(!argv.prod, sourcemaps.init()))
     .pipe(sass())
     .on('error', handleError)
@@ -233,4 +242,16 @@ gulp.task('bundle-sass', function bundleSass() {
     .pipe(gulpif(argv.prod, minifyCss()))
     .pipe(gulp.dest(basePaths.dev))
     .on('error', handleError);
+};
+
+gulp.task('bundle-sass-app', function bundleSass() {
+  return makeSassTask(basePaths.app + 'app.scss');
+});
+
+gulp.task('bundle-sass-init', function bundleSass() {
+  return makeSassTask(basePaths.app + 'initialize.scss');
+});
+
+gulp.task('bundle-sass-landing', function bundleSass() {
+  return makeSassTask(basePaths.dev + 'landing.scss');
 });

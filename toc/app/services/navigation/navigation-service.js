@@ -9,22 +9,22 @@ export default /*@ngInject*/ function navigation(
   R,
   state
 ) {
-  const app = {
+  const routes = {
     public: {
-      welcome: 'app.public.welcome',
-      cloud: 'app.public.cloud',
-      signin: 'app.public.signin',
-      signout: 'app.public.signin'
+      welcome: 'public.welcome',
+      cloud: 'public.cloud',
+      signin: 'public.signin',
+      signout: 'public.signin'
     },
     private: {
-      home: 'app.private.home',
-      cloud: 'app.private.cloud',
-      channel: 'app.private.channel'
+      home: 'private.home',
+      cloud: 'private.cloud',
+      channel: 'private.channel'
     }
   };
 
-  const DEFAULT_PUBLIC_STATE = app.public.welcome;
-  const DEFAULT_PRIVATE_STATE = app.private.home;
+  const DEFAULT_PUBLIC_STATE = routes.public.welcome;
+  const DEFAULT_PRIVATE_STATE = routes.private.home;
 
   let go = function go(stateName, parameters) {
     return $state.go(stateName, parameters);
@@ -37,7 +37,7 @@ export default /*@ngInject*/ function navigation(
 
     let toHome = viewId === 'home';
     let destination = toHome ?
-      app.private.home : app.private.channel;
+      routes.private.home : routes.private.channel;
 
     let destinationParams = toHome ?
       undefined : { channelId: viewId };
@@ -74,7 +74,7 @@ export default /*@ngInject*/ function navigation(
   };
 
   let setupRedirect = function setupRedirect() {
-    // redirect to app.welcome if identity has not been initialized
+    // redirect to routes.welcome if identity has not been initialized
     $rootScope.$on('$stateChangeStart', function(event, toState) {
       let doRedirect;
       let redirectStateName;
@@ -104,10 +104,10 @@ export default /*@ngInject*/ function navigation(
 
   let isPrivateState = function isPrivateState(stateName) {
     if (stateName) {
-      return stateName.startsWith('app.private');
+      return stateName.startsWith('private');
     }
 
-    return $state.includes('app.private');
+    return $state.includes('private');
   };
 
   let resetHistory = function resetHistory(options = {disableAnimate: false}) {
@@ -120,12 +120,12 @@ export default /*@ngInject*/ function navigation(
   };
 
   let initializePublic = function initializePublic() {
-    let prepareNavigate = !at(app.public.welcome) ?
+    let prepareNavigate = !at(routes.public.welcome) ?
       resetHistory({disableAnimate: true}) :
       $q.when();
 
     return prepareNavigate
-      .then(() => go(app.public.welcome))
+      .then(() => go(routes.public.welcome))
       //workaround for too early initialization
       .then(() => $timeout(() => clearCache(), 0, false));
   };
@@ -147,7 +147,7 @@ export default /*@ngInject*/ function navigation(
       if (activeViewId.startsWith('toc-')) {
         return resetHistory()
           .then(() => go(
-            app.private.channel,
+            routes.private.channel,
             {channelId: activeViewId}
           ));
       }
@@ -157,7 +157,7 @@ export default /*@ngInject*/ function navigation(
     };
 
   return {
-    app,
+    routes,
     go,
     at,
     navigate,

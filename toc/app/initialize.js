@@ -1,4 +1,4 @@
-(function initialize() {
+(function initialize(window) {
   var initializeApp = function initializeApp() {
     var disableLogging = function disableLogging() {
       window.console.log = function () {};
@@ -11,10 +11,15 @@
 
     System.import('app')
       .then(function (app) {
-        return app.initialize();
+        app.initialize();
+
+        var loadingScreen = window.document
+          .getElementsByClassName('toc-loading-screen')[0];
+
+        loadingScreen.parentNode.removeChild(loadingScreen);
       })
       .catch(console.error.bind(console));
   };
 
-  // initializeApp();
-})();
+  initializeApp();
+})(window);

@@ -39,36 +39,36 @@ $toc-animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
 @keyframes tocFadeInRight {
   0% {
     opacity: 0;
-    transform: translateX(-100px);
+    transform: translate3d(-100px, 0, 0);
   }
 
   100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes tocFadeOutLeft {
   0% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   100% {
     opacity: 0;
-    transform: translateX(-100px);
+    transform: translate3d(-100px, 0, 0);
   }
 }
 
 @keyframes tocFadeOutRight {
   0% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   100% {
     opacity: 0;
-    transform: translateX(100px);
+    transform: translate3d(100px, 0, 0);
   }
 }
 

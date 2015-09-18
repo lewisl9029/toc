@@ -18,19 +18,13 @@ export default /*@ngInject*/ function configApp(
   // $ionicConfigProvider.scrolling.jsScrolling(false);
   // $ionicConfigProvider.views.maxCache(0);
 
-  $stateProvider.state('app', {
-    url: '/app',
-    abstract: true,
-    template: '<ion-nav-view></ion-nav-view>'
-  });
-
-  $stateProvider.state('app.public', {
+  $stateProvider.state('public', {
     url: '/public',
     abstract: true,
     template: template
   });
 
-  $stateProvider.state('app.private', {
+  $stateProvider.state('private', {
     url: '/private',
     abstract: true,
     controller: controllerName + ' as appView',
