@@ -6,17 +6,17 @@
     "bundle-sass", "watch"
   ],
   "watchPatterns": [
+    "toc/*",
+    "toc/app/*",
     "toc/app/components/**/*",
     "toc/app/libraries/**/*",
     "toc/app/services/**/*",
     "toc/app/views/**/*",
-    "toc/app/*.**",
-    "toc/*.**",
+    "!toc/*.scss",
+    "!toc/app/*.scss",
     "!toc/app/components/**/*.scss",
     "!toc/app/libraries/**/*.scss",
-    "!toc/app/views/**/*.scss",
-    "!toc/app/*.scss",
-    "!toc/*.scss"
+    "!toc/app/views/**/*.scss"
   ],
   "browsers": [
     {

@@ -16,5 +16,5 @@
       .catch(console.error.bind(console));
   };
 
-  initializeApp();
+  // initializeApp();
 })();
