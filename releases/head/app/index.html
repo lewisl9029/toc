@@ -1,1 +1,45 @@
-<!DOCTYPE html><html><head lang=en><meta charset=UTF-8><meta name=viewport content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"><meta http-equiv=Content-Security-Policy content="default-src *; style-src 'self' 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'"><title>Toc Messenger</title><link rel="shortcut icon" type=image/x-icon href=assets/images/favicon.ico><link rel=stylesheet type=text/css href=initialize.css></head><body data-toc-app><ion-nav-view></ion-nav-view><toc-system-message-overlay></toc-system-message-overlay><script src=../cordova.js></script><script src=dependencies/system.src.js></script><script src=jspm-config.js></script><script src=initialize.js></script><link rel=stylesheet type=text/css href=app.css></body></html>
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+      content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <!-- TODO: replace with stricter CSP rules for release -->
+    <!-- TODO: use system-csp-production instead of system for release -->
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src *; style-src 'self' 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <title>Toc Messenger</title>
+    <link rel="shortcut icon" type="image/x-icon"
+      href="assets/images/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="initialize.css">
+    <link rel="subresource" src="initialize.js"></link>
+    <link rel="subresource" src="app.js"></link>
+    <link rel="subresource" src="app.css"></link>
+  </head>
+
+  <body data-toc-app>
+    <div class="toc-loading-screen">
+      <div class="toc-loading-screen-backdrop">
+      </div>
+      <div class="toc-loading-screen-logo-container">
+        <div class="toc-loading-screen-logo-base">
+        </div>
+        <div class="toc-loading-screen-logo-dots">
+          <div class="toc-loading-screen-logo-dot-1">
+          </div>
+          <div class="toc-loading-screen-logo-dot-2">
+          </div>
+          <div class="toc-loading-screen-logo-dot-3">
+          </div>
+        </div>
+      </div>
+    </div>
+    <ion-nav-view></ion-nav-view>
+    <toc-system-message-overlay></toc-system-message-overlay>
+    <script src="../cordova.js"></script>
+    <script src="dependencies/system.src.js"></script>
+    <script src="jspm-config.js"></script>
+    <script src="initialize.js"></script>
+    <link rel="stylesheet" type="text/css" href="app.css">
+  </body>
+</html>
