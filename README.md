@@ -1,3 +1,7 @@
+# Dev Environment for Toc Messenger
+
+Merges to this branch will trigger a new [Docker Automated Build](https://hub.docker.com/r/lewisl9029/toc-dev/).
+
 # Toc Messenger
 
 [![Stories in Ready](https://badge.waffle.io/lewisl9029/toc.png?label=ready&title=Ready)](https://waffle.io/lewisl9029/toc)
