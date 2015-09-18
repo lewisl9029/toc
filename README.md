@@ -1,6 +1,6 @@
 # Dev Environment for Toc Messenger
 
-Merges to this branch will trigger a new [Docker Automated Build](https://hub.docker.com/r/lewisl9029/toc-dev/).
+Commits to this branch will trigger a new [Docker Hub Automated Build](https://hub.docker.com/r/lewisl9029/toc-dev/).
 
 # Toc Messenger
 
