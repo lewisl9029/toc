@@ -11,9 +11,8 @@
 
     System.import('app')
       .then(function (app) {
-        return app.initialize();
-      })
-      .then(function () {
+        app.initialize();
+
         var loadingScreen = window.document
           .getElementsByClassName('toc-loading-screen')[0];
 

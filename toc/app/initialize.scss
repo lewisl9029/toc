@@ -109,7 +109,7 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocBounceBottom 1s 0.1s infinite both;
+  animation: tocBounceBottom 1s 2.1s infinite both;
   background: url(assets/images/logo-loading-dot-1.svg);
   background-size: cover;
 }
@@ -117,7 +117,7 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocBounceBottom 1s 0.2s infinite both;
+  animation: tocBounceBottom 1s 2.2s infinite both;
   background: url(assets/images/logo-loading-dot-2.svg);
   background-size: cover;
 }
@@ -125,7 +125,7 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocBounceBottom 1s 0.3s infinite both;
+  animation: tocBounceBottom 1s 2.3s infinite both;
   background: url(assets/images/logo-loading-dot-3.svg);
   background-size: cover;
 }
