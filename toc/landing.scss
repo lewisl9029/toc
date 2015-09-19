@@ -51,6 +51,11 @@ $toc-white-color: #FFFFFF;
 .toc-body {
   margin: 0;
   overflow-x: hidden;
+  //makes anchor scrolling smooth
+  //supported natively on firefox.
+  //in chrome users need to set the smooth scroll flag.
+  //polyfilling in js for chrome
+  scroll-behavior: smooth;
 }
 
 .toc-landing-content {
@@ -150,7 +155,8 @@ $toc-white-color: #FFFFFF;
     margin-bottom: 30px;
   }
   background: url(app/assets/images/logo-large.svg);
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .toc-call-to-action-content {
@@ -212,5 +218,6 @@ $toc-white-color: #FFFFFF;
   width: 300px;
   height: 630px;
   background: url(app/assets/images/phone-outline.svg);
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
