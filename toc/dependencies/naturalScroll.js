@@ -125,6 +125,7 @@
                  if (animation.n) {
                      // scheduling the next frame
                      //EDIT: added requestAnimationFrame-based scheduling
+                     //setTimeout(tick, 1);
                      if (!window.requestAnimationFrame) {
                        setTimeout(tick, 1);
                      }
