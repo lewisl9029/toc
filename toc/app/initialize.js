@@ -1,3 +1,5 @@
+'use strict';
+
 (function initialize(window) {
   var initializeApp = function initializeApp() {
     var disableLogging = function disableLogging() {
