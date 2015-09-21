@@ -102,7 +102,7 @@ gulp.task('build', function build(done) {
     'uncache-jspm',
     ['build-js', 'build-html', 'build-sass', 'build-asset'],
     'inject-js',
-    'cache-jspm',
+    // 'cache-jspm',
     done
   );
 });
