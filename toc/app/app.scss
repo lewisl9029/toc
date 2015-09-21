@@ -1,5 +1,5 @@
-$toc-primary-bg-color-dark: #00718f;
-$toc-secondary-bg-color-dark: #00bbcc;
+$toc-primary-bg-color-dark: #00bbcc;
+$toc-secondary-bg-color-dark: #11ccdd;
 $toc-highlight-bg-color-dark: #7cb4c3;
 $toc-primary-bg-color-medium: #a0a6aa;
 $toc-secondary-bg-color-medium: #a1b8c1;
@@ -14,13 +14,23 @@ $toc-highlight-text-color-dark: #6eaeba;
 
 $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
-$positive:                        $toc-secondary-bg-color-dark !default;
-$calm:                            $toc-highlight-bg-color-dark !default;
+$positive:                        #387ef5 !default;
+$calm:                            #11c1f3 !default;
 $balanced:                        #33cd5f !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
+
+// $base-color: $toc-primary-text-color-dark;
+// $base-background-color: $toc-primary-bg-color-light;
+//
+// $button-light-text: $toc-primary-text-color-dark;
+// $item-icon-accessory-color: $toc-highlight-text-color-dark;
+//
+// $input-label-color: $toc-primary-text-color-dark;
+// $input-color: $toc-secondary-text-color-dark;
+// $modal-bg-color: $toc-primary-bg-color-light;
 
 $button-border-radius: 0 !default;
 $button-bar-button-font-size: 15px !default;
@@ -99,6 +109,24 @@ form.ng-pristine button[type='submit'] {
 .popup-body {
   text-align: center;
 }
+
+// input::-moz-placeholder,
+// input:-ms-input-placeholder {
+// input::-webkit-input-placeholder {
+//   color: $toc-highlight-text-color-dark;
+// }
+//
+// input::-moz-placeholder {
+//   color: $toc-highlight-text-color-dark;
+// }
+//
+// input:-ms-input-placeholder {
+//   color: $toc-highlight-text-color-dark;
+// }
+//
+// .item-note {
+//   color: $toc-highlight-text-color-dark;
+// }
 
 .item-input-wrapper {
   border-radius: 0;
