@@ -1,12 +1,21 @@
-// To customize the look and feel of Ionic, you can override the variables
-// in ionic's _variables.scss file.
-//
-// For example, you might change some of the default colors:
-//
+$toc-primary-bg-color-dark: #00718f;
+$toc-secondary-bg-color-dark: #00bbcc;
+$toc-highlight-bg-color-dark: #7cb4c3;
+$toc-primary-bg-color-medium: #a0a6aa;
+$toc-secondary-bg-color-medium: #a1b8c1;
+$toc-primary-bg-color-light: #eef1f0;
+$toc-secondary-bg-color-light: #e5edeb;
+
+$toc-primary-text-color-light: #f8f9fa;
+$toc-secondary-text-color-light: #e5edeb;
+$toc-primary-text-color-dark: #113f51;
+$toc-secondary-text-color-dark: #00718f;
+$toc-highlight-text-color-dark: #6eaeba;
+
 $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
-$positive:                        #387ef5 !default;
-$calm:                            #11c1f3 !default;
+$positive:                        $toc-secondary-bg-color-dark !default;
+$calm:                            $toc-highlight-bg-color-dark !default;
 $balanced:                        #33cd5f !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
