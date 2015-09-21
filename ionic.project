@@ -1,6 +1,6 @@
 {
   "name": "Toc Messenger",
-  "app_id": "7ab6b3ea",
+  "app_id": "com.lewisl.toc",
   "documentRoot": "toc",
   "gulpStartupTasks": [
     "bundle-sass", "watch"

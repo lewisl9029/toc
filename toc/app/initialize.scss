@@ -16,7 +16,7 @@ $toc-background-gradient-dark: radial-gradient(
   $toc-primary-bg-color-dark 100%
 );
 
-@keyframes tocFadeInTop {
+@keyframes tocLoadingFadeInTop {
   0% {
     opacity: 0;
     transform: translate3d(0, -100px, 0);
@@ -28,7 +28,7 @@ $toc-background-gradient-dark: radial-gradient(
   }
 }
 
-@keyframes tocFadeInBottom {
+@keyframes tocLoadingFadeInBottom {
   0% {
     opacity: 0;
     transform: translate3d(0, 100px, 0);
@@ -40,7 +40,29 @@ $toc-background-gradient-dark: radial-gradient(
   }
 }
 
-@keyframes tocBounceTop {
+@keyframes tocLoadingSlideOutTop {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, -100vh, 0);
+  }
+}
+
+@keyframes tocLoadingFadeOutBottom {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 100px, 0);
+  }
+}
+
+@keyframes tocLoadingBounceTop {
   0% {
     animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
     transform: translate3d(0,0,0);
@@ -57,7 +79,7 @@ $toc-background-gradient-dark: radial-gradient(
   }
 }
 
-@keyframes tocBounceBottom {
+@keyframes tocLoadingBounceBottom {
   0% {
     animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
     transform: translate3d(0,0,0);
@@ -75,15 +97,23 @@ $toc-background-gradient-dark: radial-gradient(
 }
 
 .toc-loading-screen {
-  position: absolute;
+  position: fixed;
+  z-index: 9; // 1 below modal layer
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: $toc-primary-bg-color-dark;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.toc-loading-screen-hiding {
+  animation: tocLoadingSlideOutTop 1s 1s ease-in-out both;
+  .toc-loading-screen-logo-container {
+    animation: tocLoadingFadeOutBottom 1s $toc-animation-timing-function both;
+  }
 }
 
 .toc-loading-screen-backdrop {
@@ -110,7 +140,7 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocFadeInTop 1s $toc-animation-timing-function both;
+  animation: tocLoadingFadeInTop 1s $toc-animation-timing-function both;
   background: url(assets/images/logo-loading-base.svg);
   background-size: cover;
 }
@@ -119,7 +149,7 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocFadeInTop 1s 1s $toc-animation-timing-function both;
+  animation: tocLoadingFadeInTop 1s 1s $toc-animation-timing-function both;
 }
 
 .toc-loading-screen-logo-char-1 {
@@ -148,14 +178,14 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocFadeInBottom 1s 1s $toc-animation-timing-function both;
+  animation: tocLoadingFadeInBottom 1s 1s $toc-animation-timing-function both;
 }
 
 .toc-loading-screen-logo-dot-1 {
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocBounceBottom 1s 2.1s infinite both;
+  animation: tocLoadingBounceBottom 1s 2.1s infinite both;
   background: url(assets/images/logo-loading-dot-1.svg);
   background-size: cover;
 }
@@ -163,7 +193,7 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocBounceBottom 1s 2.2s infinite both;
+  animation: tocLoadingBounceBottom 1s 2.2s infinite both;
   background: url(assets/images/logo-loading-dot-2.svg);
   background-size: cover;
 }
@@ -171,7 +201,7 @@ $toc-background-gradient-dark: radial-gradient(
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: tocBounceBottom 1s 2.3s infinite both;
+  animation: tocLoadingBounceBottom 1s 2.3s infinite both;
   background: url(assets/images/logo-loading-dot-3.svg);
   background-size: cover;
 }
