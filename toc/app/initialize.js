@@ -20,7 +20,7 @@
 
       window.setTimeout(function () {
         loadingScreen.parentNode.removeChild(loadingScreen);
-      }, 2000);
+      }, 3000);
     };
 
     // initializes app
