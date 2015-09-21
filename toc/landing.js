@@ -1,6 +1,5 @@
-'use strict';
-
 (function initialize(window) {
+  'use strict';
   var smoothScrollSupported =
     window.document.documentElement.style.scrollBehavior;
 
