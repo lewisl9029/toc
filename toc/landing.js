@@ -3,7 +3,7 @@
   var smoothScrollSupported =
     window.document.documentElement.style.scrollBehavior;
 
-  if (!smoothScrollSupported) {
+  if (smoothScrollSupported === undefined) {
     //polyfill here
     var scrollLinks =
       window.document.getElementsByClassName('toc-anchor-scroll-link');
