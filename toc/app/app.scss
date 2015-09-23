@@ -250,6 +250,7 @@ form.ng-pristine button[type='submit'] {
 .toc-logo-outline {
   width: 30px;
   height: 33px;
+  background-position-y: 2px !important;
   background-image: url(assets/images/logo-outline.svg) !important;
   background-size: contain !important;
   background-repeat: no-repeat !important;
