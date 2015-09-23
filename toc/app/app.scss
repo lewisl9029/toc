@@ -246,6 +246,14 @@ form.ng-pristine button[type='submit'] {
 .toc-square-avatar .item-content > img:first-child {
   border-radius: 0;
 }
+
+.toc-logo-outline {
+  width: 30px;
+  height: 33px;
+  background-image: url(assets/images/logo-outline.svg) !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+}
 //
 // .toc-flex-container {
 //   @include display-flex;
