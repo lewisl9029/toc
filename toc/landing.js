@@ -22,6 +22,7 @@
   var smoothScrollSupported =
     window.document.documentElement.style.scrollBehavior;
   if (smoothScrollSupported === undefined) {
+    // polyfills smooth scrolling functionality
     var createSmoothScrollPolyfill = function () {
       /**
        * @fileoverview naturalScroll - scrolls a viewport naturally
@@ -181,9 +182,27 @@
 
         scrollLink.removeEventListener('click', scrollLinkHandlers[index]);
         scrollLink.addEventListener('click', function (event) {
+          if (event.invokeDefault) {
+            return;
+          }
+
+          event.preventDefault();
+
           var scrollPosition = scrollTarget.getBoundingClientRect().top +
             document.body.scrollTop;
           window.naturalScroll.scrollTop(viewport, scrollPosition);
+
+          // ensure scrolling animation has enough time to finish
+          window.setTimeout(function() {
+            var clickEvent = new MouseEvent('click', {
+              view: window,
+              bubbles: true,
+              cancelable: true
+            });
+
+            clickEvent.invokeDefault = true;
+            scrollLink.dispatchEvent(clickEvent);
+          }, 600);
         });
       }
     );
