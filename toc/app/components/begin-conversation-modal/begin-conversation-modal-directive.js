@@ -152,6 +152,22 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
 
             this.removeModal();
           }
+        },
+        'message': {
+          icon: 'ion-chatbubble',
+          text: 'Send an invite message',
+          isEnabled: true,
+          doInvite: () => {
+
+          }
+        },
+        'share': {
+          icon: 'ion-share',
+          text: 'Share an invite post',
+          isEnabled: true,
+          doInvite: () => {
+
+          }
         }
       };
 
