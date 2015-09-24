@@ -1,8 +1,26 @@
 (function initialize(window) {
   'use strict';
+  var scrollLinks =
+    window.document.getElementsByClassName('toc-anchor-scroll-link');
+
+  var scrollLinkHandlers = window.Array.prototype.map.call(scrollLinks,
+    function (scrollLink) {
+      var scrollTargetId = scrollLink.dataset.tocScroll;
+
+      return function (event) {
+        window.location.href = '#' + scrollTargetId;
+      };
+    }
+  );
+
+  window.Array.prototype.forEach.call(scrollLinks,
+    function (scrollLink, index) {
+      scrollLink.addEventListener('click', scrollLinkHandlers[index]);
+    }
+  );
+
   var smoothScrollSupported =
     window.document.documentElement.style.scrollBehavior;
-
   if (smoothScrollSupported === undefined) {
     var createSmoothScrollPolyfill = function () {
       /**
@@ -154,22 +172,21 @@
     };
     createSmoothScrollPolyfill();
 
-    var scrollLinks =
-      window.document.getElementsByClassName('toc-anchor-scroll-link');
-
     var viewport = window.document.getElementsByClassName('toc-body')[0];
 
-    window.Array.prototype.forEach.call(scrollLinks, function (scrollLink) {
-      var scrollTargetId = scrollLink.dataset.tocScroll;
-      var scrollTarget = window.document.getElementById(scrollTargetId);
+    window.Array.prototype.forEach.call(scrollLinks,
+      function (scrollLink, index) {
+        var scrollTargetId = scrollLink.dataset.tocScroll;
+        var scrollTarget = window.document.getElementById(scrollTargetId);
 
-      scrollLink.addEventListener('click', function (event) {
-        // event.preventDefault();
-        var scrollPosition = scrollTarget.getBoundingClientRect().top +
-          document.body.scrollTop;
-        window.naturalScroll.scrollTop(viewport, scrollPosition);
-      });
-    });
+        scrollLink.removeEventListener('click', scrollLinkHandlers[index]);
+        scrollLink.addEventListener('click', function (event) {
+          var scrollPosition = scrollTarget.getBoundingClientRect().top +
+            document.body.scrollTop;
+          window.naturalScroll.scrollTop(viewport, scrollPosition);
+        });
+      }
+    );
   }
 
 })(window);
