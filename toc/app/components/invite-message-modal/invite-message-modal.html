@@ -1,0 +1,34 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-positive">
+    <h1 class="title">Send an Invite Message</h1>
+  </ion-header-bar>
+  <ion-content>
+    <div class="list">
+      <div class="item item-divider item-calm item-clear">
+        How would you like to send it?
+      </div>
+      <ion-radio class="item-icon-left"
+        ng-repeat="(id, sendMethod) in ::inviteMessageModal.sendMethods
+          track by id"
+        ng-model="inviteMessageModal.sendMethod"
+        ng-value="::id" ng-if="::sendMethod.isEnabled">
+        <i class="icon" ng-class="::sendMethod.icon"></i>
+        {{::sendMethod.text}}
+      </ion-radio>
+    </div>
+  </ion-content>
+  <ion-footer-bar>
+    <div class="col">
+      <button class="button button-block button-outline button-calm"
+        ng-click="::inviteMessageModal.removeModal()">
+        Cancel
+      </button>
+    </div>
+    <div class="col">
+      <button class="button button-block button-outline button-balanced"
+        ng-click="::inviteMessageModal.doInvite()">
+        Start
+      </button>
+    </div>
+  </ion-footer-bar>
+</ion-modal-view>

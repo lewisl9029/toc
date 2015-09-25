@@ -11,6 +11,7 @@ import passwordPromptModal from
 import channelCard from './channel-card/channel-card';
 import channelList from './channel-list/channel-list';
 import cloudConnectModal from './cloud-connect-modal/cloud-connect-modal';
+import inviteMessageModal from './invite-message-modal/invite-message-modal';
 import messageInputArea from './message-input-area/message-input-area';
 import messageList from './message-list/message-list';
 import notificationCard from './notification-card/notification-card';
@@ -34,6 +35,7 @@ export default angular.module('toc.components', [
   channelCard.name,
   channelList.name,
   cloudConnectModal.name,
+  inviteMessageModal.name,
   messageInputArea.name,
   messageList.name,
   notificationCard.name,

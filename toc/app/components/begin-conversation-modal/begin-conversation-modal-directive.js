@@ -17,6 +17,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
       $window,
       $scope,
       contacts,
+      navigation,
       notifications,
       devices,
       identity,
@@ -127,38 +128,20 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
 
           }
         },
-        'mail': {
-          icon: 'ion-email',
-          text: 'Send an invite email',
-          isEnabled: true,
-          doInvite: () => {
-            let mailSubject = encodeURIComponent(
-              `An invite for Toc Messenger`
-            );
-
-            let mailBody = encodeURIComponent(
-              'Please invite me as a contact on Toc Messenger:\n' +
-              'http://lewisl9029.github.io/toc\n\n' +
-
-              'It\'s pretty great. ^^\n\n' +
-
-              `My Toc ID is ${this.userId}.`
-            );
-
-            $window.open(
-              `mailto:?to=&body=${mailBody}&subject=${mailSubject}`,
-              '_system'
-            );
-
-            this.removeModal();
-          }
-        },
         'message': {
-          icon: 'ion-chatbubble',
+          icon: 'ion-email',
           text: 'Send an invite message',
           isEnabled: true,
           doInvite: () => {
+            let modalTemplate = `
+              <toc-invite-message-modal class="toc-modal-container"
+                remove-modal="beginConversationModal.inviteMessageModal.remove()">
+              </toc-invite-message-modal>
+            `;
 
+            let modalName = 'inviteMessageModal';
+
+            return navigation.showModal(modalName, modalTemplate, this, $scope);
           }
         },
         'share': {
@@ -166,7 +149,6 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           text: 'Share an invite post',
           isEnabled: true,
           doInvite: () => {
-
           }
         }
       };
