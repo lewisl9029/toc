@@ -61,6 +61,8 @@ export default /*@ngInject*/ function state(
 
   stateService.local.cryptography = stateService.local.cursor
     .select(['cryptography']);
+  stateService.local.contacts = stateService.local.cursor
+    .select(['contacts']);
   stateService.local.identity = stateService.local.cursor
     .select(['identity']);
   stateService.local.session = stateService.local.cursor
