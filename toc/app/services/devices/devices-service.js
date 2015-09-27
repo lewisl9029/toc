@@ -4,13 +4,14 @@ export default /*@ngInject*/ function devices(
   $ionicPopup,
   $log,
   $q,
-  $timeout,
+  $rootScope,
   $window,
   cryptography,
   R,
   state
 ) {
   let session;
+  let localDisconnectFlag;
 
   let isCordovaApp = function isCordovaApp() {
     return $window.cordova ? true : false;
@@ -54,13 +55,17 @@ export default /*@ngInject*/ function devices(
     let devicesDisconnecting = R.pipe(
       R.keys,
       R.map((deviceId) => {
-        let disconnect = deviceId === localDeviceId ? 0 : 1;
-
-        return state.save(
-          state.cloud.devices,
-          [deviceId, 'disconnect'],
-          disconnect
-        );
+        return cryptography.getRandomBase64(2)
+          .then((disconnectFlag) => {
+            if (deviceId === localDeviceId) {
+              localDisconnectFlag = disconnectFlag;
+            }
+            return state.save(
+              state.cloud.devices,
+              [deviceId, 'disconnect'],
+              disconnectFlag
+            );
+          });
       })
     ) (cloudDevices);
 
@@ -73,23 +78,33 @@ export default /*@ngInject*/ function devices(
       .select([localDeviceId, 'disconnect']);
 
     let handleDisconnects = function handleDisconnects(event) {
-      if (event.data.currentData !== 1) {
+      if (event.data.currentData === localDisconnectFlag) {
         return;
       }
 
-      let disconnectingDevice = $timeout(() => {
-        destroySession();
-      }, 5000, false);
+      let disconnectPopupScope = $rootScope.$new();
+      disconnectPopupScope.disconnectPopup = {
+        countdown: 5
+      };
+
+      let disconnectingDevice = $interval(() => {
+        disconnectPopupScope.disconnectPopup.countdown =
+          disconnectPopupScope.disconnectPopup.countdown - 1;
+      }, 1000, 5, true);
+
+      disconnectingDevice.then(() => destroySession());
 
       let remoteLoginPopup = $ionicPopup.show({
         title: 'Another device has connected',
-        template: 'This device will disconnect in 5 seconds.',
+        template: 'This device will disconnect in ' +
+          '{{disconnectPopup.countdown}} seconds.',
+        scope: disconnectPopupScope,
         buttons: [
           {
             text: 'Stay connected',
-            type: 'button-assertive',
+            type: 'button-assertive button-outline',
             onTap: (event) => {
-              $timeout.cancel(disconnectingDevice);
+              $interval.cancel(disconnectingDevice);
               disconnectOtherDevices();
             }
           }
