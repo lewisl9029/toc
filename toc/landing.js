@@ -1,5 +1,15 @@
 (function initialize(window) {
   'use strict';
+  var queryString = window.location.search;
+
+  if (queryString.substr(0, 10) === '?inviteid=') {
+    var inviteId = queryString.substr(10, 64);
+
+    window.localStorage.setItem(
+      'toc-state-local.contacts.invites.' + inviteId, 'true'
+    );
+  }
+
   var scrollLinks =
     window.document.getElementsByClassName('toc-anchor-scroll-link');
 

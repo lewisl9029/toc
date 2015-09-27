@@ -161,6 +161,18 @@ export default /*@ngInject*/ function contacts(
       ))
     )(allContacts);
 
+    let pendingInvitesCursor = state.local.contacts.select('invites');
+
+    let sendingPendingInvites = R.pipe(
+      R.keys,
+      R.filter(identity.validateId),
+      R.map((inviteId) => saveSendingInvite(inviteId)
+        // ignore errors and clear pending invite from local storage
+        .catch(() => $q.when())
+        .then(() => state.remove(pendingInvitesCursor, [inviteId]))
+      )
+    )(pendingInvitesCursor.get());
+
     return $q.all(settingContactsToOffline);
   };
 
