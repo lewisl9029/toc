@@ -27,7 +27,8 @@ export default /*@ngInject*/ function tocInvitePostModal() {
           text: 'Share an invite using Facebook',
           isEnabled: true,
           doShare: () => {
-            $window.open(`http://www.facebook.com/share.php?u=http://toc.im&t=Let\'s talk on Toc Messenger! My ID is ${this.userId}`, '_system');
+            $window.open('http://www.facebook.com/share.php?u=' +
+            `http://toc.im/?inviteid=${this.userId}`, '_system');
             this.removeModal();
           }
         },
@@ -36,8 +37,8 @@ export default /*@ngInject*/ function tocInvitePostModal() {
           text: 'Share an invite using Google+',
           isEnabled: true,
           doShare: () => {
-            //TODO: add handling of query parameter for auto-invites
-            $window.open(`https://plus.google.com/share?url=http://toc.im`, '_system');
+            $window.open('https://plus.google.com/share?url=' +
+            `http://toc.im/?inviteid=${this.userId}`, '_system');
             this.removeModal();
           }
         }
