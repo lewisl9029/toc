@@ -141,8 +141,10 @@ $toc-white-color: #FFFFFF;
   top: 0;
   left: 0;
   width: 90vh;
+  max-width: 100%;
   height: 90vh;
   background-image: $toc-background-gradient-dark;
+  background-size: 90vh 90vh;
 }
 
 .toc-call-to-action-logo {
