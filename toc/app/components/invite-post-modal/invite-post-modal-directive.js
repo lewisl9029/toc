@@ -11,36 +11,34 @@ export default /*@ngInject*/ function tocInvitePostModal() {
     controllerAs: 'invitePostModal',
     controller: /*@ngInject*/ function InvitePostModalController(
       $scope,
-      $window
+      $window,
+      state
     ) {
       this.removeModal = $scope.removeModal;
 
       this.shareMethod = 'email';
 
-      this.shareMethods = {
-        'email': {
-          icon: 'ion-email',
-          text: 'Send an invite using email',
-          isEnabled: true,
-          doShare: () => {
+      this.userInfo = state.cloud.identity.get().userInfo;
+      this.userId = this.userInfo.id;
 
-          }
-        },
-        'skype': {
-          icon: 'ion-share',
-          text: 'Share an invite using Skype',
+      this.shareMethods = {
+        'facebook': {
+          icon: 'ion-social-facebook',
+          text: 'Share an invite using Facebook',
           isEnabled: true,
           doShare: () => {
-            $window.open('skype:?chat&topic=test', '_system');
+            $window.open(`http://www.facebook.com/share.php?u=http://toc.im&t=Let\'s talk on Toc Messenger! My ID is ${this.userId}`, '_system');
             this.removeModal();
           }
         },
-        'whatsapp': {
-          icon: 'ion-share',
-          text: 'Share an invite using WhatsApp',
+        'googleplus': {
+          icon: 'ion-social-googleplus',
+          text: 'Share an invite using Google+',
           isEnabled: true,
           doShare: () => {
-
+            //TODO: add handling of query parameter for auto-invites
+            $window.open(`https://plus.google.com/share?url=http://toc.im`, '_system');
+            this.removeModal();
           }
         }
       };
