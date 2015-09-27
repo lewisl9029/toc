@@ -16,6 +16,10 @@ export default /*@ngInject*/ function identity(
   });
 
   let getAvatar = function getAvatar(userInfo) {
+    if (!userInfo) {
+      return getAvatarBase('unknown-user@toc.im');
+    }
+
     if (userInfo.email) {
       return getAvatarBase(userInfo.email);
     }

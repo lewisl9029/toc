@@ -101,7 +101,7 @@ gulp.task('build', function build(done) {
     'clean-build',
     'uncache-jspm',
     ['build-js', 'build-html', 'build-sass', 'build-asset'],
-    'inject-js',
+    ['inject-js', 'rename-js'],
     // 'cache-jspm',
     done
   );
@@ -130,7 +130,8 @@ gulp.task('run', function run() {
 
 gulp.task('build-js', ['build-jspm'], function buildJs() {
   return gulp.src([
-      basePaths.app + 'dependencies/system.src.js',
+      basePaths.app + 'dependencies/system-csp-production.src.js',
+      basePaths.app + 'dependencies/system-polyfills.js',
       basePaths.app + 'jspm-config.js',
       basePaths.app + 'initialize.js',
       basePaths.dev + 'landing.js',
@@ -139,6 +140,16 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
     })
     .pipe(gulpif(argv.prod, uglify()))
     .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('rename-js', function injectJs() {
+  return gulp.src([
+      basePaths.prodApp + 'dependencies/system-csp-production.src.js',
+    ], {
+      base: basePaths.prodApp
+    })
+    .pipe(rename('dependencies/system.src.js'))
+    .pipe(gulp.dest(basePaths.prodApp));
 });
 
 gulp.task('inject-js', function injectJs() {
