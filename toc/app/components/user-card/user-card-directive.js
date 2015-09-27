@@ -15,20 +15,23 @@ export default /*@ngInject*/ function tocUserCard(
       $scope,
       identity,
       R,
-      state
+      state,
+      session
     ) {
       this.message = $scope.message;
       this.enableDismissNotifications =
         $scope.enableDismissNotifications !== undefined;
 
-      let userInfoCursor = state.cloud.identity.select(['userInfo']);
-      let updateUserInfo = () => {
-        let userInfo = userInfoCursor.get();
-        this.avatar = identity.getAvatar(userInfo);
-        this.avatarText = `Avatar for ${userInfo.displayName || 'Anonymous'}`;
-        this.name = userInfoCursor.get(['displayName']) || 'Anonymous';
-      };
-      state.addListener(userInfoCursor, updateUserInfo, $scope);
+      session.preparePrivate().then(() => {
+        let userInfoCursor = state.cloud.identity.select(['userInfo']);
+        let updateUserInfo = () => {
+          let userInfo = userInfoCursor.get();
+          this.avatar = identity.getAvatar(userInfo);
+          this.name = userInfoCursor.get(['displayName']) || 'Anonymous';
+          this.avatarText = `Avatar for ${this.name}`;
+        };
+        state.addListener(userInfoCursor, updateUserInfo, $scope);
+      });
 
       if (this.message) {
         return;

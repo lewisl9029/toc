@@ -152,6 +152,9 @@ export default /*@ngInject*/ function storage(
         .then((encryptedKeyObjectMap) => {
           let decryptedKeyObjectPairs = R.pipe(
             R.toPairs,
+            R.reject((encryptedKeyObjectPair) =>
+              encryptedKeyObjectPair[1] === true
+            ),
             R.map(encryptedKeyObjectPair => {
               let decryptedKeyObjectPair;
 
@@ -225,12 +228,6 @@ export default /*@ngInject*/ function storage(
           handleChange(event);
         }
         catch (error) {
-          // Assuming failed decryption indicates data belonging to
-          // a different account and ignore
-          if (error.message === 'cryptography: decryption failed') {
-            return;
-          }
-
           throw new Error(error);
           return;
         }
