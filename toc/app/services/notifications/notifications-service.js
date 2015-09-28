@@ -141,7 +141,7 @@ export default /*@ngInject*/ function notifications(
 
     return notifySystem(
       'Something went wrong. ' +
-      'Please contact the developers for further troubleshooting.'
+      'Please contact the developer for further troubleshooting.'
     );
   };
 
