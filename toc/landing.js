@@ -10,6 +10,38 @@
     );
   }
 
+  // for clearing localStorage and indexedDB
+  window.tocState = {
+    destroy: function() {
+      window.localStorage.clear();
+
+      var openDbRequest = window.indexedDB.open('remotestorage');
+
+      openDbRequest.onerror = function (dbOpenEvent) {
+        console.log('IndexedDB open failed: ' + dbOpenEvent.target.errorCode);
+      };
+
+      openDbRequest.onsuccess = function (dbOpenEvent) {
+        var db = dbOpenEvent.target.result;
+
+        var clearDbRequest = db.transaction(["nodes"], 'readwrite')
+          .objectStore("nodes").clear();
+
+        clearDbRequest.onerror = function (dbClearEvent) {
+          console.log('IndexedDB clear failed: ' +
+            dbClearEvent.target.errorCode);
+        };
+
+        // add timeout 0 to let queued operations complete
+        clearDbRequest.onsuccess = function (dbClearEvent) {
+          window.setTimeout(function () {
+            window.location.reload();
+          }, 0);
+        };
+      };
+    }
+  }
+
   var scrollLinks =
     window.document.getElementsByClassName('toc-anchor-scroll-link');
 
