@@ -16,12 +16,7 @@ RUN apt-get update && \
     lib32stdc++6 \
     lib32z1 \
     openjdk-7-jdk \
-    python \
-    xfonts-100dpi \
-    xfonts-75dpi \
-    xfonts-cyrillic \
-    xfonts-scalable \
-    xvfb && \
+    python && \
   apt-get clean && \
   rm -rf /tmp/* /var/tmp/*
 
