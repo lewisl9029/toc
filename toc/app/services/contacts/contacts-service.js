@@ -138,8 +138,8 @@ export default /*@ngInject*/ function contacts(
     let existingChannels = state.cloud.channels.get();
 
     let savingSendingProfiles = R.pipe(
-      R.values,
-      R.map((channel) => saveSendingProfile(channel.channelInfo.id))
+      R.keys,
+      R.map((channelId) => saveSendingProfile(channelId))
     ) (existingChannels);
 
     return $q.all(savingSendingProfiles);
