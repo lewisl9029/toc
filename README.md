@@ -22,7 +22,7 @@ Designed to pave a way towards a better future for messaging applications. Fully
 
 The entire development environment for Toc is fully reproducible using the Vagrantfile and Dockerfile provided in this repository.
 
-The provided Vagrant VM can be used to build the Docker container from the [Dockerfile](Dockerfile) or pull the Docker container from [DockerHub's automated builds](https://hub.docker.com/r/lewisl9029/toc-dev/).
+The provided Vagrant VM can be used to build the Docker container from the [Dockerfile](Dockerfile) or pull the Docker container from [Docker Hub's automated builds](https://hub.docker.com/r/lewisl9029/toc-dev/).
 
 Setup instructions:
 
