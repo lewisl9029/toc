@@ -6,9 +6,6 @@ export default /*@ngInject*/ function identity(
   R,
   state
 ) {
-  let getUserExists = () =>
-    state.cloudUnencrypted.cryptography.get() !== undefined;
-
   let getAvatarBase = R.memoize(function getAvatarBase(identifier) {
     let identifierHash = cryptography.getMd5(identifier);
     // cordova app crashes if we don't add the .jpg
@@ -16,6 +13,10 @@ export default /*@ngInject*/ function identity(
   });
 
   let getAvatar = function getAvatar(userInfo) {
+    if (!userInfo) {
+      return getAvatarBase('unknown-user@toc.im');
+    }
+
     if (userInfo.email) {
       return getAvatarBase(userInfo.email);
     }
@@ -123,7 +124,6 @@ export default /*@ngInject*/ function identity(
   };
 
   return {
-    getUserExists,
     getAvatar,
     validateId,
     authenticate,

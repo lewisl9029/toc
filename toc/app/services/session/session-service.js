@@ -30,7 +30,7 @@ export default /*@ngInject*/ function session(
     return preparingPublicSession.promise;
   };
 
-  let start = function startSession(credentials, staySignedIn) {
+  let start = function start(credentials, staySignedIn) {
     // passing services into initialize as workaround for circular dependencies
     return identity.initialize(credentials, staySignedIn)
       .then(() => state.cloud.initialize())
@@ -44,7 +44,11 @@ export default /*@ngInject*/ function session(
       .then(() => buffer.initialize(network, status))
       .then(() => time.initialize())
       .then(() => navigation.initialize())
-      .then(() => preparingPrivateSession.resolve('session: private ready'));
+      .then(() => preparingPrivateSession.resolve('session: private ready'))
+      .then(() => {
+        $window.tocHideLoadingScreen();
+        return $q.when();
+      });
   };
 
   let initialize = function initializeSession() {
@@ -54,7 +58,7 @@ export default /*@ngInject*/ function session(
 
       if (!derivedCredentials) {
         return navigation.initializePublic()
-          .then(() => preparingPublicSession.resolve('session: public ready'))
+          .then(() => preparingPublicSession.resolve('session: public ready'));
       }
 
       return start(derivedCredentials);

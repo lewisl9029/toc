@@ -1,22 +1,22 @@
 {
   "name": "Toc Messenger",
-  "app_id": "7ab6b3ea",
+  "app_id": "com.lewisl.toc",
   "documentRoot": "toc",
   "gulpStartupTasks": [
     "bundle-sass", "watch"
   ],
   "watchPatterns": [
+    "toc/*",
+    "toc/app/*",
     "toc/app/components/**/*",
     "toc/app/libraries/**/*",
     "toc/app/services/**/*",
     "toc/app/views/**/*",
-    "toc/app/*.**",
-    "toc/*.**",
+    "!toc/*.scss",
+    "!toc/app/*.scss",
     "!toc/app/components/**/*.scss",
     "!toc/app/libraries/**/*.scss",
-    "!toc/app/views/**/*.scss",
-    "!toc/app/*.scss",
-    "!toc/*.scss"
+    "!toc/app/views/**/*.scss"
   ],
   "browsers": [
     {

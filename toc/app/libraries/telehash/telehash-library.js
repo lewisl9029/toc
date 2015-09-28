@@ -2475,7 +2475,7 @@
         };
 
         io.util.merge(options, details);
-        // EDIT: fix for telehash init not working if initial connect fails
+        //EDIT: fix for telehash init not working if initial connect fails
         // if (options['force new connection'] || !io.sockets[uuri]) {
         if (options['force new connection'] || !io.sockets[uuri] || 
           // this is the state of telehash seed socket after initial failure

@@ -138,8 +138,8 @@ export default /*@ngInject*/ function contacts(
     let existingChannels = state.cloud.channels.get();
 
     let savingSendingProfiles = R.pipe(
-      R.values,
-      R.map((channel) => saveSendingProfile(channel.channelInfo.id))
+      R.keys,
+      R.map((channelId) => saveSendingProfile(channelId))
     ) (existingChannels);
 
     return $q.all(savingSendingProfiles);
@@ -160,6 +160,18 @@ export default /*@ngInject*/ function contacts(
         0
       ))
     )(allContacts);
+
+    let pendingInvitesCursor = state.local.contacts.select('invites');
+
+    let sendingPendingInvites = R.pipe(
+      R.keys,
+      R.filter(identity.validateId),
+      R.map((inviteId) => saveSendingInvite(inviteId)
+        // ignore errors and clear pending invite from local storage
+        .catch(() => $q.when())
+        .then(() => state.remove(pendingInvitesCursor, [inviteId]))
+      )
+    )(pendingInvitesCursor.get());
 
     return $q.all(settingContactsToOffline);
   };

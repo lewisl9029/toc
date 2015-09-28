@@ -1,8 +1,17 @@
-// To customize the look and feel of Ionic, you can override the variables
-// in ionic's _variables.scss file.
-//
-// For example, you might change some of the default colors:
-//
+$toc-primary-bg-color-dark: #00bbcc;
+$toc-secondary-bg-color-dark: #11ccdd;
+$toc-highlight-bg-color-dark: #7cb4c3;
+$toc-primary-bg-color-medium: #a0a6aa;
+$toc-secondary-bg-color-medium: #a1b8c1;
+$toc-primary-bg-color-light: #eef1f0;
+$toc-secondary-bg-color-light: #e5edeb;
+
+$toc-primary-text-color-light: #f8f9fa;
+$toc-secondary-text-color-light: #e5edeb;
+$toc-primary-text-color-dark: #113f51;
+$toc-secondary-text-color-dark: #00718f;
+$toc-highlight-text-color-dark: #6eaeba;
+
 $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
 $positive:                        #387ef5 !default;
@@ -12,6 +21,16 @@ $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
+
+// $base-color: $toc-primary-text-color-dark;
+// $base-background-color: $toc-primary-bg-color-light;
+//
+// $button-light-text: $toc-primary-text-color-dark;
+// $item-icon-accessory-color: $toc-highlight-text-color-dark;
+//
+// $input-label-color: $toc-primary-text-color-dark;
+// $input-color: $toc-secondary-text-color-dark;
+// $modal-bg-color: $toc-primary-bg-color-light;
 
 $button-border-radius: 0 !default;
 $button-bar-button-font-size: 15px !default;
@@ -39,36 +58,36 @@ $toc-animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
 @keyframes tocFadeInRight {
   0% {
     opacity: 0;
-    transform: translateX(-100px);
+    transform: translate3d(-100px, 0, 0);
   }
 
   100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes tocFadeOutLeft {
   0% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   100% {
     opacity: 0;
-    transform: translateX(-100px);
+    transform: translate3d(-100px, 0, 0);
   }
 }
 
 @keyframes tocFadeOutRight {
   0% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   100% {
     opacity: 0;
-    transform: translateX(100px);
+    transform: translate3d(100px, 0, 0);
   }
 }
 
@@ -90,6 +109,24 @@ form.ng-pristine button[type='submit'] {
 .popup-body {
   text-align: center;
 }
+
+// input::-moz-placeholder,
+// input:-ms-input-placeholder {
+// input::-webkit-input-placeholder {
+//   color: $toc-highlight-text-color-dark;
+// }
+//
+// input::-moz-placeholder {
+//   color: $toc-highlight-text-color-dark;
+// }
+//
+// input:-ms-input-placeholder {
+//   color: $toc-highlight-text-color-dark;
+// }
+//
+// .item-note {
+//   color: $toc-highlight-text-color-dark;
+// }
 
 .item-input-wrapper {
   border-radius: 0;
@@ -208,6 +245,15 @@ form.ng-pristine button[type='submit'] {
 
 .toc-square-avatar .item-content > img:first-child {
   border-radius: 0;
+}
+
+.toc-logo-outline {
+  width: 30px;
+  height: 33px;
+  background-position-y: 2px !important;
+  background-image: url(assets/images/logo-outline.svg) !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
 }
 //
 // .toc-flex-container {

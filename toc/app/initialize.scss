@@ -1,33 +1,189 @@
-.toc-loading-screen {
-  background-color: #ffffff;
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 3;
-}
+$toc-tablet-width: 768px;
+$toc-notebook-half-width: 940px;
+$toc-notebook-width: 1200px;
+$toc-desktop-width: 1600px;
 
-.toc-fadeout-loading-screen {
-  opacity: 0;
-  transition: opacity 1.5s ease-in; //same timing as loading indicator queryend
-}
+$toc-primary-bg-color-dark: #00718f;
+$toc-secondary-bg-color-dark: #00bbcc;
+$toc-primary-bg-color-light: #eef1f0;
+$toc-secondary-bg-color-light: #e5edeb;
 
-.toc-non-interactive {
-  pointer-events: none;
-}
+$toc-animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
 
-.toc-spinner-area {
-  bottom: 0;
-  height: 56px;
-  left: 0;
-  margin: auto;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 56px;
-  .spinner svg {
-    height: 56px;
-    width: 56px;
+$toc-background-gradient-dark: radial-gradient(
+  ellipse farthest-side at 0px 0px,
+  $toc-secondary-bg-color-dark 0%,
+  $toc-primary-bg-color-dark 100%
+);
+
+@keyframes tocLoadingFadeInTop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -100px, 0);
   }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tocLoadingFadeInBottom {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 100px, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tocLoadingSlideOutTop {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, -100vh, 0);
+  }
+}
+
+@keyframes tocLoadingFadeOutBottom {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 100px, 0);
+  }
+}
+
+@keyframes tocLoadingBounceTop {
+  0% {
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    transform: translate3d(0,0,0);
+  }
+
+  50% {
+    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+    transform: translate3d(0, -10px, 0);
+  }
+
+  100% {
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    transform: translate3d(0,0,0);
+  }
+}
+
+@keyframes tocLoadingBounceBottom {
+  0% {
+    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+    transform: translate3d(0,0,0);
+  }
+
+  50% {
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    transform: translate3d(0, 10px, 0);
+  }
+
+  100% {
+    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+    transform: translate3d(0,0,0);
+  }
+}
+
+.toc-loading-screen {
+  position: fixed;
+  z-index: 9; // 1 below modal layer
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: $toc-primary-bg-color-dark;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toc-loading-screen-hiding {
+  animation: tocLoadingSlideOutTop 1s 1s ease-in-out both;
+  .toc-loading-screen-logo-container {
+    animation: tocLoadingFadeOutBottom 1s $toc-animation-timing-function both;
+  }
+}
+
+.toc-loading-screen-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 90vh;
+  max-width: 100%;
+  height: 90vh;
+  background-image: $toc-background-gradient-dark;
+  background-size: 90vh 90vh;
+}
+
+.toc-loading-screen-logo-container {
+  position: relative;
+  z-index: 2;
+  width: 150px;
+  height: 150px;
+  @media (min-width: $toc-tablet-width) {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+.toc-loading-screen-logo-base {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: tocLoadingFadeInTop 1s $toc-animation-timing-function both;
+  background: url(assets/images/logo-loading-base.svg);
+  background-size: cover;
+}
+
+.toc-loading-screen-logo-chars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: tocLoadingFadeInTop 1s 1s $toc-animation-timing-function both;
+  background: url(assets/images/logo-loading-chars.svg);
+  background-size: cover;
+}
+
+.toc-loading-screen-logo-dots {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: tocLoadingFadeInBottom 1s 1s $toc-animation-timing-function both;
+}
+
+.toc-loading-screen-logo-dot-1 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: tocLoadingBounceBottom 1s 2.1s infinite both;
+  background: url(assets/images/logo-loading-dot-1.svg);
+  background-size: cover;
+}
+.toc-loading-screen-logo-dot-2 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: tocLoadingBounceBottom 1s 2.2s infinite both;
+  background: url(assets/images/logo-loading-dot-2.svg);
+  background-size: cover;
+}
+.toc-loading-screen-logo-dot-3 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: tocLoadingBounceBottom 1s 2.3s infinite both;
+  background: url(assets/images/logo-loading-dot-3.svg);
+  background-size: cover;
 }

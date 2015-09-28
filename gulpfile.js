@@ -33,13 +33,20 @@ var basePaths = {
 };
 
 var paths = {
-  sass: [
-    basePaths.app + 'components/**/*.scss',
-    basePaths.app + 'libraries/**/*.scss',
-    basePaths.app + 'views/**/*.scss',
-    basePaths.app + '*.scss',
-    basePaths.dev + 'landing.scss'
-  ],
+  sass: {
+    app: [
+      basePaths.app + 'components/**/*.scss',
+      basePaths.app + 'libraries/**/*.scss',
+      basePaths.app + 'views/**/*.scss',
+      basePaths.app + 'app.scss'
+    ],
+    init: [
+      basePaths.app + 'initialize.scss'
+    ],
+    landing: [
+      basePaths.dev + 'landing.scss'
+    ]
+  },
   js: [
     basePaths.app + 'components/**/*.js',
     basePaths.app + 'libraries/**/*.js',
@@ -61,7 +68,9 @@ var paths = {
 };
 
 gulp.task('watch', function watch() {
-  gulp.watch(paths.sass, ['bundle-sass']);
+  gulp.watch(paths.sass.app, ['bundle-sass-app']);
+  gulp.watch(paths.sass.init, ['bundle-sass-init']);
+  gulp.watch(paths.sass.landing, ['bundle-sass-landing']);
 });
 
 gulp.task('serve', function serve() {
@@ -92,8 +101,8 @@ gulp.task('build', function build(done) {
     'clean-build',
     'uncache-jspm',
     ['build-js', 'build-html', 'build-sass', 'build-asset'],
-    'inject-js',
-    'cache-jspm',
+    ['inject-js', 'rename-js'],
+    // 'cache-jspm',
     done
   );
 });
@@ -121,7 +130,8 @@ gulp.task('run', function run() {
 
 gulp.task('build-js', ['build-jspm'], function buildJs() {
   return gulp.src([
-      basePaths.app + 'dependencies/system.src.js',
+      basePaths.app + 'dependencies/system-csp-production.src.js',
+      basePaths.app + 'dependencies/system-polyfills.js',
       basePaths.app + 'jspm-config.js',
       basePaths.app + 'initialize.js',
       basePaths.dev + 'landing.js',
@@ -130,6 +140,16 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
     })
     .pipe(gulpif(argv.prod, uglify()))
     .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('rename-js', function injectJs() {
+  return gulp.src([
+      basePaths.prodApp + 'dependencies/system-csp-production.src.js',
+    ], {
+      base: basePaths.prodApp
+    })
+    .pipe(rename('dependencies/system.src.js'))
+    .pipe(gulp.dest(basePaths.prodApp));
 });
 
 gulp.task('inject-js', function injectJs() {
@@ -218,14 +238,14 @@ gulp.task('build-sass', ['bundle-sass'], function buildSass() {
     .on('error', handleError);
 });
 
-gulp.task('bundle-sass', function bundleSass() {
-  return gulp.src([
-      basePaths.app + 'app.scss',
-      basePaths.app + 'initialize.scss',
-      basePaths.dev + 'landing.scss'
-    ], {
-      base: basePaths.dev
-    })
+gulp.task('bundle-sass', [
+  'bundle-sass-app',
+  'bundle-sass-init',
+  'bundle-sass-landing'
+]);
+
+var makeSassTask = function makeSassTask(sassPath) {
+  return gulp.src(sassPath, { base: basePaths.dev })
     .pipe(gulpif(!argv.prod, sourcemaps.init()))
     .pipe(sass())
     .on('error', handleError)
@@ -233,4 +253,16 @@ gulp.task('bundle-sass', function bundleSass() {
     .pipe(gulpif(argv.prod, minifyCss()))
     .pipe(gulp.dest(basePaths.dev))
     .on('error', handleError);
+};
+
+gulp.task('bundle-sass-app', function bundleSass() {
+  return makeSassTask(basePaths.app + 'app.scss');
+});
+
+gulp.task('bundle-sass-init', function bundleSass() {
+  return makeSassTask(basePaths.app + 'initialize.scss');
+});
+
+gulp.task('bundle-sass-landing', function bundleSass() {
+  return makeSassTask(basePaths.dev + 'landing.scss');
 });

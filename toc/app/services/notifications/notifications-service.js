@@ -7,6 +7,7 @@ export default /*@ngInject*/ function notifications(
   $timeout,
   $q,
   devices,
+  cryptography,
   identity,
   navigation,
   state,
@@ -125,9 +126,14 @@ export default /*@ngInject*/ function notifications(
   };
 
   let notifySystem = function notifySystem(message) {
-    let notificationsCursor = state.memory.notifications;
+    let systemMessageCursor = state.memory.notifications.select(['system']);
 
-    return state.save(notificationsCursor, ['systemMessage'], message);
+    return cryptography.getRandomBase64(2)
+      .then((systemMessageId) => state.save(
+        systemMessageCursor,
+        ['notificationInfo'],
+        { id: systemMessageId, message }
+      ));
   };
 
   let notifyGenericError = function notifyGenericError(error) {
@@ -135,7 +141,7 @@ export default /*@ngInject*/ function notifications(
 
     return notifySystem(
       'Something went wrong. ' +
-      'Please contact the developers for further troubleshooting.'
+      'Please contact the developer for further troubleshooting.'
     );
   };
 
