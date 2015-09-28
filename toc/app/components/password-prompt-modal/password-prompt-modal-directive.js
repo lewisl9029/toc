@@ -28,7 +28,11 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       this.hideModal = $scope.hideModal;
       this.showModal = $scope.showModal;
 
-      this.userExists = identity.getUserExists();
+      let userExistsCursor = state.cloudUnencrypted.cryptography;
+      let updateUserExists = () => {
+        this.userExists = userExistsCursor.get() !== undefined;
+      };
+      state.addListener(userExistsCursor, updateUserExists, $scope);
 
       let staySignedIn = state.local.session.get(['staySignedIn']);
       this.staySignedIn = staySignedIn === undefined ? true : staySignedIn;

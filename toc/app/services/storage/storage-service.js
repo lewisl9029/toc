@@ -43,14 +43,13 @@ export default /*@ngInject*/ function storage(
       return $q.when();
     }
 
-    let deferredStorageReady = $q.defer();
+    let preparingStorage = $q.defer();
 
-    remoteStorage.remoteStorage.on(
-      'done',
-      () => deferredStorageReady.resolve()
+    remoteStorage.remoteStorage.on('ready',
+      () => preparingStorage.resolve()
     );
 
-    return deferredStorageReady.promise;
+    return preparingStorage.promise;
   };
 
   let reset = function resetStorage() {
