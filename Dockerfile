@@ -28,7 +28,7 @@ RUN apt-get update && \
 # setting up environment variables
 ENV TOC_BUNDLE_PATH=cache/bundle \
   TOC_CHROME_BUNDLE_NAME=google-chrome-stable_current_amd64.deb \
-  TOC_NODE_BUNDLE_NAME=node-v4.1.0-linux-x64.tar.gz \
+  TOC_NODE_BUNDLE_NAME=node-v4.1.1-linux-x64.tar.gz \
   TOC_ANDROID_BUNDLE_NAME=android-sdk_r24.3.4-linux.tgz \
   DISPLAY=:1 \
   ANDROID_HOME=$TOC_SETUP_PATH/android-sdk-linux \
@@ -56,12 +56,12 @@ RUN dpkg -i $TOC_CHROME_BUNDLE_NAME; \
   echo "y" | android update sdk --no-ui --all -t android-22
 
 # installing npm dependencies
-RUN npm install -g npm@3.3.3 && \
-  npm install -g cordova@5.3.1 && \
+RUN npm install -g npm@3.3.5 && \
+  npm install -g cordova@5.3.3 && \
   npm install -g gulp-cli@0.3.0 && \
-  npm install -g http-server@0.8.0 && \
+  npm install -g http-server@0.8.5 && \
   npm install -g ionic@1.6.4 && \
-  npm install -g jspm@0.16.2 && \
+  npm install -g jspm@0.16.10 && \
   npm cache clean
 
 # replacing ionic-cli with custom fork for device livereload support
