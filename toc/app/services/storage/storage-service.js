@@ -46,7 +46,7 @@ export default /*@ngInject*/ function storage(
     let deferredStorageReady = $q.defer();
 
     remoteStorage.remoteStorage.on(
-      'ready',
+      'done',
       () => deferredStorageReady.resolve()
     );
 
