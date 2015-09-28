@@ -16,12 +16,7 @@ RUN apt-get update && \
     lib32stdc++6 \
     lib32z1 \
     openjdk-7-jdk \
-    python \
-    xfonts-100dpi \
-    xfonts-75dpi \
-    xfonts-cyrillic \
-    xfonts-scalable \
-    xvfb && \
+    python && \
   apt-get clean && \
   rm -rf /tmp/* /var/tmp/*
 
@@ -41,10 +36,10 @@ COPY $TOC_BUNDLE_PATH $TOC_SETUP_PATH
 # setup for dockerhub
 # bundles need to be downloaded for each build
 ADD toc-setup-bundle.sh $TOC_SETUP_PATH/toc-setup-bundle.sh
-RUN /bin/bash toc-setup-bundle.sh $TOC_SETUP_PATH
 
 # installing chrome and android sdk
-RUN dpkg -i $TOC_CHROME_BUNDLE_NAME; \
+RUN /bin/bash toc-setup-bundle.sh $TOC_SETUP_PATH && \
+  dpkg -i $TOC_CHROME_BUNDLE_NAME; \
   apt-get -y -f install && apt-get clean && rm $TOC_CHROME_BUNDLE_NAME && \
   tar -xzf $TOC_NODE_BUNDLE_NAME --strip-components=1 --exclude='ChangeLog' \
     --exclude='LICENSE' --exclude='README.md' && rm $TOC_NODE_BUNDLE_NAME && \
