@@ -36,9 +36,20 @@ export default /*@ngInject*/ function navigation(
     }
 
     let toHome = viewId === 'home';
+
+    if (!toHome) {
+      let channelExists = R.pipe(
+        R.keys,
+        R.contains(viewId)
+      )(state.cloud.channels.get() || {});
+
+      if (!channelExists) {
+        return $q.when();
+      }
+    }
+
     let destination = toHome ?
       routes.private.home : routes.private.channel;
-
     let destinationParams = toHome ?
       undefined : { channelId: viewId };
 
