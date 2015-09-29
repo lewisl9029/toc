@@ -226,6 +226,8 @@ export default /*@ngInject*/ function notifications(
         data: { id: 'home' },
         ongoing: true
       });
+
+      return $q.when();
     }
 
     if (devices.isWebApp()) {
