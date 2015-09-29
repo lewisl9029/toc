@@ -22,7 +22,9 @@ export default /*@ngInject*/ function runApp(
     if ($window.cordova && $window.cordova.plugins.autoStart) {
       // enables startup on boot
       // com.tonikorin.cordova.plugin.autostart required
-      $window.cordova.plugins.autoStart.enable();
+      //FIXME: disabled for now due to
+      // https://github.com/lewisl9029/toc/issues/390
+      // $window.cordova.plugins.autoStart.enable();
     }
 
     session.initialize();
