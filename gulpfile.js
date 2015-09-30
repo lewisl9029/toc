@@ -4,7 +4,7 @@ var gulpif = require('gulp-if');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
-var autoprefixer = require('autoprefixer');
+var autoprefixer = require('gulp-autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
 var header = require('gulp-header');
 var imagemin = require('gulp-imagemin');
@@ -260,7 +260,21 @@ gulp.task('bundle-sass-app', function bundleSass() {
 });
 
 gulp.task('bundle-sass-init', function bundleSass() {
-  return makeSassTask(basePaths.app + 'initialize.scss');
+  // FIXME: need autoprefixer for now due to
+  //
+  // return makeSassTask(basePaths.app + 'initialize.scss');
+  var sassPath = basePaths.app + 'initialize.scss';
+
+  return gulp.src(sassPath, { base: basePaths.dev })
+    .pipe(gulpif(!argv.prod, sourcemaps.init()))
+    .pipe(sass())
+    .on('error', handleError)
+    .pipe(autoprefixer())
+    .on('error', handleError)
+    .pipe(gulpif(!argv.prod, sourcemaps.write()))
+    .pipe(gulpif(argv.prod, minifyCss()))
+    .pipe(gulp.dest(basePaths.dev))
+    .on('error', handleError);
 });
 
 gulp.task('bundle-sass-landing', function bundleSass() {
