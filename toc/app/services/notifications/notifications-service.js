@@ -147,7 +147,9 @@ export default /*@ngInject*/ function notifications(
 
   let dismissCordova = function dismissCordova(notificationInfo) {
     return $cordovaLocalNotification
-      .clear(notificationInfo.cordovaNotificationId);
+      .clear(notificationInfo.cordovaNotificationId)
+      .then(() => $cordovaLocalNotification
+        .cancel(notificationInfo.cordovaNotificationId));
   };
 
   let dismissWeb = function dismissWeb(notificationInfo) {
@@ -197,7 +199,8 @@ export default /*@ngInject*/ function notifications(
       return contacts.showAcceptInviteDialog(channelId);
     }
 
-    return navigation.navigate(channelId)
+    return dismiss(channelId)
+      .then(() => navigation.navigate(channelId))
       .then(() => state.save(channelCursor, ['viewingLatest'], true));
   };
 
@@ -214,21 +217,6 @@ export default /*@ngInject*/ function notifications(
 
   let initialize = function initialize(contactsService) {
     contacts = contactsService;
-
-    if (devices.isAndroidApp()) {
-      $cordovaLocalNotification.schedule({
-        id: 0,
-        title: 'Toc Messenger',
-        text: 'Online',
-        sound: 'res://platform_default',
-        icon: 'res://icon.png',
-        smallIcon: 'res://icon.png',
-        data: { id: 'home' },
-        ongoing: true
-      });
-
-      return $q.when();
-    }
 
     if (devices.isWebApp()) {
       if (!$window.Notification) {
