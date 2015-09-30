@@ -148,6 +148,7 @@ export default /*@ngInject*/ function notifications(
   let dismissCordova = function dismissCordova(notificationInfo) {
     return $cordovaLocalNotification
       .clear(notificationInfo.cordovaNotificationId)
+      // needed to avoid notifications poping up on next device startup
       .then(() => $cordovaLocalNotification
         .cancel(notificationInfo.cordovaNotificationId));
   };
