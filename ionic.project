@@ -3,7 +3,8 @@
   "app_id": "com.lewisl.toc",
   "documentRoot": "toc",
   "gulpStartupTasks": [
-    "bundle-sass", "watch"
+    "bundle-sass",
+    "watch"
   ],
   "watchPatterns": [
     "toc/*",
@@ -22,7 +23,7 @@
     {
       "platform": "android",
       "browser": "crosswalk",
-      "version": "12.41.296.5"
+      "version": "14.43.343.23"
     }
   ]
 }
