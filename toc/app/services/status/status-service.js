@@ -4,6 +4,7 @@ export default /*@ngInject*/ function status(
   $q,
   $log,
   $window,
+  devices,
   network,
   R,
   state
@@ -13,7 +14,8 @@ export default /*@ngInject*/ function status(
   const ONLINE = 1;
   const OFFLINE = 0;
   //TODO: add random delay to stagger updates
-  const STATUS_UPDATE_INTERVAL = 15000;
+  const ACTIVE_UPDATE_INTERVAL = 15000; // 15s
+  const BACKGROUND_UPDATE_INTERVAL = 900000; // 15m
 
   let sendUpdate = function sendUpdate(contactId) {
     //TODO: send current custom status rather than static ONLINE status
@@ -28,10 +30,31 @@ export default /*@ngInject*/ function status(
       });
   };
 
-  let initializeUpdates = function initializeUpdates(contactId) {
-    sendUpdate(contactId);
+  let scheduleUpdates = function scheduleUpdates(contactId, interval) {
+    if (activeStatusUpdates[contactId]) {
+      $interval.cancel(activeStatusUpdates[contactId]);
+    }
+
     activeStatusUpdates[contactId] =
-      $interval(() => sendUpdate(contactId), STATUS_UPDATE_INTERVAL, 0, false);
+      $interval(() => sendUpdate(contactId), interval, 0, false);
+  };
+
+  let initializeUpdates = function initializeUpdates(contactId) {
+    let beginUpdates = () => {
+      //TODO: need a different approach for iOS when using background fetch
+      // https://github.com/christocracy/cordova-plugin-background-fetch
+      if (!devices.isInForeground()) {
+        scheduleUpdates(contactId, BACKGROUND_UPDATE_INTERVAL);
+        return;
+      }
+
+      sendUpdate(contactId);
+      scheduleUpdates(contactId, ACTIVE_UPDATE_INTERVAL);
+    };
+
+    beginUpdates();
+
+    $window.document.addEventListener('visibilitychange', beginUpdates);
 
     return $q.when();
   };
