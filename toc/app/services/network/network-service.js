@@ -95,7 +95,7 @@ export default /*@ngInject*/ function network(
             s: sentTime,
             r: receivedTime
           };
-          sendAck(sendAck);
+          sendAck(ackPayload);
 
           let messageMetadata = {
             senderId,
