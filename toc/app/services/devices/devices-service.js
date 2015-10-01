@@ -30,10 +30,6 @@ export default /*@ngInject*/ function devices(
   };
 
   let isInForeground = function isInForeground() {
-    if (isCordovaApp()) {
-      return !$window.cordova.plugins.backgroundMode.isActive();
-    }
-
     // fallback for when page visibility api isnt supported
     if ($window.hidden === undefined) {
       if ($window.document.hasFocus === undefined) {
