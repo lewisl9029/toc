@@ -31,14 +31,14 @@ export default /*@ngInject*/ function devices(
 
   let isInForeground = function isInForeground() {
     // fallback for when page visibility api isnt supported
-    if ($window.hidden === undefined) {
+    if ($window.document.hidden === undefined) {
       if ($window.document.hasFocus === undefined) {
         return true;
       }
       return $window.document.hasFocus();
     }
 
-    return !$window.hidden;
+    return !$window.document.hidden;
   };
 
   let disconnectOtherDevices = function disconnectOtherDevices() {
