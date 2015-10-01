@@ -72,22 +72,30 @@ export default /*@ngInject*/ function network(
 
         callback(true);
 
+        let sendAck = (ackPayload) => {
+          channel.send({js: {a: ackPayload}});
+        };
+
         if (ackPayload) {
-          return $q.when();
+          return handleStatus(1, senderId);
         } else if (invitePayload) {
+          sendAck({});
           return handleInvite(invitePayload);
         } else if (profilePayload) {
+          sendAck({});
           return handleProfile(profilePayload);
         } else if (statusPayload !== undefined) {
+          sendAck({});
           return handleStatus(statusPayload, senderId);
         } else if (messagePayload) {
           let receivedTime = time.getTime();
           let sentTime = packet.js.t;
 
-          channel.send({js: {a: {
+          let ackPayload = {
             s: sentTime,
             r: receivedTime
-          }}});
+          };
+          sendAck(sendAck);
 
           let messageMetadata = {
             senderId,
