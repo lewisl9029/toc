@@ -58,6 +58,29 @@ $toc-white-color: #FFFFFF;
   scroll-behavior: smooth;
 }
 
+// pure css github fork-me ribbon
+// credits: https://unindented.org/articles/github-ribbon-using-css-transforms/
+.toc-ribbon {
+  z-index: 2;
+  overflow: hidden;
+  white-space: nowrap;
+  position: absolute;
+  right: -50px;
+  top: 40px;
+  transform: rotate(45deg);
+}
+.toc-ribbon a {
+  border: 1px solid $toc-primary-text-color-light;
+  color: $toc-primary-text-color-light;
+  display: block;
+  font: bold 81.25% 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 1px 0;
+  padding: 10px 50px;
+  text-align: center;
+  text-decoration: none;
+}
+
+
 .toc-landing-header {
   position: absolute;
   z-index: 1;
