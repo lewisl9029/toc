@@ -4,7 +4,7 @@ $toc-notebook-width: 1200px;
 $toc-desktop-width: 1600px;
 
 @mixin toc-landing-font($font-size) {
-  font-size: $font-size * 3/4;
+  font-size: $font-size * 5/6;
 
   @media (min-width: $toc-tablet-width) {
     font-size: $font-size;
@@ -12,7 +12,7 @@ $toc-desktop-width: 1600px;
 }
 
 @mixin toc-margin-bottom($margin-size) {
-  margin-bottom: $margin-size * 3/4;
+  margin-bottom: $margin-size * 5/6;
 
   @media (min-width: $toc-tablet-width) {
     margin-bottom: $margin-size;
@@ -118,7 +118,7 @@ $toc-white-color: #FFFFFF;
 }
 
 .toc-landing-header-container {
-  max-width: $toc-desktop-width;
+  max-width: $toc-notebook-width;
   width: 90%;
   border-bottom: 1px solid transparentize($toc-secondary-text-color-light, 0.5);
   display: flex;
@@ -245,6 +245,8 @@ $toc-white-color: #FFFFFF;
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 90%;
+  max-width: $toc-desktop-width;
 }
 
 #toc-main-section {
@@ -274,27 +276,32 @@ $toc-white-color: #FFFFFF;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 90%;
-  padding: 25px;
+  width: 100%;
+  padding: 24px;
+  padding-top: 48px;
 }
 
 .toc-main-heading {
-  @include toc-margin-bottom(24px);
-
+  @include toc-margin-bottom(45px);
+  width: 100%;
+  max-width: $toc-tablet-width;
   h1 {
     @include toc-landing-font(40px);
     color: $toc-primary-text-color-light;
     font-weight: 300;
+    line-height: 1.5;
     margin: 0;
   }
 }
 
 .toc-main-message {
-  @include toc-margin-bottom(24px);
-
+  @include toc-margin-bottom(45px);
+  width: 100%;
+  max-width: $toc-tablet-width;
   p {
-    @include toc-landing-font(24px);
-    @include toc-margin-bottom(16px);
+    @include toc-landing-font(21px);
+    @include toc-margin-bottom(30px);
+    line-height: 1.5;
     margin-top: 0;
     color: $toc-secondary-text-color-light;
   }
