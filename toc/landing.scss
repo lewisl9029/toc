@@ -4,7 +4,6 @@ $toc-notebook-width: 1200px;
 $toc-desktop-width: 1600px;
 
 @mixin toc-landing-font($font-size) {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: $font-size * 3/4;
 
   @media (min-width: $toc-tablet-width) {
@@ -95,6 +94,7 @@ $toc-light-color: #fcfcfc;
 $toc-white-color: #FFFFFF;
 
 .toc-body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
   overflow-x: hidden;
   //makes anchor scrolling smooth
@@ -108,9 +108,58 @@ $toc-white-color: #FFFFFF;
   position: absolute;
   z-index: 1;
   color: $toc-primary-text-color-light;
+  display: flex;
+  justify-content: center;
+  height: 140px;
+  @media (min-width: $toc-tablet-width) {
+    height: 210px;
+  }
+  width: 100%;
 }
 
-.toc-header-container {
+.toc-landing-header-container {
+  max-width: $toc-desktop-width;
+  width: 90%;
+  border-bottom: 1px solid transparentize($toc-secondary-text-color-light, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toc-header-nav-container {
+  flex: 0 1 400px;
+
+  @include toc-landing-font(18px);
+  font-weight: 600;
+  opacity: 0.8;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    margin-right: 20px;
+  }
+}
+
+.toc-header-logo-container {
+  flex: 1 1 180px;
+  display: flex;
+  justify-content: center;
+}
+
+.toc-header-logo {
+  width: 120px;
+  height: 120px;
+  @media (min-width: $toc-tablet-width) {
+    width: 180px;
+    height: 180px;
+  }
+  background: url(app/assets/images/logo-large.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.toc-header-links-container {
+  flex: 0 1 400px;
 }
 
 .toc-icon {
@@ -198,11 +247,17 @@ $toc-white-color: #FFFFFF;
   text-align: center;
 }
 
-#toc-call-to-action-section {
+#toc-main-section {
   background-color: $toc-primary-bg-color-dark;
+  .toc-fullscreen-container {
+    padding-top: 140px;
+    @media (min-width: $toc-tablet-width) {
+      padding-top: 210px;
+    }
+  }
 }
 
-.toc-call-to-action-backdrop {
+.toc-main-backdrop {
   position: absolute;
   top: 0;
   left: 0;
@@ -213,31 +268,17 @@ $toc-white-color: #FFFFFF;
   background-size: 90vh 90vh;
 }
 
-.toc-call-to-action-logo {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 20px;
-  @media (min-width: $toc-tablet-width) {
-    width: 150px;
-    height: 150px;
-    margin-bottom: 30px;
-  }
-  background: url(app/assets/images/logo-large.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-.toc-call-to-action-content {
+.toc-main-content {
   display: flex;
   z-index: 2;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex: 1 1 400px;
+  width: 90%;
   padding: 25px;
 }
 
-.toc-call-to-action-heading {
+.toc-main-heading {
   @include toc-margin-bottom(24px);
 
   h1 {
@@ -248,7 +289,7 @@ $toc-white-color: #FFFFFF;
   }
 }
 
-.toc-call-to-action-message {
+.toc-main-message {
   @include toc-margin-bottom(24px);
 
   p {
@@ -259,20 +300,20 @@ $toc-white-color: #FFFFFF;
   }
 }
 
-.toc-call-to-action-actions {
+.toc-main-actions {
   max-width: 400px;
   width: 90%;
 }
 
-.toc-call-to-action-action {
+.toc-main-action {
   flex: 1 1 auto;
   @include toc-margin-bottom(16px);
 }
 
-.toc-call-to-action-hidden-action {
+.toc-main-hidden-action {
 }
 
-.toc-call-to-action-images {
+.toc-main-images {
   flex: 1 1 300px;
   display: flex;
   z-index: 2;
@@ -282,7 +323,7 @@ $toc-white-color: #FFFFFF;
   align-items: center;
 }
 
-.toc-call-to-action-image-phone {
+.toc-main-image-phone {
   width: 300px;
   height: 630px;
   background: url(app/assets/images/phone-outline.svg);
