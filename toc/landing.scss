@@ -47,6 +47,11 @@ $toc-background-gradient-light: radial-gradient(
 $toc-light-color: #fcfcfc;
 $toc-white-color: #FFFFFF;
 
+
+a {
+  color: $toc-secondary-text-color-light;
+}
+
 .toc-body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
@@ -80,41 +85,34 @@ $toc-white-color: #FFFFFF;
   text-decoration: none;
 }
 
-
 .toc-landing-header {
   position: absolute;
   z-index: 1;
   color: $toc-primary-text-color-light;
   display: flex;
   justify-content: center;
-  height: 140px;
+  height: 100px;
   @media (min-width: $toc-tablet-width) {
-    height: 210px;
+    height: 120px;
   }
   width: 100%;
 }
 
 .toc-landing-header-container {
   max-width: $toc-notebook-width;
-  width: 90%;
+  width: 80%;
   border-bottom: 1px solid transparentize($toc-secondary-text-color-light, 0.5);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
-.toc-header-logo-container {
-  flex: 1 1 180px;
-  display: flex;
-  justify-content: center;
-}
-
 .toc-header-logo {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   @media (min-width: $toc-tablet-width) {
-    width: 180px;
-    height: 180px;
+    width: 120px;
+    height: 120px;
   }
   background: url(app/assets/images/logo-large.svg);
   background-size: contain;
@@ -122,11 +120,12 @@ $toc-white-color: #FFFFFF;
 }
 
 .toc-landing-content {
+  position: relative;
   // overflow: scroll;
 }
 
 .toc-fullscreen-section {
-  background-color: $toc-primary-bg-color-light;
+  background-color: $toc-primary-bg-color-dark;
   min-height: 100vh;
   display: flex;
   flex-direction: row;
@@ -198,11 +197,12 @@ $toc-white-color: #FFFFFF;
 }
 
 #toc-main-section {
-  background-color: $toc-primary-bg-color-dark;
   .toc-fullscreen-container {
-    padding-top: 140px;
+    margin-top: 110px;
+    margin-bottom: 10px;
     @media (min-width: $toc-tablet-width) {
-      padding-top: 210px;
+      margin-top: 130px;
+      margin-bottom: 20px;
     }
   }
 }
@@ -225,12 +225,14 @@ $toc-white-color: #FFFFFF;
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 24px;
-  padding-top: 48px;
+  padding: 20px;
+  @media (min-width: $toc-tablet-width) {
+    padding: 24px;
+  }
 }
 
 .toc-main-heading {
-  @include toc-margin-bottom(45px);
+  @include toc-margin-bottom(30px);
   width: 100%;
   max-width: $toc-tablet-width;
   h1 {
@@ -243,7 +245,7 @@ $toc-white-color: #FFFFFF;
 }
 
 .toc-main-message {
-  @include toc-margin-bottom(45px);
+  @include toc-margin-bottom(30px);
   width: 100%;
   max-width: $toc-tablet-width;
   p {
@@ -265,10 +267,18 @@ $toc-white-color: #FFFFFF;
   @include toc-margin-bottom(16px);
 }
 
-.toc-main-hidden-action {
+#toc-images-section {
+  .toc-fullscreen-container {
+    margin-bottom: 60px;
+    margin-top: 10px;
+    @media (min-width: $toc-tablet-width) {
+      margin-bottom: 70px;
+      margin-top: 20px;
+    }
+  }
 }
 
-.toc-main-images {
+.toc-images {
   flex: 1 1 300px;
   display: flex;
   z-index: 2;
@@ -278,10 +288,43 @@ $toc-white-color: #FFFFFF;
   align-items: center;
 }
 
-.toc-main-image-phone {
+.toc-image-phone {
   width: 300px;
   height: 630px;
   background: url(app/assets/images/phone-outline.svg);
   background-size: contain;
   background-repeat: no-repeat;
+}
+
+.toc-landing-footer {
+  position: absolute;
+  bottom: 0px;
+  z-index: 1;
+  color: $toc-primary-text-color-light;
+  display: flex;
+  justify-content: center;
+  height: 50px;
+  @media (min-width: $toc-tablet-width) {
+    height: 60px;
+  }
+  width: 100%;
+}
+
+.toc-landing-footer-container {
+  max-width: $toc-notebook-width;
+  width: 80%;
+  border-top: 1px solid transparentize($toc-secondary-text-color-light, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toc-footer-message {
+  text-align: center;
+  .toc-footer-message-special-thanks {
+    display: none;
+    @media (min-width: $toc-tablet-width) {
+      display: unset;
+    }
+  }
 }
