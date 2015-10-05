@@ -4,8 +4,7 @@ $toc-notebook-width: 1200px;
 $toc-desktop-width: 1600px;
 
 @mixin toc-landing-font($font-size) {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: $font-size * 3/4;
+  font-size: $font-size * 5/6;
 
   @media (min-width: $toc-tablet-width) {
     font-size: $font-size;
@@ -13,7 +12,7 @@ $toc-desktop-width: 1600px;
 }
 
 @mixin toc-margin-bottom($margin-size) {
-  margin-bottom: $margin-size * 3/4;
+  margin-bottom: $margin-size * 5/6;
 
   @media (min-width: $toc-tablet-width) {
     margin-bottom: $margin-size;
@@ -49,6 +48,7 @@ $toc-light-color: #fcfcfc;
 $toc-white-color: #FFFFFF;
 
 .toc-body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
   overflow-x: hidden;
   //makes anchor scrolling smooth
@@ -56,6 +56,69 @@ $toc-white-color: #FFFFFF;
   //in chrome users need to set the smooth scroll flag.
   //polyfilling in js for chrome
   scroll-behavior: smooth;
+}
+
+// pure css github fork-me ribbon
+// credits: https://unindented.org/articles/github-ribbon-using-css-transforms/
+.toc-ribbon {
+  z-index: 2;
+  overflow: hidden;
+  white-space: nowrap;
+  position: absolute;
+  right: -50px;
+  top: 40px;
+  transform: rotate(45deg);
+}
+.toc-ribbon a {
+  border: 1px solid $toc-primary-text-color-light;
+  color: $toc-primary-text-color-light;
+  display: block;
+  font: bold 81.25% 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 1px 0;
+  padding: 10px 50px;
+  text-align: center;
+  text-decoration: none;
+}
+
+
+.toc-landing-header {
+  position: absolute;
+  z-index: 1;
+  color: $toc-primary-text-color-light;
+  display: flex;
+  justify-content: center;
+  height: 140px;
+  @media (min-width: $toc-tablet-width) {
+    height: 210px;
+  }
+  width: 100%;
+}
+
+.toc-landing-header-container {
+  max-width: $toc-notebook-width;
+  width: 90%;
+  border-bottom: 1px solid transparentize($toc-secondary-text-color-light, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toc-header-logo-container {
+  flex: 1 1 180px;
+  display: flex;
+  justify-content: center;
+}
+
+.toc-header-logo {
+  width: 120px;
+  height: 120px;
+  @media (min-width: $toc-tablet-width) {
+    width: 180px;
+    height: 180px;
+  }
+  background: url(app/assets/images/logo-large.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .toc-landing-content {
@@ -130,13 +193,21 @@ $toc-white-color: #FFFFFF;
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 90%;
+  max-width: $toc-desktop-width;
 }
 
-#toc-call-to-action-section {
+#toc-main-section {
   background-color: $toc-primary-bg-color-dark;
+  .toc-fullscreen-container {
+    padding-top: 140px;
+    @media (min-width: $toc-tablet-width) {
+      padding-top: 210px;
+    }
+  }
 }
 
-.toc-call-to-action-backdrop {
+.toc-main-backdrop {
   position: absolute;
   top: 0;
   left: 0;
@@ -147,66 +218,57 @@ $toc-white-color: #FFFFFF;
   background-size: 90vh 90vh;
 }
 
-.toc-call-to-action-logo {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 20px;
-  @media (min-width: $toc-tablet-width) {
-    width: 150px;
-    height: 150px;
-    margin-bottom: 30px;
-  }
-  background: url(app/assets/images/logo-large.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-.toc-call-to-action-content {
+.toc-main-content {
   display: flex;
   z-index: 2;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex: 1 1 400px;
-  padding: 25px;
+  width: 100%;
+  padding: 24px;
+  padding-top: 48px;
 }
 
-.toc-call-to-action-heading {
-  @include toc-margin-bottom(24px);
-
+.toc-main-heading {
+  @include toc-margin-bottom(45px);
+  width: 100%;
+  max-width: $toc-tablet-width;
   h1 {
     @include toc-landing-font(40px);
     color: $toc-primary-text-color-light;
     font-weight: 300;
+    line-height: 1.5;
     margin: 0;
   }
 }
 
-.toc-call-to-action-message {
-  @include toc-margin-bottom(24px);
-
+.toc-main-message {
+  @include toc-margin-bottom(45px);
+  width: 100%;
+  max-width: $toc-tablet-width;
   p {
-    @include toc-landing-font(24px);
-    @include toc-margin-bottom(16px);
+    @include toc-landing-font(21px);
+    @include toc-margin-bottom(30px);
+    line-height: 1.5;
     margin-top: 0;
     color: $toc-secondary-text-color-light;
   }
 }
 
-.toc-call-to-action-actions {
+.toc-main-actions {
   max-width: 400px;
   width: 90%;
 }
 
-.toc-call-to-action-action {
+.toc-main-action {
   flex: 1 1 auto;
   @include toc-margin-bottom(16px);
 }
 
-.toc-call-to-action-hidden-action {
+.toc-main-hidden-action {
 }
 
-.toc-call-to-action-images {
+.toc-main-images {
   flex: 1 1 300px;
   display: flex;
   z-index: 2;
@@ -216,7 +278,7 @@ $toc-white-color: #FFFFFF;
   align-items: center;
 }
 
-.toc-call-to-action-image-phone {
+.toc-main-image-phone {
   width: 300px;
   height: 630px;
   background: url(app/assets/images/phone-outline.svg);
