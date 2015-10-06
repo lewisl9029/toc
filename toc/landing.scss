@@ -47,9 +47,35 @@ $toc-background-gradient-light: radial-gradient(
 $toc-light-color: #fcfcfc;
 $toc-white-color: #FFFFFF;
 
+$toc-animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
+
 
 a {
   color: $toc-secondary-text-color-light;
+}
+
+@keyframes tocLandingFadeOutBottom {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 100px, 0);
+  }
+}
+
+@keyframes tocLandingRibbonFadeOutRight {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(45deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(100px, 0, 0) rotate(45deg);
+  }
 }
 
 .toc-body {
@@ -59,8 +85,19 @@ a {
   //makes anchor scrolling smooth
   //supported natively on firefox.
   //in chrome users need to set the smooth scroll flag.
-  //polyfilling in js for chrome
+  //polyfilling in js for unsupported browsers
   scroll-behavior: smooth;
+  &.toc-hide {
+    .toc-ribbon {
+      animation: tocLandingRibbonFadeOutRight 1s $toc-animation-timing-function both;
+    }
+    .toc-main-content,
+    .toc-landing-header,
+    .toc-landing-footer,
+    #toc-images-section .toc-fullscreen-container {
+      animation: tocLandingFadeOutBottom 1s $toc-animation-timing-function both;
+    }
+  }
 }
 
 // pure css github fork-me ribbon
