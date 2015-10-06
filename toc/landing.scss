@@ -1,7 +1,6 @@
 $toc-tablet-width: 768px;
-$toc-notebook-half-width: 940px;
-$toc-notebook-width: 1200px;
-$toc-desktop-width: 1600px;
+$toc-notebook-width: 940px;
+$toc-desktop-width: 1400px;
 
 @mixin toc-landing-font($font-size) {
   font-size: $font-size * 5/6;

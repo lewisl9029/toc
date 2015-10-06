@@ -83,8 +83,18 @@
         <div class="toc-fullscreen-container">
           <div class="toc-images">
             <div class="toc-image-container">
-              <div class="toc-image-phone">
-              </div>
+              <picture class="toc-image-device">
+                <source media="(min-width: 1400px)"
+                  srcset="app/assets/images/desktop-outline.svg" sizes="1000px">
+                <source media="(min-width: 940px)"
+                  srcset="app/assets/images/notebook-outline.svg" sizes="920px">
+                <source media="(min-width: 768px)"
+                  srcset="app/assets/images/tablet-outline.svg" sizes="600px">
+                <source srcset="app/assets/images/phone-outline.svg"
+                  sizes="300px">
+                <img src="app/assets/images/phone-outline.svg"
+                  alt="Device outline">
+              </picture>
             </div>
           </div>
         </div>
