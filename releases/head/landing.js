@@ -42,6 +42,21 @@
     }
   }
 
+  var tocBody = window.document.getElementsByClassName('toc-body')[0];
+
+  var appLinks = window.document.getElementsByClassName('toc-app-link');
+
+  var appLinkHandler = function appLinkHandler(event) {
+    tocBody.classList.add('toc-hide');
+    return setTimeout(function() {}, 1000);
+  };
+
+  window.Array.prototype.forEach.call(appLinks,
+    function (appLink, index) {
+      appLink.addEventListener('click', appLinkHandler);
+    }
+  );
+
   var scrollLinks =
     window.document.getElementsByClassName('toc-anchor-scroll-link');
 
