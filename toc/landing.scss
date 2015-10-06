@@ -66,6 +66,18 @@ a {
   }
 }
 
+@keyframes tocLandingRibbonFadeOutRight {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(45deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(100px, 0, 0) rotate(45deg);
+  }
+}
+
 .toc-body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
@@ -73,19 +85,16 @@ a {
   //makes anchor scrolling smooth
   //supported natively on firefox.
   //in chrome users need to set the smooth scroll flag.
-  //polyfilling in js for chrome
+  //polyfilling in js for unsupported browsers
   scroll-behavior: smooth;
   &.toc-hide {
     .toc-ribbon {
-      //using animations for this results in transform disappearing
-      right: -150px;
-      opacity: 0;
-      transition:
-        right 1s $toc-animation-timing-function,
-        opacity 1s $toc-animation-timing-function;
+      animation: tocLandingRibbonFadeOutRight 1s $toc-animation-timing-function both;
     }
     .toc-main-content,
-    .toc-landing-header {
+    .toc-landing-header,
+    .toc-landing-footer,
+    #toc-images-section .toc-fullscreen-container {
       animation: tocLandingFadeOutBottom 1s $toc-animation-timing-function both;
     }
   }
