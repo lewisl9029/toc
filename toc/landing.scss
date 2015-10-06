@@ -47,9 +47,23 @@ $toc-background-gradient-light: radial-gradient(
 $toc-light-color: #fcfcfc;
 $toc-white-color: #FFFFFF;
 
+$toc-animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
+
 
 a {
   color: $toc-secondary-text-color-light;
+}
+
+@keyframes tocLandingFadeOutBottom {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 100px, 0);
+  }
 }
 
 .toc-body {
@@ -61,6 +75,20 @@ a {
   //in chrome users need to set the smooth scroll flag.
   //polyfilling in js for chrome
   scroll-behavior: smooth;
+  &.toc-hide {
+    .toc-ribbon {
+      //using animations for this results in transform disappearing
+      right: -150px;
+      opacity: 0;
+      transition:
+        right 1s $toc-animation-timing-function,
+        opacity 1s $toc-animation-timing-function;
+    }
+    .toc-main-content,
+    .toc-landing-header {
+      animation: tocLandingFadeOutBottom 1s $toc-animation-timing-function both;
+    }
+  }
 }
 
 // pure css github fork-me ribbon
