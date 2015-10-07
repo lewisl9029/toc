@@ -23,7 +23,7 @@ RUN apt-get update && \
 # setting up environment variables
 ENV TOC_BUNDLE_PATH=cache/bundle \
   TOC_CHROME_BUNDLE_NAME=google-chrome-stable_current_amd64.deb \
-  TOC_NODE_BUNDLE_NAME=node-v4.1.1-linux-x64.tar.gz \
+  TOC_NODE_BUNDLE_NAME=node-v4.1.2-linux-x64.tar.gz \
   TOC_ANDROID_BUNDLE_NAME=android-sdk_r24.3.4-linux.tgz \
   DISPLAY=:1 \
   ANDROID_HOME=$TOC_SETUP_PATH/android-sdk-linux \
