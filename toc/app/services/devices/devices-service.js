@@ -80,13 +80,13 @@ export default /*@ngInject*/ function devices(
 
       let disconnectPopupScope = $rootScope.$new();
       disconnectPopupScope.disconnectPopup = {
-        countdown: 5
+        countdown: 15
       };
 
       let disconnectingDevice = $interval(() => {
         disconnectPopupScope.disconnectPopup.countdown =
           disconnectPopupScope.disconnectPopup.countdown - 1;
-      }, 1000, 5, true);
+      }, 1000, 15, true);
 
       disconnectingDevice.then(() => destroySession());
 
