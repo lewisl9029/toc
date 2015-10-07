@@ -46,26 +46,29 @@ export default /*@ngInject*/ function devices(
 
     let existingCloudDevices = state.cloud.devices.get() || {};
 
-    let cloudDevices = R.assoc(localDeviceId, {})(existingCloudDevices);
+    let updateDisconnectFlag = (deviceId) => {
+      return cryptography.getRandomBase64(2)
+        .then((disconnectFlag) => {
+          if (deviceId === localDeviceId) {
+            localDisconnectFlag = disconnectFlag;
+          }
+          return state.save(
+            state.cloud.devices,
+            [deviceId, 'disconnect'],
+            disconnectFlag
+          );
+        });
+    };
 
-    let devicesDisconnecting = R.pipe(
+    let otherDeviceIds = R.pipe(
       R.keys,
-      R.map((deviceId) => {
-        return cryptography.getRandomBase64(2)
-          .then((disconnectFlag) => {
-            if (deviceId === localDeviceId) {
-              localDisconnectFlag = disconnectFlag;
-            }
-            return state.save(
-              state.cloud.devices,
-              [deviceId, 'disconnect'],
-              disconnectFlag
-            );
-          });
-      })
-    ) (cloudDevices);
+      R.reject(R.equals(localDeviceId))
+    )(existingCloudDevices);
 
-    return $q.all(devicesDisconnecting);
+    let disconnectingOthers = R.map(updateDisconnectFlag)(otherDeviceIds);
+
+    return updateDisconnectFlag(localDeviceId)
+      .then(() => $q.all(disconnectingOthers));
   };
 
   let listenForDisconnects = function listenForDisconnects(destroySession) {
