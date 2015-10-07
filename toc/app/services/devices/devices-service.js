@@ -30,19 +30,15 @@ export default /*@ngInject*/ function devices(
   };
 
   let isInForeground = function isInForeground() {
-    if (isCordovaApp()) {
-      return !$window.cordova.plugins.backgroundMode.isActive();
-    }
-
     // fallback for when page visibility api isnt supported
-    if ($window.hidden === undefined) {
+    if ($window.document.hidden === undefined) {
       if ($window.document.hasFocus === undefined) {
         return true;
       }
       return $window.document.hasFocus();
     }
 
-    return !$window.hidden;
+    return !$window.document.hidden;
   };
 
   let disconnectOtherDevices = function disconnectOtherDevices() {
@@ -50,26 +46,29 @@ export default /*@ngInject*/ function devices(
 
     let existingCloudDevices = state.cloud.devices.get() || {};
 
-    let cloudDevices = R.assoc(localDeviceId, {})(existingCloudDevices);
+    let updateDisconnectFlag = (deviceId) => {
+      return cryptography.getRandomBase64(2)
+        .then((disconnectFlag) => {
+          if (deviceId === localDeviceId) {
+            localDisconnectFlag = disconnectFlag;
+          }
+          return state.save(
+            state.cloud.devices,
+            [deviceId, 'disconnect'],
+            disconnectFlag
+          );
+        });
+    };
 
-    let devicesDisconnecting = R.pipe(
+    let otherDeviceIds = R.pipe(
       R.keys,
-      R.map((deviceId) => {
-        return cryptography.getRandomBase64(2)
-          .then((disconnectFlag) => {
-            if (deviceId === localDeviceId) {
-              localDisconnectFlag = disconnectFlag;
-            }
-            return state.save(
-              state.cloud.devices,
-              [deviceId, 'disconnect'],
-              disconnectFlag
-            );
-          });
-      })
-    ) (cloudDevices);
+      R.reject(R.equals(localDeviceId))
+    )(existingCloudDevices);
 
-    return $q.all(devicesDisconnecting);
+    let disconnectingOthers = R.map(updateDisconnectFlag)(otherDeviceIds);
+
+    return updateDisconnectFlag(localDeviceId)
+      .then(() => $q.all(disconnectingOthers));
   };
 
   let listenForDisconnects = function listenForDisconnects(destroySession) {
@@ -84,13 +83,13 @@ export default /*@ngInject*/ function devices(
 
       let disconnectPopupScope = $rootScope.$new();
       disconnectPopupScope.disconnectPopup = {
-        countdown: 5
+        countdown: 15
       };
 
       let disconnectingDevice = $interval(() => {
         disconnectPopupScope.disconnectPopup.countdown =
           disconnectPopupScope.disconnectPopup.countdown - 1;
-      }, 1000, 5, true);
+      }, 1000, 15, true);
 
       disconnectingDevice.then(() => destroySession());
 

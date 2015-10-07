@@ -63,8 +63,6 @@ export default /*@ngInject*/ function network(
 
         let senderId = packet.from.hashname;
         let channelId = channel.type.substr(1); //removes leading underscore
-        let receivedTime = time.getTime();
-        let sentTime = packet.js.t;
 
         let ackPayload = packet.js.a;
         let invitePayload = packet.js.i;
@@ -72,28 +70,39 @@ export default /*@ngInject*/ function network(
         let statusPayload = packet.js.s;
         let messagePayload = packet.js.m;
 
-        let messageMetadata = {
-          senderId,
-          channelId,
-          sentTime,
-          receivedTime
+        callback(true);
+
+        let sendAck = (ackPayload) => {
+          channel.send({js: {a: ackPayload}});
         };
 
-        callback(true);
-        channel.send({js: {a: {
-          s: sentTime,
-          r: receivedTime
-        }}});
-
         if (ackPayload) {
-          return $q.when();
+          return handleStatus(1, senderId);
         } else if (invitePayload) {
+          sendAck({});
           return handleInvite(invitePayload);
         } else if (profilePayload) {
+          sendAck({});
           return handleProfile(profilePayload);
         } else if (statusPayload !== undefined) {
+          sendAck({});
           return handleStatus(statusPayload, senderId);
         } else if (messagePayload) {
+          let receivedTime = time.getTime();
+          let sentTime = packet.js.t;
+
+          let ackPayload = {
+            s: sentTime,
+            r: receivedTime
+          };
+          sendAck(ackPayload);
+
+          let messageMetadata = {
+            senderId,
+            channelId,
+            sentTime,
+            receivedTime
+          };
           return handleMessage(messagePayload, messageMetadata);
         } else {
           return $q.reject(
@@ -180,8 +189,7 @@ export default /*@ngInject*/ function network(
 
   let sendInvite = function sendInvite(channelInfo, userInfo) {
     let payload = {
-      i: userInfo,
-      t: time.getTime()
+      i: userInfo
     };
 
     return send(channelInfo, payload);
@@ -189,8 +197,7 @@ export default /*@ngInject*/ function network(
 
   let sendProfile = function sendProfile(channelInfo, userInfo) {
     let payload = {
-      p: userInfo,
-      t: time.getTime()
+      p: userInfo
     };
 
     return send(channelInfo, payload);
@@ -209,8 +216,7 @@ export default /*@ngInject*/ function network(
     }
 
     let payload = {
-      s: statusId,
-      t: time.getTime()
+      s: statusId
     };
 
     return send(contactChannel, payload)

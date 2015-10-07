@@ -1,11 +1,9 @@
 $toc-tablet-width: 768px;
-$toc-notebook-half-width: 940px;
-$toc-notebook-width: 1200px;
-$toc-desktop-width: 1600px;
+$toc-notebook-width: 940px;
+$toc-desktop-width: 1400px;
 
 @mixin toc-landing-font($font-size) {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: $font-size * 3/4;
+  font-size: $font-size * 9/10;
 
   @media (min-width: $toc-tablet-width) {
     font-size: $font-size;
@@ -13,7 +11,7 @@ $toc-desktop-width: 1600px;
 }
 
 @mixin toc-margin-bottom($margin-size) {
-  margin-bottom: $margin-size * 3/4;
+  margin-bottom: $margin-size * 9/10;
 
   @media (min-width: $toc-tablet-width) {
     margin-bottom: $margin-size;
@@ -48,22 +46,122 @@ $toc-background-gradient-light: radial-gradient(
 $toc-light-color: #fcfcfc;
 $toc-white-color: #FFFFFF;
 
+$toc-animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
+
+
+a {
+  color: $toc-secondary-text-color-light;
+}
+
+@keyframes tocLandingFadeOutBottom {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 100px, 0);
+  }
+}
+
+@keyframes tocLandingRibbonFadeOutRight {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(45deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(100px, 0, 0) rotate(45deg);
+  }
+}
+
 .toc-body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
   overflow-x: hidden;
   //makes anchor scrolling smooth
   //supported natively on firefox.
   //in chrome users need to set the smooth scroll flag.
-  //polyfilling in js for chrome
+  //polyfilling in js for unsupported browsers
   scroll-behavior: smooth;
+  &.toc-hide {
+    .toc-ribbon {
+      animation: tocLandingRibbonFadeOutRight 1s $toc-animation-timing-function both;
+    }
+    .toc-main-content,
+    .toc-landing-header,
+    .toc-landing-footer,
+    #toc-images-section .toc-fullscreen-container {
+      animation: tocLandingFadeOutBottom 1s $toc-animation-timing-function both;
+    }
+  }
+}
+
+// pure css github fork-me ribbon
+// credits: https://unindented.org/articles/github-ribbon-using-css-transforms/
+.toc-ribbon {
+  z-index: 2;
+  overflow: hidden;
+  white-space: nowrap;
+  position: absolute;
+  right: -50px;
+  top: 40px;
+  transform: rotate(45deg);
+}
+.toc-ribbon a {
+  border: 1px solid $toc-primary-text-color-light;
+  color: $toc-primary-text-color-light;
+  display: block;
+  font: bold 81.25% 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 1px 0;
+  padding: 10px 50px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.toc-landing-header {
+  position: absolute;
+  z-index: 1;
+  color: $toc-primary-text-color-light;
+  display: flex;
+  justify-content: center;
+  height: 100px;
+  @media (min-width: $toc-tablet-width) {
+    height: 120px;
+  }
+  width: 100%;
+}
+
+.toc-landing-header-container {
+  max-width: $toc-notebook-width;
+  width: 80%;
+  border-bottom: 1px solid transparentize($toc-secondary-text-color-light, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toc-header-logo {
+  width: 100px;
+  height: 100px;
+  @media (min-width: $toc-tablet-width) {
+    width: 120px;
+    height: 120px;
+  }
+  background: url(app/assets/images/logo-large.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .toc-landing-content {
+  position: relative;
   // overflow: scroll;
 }
 
 .toc-fullscreen-section {
-  background-color: $toc-primary-bg-color-light;
+  background-color: $toc-primary-bg-color-dark;
   min-height: 100vh;
   display: flex;
   flex-direction: row;
@@ -86,7 +184,7 @@ $toc-white-color: #FFFFFF;
   @media (min-width: $toc-tablet-width) {
     padding: 12px 24px;
   }
-  @include toc-landing-font(24px);
+  @include toc-landing-font(20px);
 
   transition: 0.1s linear;
 
@@ -109,7 +207,7 @@ $toc-white-color: #FFFFFF;
   @media (min-width: $toc-tablet-width) {
     padding: 12px 24px;
   }
-  @include toc-landing-font(24px);
+  @include toc-landing-font(20px);
 
   &:hover {
     color: $toc-primary-text-color-dark;
@@ -130,13 +228,22 @@ $toc-white-color: #FFFFFF;
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 90%;
+  max-width: $toc-desktop-width;
 }
 
-#toc-call-to-action-section {
-  background-color: $toc-primary-bg-color-dark;
+#toc-main-section {
+  .toc-fullscreen-container {
+    margin-top: 110px;
+    margin-bottom: 10px;
+    @media (min-width: $toc-tablet-width) {
+      margin-top: 130px;
+      margin-bottom: 20px;
+    }
+  }
 }
 
-.toc-call-to-action-backdrop {
+.toc-main-backdrop {
   position: absolute;
   top: 0;
   left: 0;
@@ -147,66 +254,67 @@ $toc-white-color: #FFFFFF;
   background-size: 90vh 90vh;
 }
 
-.toc-call-to-action-logo {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 20px;
-  @media (min-width: $toc-tablet-width) {
-    width: 150px;
-    height: 150px;
-    margin-bottom: 30px;
-  }
-  background: url(app/assets/images/logo-large.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-.toc-call-to-action-content {
+.toc-main-content {
   display: flex;
   z-index: 2;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex: 1 1 400px;
-  padding: 25px;
+  width: 100%;
+  padding: 20px;
+  @media (min-width: $toc-tablet-width) {
+    padding: 24px;
+  }
 }
 
-.toc-call-to-action-heading {
-  @include toc-margin-bottom(24px);
-
+.toc-main-heading {
+  @include toc-margin-bottom(30px);
+  width: 100%;
+  max-width: $toc-tablet-width;
   h1 {
-    @include toc-landing-font(40px);
+    @include toc-landing-font(30px);
     color: $toc-primary-text-color-light;
     font-weight: 300;
+    line-height: 1.5;
     margin: 0;
   }
 }
 
-.toc-call-to-action-message {
-  @include toc-margin-bottom(24px);
-
+.toc-main-message {
+  @include toc-margin-bottom(30px);
+  width: 100%;
+  max-width: $toc-tablet-width;
   p {
-    @include toc-landing-font(24px);
-    @include toc-margin-bottom(16px);
+    @include toc-landing-font(20px);
+    @include toc-margin-bottom(20px);
+    line-height: 1.5;
     margin-top: 0;
     color: $toc-secondary-text-color-light;
   }
 }
 
-.toc-call-to-action-actions {
+.toc-main-actions {
   max-width: 400px;
   width: 90%;
 }
 
-.toc-call-to-action-action {
+.toc-main-action {
   flex: 1 1 auto;
-  @include toc-margin-bottom(16px);
+  @include toc-margin-bottom(20px);
 }
 
-.toc-call-to-action-hidden-action {
+#toc-images-section {
+  .toc-fullscreen-container {
+    margin-bottom: 60px;
+    margin-top: 10px;
+    @media (min-width: $toc-tablet-width) {
+      margin-bottom: 70px;
+      margin-top: 20px;
+    }
+  }
 }
 
-.toc-call-to-action-images {
+.toc-images {
   flex: 1 1 300px;
   display: flex;
   z-index: 2;
@@ -216,10 +324,39 @@ $toc-white-color: #FFFFFF;
   align-items: center;
 }
 
-.toc-call-to-action-image-phone {
-  width: 300px;
-  height: 630px;
-  background: url(app/assets/images/phone-outline.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
+.toc-image-device {
+  opacity: 0.8
+}
+
+.toc-landing-footer {
+  position: absolute;
+  bottom: 0px;
+  z-index: 1;
+  color: $toc-primary-text-color-light;
+  display: flex;
+  justify-content: center;
+  height: 50px;
+  @media (min-width: $toc-tablet-width) {
+    height: 60px;
+  }
+  width: 100%;
+}
+
+.toc-landing-footer-container {
+  max-width: $toc-notebook-width;
+  width: 80%;
+  border-top: 1px solid transparentize($toc-secondary-text-color-light, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toc-footer-message {
+  text-align: center;
+  .toc-footer-message-special-thanks {
+    display: none;
+    @media (min-width: $toc-tablet-width) {
+      display: unset;
+    }
+  }
 }

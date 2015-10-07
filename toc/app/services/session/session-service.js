@@ -77,7 +77,7 @@ export default /*@ngInject*/ function session(
         state.local.cryptography,
         ['derivedCredentials']
       )
-      .then(() => $q.when($window.location.reload()));
+      .then(() => $timeout(() => $window.location.reload(), 0, false));
   };
 
   let sessionService = {

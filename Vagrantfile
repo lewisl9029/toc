@@ -44,13 +44,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     begin
       require_relative "secrets/vagrant-secrets"
 
-      override.vm.synced_folder ".", "/home/vagrant/toc-env",
-        smb_username: SMB_USERNAME, smb_password: SMB_PASSWORD
-      override.vm.synced_folder ENV["TOC_PATH"], "/home/vagrant/toc",
+      override.vm.synced_folder ".", "/home/vagrant/toc",
         smb_username: SMB_USERNAME, smb_password: SMB_PASSWORD
     rescue LoadError
-      override.vm.synced_folder ".", "/home/vagrant/toc-env"
-      override.vm.synced_folder ENV["TOC_PATH"], "/home/vagrant/toc"
+      override.vm.synced_folder ".", "/home/vagrant/toc"
     end
   end
 end

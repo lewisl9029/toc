@@ -21,12 +21,12 @@ System.config({
     "angular/bower-angular": "github:angular/bower-angular@1.4.6",
     "babel": "npm:babel-core@5.8.24",
     "babel-runtime": "npm:babel-runtime@5.8.24",
-    "baobab": "npm:baobab@2.0.0-rc2",
+    "baobab": "npm:baobab@2.0.0",
     "core-js": "npm:core-js@1.1.4",
     "driftyco/ionic": "github:driftyco/ionic@1.1.0",
     "moment": "npm:moment@2.10.6",
     "ng-cordova": "npm:ng-cordova@0.1.17-alpha",
-    "node-forge": "npm:node-forge@0.6.34",
+    "node-forge": "npm:node-forge@0.6.35",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "qr-image": "npm:qr-image@3.1.0",
     "ramda": "npm:ramda@0.17.1",
@@ -80,7 +80,7 @@ System.config({
     "npm:babel-runtime@5.8.24": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
-    "npm:baobab@2.0.0-rc2": {
+    "npm:baobab@2.0.0": {
       "emmett": "npm:emmett@3.1.1"
     },
     "npm:browserify-zlib@0.1.4": {
