@@ -22,7 +22,6 @@ RUN apt-get update && \
 
 # setting up environment variables
 ENV TOC_BUNDLE_PATH=cache/bundle \
-  TOC_CHROME_BUNDLE_NAME=google-chrome-stable_current_amd64.deb \
   TOC_NODE_BUNDLE_NAME=node-v4.1.2-linux-x64.tar.gz \
   TOC_ANDROID_BUNDLE_NAME=android-sdk_r24.3.4-linux.tgz \
   DISPLAY=:1 \
@@ -37,10 +36,8 @@ COPY $TOC_BUNDLE_PATH $TOC_SETUP_PATH
 # bundles need to be downloaded for each build
 ADD toc-setup-bundle.sh $TOC_SETUP_PATH/toc-setup-bundle.sh
 
-# installing chrome and android sdk
+# installing node and android sdk
 RUN /bin/bash toc-setup-bundle.sh $TOC_SETUP_PATH && \
-  dpkg -i $TOC_CHROME_BUNDLE_NAME; \
-  apt-get -y -f install && apt-get clean && rm $TOC_CHROME_BUNDLE_NAME && \
   tar -xzf $TOC_NODE_BUNDLE_NAME --strip-components=1 --exclude='ChangeLog' \
     --exclude='LICENSE' --exclude='README.md' && rm $TOC_NODE_BUNDLE_NAME && \
   tar -xzf $TOC_ANDROID_BUNDLE_NAME && rm $TOC_ANDROID_BUNDLE_NAME && \
