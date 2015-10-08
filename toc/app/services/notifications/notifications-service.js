@@ -105,10 +105,12 @@ export default /*@ngInject*/ function notifications(
       if (devices.isInForeground()) {
         return $q.when();
       }
-
-      return devices.isCordovaApp() ?
-        notifyCordova(notificationInfo) :
-        notifyWeb(notificationInfo);
+      // apparently, web notificaions api works in cordova for android.
+      // TODO: check with iOS
+      // return devices.isCordovaApp() ?
+      //   notifyCordova(notificationInfo) :
+      //   notifyWeb(notificationInfo);
+      return notifyWeb(notificationInfo);
     };
 
     let notificationCursor = state.cloud.notifications.select([notificationId]);
@@ -173,9 +175,10 @@ export default /*@ngInject*/ function notifications(
     }
 
     let dismissNative = (notificationInfo) => {
-      return devices.isCordovaApp() ?
-        dismissCordova(notificationInfo) :
-        dismissWeb(notificationInfo);
+      // return devices.isCordovaApp() ?
+      //   dismissCordova(notificationInfo) :
+      //   dismissWeb(notificationInfo);
+      return dismissWeb(notificationInfo);
     };
 
     let notificationCursor = state.cloud.notifications.select([notificationId]);
@@ -219,12 +222,21 @@ export default /*@ngInject*/ function notifications(
   let initialize = function initialize(contactsService) {
     contacts = contactsService;
 
-    if (devices.isWebApp()) {
-      if (!$window.Notification) {
-        return $q.when();
-      }
-
+    if ($window.Notification) {
       $window.Notification.requestPermission();
+    }
+
+    if (devices.isCordovaApp() && $window.cordova.plugins.backgroundMode) {
+      // enables background operation
+      // de.appplant.cordova.plugin.background-mode required
+      // $window.cordova.plugins.backgroundMode.setDefaults({ silent: true });
+      $window.cordova.plugins.backgroundMode.setDefaults({
+        title: 'Toc Messenger',
+        ticker: 'Toc Messenger is running in background',
+        text: 'Online'
+      });
+
+      $window.cordova.plugins.backgroundMode.enable();
     }
 
     return $q.when();
