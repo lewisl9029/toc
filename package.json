@@ -128,6 +128,10 @@
     {
       "locator": "https://github.com/phonegap/phonegap-plugin-barcodescanner.git",
       "id": "phonegap-plugin-barcodescanner"
+    },
+    {
+      "locator": "https://github.com/katzer/cordova-plugin-background-mode.git",
+      "id": "de.appplant.cordova.plugin.background-mode"
     }
   ],
   "cordovaPlatforms": [
