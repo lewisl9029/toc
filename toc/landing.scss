@@ -106,8 +106,12 @@ a {
   overflow: hidden;
   white-space: nowrap;
   position: absolute;
-  right: -50px;
-  top: 40px;
+  right: -60px;
+  top: 30px;
+  @media (min-width: $toc-tablet-width) {
+    right: -50px;
+    top: 40px;
+  }
   transform: rotate(45deg);
 }
 .toc-ribbon a {
@@ -127,9 +131,9 @@ a {
   color: $toc-primary-text-color-light;
   display: flex;
   justify-content: center;
-  height: 100px;
+  height: 130px;
   @media (min-width: $toc-tablet-width) {
-    height: 120px;
+    height: 150px;
   }
   width: 100%;
 }
@@ -144,11 +148,11 @@ a {
 }
 
 .toc-header-logo {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   @media (min-width: $toc-tablet-width) {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
   }
   background: url(app/assets/images/logo-large.svg);
   background-size: contain;
@@ -234,10 +238,10 @@ a {
 
 #toc-main-section {
   .toc-fullscreen-container {
-    margin-top: 110px;
+    margin-top: 130px;
     margin-bottom: 10px;
     @media (min-width: $toc-tablet-width) {
-      margin-top: 130px;
+      margin-top: 150px;
       margin-bottom: 20px;
     }
   }
@@ -261,9 +265,9 @@ a {
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 20px;
+  padding: 20px 0px;
   @media (min-width: $toc-tablet-width) {
-    padding: 24px;
+    padding: 24px 0px;
   }
 }
 
@@ -335,9 +339,9 @@ a {
   color: $toc-primary-text-color-light;
   display: flex;
   justify-content: center;
-  height: 50px;
+  height: 90px;
   @media (min-width: $toc-tablet-width) {
-    height: 60px;
+    height: 100px;
   }
   width: 100%;
 }
@@ -353,10 +357,12 @@ a {
 
 .toc-footer-message {
   text-align: center;
-  .toc-footer-message-special-thanks {
-    display: none;
+  @include toc-landing-font(16px);
+  p {
+    margin-top: 9px;
     @media (min-width: $toc-tablet-width) {
-      display: unset;
+      margin-bottom: 10px;
     }
+    margin-bottom: 0px;
   }
 }
