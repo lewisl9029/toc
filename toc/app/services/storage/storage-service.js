@@ -17,17 +17,18 @@ export default /*@ngInject*/ function storage(
   let getStorageKey = R.join(KEY_SEPARATOR);
 
   let connect = function connect(email) {
-    return $q.when(remoteStorage.remoteStorage.connect(email));
+    remoteStorage.setCordovaRedirectUri('http://toc.im');
+    return $q.when(remoteStorage.connect(email));
   };
 
   let isConnected = function isConnected() {
-    return remoteStorage.remoteStorage.connected;
+    return remoteStorage.connected;
   };
 
   let prepare = function prepareStorage() {
     let remoteStorageReady =
-      remoteStorage.remoteStorage.connected === true ||
-      remoteStorage.remoteStorage.connected === false;
+      remoteStorage.connected === true ||
+      remoteStorage.connected === false;
 
     if (remoteStorageReady) {
       return $q.when();
@@ -35,7 +36,7 @@ export default /*@ngInject*/ function storage(
 
     let preparingStorage = $q.defer();
 
-    remoteStorage.remoteStorage.on('ready',
+    remoteStorage.on('ready',
       () => preparingStorage.resolve()
     );
 
@@ -80,16 +81,16 @@ export default /*@ngInject*/ function storage(
       ));
   };
 
-  let enableLogging = remoteStorage.remoteStorage.enableLog;
+  let enableLogging = remoteStorage.enableLog;
 
   let enableCaching = function enableCaching(moduleName) {
-    remoteStorage.remoteStorage.caching
+    remoteStorage.caching
       .enable(`/${STORAGE_MODULE_PREFIX + moduleName}/`);
   };
 
   let claimAccess =
     function claimAccess(moduleName, accessLevel = DEFAULT_ACCESS_LEVEL) {
-      remoteStorage.remoteStorage.access
+      remoteStorage.access
         .claim(`${STORAGE_MODULE_PREFIX + moduleName}`, accessLevel);
     };
 
@@ -409,20 +410,20 @@ export default /*@ngInject*/ function storage(
   };
 
   let createCloud = function createCloud(moduleName = 'cloud') {
-    remoteStorage.RemoteStorage
+    remoteStorage
       .defineModule(STORAGE_MODULE_PREFIX + moduleName, buildModule);
 
-    return remoteStorage.remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
+    return remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
   };
 
   let createCloudUnencrypted =
     function createCloudUnencrypted(moduleName = 'cloud-unencrypted') {
-      remoteStorage.RemoteStorage.defineModule(
+      remoteStorage.defineModule(
         STORAGE_MODULE_PREFIX + moduleName,
         buildModuleUnencrypted
       );
 
-      return remoteStorage.remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
+      return remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
     };
 
   let storageService = {
