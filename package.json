@@ -132,8 +132,7 @@
     {
       "locator": "https://github.com/katzer/cordova-plugin-background-mode.git",
       "id": "de.appplant.cordova.plugin.background-mode"
-    },
-    "de.appplant.cordova.plugin.badge"
+    }
   ],
   "cordovaPlatforms": [
     "android",
