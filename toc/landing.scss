@@ -339,9 +339,9 @@ a {
   color: $toc-primary-text-color-light;
   display: flex;
   justify-content: center;
-  height: 50px;
+  height: 90px;
   @media (min-width: $toc-tablet-width) {
-    height: 60px;
+    height: 100px;
   }
   width: 100%;
 }
@@ -357,10 +357,12 @@ a {
 
 .toc-footer-message {
   text-align: center;
-  .toc-footer-message-special-thanks {
-    display: none;
+  @include toc-landing-font(16px);
+  p {
+    margin-top: 9px;
     @media (min-width: $toc-tablet-width) {
-      display: unset;
+      margin-bottom: 10px;
     }
+    margin-bottom: 0px;
   }
 }
