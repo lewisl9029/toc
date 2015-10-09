@@ -33,10 +33,7 @@ export default /*@ngInject*/ function network(
 
   let handleStatus = function handleStatus(statusPayload, contactId) {
     let statusId = statusPayload;
-
-    let contactCursor = state.cloud.contacts
-      .select([contactId]);
-
+    let contactCursor = state.cloud.contacts.select([contactId]);
     let currentContactStatus = contactCursor.get(['statusId']);
 
     if (currentContactStatus === statusId) {
@@ -145,6 +142,8 @@ export default /*@ngInject*/ function network(
         }
 
         callback(true);
+        let senderId = packet.from.hashname;
+        handleStatus(1, senderId);
         return sendingPacket.resolve(ackPayload);
       };
 

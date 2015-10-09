@@ -240,7 +240,9 @@ export default /*@ngInject*/ function notifications(
       $window.cordova.plugins.backgroundMode.enable();
     }
 
-    if (devices.isCordovaApp() && $window.cordova.plugins.notification) {
+    // excluding android because it shows up as a notification instead of badge
+    if (devices.isCordovaApp() && !devices.isAndroidApp() &&
+      $window.cordova.plugins.notification) {
       let notificationsCursor = state.cloud.notifications;
       let updateNotificationBadge = () => {
         let notificationCount = R.pipe(
@@ -261,7 +263,6 @@ export default /*@ngInject*/ function notifications(
 
       state.addListener(notificationsCursor, updateNotificationBadge, null);
     }
-
 
     return $q.when();
   };
