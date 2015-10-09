@@ -8,8 +8,8 @@ export default /*@ngInject*/ function storage(
   R,
   remoteStorage
 ) {
-  //FIXME: storage usage is extremely high due to really long keys + storing
-  // crypto settings with each item/key
+  //FIXME: storage overhead is rather high due to really long keys + storing
+  // crypto params with each item/key
   const DEFAULT_ACCESS_LEVEL = 'rw';
   const STORAGE_MODULE_PREFIX = 'toc-state-';
   const KEY_SEPARATOR = '.';
@@ -17,17 +17,7 @@ export default /*@ngInject*/ function storage(
   let getStorageKey = R.join(KEY_SEPARATOR);
 
   let connect = function connect(email) {
-    //FIXME: .connect uses XHR so this try catch wont actually work
-    try {
-      //FIXME: next version will have redirectURI as config
-      // remoteStorage.remoteStorage.connect(email, null, 'https://toc.im');
-      remoteStorage.remoteStorage.connect(email, 'https://toc.im');
-    }
-    catch(error) {
-      return $q.reject(error);
-    }
-
-    return $q.when();
+    return $q.when(remoteStorage.remoteStorage.connect(email));
   };
 
   let isConnected = function isConnected() {

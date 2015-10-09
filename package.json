@@ -1,6 +1,6 @@
 {
   "name": "toc-im",
-  "version": "0.9.0-alpha",
+  "version": "0.10.0-alpha",
   "description": "Toc Messenger",
   "license": "AGPL-3.0",
   "repository": {
@@ -52,7 +52,7 @@
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
       "qr-image": "npm:qr-image@^3.1.0",
       "ramda": "npm:ramda@^0.17.1",
-      "remotestoragejs": "npm:remotestoragejs@^0.11.2",
+      "remotestoragejs": "npm:remotestoragejs@^0.12.0",
       "text": "github:systemjs/plugin-text@^0.0.2"
     },
     "devDependencies": {
@@ -61,6 +61,12 @@
       "core-js": "npm:core-js@^1.1.4"
     },
     "overrides": {
+      "npm:remotestoragejs@0.12.0": {
+        "registry": "jspm",
+        "main": "release/0.12.0/remotestorage",
+        "format": "global",
+        "dependencies": {}
+      },
       "github:driftyco/ionic@1.1.0": {
         "registry": "jspm",
         "format": "global",
@@ -85,12 +91,6 @@
           "angular-sanitize": "^1.4.0",
           "angular-ui-router": "^0.2.10"
         }
-      },
-      "npm:remotestoragejs@0.11.2": {
-        "registry": "jspm",
-        "main": "release/0.11.2/remotestorage",
-        "format": "global",
-        "dependencies": {}
       },
       "github:angular-ui/ui-router@0.2.15": {
         "shim": {
