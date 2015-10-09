@@ -92,9 +92,9 @@ export default /*@ngInject*/ function notifications(
     notificationInstance.addEventListener('click',
       () => handleNotificationClick(notificationInfo.id));
 
-    $timeout(() => {
-      notificationInstance.close();
-    }, 5000, false);
+    // $timeout(() => {
+    //   notificationInstance.close();
+    // }, 5000, false);
 
     return $q.when();
   };
