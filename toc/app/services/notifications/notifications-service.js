@@ -226,19 +226,6 @@ export default /*@ngInject*/ function notifications(
       $window.Notification.requestPermission();
     }
 
-    if (devices.isCordovaApp() && $window.cordova.plugins.backgroundMode) {
-      // enables background operation
-      // de.appplant.cordova.plugin.background-mode required
-      // $window.cordova.plugins.backgroundMode.setDefaults({ silent: true });
-      $window.cordova.plugins.backgroundMode.setDefaults({
-        title: 'Toc Messenger',
-        ticker: 'Toc Messenger is running in background',
-        text: 'Online'
-      });
-
-      $window.cordova.plugins.backgroundMode.enable();
-    }
-
     return $q.when();
   };
 
