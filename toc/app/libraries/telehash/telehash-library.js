@@ -6257,10 +6257,6 @@
       , 'undefined' != typeof io ? io : module.parent.exports
       , this
     );
-
-    if (typeof define === "function" && define.amd) {
-      define([], function () { return io; });
-    }
   })();
 },{}],20:[function(require,module,exports){
   (function (Buffer){

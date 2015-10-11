@@ -1,6 +1,5 @@
 export let serviceName = 'notifications';
 export default /*@ngInject*/ function notifications(
-  $cordovaBadge,
   $cordovaLocalNotification,
   $rootScope,
   $window,
@@ -225,43 +224,6 @@ export default /*@ngInject*/ function notifications(
 
     if ($window.Notification) {
       $window.Notification.requestPermission();
-    }
-
-    if (devices.isCordovaApp() && $window.cordova.plugins.backgroundMode) {
-      // enables background operation
-      // de.appplant.cordova.plugin.background-mode required
-      // $window.cordova.plugins.backgroundMode.setDefaults({ silent: true });
-      $window.cordova.plugins.backgroundMode.setDefaults({
-        title: 'Toc Messenger',
-        ticker: 'Toc Messenger is running in background',
-        text: 'Online'
-      });
-
-      $window.cordova.plugins.backgroundMode.enable();
-    }
-
-    // excluding android because it shows up as a notification instead of badge
-    if (devices.isCordovaApp() && !devices.isAndroidApp() &&
-      $window.cordova.plugins.notification) {
-      let notificationsCursor = state.cloud.notifications;
-      let updateNotificationBadge = () => {
-        let notificationCount = R.pipe(
-          R.values,
-          R.reject(R.prop('dismissed'))
-        )(notificationsCursor.get()).length;
-
-        $cordovaBadge.get()
-          .then((badgeCount) => {
-            if (badgeCount === notificationCount) {
-              return;
-            }
-
-            return $cordovaBadge.set(notificationCount);
-          })
-          .catch($log.error);
-      };
-
-      state.addListener(notificationsCursor, updateNotificationBadge, null);
     }
 
     return $q.when();
