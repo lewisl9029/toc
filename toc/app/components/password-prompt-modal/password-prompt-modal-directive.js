@@ -69,7 +69,7 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
           .then(() => this.removeModal())
           .catch((error) => {
             this.showModal()
-              .then(() => $window.tocResumeLoadingAnimation());
+              .then(() => $window.tocPauseLoadingAnimation());
             let showErrorMessage = () => {
               if (error === 'identity: wrong password') {
                 return notifications.notifySystem(
