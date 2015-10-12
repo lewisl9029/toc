@@ -23,6 +23,14 @@
       }, 3000);
     };
 
+    window.tocPauseLoadingAnimation = function tocPauseLoadingAnimation() {
+      loadingScreen.classList.add('toc-loading-pause-animations');
+    };
+
+    window.tocResumeLoadingAnimation = function tocResumeLoadingAnimation() {
+      loadingScreen.classList.remove('toc-loading-pause-animations');
+    };
+
     // initializes app
     System.import('app')
       .then(function (app) {
