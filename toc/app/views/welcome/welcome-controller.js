@@ -21,7 +21,7 @@ export default /*@ngInject*/ function WelcomeController(
           {
             scope: $scope,
             backdropClickToClose: false,
-            hardwareBackButtonToClose: false
+            hardwareBackButtonClose: false
           }
         );
 
