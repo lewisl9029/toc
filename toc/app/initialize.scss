@@ -107,6 +107,13 @@ $toc-background-gradient-dark: radial-gradient(
   display: flex;
   justify-content: center;
   align-items: center;
+  &.toc-pause-animations {
+    .toc-loading-screen-logo-dot-1,
+    .toc-loading-screen-logo-dot-2,
+    .toc-loading-screen-logo-dot-3 {
+      animation-play-state: paused;
+    }
+  }
 }
 
 .toc-loading-screen-hiding {
