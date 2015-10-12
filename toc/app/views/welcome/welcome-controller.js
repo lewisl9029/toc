@@ -1,6 +1,7 @@
 export let controllerName = 'WelcomeController';
 export default /*@ngInject*/ function WelcomeController(
   $ionicModal,
+  $window,
   $scope,
   R,
   state,
@@ -25,7 +26,10 @@ export default /*@ngInject*/ function WelcomeController(
           }
         );
 
-        this.passwordPromptModal.show();
+        this.passwordPromptModal.show()
+          .then(() => {
+            $window.tocPauseLoadingAnimation();
+          });
       };
 
       this.openPasswordPromptModal();
