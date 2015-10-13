@@ -183,14 +183,14 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           }],
           template: `
             <div class="list">
-              <label class="toc-id-input item item-input">
-                <input type="text" ng-model="::beginConversationModal.userId"
-                  readonly toc-auto-select notify-copied="true">
-              </label>
               <div class="item item-image">
                 <toc-qr-image data="{{::beginConversationModal.userId}}">
                 </toc-qr-image>
               </div>
+              <label class="toc-id-input item item-input">
+                <input type="text" ng-model="::beginConversationModal.userId"
+                  readonly toc-auto-select notify-copied="true">
+              </label>
             </div>
           `
         });
