@@ -116,7 +116,7 @@ a {
   a {
     padding: 10px 50px;
     font-weight: bold;
-    @include toc-landing-font(15px);
+    @include toc-landing-font(14px);
   }
 }
 
@@ -289,14 +289,29 @@ a {
   }
 }
 
+
+
 .toc-main-actions {
   max-width: 400px;
   width: 90%;
+  @include toc-margin-bottom(80px);
 }
 
 .toc-main-action {
   flex: 1 1 auto;
   @include toc-margin-bottom(20px);
+}
+
+.toc-main-disclaimer {
+  opacity: 0.9;
+  width: 100%;
+  max-width: $toc-tablet-width;
+  p {
+    @include toc-landing-font(18px);
+    line-height: 1.5;
+    margin-top: 0;
+    color: $toc-secondary-text-color-light;
+  }
 }
 
 #toc-images-section {
@@ -328,7 +343,7 @@ a {
   position: absolute;
   bottom: 0px;
   z-index: 1;
-  color: $toc-primary-text-color-light;
+  color: $toc-secondary-text-color-light;
   display: flex;
   justify-content: center;
   height: 90px;
