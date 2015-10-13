@@ -3,7 +3,7 @@ $toc-notebook-width: 940px;
 $toc-desktop-width: 1400px;
 
 @mixin toc-landing-font($font-size) {
-  font-size: $font-size * 9/10;
+  font-size: $font-size * 7/10;
 
   @media (min-width: $toc-tablet-width) {
     font-size: $font-size;
@@ -11,7 +11,7 @@ $toc-desktop-width: 1400px;
 }
 
 @mixin toc-margin-bottom($margin-size) {
-  margin-bottom: $margin-size * 9/10;
+  margin-bottom: $margin-size * 7/10;
 
   @media (min-width: $toc-tablet-width) {
     margin-bottom: $margin-size;
@@ -88,7 +88,8 @@ a {
   scroll-behavior: smooth;
   &.toc-hide {
     .toc-ribbon {
-      animation: tocLandingRibbonFadeOutRight 1s $toc-animation-timing-function both;
+      animation: tocLandingRibbonFadeOutRight 1s
+        $toc-animation-timing-function both;
     }
     .toc-main-content,
     .toc-landing-header,
@@ -100,29 +101,23 @@ a {
 }
 
 // pure css github fork-me ribbon
-// credits: https://unindented.org/articles/github-ribbon-using-css-transforms/
+// inspired by:
+// https://unindented.org/articles/github-ribbon-using-css-transforms/
 .toc-ribbon {
   z-index: 2;
-  overflow: hidden;
-  white-space: nowrap;
   position: absolute;
-  right: -60px;
+  right: -50px;
   top: 30px;
   @media (min-width: $toc-tablet-width) {
     right: -50px;
-    top: 40px;
+    top: 50px;
   }
   transform: rotate(45deg);
-}
-.toc-ribbon a {
-  border: 1px solid $toc-primary-text-color-light;
-  color: $toc-primary-text-color-light;
-  display: block;
-  font: bold 81.25% 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  margin: 1px 0;
-  padding: 10px 50px;
-  text-align: center;
-  text-decoration: none;
+  a {
+    padding: 10px 50px;
+    font-weight: bold;
+    @include toc-landing-font(15px);
+  }
 }
 
 .toc-landing-header {
@@ -141,15 +136,15 @@ a {
 .toc-landing-header-container {
   max-width: $toc-notebook-width;
   width: 80%;
-  border-bottom: 1px solid transparentize($toc-secondary-text-color-light, 0.5);
+  // border-bottom: 1px solid transparentize($toc-secondary-text-color-light, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.toc-header-logo {
-  width: 120px;
-  height: 120px;
+.toc-main-logo {
+  width: 100px;
+  height: 100px;
   @media (min-width: $toc-tablet-width) {
     width: 140px;
     height: 140px;
@@ -178,13 +173,14 @@ a {
   box-sizing: border-box;
   color: transparentize($toc-primary-text-color-light, 0.2);
   border: none;
-  outline: 2px solid transparentize($toc-primary-text-color-light, 0.2);
+  // outline: 2px solid transparentize($toc-primary-text-color-light, 0.2);
   background: none;
   box-shadow: 0px 0px 10px $toc-primary-text-color-light;
   font-weight: 300;
   width: 100%;
   padding: 9px 18px;
   text-decoration: none;
+  text-align: center;
   @media (min-width: $toc-tablet-width) {
     padding: 12px 24px;
   }
@@ -238,12 +234,12 @@ a {
 
 #toc-main-section {
   .toc-fullscreen-container {
-    margin-top: 130px;
-    margin-bottom: 10px;
-    @media (min-width: $toc-tablet-width) {
-      margin-top: 150px;
-      margin-bottom: 20px;
-    }
+    // margin-top: 10px;
+    // margin-bottom: 10px;
+    // @media (min-width: $toc-tablet-width) {
+    //   margin-top: 20px;
+    //   margin-bottom: 20px;
+    // }
   }
 }
 
@@ -265,10 +261,6 @@ a {
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 20px 0px;
-  @media (min-width: $toc-tablet-width) {
-    padding: 24px 0px;
-  }
 }
 
 .toc-main-heading {
@@ -276,7 +268,7 @@ a {
   width: 100%;
   max-width: $toc-tablet-width;
   h1 {
-    @include toc-landing-font(30px);
+    @include toc-landing-font(26px);
     color: $toc-primary-text-color-light;
     font-weight: 300;
     line-height: 1.5;
@@ -309,10 +301,10 @@ a {
 
 #toc-images-section {
   .toc-fullscreen-container {
-    margin-bottom: 60px;
+    margin-bottom: 90px;
     margin-top: 10px;
     @media (min-width: $toc-tablet-width) {
-      margin-bottom: 70px;
+      margin-bottom: 100px;
       margin-top: 20px;
     }
   }
@@ -357,7 +349,7 @@ a {
 
 .toc-footer-message {
   text-align: center;
-  @include toc-landing-font(16px);
+  @include toc-landing-font(18px);
   p {
     margin-top: 9px;
     @media (min-width: $toc-tablet-width) {
