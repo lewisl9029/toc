@@ -5,7 +5,7 @@
   <ion-content class="has-subfooter">
     <div class="list">
       <div class="item item-divider item-calm item-clear">
-        Where would you like to store your data?
+        Select a storage service
       </div>
       <ion-radio class="item item-avatar toc-square-avatar toc-cloud-service-item"
         ng-repeat="(id, service) in ::cloudConnectModal.services track by id"
@@ -20,12 +20,6 @@
         <input type="password" placeholder="Your remoteStorage.io email."
           ng-model="cloudConnectModal.email" toc-auto-focus>
       </label> -->
-    </div>
-    <div class="card">
-      <div class="item item-text-wrap">
-        <p>Your data will stay private even on the cloud.</p>
-        <p>No one can access it without your password.</p>
-      </div>
     </div>
   </ion-content>
   <div class="bar bar-subfooter">

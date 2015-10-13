@@ -138,10 +138,8 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
             );
 
             let mailBody = encodeURIComponent(
-              'Please invite me as a contact on Toc Messenger:\n' +
-              `http://toc.im/?inviteid=${this.userId}\n\n` +
-
-              'It\'s pretty great. ^^'
+              'Join me on Toc Messenger!\n' +
+              `http://toc.im/?inviteid=${this.userId}\n`
             );
 
             $window.open(

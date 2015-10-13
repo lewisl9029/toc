@@ -22,7 +22,7 @@ RUN apt-get update && \
 
 # setting up environment variables
 ENV TOC_BUNDLE_PATH=cache/bundle \
-  TOC_NODE_BUNDLE_NAME=node-v4.1.2-linux-x64.tar.gz \
+  TOC_NODE_BUNDLE_NAME=node-v4.2.0-linux-x64.tar.gz \
   TOC_ANDROID_BUNDLE_NAME=android-sdk_r24.3.4-linux.tgz \
   DISPLAY=:1 \
   ANDROID_HOME=$TOC_SETUP_PATH/android-sdk-linux \
@@ -48,12 +48,12 @@ RUN /bin/bash toc-setup-bundle.sh $TOC_SETUP_PATH && \
   echo "y" | android update sdk --no-ui --all -t android-22
 
 # installing npm dependencies
-RUN npm install -g npm@3.3.5 && \
+RUN npm install -g npm@3.3.8 && \
   npm install -g cordova@5.3.3 && \
   npm install -g gulp-cli@0.3.0 && \
   npm install -g http-server@0.8.5 && \
   npm install -g ionic@1.6.4 && \
-  npm install -g jspm@0.16.10 && \
+  npm install -g jspm@0.16.12 && \
   npm cache clean
 
 # replacing ionic-cli with custom fork for device livereload support
