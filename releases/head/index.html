@@ -2,7 +2,7 @@
 <html>
   <head lang="en">
     <title>Toc Messenger - A proof-of-concept distributed messaging app</title>
-    <meta name="description" content="Toc Messenger is a private, decentralized, multi-platform messaging app where only the users themselves can access their data.">
+    <meta name="description" content="Toc Messenger is a proof-of-concept  decentralized messaging app where users can synchronize their data across multiple devices.">
     <meta charset="UTF-8">
     <meta name="viewport"
       content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
@@ -19,42 +19,30 @@
 
   <body class="toc-body">
     <div class="toc-ribbon">
-      <a href="https://github.com/lewisl9029/toc" target="_blank">
+      <a class="toc-button-light"
+        href="https://github.com/lewisl9029/toc" target="_blank">
         Fork me on GitHub
       </a>
     </div>
     <div class="toc-landing-content">
-      <header class="toc-landing-header">
-        <div class="toc-landing-header-container">
-          <div class="toc-header-logo">
-          </div>
-        </div>
-      </header>
       <section id="toc-main-section" class="toc-fullscreen-section">
         <div class="toc-fullscreen-container">
           <div class="toc-main-backdrop">
           </div>
           <div class="toc-main-content">
+            <div class="toc-main-logo">
+            </div>
             <div class="toc-main-heading">
               <h1>
-                Toc is a proof-of-concept distributed messaging app.
+                Toc aims to redefine expectations of what distributed apps can do.
               </h1>
             </div>
             <div class="toc-main-message">
               <p>
-                Toc aims to redefine the expectations of what a distributed app can do.
+                Toc is a proof-of-concept decentralized messaging app where users can synchronize their data across multiple devices.
               </p>
               <p>
-                Most distributed apps limit your data to a single device. With Toc, your contacts, messages, and customizations can be available anywhere.
-              </p>
-              <p>
-                A lot of effort has been put into making Toc easy to use, but you probably shouldn't use it for anything important. There are <a href="https://github.com/lewisl9029/toc/issues/357">known issues</a> with regards to functionality and security that <i>may never get resolved</i>.
-              </p>
-              <p>
-                For those looking for more reliable alternatives to Toc, we recommend taking a look at other, more mature open-source projects like <a href="https://tox.chat/">Tox</a> and <a href="https://matrix.org/">Matrix</a>.
-              </p>
-              <p>
-                Toc is completely free and open-source, and is available on <a href="#">Android</a>, <a href="#">iOS</a>, and <a class="toc-anchor-scroll-link toc-app-link" href="app/" data-toc-scroll="toc-main-section"
+                Toc is completely free and <a href="https://github.com/lewisl9029/toc" target="_blank">open-source</a>. Available now on <a href="#">Android</a>, <a href="#">iOS</a>, and <a class="toc-anchor-scroll-link toc-app-link" href="app/" data-toc-scroll="toc-main-section"
                 data-toc-app-link>right here on your browser</a>.
               </p>
             </div>
@@ -76,6 +64,17 @@
                 </a>
               </div>
             </div>
+            <div class="toc-main-disclaimer">
+              <p>
+                Disclaimer: Toc is not ready for general use.
+              </p>
+              <p>
+                There are many <a href="https://github.com/lewisl9029/toc/issues/357">known issues</a> with regards to functionality and security in the current version.
+              </p>
+              <p>
+                For those looking for more reliable alternatives to Toc, please take a look at other, more mature open-source messaging projects such as <a href="https://whispersystems.org/">TextSecure/Signal</a>, <a href="https://telegram.org/">Telegram</a>, <a href="https://tox.chat/">Tox</a> and <a href="https://matrix.org/">Matrix</a>.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -85,13 +84,13 @@
             <div class="toc-image-container">
               <picture class="toc-image-device">
                 <source media="(min-width: 1400px)"
-                  srcset="app/assets/images/desktop-outline.svg" sizes="1000px">
+                  srcset="app/assets/images/desktop-outline.svg" sizes="900px">
                 <source media="(min-width: 940px)"
-                  srcset="app/assets/images/notebook-outline.svg" sizes="920px">
+                  srcset="app/assets/images/notebook-outline.svg" sizes="820px">
                 <source media="(min-width: 768px)"
-                  srcset="app/assets/images/tablet-outline.svg" sizes="600px">
+                  srcset="app/assets/images/tablet-outline.svg" sizes="460px">
                 <source srcset="app/assets/images/phone-outline.svg"
-                  sizes="300px">
+                  sizes="220px">
                 <img src="app/assets/images/phone-outline.svg"
                   alt="Device outline">
               </picture>
@@ -102,7 +101,12 @@
       <footer class="toc-landing-footer">
         <div class="toc-landing-footer-container">
           <div class="toc-footer-message">
-            Developed by <a href="https://github.com/lewisl9029">Lewis Liu</a><span class="toc-footer-message-special-thanks">, with the help of <a href="https://github.com/TheSif">Asif</a>, <a href="https://github.com/d22yan">Danny</a>, <a href="#">Phil</a>, and <a href="https://ca.linkedin.com/in/sanghoonlee9173">SangHoon</a></span>.
+            <p>
+              Developed by <a href="https://github.com/lewisl9029">Lewis Liu</a>.
+            </p>
+            <p>
+              With the help of <a href="https://github.com/TheSif">Asif</a>, <a href="https://github.com/d22yan">Danny</a>, <a href="#">Phil</a>, and <a href="https://ca.linkedin.com/in/sanghoonlee9173">SangHoon</a>.
+            </p>
           </div>
         </div>
       </footer>
