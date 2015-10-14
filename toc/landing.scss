@@ -18,8 +18,8 @@ $toc-desktop-width: 1400px;
   }
 }
 
-$toc-primary-bg-color-dark: #00718f;
-$toc-secondary-bg-color-dark: #00bbcc;
+$toc-primary-bg-color-dark: #00bbcc;
+$toc-secondary-bg-color-dark: #387ef5;
 $toc-primary-bg-color-medium: #a0a6aa;
 $toc-secondary-bg-color-medium: #a1b8c1;
 $toc-primary-bg-color-light: #eef1f0;
@@ -31,8 +31,20 @@ $toc-primary-text-color-dark: #00718f;
 $toc-secondary-text-color-dark: #00bbcc;
 $toc-highlight-text-color-dark: #6eaeba;
 
-$toc-background-gradient-dark: radial-gradient(
-  ellipse farthest-side at 0px 0px,
+// $toc-primary-background-gradient: radial-gradient(
+//   ellipse farthest-side at 0px 0px,
+//   $toc-secondary-bg-color-dark 0%,
+//   $toc-primary-bg-color-dark 100%
+// );
+
+$toc-primary-background-gradient: linear-gradient(
+  to bottom,
+  $toc-secondary-bg-color-dark 0%,
+  $toc-primary-bg-color-dark 100%
+);
+
+$toc-secondary-background-gradient: linear-gradient(
+  to top,
   $toc-secondary-bg-color-dark 0%,
   $toc-primary-bg-color-dark 100%
 );
@@ -247,11 +259,11 @@ a {
   position: absolute;
   top: 0;
   left: 0;
-  width: 90vh;
+  width: 100%;
   max-width: 100%;
-  height: 90vh;
-  background-image: $toc-background-gradient-dark;
-  background-size: 90vh 90vh;
+  height: 100vh;
+  background-image: $toc-primary-background-gradient;
+  background-repeat: no-repeat;
 }
 
 .toc-main-content {

@@ -101,7 +101,7 @@ export default /*@ngInject*/ function devices(
         buttons: [
           {
             text: 'Stay connected',
-            type: 'button-assertive button-outline',
+            type: 'button-assertive button-block button-clear',
             onTap: (event) => {
               $interval.cancel(disconnectingDevice);
               disconnectOtherDevices();
