@@ -86,11 +86,11 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
               buttons: [
                 {
                   text: 'Cancel',
-                  type: 'button-calm button-clear'
+                  type: 'button-calm button-block button-outline'
                 },
                 {
                   text: 'Invite',
-                  type: 'button-balanced button-clear',
+                  type: 'button-positive button-block',
                   onTap: (event) => {
                     return this.sendInvite(event);
                   }
@@ -179,7 +179,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           scope: $scope,
           buttons: [{
             text: 'Done',
-            type: 'button-balanced button-block button-clear'
+            type: 'button-positive button-block'
           }],
           template: `
             <div class="list">

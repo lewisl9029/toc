@@ -4,8 +4,14 @@
     max-width: 90%;
   }
 
+  .popup-body {
+    padding-top: 10px;
+    padding-bottom: 0px;
+  }
+
   .toc-id-input {
     border-color: transparent;
+    background-color: transparent;
     input {
       cursor: pointer;
       white-space: nowrap;

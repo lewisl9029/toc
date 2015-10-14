@@ -50,9 +50,9 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
                 <p>Toc will try to upload your local data into this cloud account.</p>
                 <p>Please confirm this cloud account hasn't been used with Toc before.</p>
               `,
-              cancelType: 'button-calm button-clear',
+              cancelType: 'button-calm button-style',
               okText: 'Confirm',
-              okType: 'button-assertive button-clear'
+              okType: 'button-assertive button-style'
             })
             .then((response) => {
               if (!response) {
@@ -87,11 +87,11 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
               buttons: [
                 {
                   text: 'Cancel',
-                  type: 'button-calm button-clear'
+                  type: 'button-calm button-style'
                 },
                 {
                   text: 'Connect',
-                  type: 'button-balanced button-clear',
+                  type: 'button-positive button-style',
                   onTap: (event) => {
                     this.submitRemoteStorageEmail(event);
                   }
