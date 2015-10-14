@@ -89,6 +89,13 @@ form.ng-pristine button[type='submit'] {
     max-width: 380px;
   }
 }
+
+.item-radio {
+  .radio-icon {
+    color: $calm;
+  }
+}
+
 .popup-head {
   background-color: $bar-positive-bg;
   border-bottom: 1px solid $bar-positive-border;
@@ -248,6 +255,7 @@ form.ng-pristine button[type='submit'] {
 }
 
 .toc-logo-outline {
+  margin: 0 8px;
   width: 30px;
   height: 33px;
   background-position-y: 2px !important;

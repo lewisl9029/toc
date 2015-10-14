@@ -86,11 +86,11 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
               buttons: [
                 {
                   text: 'Cancel',
-                  type: 'button-calm button-outline'
+                  type: 'button-calm button-block button-outline'
                 },
                 {
                   text: 'Invite',
-                  type: 'button-positive',
+                  type: 'button-positive button-block',
                   onTap: (event) => {
                     return this.sendInvite(event);
                   }
