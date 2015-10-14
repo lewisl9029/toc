@@ -3,22 +3,17 @@
 </ion-header-bar>
 <ion-content>
   <div class="list">
-    <div class="item">
-      <!-- TODO: add open source licenses here -->
+    <a class="item" href="http://toc.im" target="_system">
       About Toc
-    </div>
-    <div class="item">
-      <!-- TODO: renable onboarding procedure here -->
-      Show hints
-    </div>
+    </a>
     <div class="item" ng-click="optionsMenu.showIdPopup()">
-      Show your ID
+      Display your ID
     </div>
     <div class="item" ng-click="optionsMenu.showCloudConnectModal()">
-      Use this account elsewhere
+      Sync your profile
     </div>
     <div class="item" ng-click="optionsMenu.showDeleteDataConfirm()">
-      Clear data from this device
+      Clear local data
     </div>
     <div class="item" ng-click="optionsMenu.showSignoutConfirm()">
       Sign out
@@ -27,7 +22,7 @@
 </ion-content>
 <ion-footer-bar>
   <div class="col">
-    <button class="button button-block button-outline button-balanced"
+    <button class="button button-block button-balanced button-clear"
       ng-click="optionsMenu.showBeginConversationModal()">
       Start a conversation
     </button>

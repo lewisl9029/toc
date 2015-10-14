@@ -86,11 +86,11 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
               buttons: [
                 {
                   text: 'Cancel',
-                  type: 'button-outline button-calm'
+                  type: 'button-calm button-clear'
                 },
                 {
                   text: 'Invite',
-                  type: 'button-outline button-balanced',
+                  type: 'button-balanced button-clear',
                   onTap: (event) => {
                     return this.sendInvite(event);
                   }
@@ -138,10 +138,8 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
             );
 
             let mailBody = encodeURIComponent(
-              'Please invite me as a contact on Toc Messenger:\n' +
-              `http://toc.im/?inviteid=${this.userId}\n\n` +
-
-              'It\'s pretty great. ^^'
+              'Join me on Toc Messenger!\n' +
+              `http://toc.im/?inviteid=${this.userId}\n`
             );
 
             $window.open(
@@ -180,19 +178,19 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           cssClass: 'toc-id-popup',
           scope: $scope,
           buttons: [{
-            text: 'Ok',
-            type: 'button-balanced button-outline'
+            text: 'Done',
+            type: 'button-balanced button-block button-clear'
           }],
           template: `
             <div class="list">
-              <label class="toc-id-input item item-input">
-                <input type="text" ng-model="::beginConversationModal.userId"
-                  readonly toc-auto-select notify-copied="true">
-              </label>
               <div class="item item-image">
                 <toc-qr-image data="{{::beginConversationModal.userId}}">
                 </toc-qr-image>
               </div>
+              <label class="toc-id-input item item-input">
+                <input type="text" ng-model="::beginConversationModal.userId"
+                  readonly toc-auto-select notify-copied="true">
+              </label>
             </div>
           `
         });

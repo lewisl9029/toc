@@ -1,36 +1,12 @@
-$toc-primary-bg-color-dark: #00bbcc;
-$toc-secondary-bg-color-dark: #11ccdd;
-$toc-highlight-bg-color-dark: #7cb4c3;
-$toc-primary-bg-color-medium: #a0a6aa;
-$toc-secondary-bg-color-medium: #a1b8c1;
-$toc-primary-bg-color-light: #eef1f0;
-$toc-secondary-bg-color-light: #e5edeb;
-
-$toc-primary-text-color-light: #f8f9fa;
-$toc-secondary-text-color-light: #e5edeb;
-$toc-primary-text-color-dark: #113f51;
-$toc-secondary-text-color-dark: #00718f;
-$toc-highlight-text-color-dark: #6eaeba;
-
 $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
-$positive:                        #387ef5 !default;
-$calm:                            #11c1f3 !default;
-$balanced:                        #33cd5f !default;
+$positive:                        #2196F3 !default;
+$calm:                            #00BCD4 !default;
+$balanced:                        #2196F3 !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
-$royal:                           #886aea !default;
+$royal:                           #00BCD4 !default;
 $dark:                            #444 !default;
-
-// $base-color: $toc-primary-text-color-dark;
-// $base-background-color: $toc-primary-bg-color-light;
-//
-// $button-light-text: $toc-primary-text-color-dark;
-// $item-icon-accessory-color: $toc-highlight-text-color-dark;
-//
-// $input-label-color: $toc-primary-text-color-dark;
-// $input-color: $toc-secondary-text-color-dark;
-// $modal-bg-color: $toc-primary-bg-color-light;
 
 $button-border-radius: 0 !default;
 $button-bar-button-font-size: 15px !default;
@@ -45,6 +21,8 @@ $bar-light-border: white !default;
 $bar-footer-height: 60px !default;
 $bar-subfooter-height: 55px !default;
 $bar-subheader-height: 75px !default;
+
+$toc-separator-color: transparentize($dark, 0.7);
 
 $toc-animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
 
@@ -106,8 +84,21 @@ form.ng-pristine button[type='submit'] {
   opacity: 1;
 }
 
+.popup-head {
+  background-color: $bar-positive-bg;
+  border-bottom: 1px solid $bar-positive-border;
+  h3 {
+    color: $bar-positive-text;
+  }
+}
+
 .popup-body {
   text-align: center;
+}
+
+.popup-buttons {
+  box-shadow: 0px -2px 2px $toc-separator-color;
+  padding: 0px 10px;
 }
 
 // input::-moz-placeholder,
@@ -174,11 +165,13 @@ form.ng-pristine button[type='submit'] {
 }
 
 .menu-content {
-  box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.2), 2px 0px 2px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    -2px 0px 2px $toc-separator-color,
+    2px 0px 2px $toc-separator-color;
 }
 
 .bar-footer {
-  box-shadow: 0px -2px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px -2px 2px $toc-separator-color;
   border-top-color: $light;
   .col {
     padding: 3px 5px;
@@ -196,7 +189,7 @@ form.ng-pristine button[type='submit'] {
 
 .bar-subfooter {
   z-index: 10; // to get it to appear above footer shadow
-  box-shadow: 0px -2px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px -2px 2px $toc-separator-color;
   padding-bottom: 0;
   .col {
     display: flex;
@@ -216,7 +209,7 @@ form.ng-pristine button[type='submit'] {
 
 .bar-subheader {
   padding: 0;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 2px $toc-separator-color;
   // border-bottom: 0;
   .item {
     border-color: transparent;
