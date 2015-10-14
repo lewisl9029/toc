@@ -24,11 +24,11 @@ export default /*@ngInject*/ function contacts(
         buttons: [
           {
             text: 'Cancel',
-            type: 'button-calm button-clear'
+            type: 'button-calm button-block button-outline'
           },
           {
             text: 'Accept',
-            type: 'button-balanced button-clear',
+            type: 'button-positive button-block',
             onTap: (event) => {
               return saveAcceptingInvite(channelId);
             }

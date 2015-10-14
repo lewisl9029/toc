@@ -2,7 +2,7 @@ $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
 $positive:                        #2196F3 !default;
 $calm:                            #00BCD4 !default;
-$balanced:                        #2196F3 !default;
+$balanced:                        #33cd5f !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #00BCD4 !default;
@@ -84,6 +84,11 @@ form.ng-pristine button[type='submit'] {
   opacity: 1;
 }
 
+.button {
+  @media (min-width: 768px) {
+    max-width: 380px;
+  }
+}
 .popup-head {
   background-color: $bar-positive-bg;
   border-bottom: 1px solid $bar-positive-border;
@@ -94,6 +99,8 @@ form.ng-pristine button[type='submit'] {
 
 .popup-body {
   text-align: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .popup-buttons {

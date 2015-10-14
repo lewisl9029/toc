@@ -25,7 +25,7 @@ export default /*@ngInject*/ function tocOptionsMenu() {
           scope: $scope,
           buttons: [{
             text: 'Done',
-            type: 'button-balanced button-block button-clear'
+            type: 'button-positive button-block'
           }],
           template: `
             <div class="list">
@@ -68,14 +68,14 @@ export default /*@ngInject*/ function tocOptionsMenu() {
 
       this.showDeleteDataConfirm = function showDeleteDataConfirm() {
         let deleteDataPopup = $ionicPopup.confirm({
-          title: 'Remove Data',
+          title: 'Clear Data',
           template: `
             <p>All local data will be gone.</p>
             <p>Are you absolutely sure?</p>
           `,
-          okText: 'Remove',
-          okType: 'button-assertive button-block button-clear',
-          cancelType: 'button-calm button-block button-clear'
+          okText: 'Clear',
+          okType: 'button-assertive button-block',
+          cancelType: 'button-calm button-block button-outline'
         });
 
         deleteDataPopup.then((response) => {
@@ -95,8 +95,8 @@ export default /*@ngInject*/ function tocOptionsMenu() {
             <p>Are you sure?</p>
           `,
           okText: 'Sign out',
-          okType: 'button-assertive button-block button-clear',
-          cancelType: 'button-calm button-block button-clear'
+          okType: 'button-assertive button-block',
+          cancelType: 'button-calm button-block button-outline'
         });
 
         signoutPopup.then((response) => {
