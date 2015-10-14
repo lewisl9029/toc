@@ -17,6 +17,7 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       $ionicModal,
       $log,
       $timeout,
+      $window,
       $q,
       session,
       navigation,
@@ -59,17 +60,16 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
           $q.when() :
           state.save(state.local.session, ['staySignedIn'], this.staySignedIn);
 
-        this.hideModal();
-        //modal doesn't animate out before starting login process without delay
-        return $timeout(() => updateStaySignedIn(), 1000, false)
+        $window.tocResumeLoadingAnimation();
+        return this.hideModal()
           .then(() => session.start(
             { password: this.password },
             this.staySignedIn
           ))
-          //modal doesnt animate out if removed immediately
-          .then(() => $timeout(() => this.removeModal(), 1000, false))
+          .then(() => this.removeModal())
           .catch((error) => {
-            this.showModal();
+            this.showModal()
+              .then(() => $window.tocPauseLoadingAnimation());
             let showErrorMessage = () => {
               if (error === 'identity: wrong password') {
                 return notifications.notifySystem(

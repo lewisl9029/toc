@@ -91,9 +91,9 @@ export default /*@ngInject*/ function notifications(
     notificationInstance.addEventListener('click',
       () => handleNotificationClick(notificationInfo.id));
 
-    $timeout(() => {
-      notificationInstance.close();
-    }, 5000, false);
+    // $timeout(() => {
+    //   notificationInstance.close();
+    // }, 5000, false);
 
     return $q.when();
   };
@@ -105,10 +105,12 @@ export default /*@ngInject*/ function notifications(
       if (devices.isInForeground()) {
         return $q.when();
       }
-
-      return devices.isCordovaApp() ?
-        notifyCordova(notificationInfo) :
-        notifyWeb(notificationInfo);
+      // apparently, web notificaions api works in cordova for android.
+      // TODO: check with iOS
+      // return devices.isCordovaApp() ?
+      //   notifyCordova(notificationInfo) :
+      //   notifyWeb(notificationInfo);
+      return notifyWeb(notificationInfo);
     };
 
     let notificationCursor = state.cloud.notifications.select([notificationId]);
@@ -173,9 +175,10 @@ export default /*@ngInject*/ function notifications(
     }
 
     let dismissNative = (notificationInfo) => {
-      return devices.isCordovaApp() ?
-        dismissCordova(notificationInfo) :
-        dismissWeb(notificationInfo);
+      // return devices.isCordovaApp() ?
+      //   dismissCordova(notificationInfo) :
+      //   dismissWeb(notificationInfo);
+      return dismissWeb(notificationInfo);
     };
 
     let notificationCursor = state.cloud.notifications.select([notificationId]);
@@ -219,11 +222,7 @@ export default /*@ngInject*/ function notifications(
   let initialize = function initialize(contactsService) {
     contacts = contactsService;
 
-    if (devices.isWebApp()) {
-      if (!$window.Notification) {
-        return $q.when();
-      }
-
+    if ($window.Notification) {
       $window.Notification.requestPermission();
     }
 

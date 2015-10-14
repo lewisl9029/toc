@@ -24,19 +24,19 @@ export default /*@ngInject*/ function tocOptionsMenu() {
           cssClass: 'toc-id-popup',
           scope: $scope,
           buttons: [{
-            text: 'Ok',
-            type: 'button-balanced button-outline'
+            text: 'Done',
+            type: 'button-positive button-block'
           }],
           template: `
             <div class="list">
-              <label class="toc-id-input item item-input">
-                <input type="text" ng-model="::optionsMenu.userId"
-                  readonly toc-auto-select notify-copied="true">
-              </label>
               <div class="item item-image">
                 <toc-qr-image data="{{::optionsMenu.userId}}">
                 </toc-qr-image>
               </div>
+              <label class="toc-id-input item item-input">
+                <input type="text" ng-model="::optionsMenu.userId"
+                  readonly toc-auto-select notify-copied="true">
+              </label>
             </div>
           `
         });
@@ -68,14 +68,14 @@ export default /*@ngInject*/ function tocOptionsMenu() {
 
       this.showDeleteDataConfirm = function showDeleteDataConfirm() {
         let deleteDataPopup = $ionicPopup.confirm({
-          title: 'Remove Data',
+          title: 'Clear Data',
           template: `
             <p>All local data will be gone.</p>
             <p>Are you absolutely sure?</p>
           `,
-          okText: 'Remove',
-          okType: 'button-assertive button-outline',
-          cancelType: 'button-calm button-outline'
+          okText: 'Clear',
+          okType: 'button-assertive button-block',
+          cancelType: 'button-calm button-block button-outline'
         });
 
         deleteDataPopup.then((response) => {
@@ -95,8 +95,8 @@ export default /*@ngInject*/ function tocOptionsMenu() {
             <p>Are you sure?</p>
           `,
           okText: 'Sign out',
-          okType: 'button-assertive button-outline',
-          cancelType: 'button-calm button-outline'
+          okType: 'button-assertive button-block',
+          cancelType: 'button-calm button-block button-outline'
         });
 
         signoutPopup.then((response) => {

@@ -1,6 +1,6 @@
 {
   "name": "toc-im",
-  "version": "0.9.0-alpha",
+  "version": "0.10.0-alpha",
   "description": "Toc Messenger",
   "license": "AGPL-3.0",
   "repository": {
@@ -25,7 +25,7 @@
     "gulp-shell": "^0.4.3",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.4.0",
-    "jspm": "^0.16.11",
+    "jspm": "^0.16.12",
     "postcss": "^5.0.4",
     "run-sequence": "^1.1.2",
     "yargs": "^3.24.0"
@@ -52,7 +52,7 @@
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
       "qr-image": "npm:qr-image@^3.1.0",
       "ramda": "npm:ramda@^0.17.1",
-      "remotestoragejs": "npm:remotestoragejs@^0.11.2",
+      "remotestoragejs": "npm:remotestoragejs@^0.12.0",
       "text": "github:systemjs/plugin-text@^0.0.2"
     },
     "devDependencies": {
@@ -61,6 +61,12 @@
       "core-js": "npm:core-js@^1.1.4"
     },
     "overrides": {
+      "npm:remotestoragejs@0.12.0": {
+        "registry": "jspm",
+        "main": "release/0.12.0/remotestorage",
+        "format": "global",
+        "dependencies": {}
+      },
       "github:driftyco/ionic@1.1.0": {
         "registry": "jspm",
         "format": "global",
@@ -85,12 +91,6 @@
           "angular-sanitize": "^1.4.0",
           "angular-ui-router": "^0.2.10"
         }
-      },
-      "npm:remotestoragejs@0.11.2": {
-        "registry": "jspm",
-        "main": "release/0.11.2/remotestorage",
-        "format": "global",
-        "dependencies": {}
       },
       "github:angular-ui/ui-router@0.2.15": {
         "shim": {
@@ -119,22 +119,11 @@
   },
   "cordovaPlugins": [
     "cordova-plugin-device",
-    "cordova-plugin-console",
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
-    "com.ionic.keyboard",
     "cordova-plugin-crosswalk-webview",
     "cordova-plugin-inappbrowser",
-    {
-      "locator": "https://github.com/katzer/cordova-plugin-local-notifications",
-      "id": "de.appplant.cordova.plugin.local-notification"
-    },
-    {
-      "locator": "https://github.com/phonegap/phonegap-plugin-barcodescanner.git",
-      "id": "phonegap-plugin-barcodescanner"
-    },
-    "com.tonikorin.cordova.plugin.autostart",
-    "de.appplant.cordova.plugin.background-mode"
+    "phonegap-plugin-barcodescanner"
   ],
   "cordovaPlatforms": [
     "android",

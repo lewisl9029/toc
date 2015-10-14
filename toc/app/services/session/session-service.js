@@ -44,8 +44,8 @@ export default /*@ngInject*/ function session(
       .then(() => buffer.initialize(network, status))
       .then(() => time.initialize())
       .then(() => navigation.initialize())
-      .then(() => preparingPrivateSession.resolve('session: private ready'))
       .then(() => {
+        preparingPrivateSession.resolve('session: private ready')
         $window.tocHideLoadingScreen();
         return $q.when();
       });
@@ -58,7 +58,10 @@ export default /*@ngInject*/ function session(
 
       if (!derivedCredentials) {
         return navigation.initializePublic()
-          .then(() => preparingPublicSession.resolve('session: public ready'));
+          .then(() => {
+            preparingPublicSession.resolve('session: public ready');
+            return $q.when();
+          });
       }
 
       return start(derivedCredentials);

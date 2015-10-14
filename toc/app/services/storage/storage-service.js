@@ -8,8 +8,8 @@ export default /*@ngInject*/ function storage(
   R,
   remoteStorage
 ) {
-  //FIXME: storage usage is extremely high due to really long keys + storing
-  // crypto settings with each item/key
+  //FIXME: storage overhead is rather high due to really long keys + storing
+  // crypto params with each item/key
   const DEFAULT_ACCESS_LEVEL = 'rw';
   const STORAGE_MODULE_PREFIX = 'toc-state-';
   const KEY_SEPARATOR = '.';
@@ -17,27 +17,18 @@ export default /*@ngInject*/ function storage(
   let getStorageKey = R.join(KEY_SEPARATOR);
 
   let connect = function connect(email) {
-    //FIXME: .connect uses XHR so this try catch wont actually work
-    try {
-      //FIXME: next version will have redirectURI as config
-      // remoteStorage.remoteStorage.connect(email, null, 'https://toc.im');
-      remoteStorage.remoteStorage.connect(email, 'https://toc.im');
-    }
-    catch(error) {
-      return $q.reject(error);
-    }
-
-    return $q.when();
+    remoteStorage.setCordovaRedirectUri('http://toc.im');
+    return $q.when(remoteStorage.connect(email));
   };
 
   let isConnected = function isConnected() {
-    return remoteStorage.remoteStorage.connected;
+    return remoteStorage.connected;
   };
 
   let prepare = function prepareStorage() {
     let remoteStorageReady =
-      remoteStorage.remoteStorage.connected === true ||
-      remoteStorage.remoteStorage.connected === false;
+      remoteStorage.connected === true ||
+      remoteStorage.connected === false;
 
     if (remoteStorageReady) {
       return $q.when();
@@ -45,7 +36,7 @@ export default /*@ngInject*/ function storage(
 
     let preparingStorage = $q.defer();
 
-    remoteStorage.remoteStorage.on('ready',
+    remoteStorage.on('ready',
       () => preparingStorage.resolve()
     );
 
@@ -90,16 +81,16 @@ export default /*@ngInject*/ function storage(
       ));
   };
 
-  let enableLogging = remoteStorage.remoteStorage.enableLog;
+  let enableLogging = remoteStorage.enableLog;
 
   let enableCaching = function enableCaching(moduleName) {
-    remoteStorage.remoteStorage.caching
+    remoteStorage.caching
       .enable(`/${STORAGE_MODULE_PREFIX + moduleName}/`);
   };
 
   let claimAccess =
     function claimAccess(moduleName, accessLevel = DEFAULT_ACCESS_LEVEL) {
-      remoteStorage.remoteStorage.access
+      remoteStorage.access
         .claim(`${STORAGE_MODULE_PREFIX + moduleName}`, accessLevel);
     };
 
@@ -419,20 +410,20 @@ export default /*@ngInject*/ function storage(
   };
 
   let createCloud = function createCloud(moduleName = 'cloud') {
-    remoteStorage.RemoteStorage
+    remoteStorage
       .defineModule(STORAGE_MODULE_PREFIX + moduleName, buildModule);
 
-    return remoteStorage.remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
+    return remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
   };
 
   let createCloudUnencrypted =
     function createCloudUnencrypted(moduleName = 'cloud-unencrypted') {
-      remoteStorage.RemoteStorage.defineModule(
+      remoteStorage.defineModule(
         STORAGE_MODULE_PREFIX + moduleName,
         buildModuleUnencrypted
       );
 
-      return remoteStorage.remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
+      return remoteStorage[STORAGE_MODULE_PREFIX + moduleName];
     };
 
   let storageService = {

@@ -27,7 +27,8 @@ export default /*@ngInject*/ function navigation(
   const DEFAULT_PRIVATE_STATE = routes.private.home;
 
   let go = function go(stateName, parameters) {
-    return $state.go(stateName, parameters);
+    let options = { location: 'replace' };
+    return $state.go(stateName, parameters, options);
   };
 
   let navigate = function navigate(viewId) {
@@ -55,7 +56,8 @@ export default /*@ngInject*/ function navigation(
 
     $ionicHistory.nextViewOptions({
       disableBack: true,
-      disableAnimate: false
+      disableAnimate: false,
+      historyRoot: true
     });
 
     return go(destination, destinationParams)
