@@ -18,8 +18,8 @@ $toc-desktop-width: 1400px;
   }
 }
 
-$toc-primary-bg-color-dark: #00bbcc;
-$toc-secondary-bg-color-dark: #387ef5;
+$toc-primary-bg-color-dark: #2196F3;
+$toc-secondary-bg-color-dark: #00BCD4;
 $toc-primary-bg-color-medium: #a0a6aa;
 $toc-secondary-bg-color-medium: #a1b8c1;
 $toc-primary-bg-color-light: #eef1f0;
@@ -27,21 +27,21 @@ $toc-secondary-bg-color-light: #e5edeb;
 
 $toc-primary-text-color-light: #f8f9fa;
 $toc-secondary-text-color-light: #e5edeb;
-$toc-primary-text-color-dark: #00718f;
-$toc-secondary-text-color-dark: #00bbcc;
+$toc-primary-text-color-dark: #2196F3;
+$toc-secondary-text-color-dark: #00BCD4;
 $toc-highlight-text-color-dark: #6eaeba;
 
-// $toc-primary-background-gradient: radial-gradient(
-//   ellipse farthest-side at 0px 0px,
-//   $toc-secondary-bg-color-dark 0%,
-//   $toc-primary-bg-color-dark 100%
-// );
-
-$toc-primary-background-gradient: linear-gradient(
-  to bottom,
+$toc-primary-background-gradient: radial-gradient(
+  ellipse farthest-side at 0px 0px,
   $toc-secondary-bg-color-dark 0%,
   $toc-primary-bg-color-dark 100%
 );
+
+// $toc-primary-background-gradient: linear-gradient(
+//   to bottom,
+//   $toc-secondary-bg-color-dark 0%,
+//   $toc-primary-bg-color-dark 100%
+// );
 
 $toc-secondary-background-gradient: linear-gradient(
   to top,
@@ -259,11 +259,12 @@ a {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 90vh;
   max-width: 100%;
-  height: 100vh;
+  height: 90vh;
   background-image: $toc-primary-background-gradient;
   background-repeat: no-repeat;
+  background-size: 90vh 90vh;
 }
 
 .toc-main-content {
