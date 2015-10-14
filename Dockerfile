@@ -52,14 +52,14 @@ RUN npm install -g npm@3.3.8 && \
   npm install -g cordova@5.3.3 && \
   npm install -g gulp-cli@0.3.0 && \
   npm install -g http-server@0.8.5 && \
-  npm install -g ionic@1.6.4 && \
+  npm install -g ionic@1.7.0 && \
   npm install -g jspm@0.16.12 && \
   npm cache clean
 
 # replacing ionic-cli with custom fork for device livereload support
 # https://github.com/driftyco/ionic-cli/issues/557
-RUN npm uninstall -g ionic
-RUN npm install -g ionic-no-cordova-mock@0.0.2 && npm cache clean
+# RUN npm uninstall -g ionic
+# RUN npm install -g ionic-no-cordova-mock@0.0.2 && npm cache clean
 
 # adding volume mounts to cache android build dependencies
 # and to allow use of persistent build certificates
