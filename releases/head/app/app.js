@@ -11540,7 +11540,7 @@ System.registerDynamic("components/update-profile-modal/update-profile-modal.htm
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<ion-modal-view>\n  <form name=\"tocUpdateProfileForm\" id=\"toc-update-profile-form\"\n    ng-submit=\"updateProfileModal.updateProfile(tocUpdateProfileForm)\"\n    novalidate>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">Update Profile</h1>\n  </ion-header-bar>\n  <ion-content class=\"has-subfooter\">\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm item-clear\">\n        What would you like to change?\n      </div>\n      <div class=\"item item-avatar\">\n        <img alt=\"New avatar\" ng-src=\"{{updateProfileModal.getNewAvatar()}}\" />\n        <h2>{{updateProfileModal.userInfo.displayName || 'Anonymous'}}</h2>\n        <p>Your new user card</p>\n      </div>\n      <div class=\"item item-input item-stacked-label\">\n        <span class=\"input-label\">Your name</span>\n        <input type=\"text\" ng-model=\"updateProfileModal.userInfo.displayName\"\n          form=\"toc-update-profile-form\"\n          placeholder=\"Your friends will see this in their contact lists\">\n      </div>\n      <div class=\"item item-input item-stacked-label\">\n        <span class=\"input-label\">Your email</span>\n        <input type=\"email\" ng-model=\"updateProfileModal.userInfo.email\"\n          form=\"toc-update-profile-form\"\n          placeholder=\"Your avatar will be generated from this email\"\n          ng-model-options=\"{\n            updateOn: 'default blur',\n            debounce: { default: 1000, blur: 0}\n          }\">\n      </div>\n    </div>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <a onclick=\"window.open('https://www.libravatar.org/', '_system');\"\n        class=\"button button-outline button-block button-royal\">\n        Change your email avatar\n      </a>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button type=\"button\"\n        class=\"button button-block button-outline button-calm\"\n        ng-click=\"::updateProfileModal.removeModal()\">\n        Cancel\n      </button>\n    </div>\n    <div class=\"col\">\n      <button type=\"submit\" form=\"toc-update-profile-form\"\n        class=\"button button-block button-outline button-balanced\">\n        Update\n      </button>\n    </div>\n  </ion-footer-bar>\n  </form>\n</ion-modal-view>\n";
+  module.exports = "<ion-modal-view>\n  <form name=\"tocUpdateProfileForm\" id=\"toc-update-profile-form\"\n    ng-submit=\"updateProfileModal.updateProfile(tocUpdateProfileForm)\"\n    novalidate>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">Update Profile</h1>\n  </ion-header-bar>\n  <ion-content class=\"has-subfooter\">\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm item-clear\">\n        What would you like to change?\n      </div>\n      <div class=\"item item-avatar\">\n        <img alt=\"New avatar\" ng-src=\"{{updateProfileModal.getNewAvatar()}}\" />\n        <h2>{{updateProfileModal.userInfo.displayName || 'Anonymous'}}</h2>\n        <p>Your new user card</p>\n      </div>\n      <div class=\"item item-input item-stacked-label\">\n        <span class=\"input-label\">Your name</span>\n        <input type=\"text\" ng-model=\"updateProfileModal.userInfo.displayName\"\n          form=\"toc-update-profile-form\"\n          placeholder=\"Your friends will see this in their contact lists\">\n      </div>\n      <div class=\"item item-input item-stacked-label\">\n        <span class=\"input-label\">Your email</span>\n        <input type=\"email\" ng-model=\"updateProfileModal.userInfo.email\"\n          form=\"toc-update-profile-form\"\n          placeholder=\"Your avatar will be generated from this email\"\n          ng-model-options=\"{\n            updateOn: 'default blur',\n            debounce: { default: 1000, blur: 0}\n          }\">\n      </div>\n    </div>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <a onclick=\"window.open('https://www.libravatar.org/', '_system');\"\n        class=\"button button-block button-royal button-clear\">\n        Change your email avatar\n      </a>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button type=\"button\"\n        class=\"button button-block button-calm button-clear\"\n        ng-click=\"::updateProfileModal.removeModal()\">\n        Cancel\n      </button>\n    </div>\n    <div class=\"col\">\n      <button type=\"submit\" form=\"toc-update-profile-form\"\n        class=\"button button-block button-balanced button-clear\">\n        Update\n      </button>\n    </div>\n  </ion-footer-bar>\n  </form>\n</ion-modal-view>\n";
   global.define = __define;
   return module.exports;
 });
@@ -11626,7 +11626,7 @@ System.registerDynamic("components/begin-conversation-modal/begin-conversation-m
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<ion-modal-view>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">Start a Conversation</h1>\n  </ion-header-bar>\n  <ion-content class=\"has-subfooter\">\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm item-clear\">\n        How would you like to start?\n      </div>\n      <ion-radio class=\"item-icon-left\"\n        ng-repeat=\"(id, inviteMethod) in ::beginConversationModal.inviteMethods\n          track by id\"\n        ng-model=\"beginConversationModal.inviteMethod\"\n        ng-value=\"::id\" ng-if=\"::inviteMethod.isEnabled\">\n        <i class=\"icon\" ng-class=\"::inviteMethod.icon\"></i>\n        {{::inviteMethod.text}}\n      </ion-radio>\n    </div>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <button type=\"button\" ng-click=\"::beginConversationModal.showIdPopup()\"\n        class=\"button button-outline button-block button-royal\">\n        Display your ID\n      </button>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button class=\"button button-block button-outline button-calm\"\n        ng-click=\"::beginConversationModal.removeModal()\">\n        Cancel\n      </button>\n    </div>\n    <div class=\"col\">\n      <button class=\"button button-block button-outline button-balanced\"\n        ng-click=\"::beginConversationModal.doInvite()\">\n        Start\n      </button>\n    </div>\n  </ion-footer-bar>\n</ion-modal-view>\n";
+  module.exports = "<ion-modal-view>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">Start a Conversation</h1>\n  </ion-header-bar>\n  <ion-content class=\"has-subfooter\">\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm item-clear\">\n        How would you like to start?\n      </div>\n      <ion-radio class=\"item-icon-left\"\n        ng-repeat=\"(id, inviteMethod) in ::beginConversationModal.inviteMethods\n          track by id\"\n        ng-model=\"beginConversationModal.inviteMethod\"\n        ng-value=\"::id\" ng-if=\"::inviteMethod.isEnabled\">\n        <i class=\"icon\" ng-class=\"::inviteMethod.icon\"></i>\n        {{::inviteMethod.text}}\n      </ion-radio>\n    </div>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <button type=\"button\" ng-click=\"::beginConversationModal.showIdPopup()\"\n        class=\"button button-block button-royal button-clear\">\n        Display your ID\n      </button>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button class=\"button button-block button-calm button-clear\"\n        ng-click=\"::beginConversationModal.removeModal()\">\n        Cancel\n      </button>\n    </div>\n    <div class=\"col\">\n      <button class=\"button button-block button-balanced button-clear\"\n        ng-click=\"::beginConversationModal.doInvite()\">\n        Start\n      </button>\n    </div>\n  </ion-footer-bar>\n</ion-modal-view>\n";
   global.define = __define;
   return module.exports;
 });
@@ -11698,10 +11698,10 @@ System.register('components/begin-conversation-modal/begin-conversation-modal-di
                 scope: $scope,
                 buttons: [{
                   text: 'Cancel',
-                  type: 'button-outline button-calm'
+                  type: 'button-calm button-clear'
                 }, {
                   text: 'Invite',
-                  type: 'button-outline button-balanced',
+                  type: 'button-balanced button-clear',
                   onTap: function onTap(event) {
                     return _this.sendInvite(event);
                   }
@@ -11770,8 +11770,8 @@ System.register('components/begin-conversation-modal/begin-conversation-modal-di
             cssClass: 'toc-id-popup',
             scope: $scope,
             buttons: [{
-              text: 'Ok',
-              type: 'button-balanced button-outline'
+              text: 'Done',
+              type: 'button-balanced button-block button-clear'
             }],
             template: '\n            <div class="list">\n              <div class="item item-image">\n                <toc-qr-image data="{{::beginConversationModal.userId}}">\n                </toc-qr-image>\n              </div>\n              <label class="toc-id-input item item-input">\n                <input type="text" ng-model="::beginConversationModal.userId"\n                  readonly toc-auto-select notify-copied="true">\n              </label>\n            </div>\n          '
           });
@@ -11814,7 +11814,7 @@ System.registerDynamic("components/password-prompt-modal/password-prompt-modal.h
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<ion-modal-view>\n  <form name=\"tocPasswordPromptForm\" id=\"toc-password-prompt-form\"\n    ng-submit=\"passwordPromptModal.begin(tocPasswordPromptForm)\" novalidate>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">\n      {{\n        passwordPromptModal.userExists ?\n          'Welcome Back to Toc Messenger' :\n          'Welcome to Toc Messenger'\n      }}\n    </h1>\n  </ion-header-bar>\n  <ion-content class=\"has-subfooter\">\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm item-clear\">\n        {{\n          passwordPromptModal.userExists ?\n            'Nice to see you again!' :\n            'First time using Toc?'\n        }}\n      </div>\n      <label class=\"item item-input item-floating-label\">\n        <span class=\"input-label\">\n          Enter your password\n        </span>\n        <input type=\"password\" form=\"toc-password-prompt-form\"\n          placeholder=\"{{\n            passwordPromptModal.userExists ?\n              'A password is all you need to continue' :\n              'A password is all you need to get started'\n          }}\"\n          ng-model=\"passwordPromptModal.password\" toc-auto-focus required>\n      </label>\n      <label class=\"item item-input item-floating-label\"\n        ng-if=\"!passwordPromptModal.userExists\">\n        <span class=\"input-label\">\n          Verify your password\n        </span>\n        <input type=\"password\" form=\"toc-password-prompt-form\"\n          placeholder=\"Enter it one more time, just in case\"\n          toc-equal-to=\"passwordPromptModal.password\"\n          ng-model=\"passwordPromptModal.passwordConfirm\" required>\n      </label>\n      <ion-toggle ng-model=\"passwordPromptModal.staySignedIn\"\n        form=\"toc-password-prompt-form\"\n        toggle-class=\"toggle-calm\" class=\"toc-stay-signed-in-toggle\">\n        Remain signed in next time?\n        <span class=\"item-note\">\n          {{\n            passwordPromptModal.staySignedIn ?\n              'We\\'ll remember you until you sign out' :\n              'We\\'ll ask for your password again'\n          }}\n        </span>\n      </ion-toggle>\n    </div>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <button type=\"button\"\n        ng-click=\"passwordPromptModal.showCloudConnectModal()\"\n        class=\"button button-outline button-block button-royal\">\n        <!-- TODO: connect to different account if already connected -->\n        {{\n          passwordPromptModal.userExists ?\n            'Sync your profile' :\n            'Sync an online profile'\n        }}\n      </button>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button type=\"submit\" form=\"toc-password-prompt-form\"\n        class=\"button button-block button-outline button-balanced\">\n        {{\n          passwordPromptModal.userExists ?\n            'Let\\'s continue!' :\n            'Let\\'s get started!'\n        }}\n      </button>\n    </div>\n  </ion-footer-bar>\n  </form>\n</ion-modal-view>\n";
+  module.exports = "<ion-modal-view>\n  <form name=\"tocPasswordPromptForm\" id=\"toc-password-prompt-form\"\n    ng-submit=\"passwordPromptModal.begin(tocPasswordPromptForm)\" novalidate>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">\n      {{\n        passwordPromptModal.userExists ?\n          'Welcome Back to Toc Messenger' :\n          'Welcome to Toc Messenger'\n      }}\n    </h1>\n  </ion-header-bar>\n  <ion-content class=\"has-subfooter\">\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm\">\n        {{\n          passwordPromptModal.userExists ?\n            'Nice to see you again!' :\n            'First time using Toc?'\n        }}\n      </div>\n      <label class=\"item item-input item-floating-label\">\n        <span class=\"input-label\">\n          Enter your password\n        </span>\n        <input type=\"password\" form=\"toc-password-prompt-form\"\n          placeholder=\"{{\n            passwordPromptModal.userExists ?\n              'A password is all you need to continue' :\n              'A password is all you need to get started'\n          }}\"\n          ng-model=\"passwordPromptModal.password\" toc-auto-focus required>\n      </label>\n      <label class=\"item item-input item-floating-label\"\n        ng-if=\"!passwordPromptModal.userExists\">\n        <span class=\"input-label\">\n          Verify your password\n        </span>\n        <input type=\"password\" form=\"toc-password-prompt-form\"\n          placeholder=\"Enter it one more time, just in case\"\n          toc-equal-to=\"passwordPromptModal.password\"\n          ng-model=\"passwordPromptModal.passwordConfirm\" required>\n      </label>\n      <ion-toggle ng-model=\"passwordPromptModal.staySignedIn\"\n        form=\"toc-password-prompt-form\"\n        toggle-class=\"toggle-calm\" class=\"toc-stay-signed-in-toggle\">\n        Remain signed in next time?\n        <span class=\"item-note\">\n          {{\n            passwordPromptModal.staySignedIn ?\n              'We\\'ll remember you until you sign out' :\n              'We\\'ll ask for your password again'\n          }}\n        </span>\n      </ion-toggle>\n    </div>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <button type=\"button\"\n        ng-click=\"passwordPromptModal.showCloudConnectModal()\"\n        class=\"button button-block button-royal button-clear\">\n        <!-- TODO: connect to different account if already connected -->\n        {{\n          passwordPromptModal.userExists ?\n            'Sync your profile' :\n            'Sync an online profile'\n        }}\n      </button>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button type=\"submit\" form=\"toc-password-prompt-form\"\n        class=\"button button-block button-balanced button-clear\">\n        {{\n          passwordPromptModal.userExists ?\n            'Let\\'s continue!' :\n            'Let\\'s get started!'\n        }}\n      </button>\n    </div>\n  </ion-footer-bar>\n  </form>\n</ion-modal-view>\n";
   global.define = __define;
   return module.exports;
 });
@@ -12167,7 +12167,7 @@ System.registerDynamic("components/cloud-connect-modal/cloud-connect-modal.html!
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<ion-modal-view>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">Connect a Storage Service</h1>\n  </ion-header-bar>\n  <ion-content class=\"has-subfooter\">\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm item-clear\">\n        Which service would you prefer?\n      </div>\n      <ion-radio class=\"item item-avatar toc-square-avatar toc-cloud-service-item\"\n        ng-repeat=\"(id, service) in ::cloudConnectModal.services track by id\"\n        ng-model=\"cloudConnectModal.selectedService\" ng-value=\"::id\">\n        <img ng-src=\"assets/images/{{::service.img}}\"\n          alt=\"Icon for {{::service.name}}\" />\n        <h2>{{::service.name}}</h2>\n        <p>{{::service.description}}</p>\n      </ion-radio>\n      <!-- <label class=\"item item-input item-stacked-label\">\n        <span class=\"input-label\">Email</span>\n        <input type=\"password\" placeholder=\"Your remoteStorage.io email.\"\n          ng-model=\"cloudConnectModal.email\" toc-auto-focus>\n      </label> -->\n    </div>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <a onclick=\"window.open('https://remotestorage.io/get/', '_system');\"\n        class=\"button button-block button-outline button-royal\">\n        Get a storage account\n      </a>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button class=\"button button-block button-outline button-calm\"\n        ng-click=\"::cloudConnectModal.removeModal()\">\n        Cancel\n      </button>\n    </div>\n    <div class=\"col\">\n      <button class=\"button button-block button-outline button-balanced\"\n        ng-click=\"::cloudConnectModal.connect()\">\n        Connect\n      </button>\n    </div>\n  </ion-footer-bar>\n</ion-modal-view>\n";
+  module.exports = "<ion-modal-view>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">Connect a Storage Service</h1>\n  </ion-header-bar>\n  <ion-content class=\"has-subfooter\">\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm item-clear\">\n        Which service would you prefer?\n      </div>\n      <ion-radio class=\"item item-avatar toc-square-avatar toc-cloud-service-item\"\n        ng-repeat=\"(id, service) in ::cloudConnectModal.services track by id\"\n        ng-model=\"cloudConnectModal.selectedService\" ng-value=\"::id\">\n        <img ng-src=\"assets/images/{{::service.img}}\"\n          alt=\"Icon for {{::service.name}}\" />\n        <h2>{{::service.name}}</h2>\n        <p>{{::service.description}}</p>\n      </ion-radio>\n      <!-- <label class=\"item item-input item-stacked-label\">\n        <span class=\"input-label\">Email</span>\n        <input type=\"password\" placeholder=\"Your remoteStorage.io email.\"\n          ng-model=\"cloudConnectModal.email\" toc-auto-focus>\n      </label> -->\n    </div>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <a onclick=\"window.open('https://remotestorage.io/get/', '_system');\"\n        class=\"button button-block button-royal button-clear\">\n        Get a storage account\n      </a>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button class=\"button button-block button-calm button-clear\"\n        ng-click=\"::cloudConnectModal.removeModal()\">\n        Cancel\n      </button>\n    </div>\n    <div class=\"col\">\n      <button class=\"button button-block button-balanced button-clear\"\n        ng-click=\"::cloudConnectModal.connect()\">\n        Connect\n      </button>\n    </div>\n  </ion-footer-bar>\n</ion-modal-view>\n";
   global.define = __define;
   return module.exports;
 });
@@ -12219,9 +12219,9 @@ System.register('components/cloud-connect-modal/cloud-connect-modal-directive.js
             return $ionicPopup.confirm({
               title: 'Preparing to Upload Data',
               template: '\n                <p>Toc will try to upload your local data into this cloud account.</p>\n                <p>Please confirm this cloud account hasn\'t been used with Toc before.</p>\n              ',
-              cancelType: 'button-outline button-calm',
+              cancelType: 'button-calm button-clear',
               okText: 'Confirm',
-              okType: 'button-outline button-assertive'
+              okType: 'button-assertive button-clear'
             }).then(function (response) {
               if (!response) {
                 return;
@@ -12246,10 +12246,10 @@ System.register('components/cloud-connect-modal/cloud-connect-modal-directive.js
                 scope: $scope,
                 buttons: [{
                   text: 'Cancel',
-                  type: 'button-outline button-calm'
+                  type: 'button-calm button-clear'
                 }, {
                   text: 'Connect',
-                  type: 'button-outline button-balanced',
+                  type: 'button-balanced button-clear',
                   onTap: function onTap(event) {
                     _this.submitRemoteStorageEmail(event);
                   }
@@ -12314,7 +12314,7 @@ System.registerDynamic("components/invite-post-modal/invite-post-modal.html!gith
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<ion-modal-view>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">Share an Invite Post</h1>\n  </ion-header-bar>\n  <ion-content>\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm item-clear\">\n        Where would you like to share it?\n      </div>\n      <ion-radio class=\"item-icon-left\"\n        ng-repeat=\"(id, shareMethod) in ::invitePostModal.shareMethods\n          track by id\"\n        ng-model=\"invitePostModal.shareMethod\"\n        ng-value=\"::id\" ng-if=\"::shareMethod.isEnabled\">\n        <i class=\"icon\" ng-class=\"::shareMethod.icon\"></i>\n        {{::shareMethod.text}}\n      </ion-radio>\n    </div>\n  </ion-content>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button class=\"button button-block button-outline button-calm\"\n        ng-click=\"::invitePostModal.removeModal()\">\n        Cancel\n      </button>\n    </div>\n    <div class=\"col\">\n      <button class=\"button button-block button-outline button-balanced\"\n        ng-click=\"::invitePostModal.doShare()\">\n        Share\n      </button>\n    </div>\n  </ion-footer-bar>\n</ion-modal-view>\n";
+  module.exports = "<ion-modal-view>\n  <ion-header-bar class=\"bar-positive\">\n    <h1 class=\"title\">Share an Invite Post</h1>\n  </ion-header-bar>\n  <ion-content>\n    <div class=\"list\">\n      <div class=\"item item-divider item-calm item-clear\">\n        Where would you like to share it?\n      </div>\n      <ion-radio class=\"item-icon-left\"\n        ng-repeat=\"(id, shareMethod) in ::invitePostModal.shareMethods\n          track by id\"\n        ng-model=\"invitePostModal.shareMethod\"\n        ng-value=\"::id\" ng-if=\"::shareMethod.isEnabled\">\n        <i class=\"icon\" ng-class=\"::shareMethod.icon\"></i>\n        {{::shareMethod.text}}\n      </ion-radio>\n    </div>\n  </ion-content>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button class=\"button button-block button-calm button-clear\"\n        ng-click=\"::invitePostModal.removeModal()\">\n        Cancel\n      </button>\n    </div>\n    <div class=\"col\">\n      <button class=\"button button-block button-balanced button-clear\"\n        ng-click=\"::invitePostModal.doShare()\">\n        Share\n      </button>\n    </div>\n  </ion-footer-bar>\n</ion-modal-view>\n";
   global.define = __define;
   return module.exports;
 });
@@ -12407,7 +12407,7 @@ System.registerDynamic("components/message-input-area/message-input-area.html!gi
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<form class=\"toc-message-input-form\"\n  id=\"toc-message-input-form-{{::messageInputArea.channelId}}\"\n  ng-submit=\"::messageInputArea.send()\" novalidate>\n  <div class=\"toc-message-input-field-container\">\n    <input class=\"toc-message-input-field\" type=\"text\" placeholder=\"Message\"\n      form=\"toc-message-input-form-{{::messageInputArea.channelId}}\"\n      ng-model=\"messageInputArea.message\" ng-trim=\"false\"\n      toc-auto-focus required>\n    </input>\n  </div>\n  <div class=\"toc-message-input-send-container\">\n    <button type=\"submit\"\n      form=\"toc-message-input-form-{{::messageInputArea.channelId}}\"\n      class=\"button button-block button-outline button-balanced\">\n      Send\n    </button>\n  </div>\n</form>\n";
+  module.exports = "<form class=\"toc-message-input-form\"\n  id=\"toc-message-input-form-{{::messageInputArea.channelId}}\"\n  ng-submit=\"::messageInputArea.send()\" novalidate>\n  <div class=\"toc-message-input-field-container\">\n    <input class=\"toc-message-input-field\" type=\"text\" placeholder=\"Message\"\n      form=\"toc-message-input-form-{{::messageInputArea.channelId}}\"\n      ng-model=\"messageInputArea.message\" ng-trim=\"false\"\n      toc-auto-focus required>\n    </input>\n  </div>\n  <div class=\"toc-message-input-send-container\">\n    <button type=\"submit\"\n      form=\"toc-message-input-form-{{::messageInputArea.channelId}}\"\n      class=\"button button-block button-balanced button-clear\">\n      Send\n    </button>\n  </div>\n</form>\n";
   global.define = __define;
   return module.exports;
 });
@@ -13177,7 +13177,7 @@ System.registerDynamic("components/conversations-menu/conversations-menu.html!gi
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<ion-header-bar class=\"bar-positive toc-conversations-menu-header\">\n  <h1 class=\"title\">Conversations</h1>\n</ion-header-bar>\n<div class=\"toc-conversations-menu-subheader bar bar-subheader\">\n  <toc-user-card\n    ng-class=\"{'toc-active-view': conversationsMenu.viewId === 'home'}\"\n    ng-click=\"conversationsMenu.goToHome()\" menu-close></toc-user-card>\n</div>\n<ion-content class=\"has-subheader\">\n  <toc-channel-list>\n  </toc-channel-list>\n</ion-content>\n<ion-footer-bar>\n  <div class=\"col\">\n    <button class=\"button button-block button-outline button-balanced\"\n      ng-click=\"conversationsMenu.showBeginConversationModal()\">\n      Start a conversation\n    </button>\n  </div>\n</ion-footer-bar>\n";
+  module.exports = "<ion-header-bar class=\"bar-positive toc-conversations-menu-header\">\n  <h1 class=\"title\">Conversations</h1>\n</ion-header-bar>\n<div class=\"toc-conversations-menu-subheader bar bar-subheader\">\n  <toc-user-card\n    ng-class=\"{'toc-active-view': conversationsMenu.viewId === 'home'}\"\n    ng-click=\"conversationsMenu.goToHome()\" menu-close></toc-user-card>\n</div>\n<ion-content class=\"has-subheader\">\n  <toc-channel-list>\n  </toc-channel-list>\n</ion-content>\n<ion-footer-bar>\n  <div class=\"col\">\n    <button class=\"button button-block button-balanced button-clear\"\n      ng-click=\"conversationsMenu.showBeginConversationModal()\">\n      Start a conversation\n    </button>\n  </div>\n</ion-footer-bar>\n";
   global.define = __define;
   return module.exports;
 });
@@ -13253,7 +13253,7 @@ System.registerDynamic("components/options-menu/options-menu.html!github:systemj
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<ion-header-bar class=\"bar-positive\">\n  <h1 class=\"title\">Options</h1>\n</ion-header-bar>\n<ion-content>\n  <div class=\"list\">\n    <div class=\"item\">\n      About Toc\n    </div>\n    <div class=\"item\" ng-click=\"optionsMenu.showIdPopup()\">\n      Display your ID\n    </div>\n    <div class=\"item\" ng-click=\"optionsMenu.showCloudConnectModal()\">\n      Sync your profile\n    </div>\n    <div class=\"item\" ng-click=\"optionsMenu.showDeleteDataConfirm()\">\n      Clear local data\n    </div>\n    <div class=\"item\" ng-click=\"optionsMenu.showSignoutConfirm()\">\n      Sign out\n    </div>\n  </div>\n</ion-content>\n<ion-footer-bar>\n  <div class=\"col\">\n    <button class=\"button button-block button-outline button-balanced\"\n      ng-click=\"optionsMenu.showBeginConversationModal()\">\n      Start a conversation\n    </button>\n  </div>\n</ion-footer-bar>\n";
+  module.exports = "<ion-header-bar class=\"bar-positive\">\n  <h1 class=\"title\">Options</h1>\n</ion-header-bar>\n<ion-content>\n  <div class=\"list\">\n    <a class=\"item\" href=\"http://toc.im\" target=\"_system\">\n      About Toc\n    </a>\n    <div class=\"item\" ng-click=\"optionsMenu.showIdPopup()\">\n      Display your ID\n    </div>\n    <div class=\"item\" ng-click=\"optionsMenu.showCloudConnectModal()\">\n      Sync your profile\n    </div>\n    <div class=\"item\" ng-click=\"optionsMenu.showDeleteDataConfirm()\">\n      Clear local data\n    </div>\n    <div class=\"item\" ng-click=\"optionsMenu.showSignoutConfirm()\">\n      Sign out\n    </div>\n  </div>\n</ion-content>\n<ion-footer-bar>\n  <div class=\"col\">\n    <button class=\"button button-block button-balanced button-clear\"\n      ng-click=\"optionsMenu.showBeginConversationModal()\">\n      Start a conversation\n    </button>\n  </div>\n</ion-footer-bar>\n";
   global.define = __define;
   return module.exports;
 });
@@ -13285,8 +13285,8 @@ System.register('components/options-menu/options-menu-directive.js', ['component
             cssClass: 'toc-id-popup',
             scope: $scope,
             buttons: [{
-              text: 'Ok',
-              type: 'button-balanced button-outline'
+              text: 'Done',
+              type: 'button-balanced button-block button-clear'
             }],
             template: '\n            <div class="list">\n              <div class="item item-image">\n                <toc-qr-image data="{{::optionsMenu.userId}}">\n                </toc-qr-image>\n              </div>\n              <label class="toc-id-input item item-input">\n                <input type="text" ng-model="::optionsMenu.userId"\n                  readonly toc-auto-select notify-copied="true">\n              </label>\n            </div>\n          '
           });
@@ -13313,8 +13313,8 @@ System.register('components/options-menu/options-menu-directive.js', ['component
             title: 'Remove Data',
             template: '\n            <p>All local data will be gone.</p>\n            <p>Are you absolutely sure?</p>\n          ',
             okText: 'Remove',
-            okType: 'button-assertive button-outline',
-            cancelType: 'button-calm button-outline'
+            okType: 'button-assertive button-block button-clear',
+            cancelType: 'button-calm button-block button-clear'
           });
 
           deleteDataPopup.then(function (response) {
@@ -13331,8 +13331,8 @@ System.register('components/options-menu/options-menu-directive.js', ['component
             title: 'Sign Out',
             template: '\n            <p>You\'ll have to sign in again.</p>\n            <p>Are you sure?</p>\n          ',
             okText: 'Sign out',
-            okType: 'button-assertive button-outline',
-            cancelType: 'button-calm button-outline'
+            okType: 'button-assertive button-block button-clear',
+            cancelType: 'button-calm button-block button-clear'
           });
 
           signoutPopup.then(function (response) {
@@ -100142,10 +100142,10 @@ System.register('services/contacts/contacts-service.js', [], function (_export) 
           title: 'Accept Invite',
           buttons: [{
             text: 'Cancel',
-            type: 'button-outline button-calm'
+            type: 'button-calm button-clear'
           }, {
             text: 'Accept',
-            type: 'button-outline button-balanced',
+            type: 'button-balanced button-clear',
             onTap: function onTap(event) {
               return saveAcceptingInvite(channelId);
             }
@@ -100735,7 +100735,7 @@ System.register('services/devices/devices-service.js', [], function (_export) {
           scope: disconnectPopupScope,
           buttons: [{
             text: 'Stay connected',
-            type: 'button-assertive button-outline',
+            type: 'button-assertive button-block button-clear',
             onTap: function onTap(event) {
               $interval.cancel(disconnectingDevice);
               disconnectOtherDevices();
@@ -103143,7 +103143,7 @@ System.registerDynamic("views/home/home.html!github:systemjs/plugin-text@0.0.2",
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<ion-view view-title=\"Toc Messenger\">\n  <div class=\"bar bar-subheader\">\n    <toc-user-card enable-dismiss-notifications>\n    </toc-user-card>\n  </div>\n  <ion-content class=\"has-subheader has-subfooter\">\n    <toc-notification-list></toc-notification-list>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <button class=\"button button-block button-outline button-royal\"\n        ng-click=\"homeView.showUpdateProfileModal()\">\n        Update your profile\n      </button>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button class=\"button button-block button-outline button-balanced\"\n        ng-click=\"homeView.showBeginConversationModal()\">\n        Start a conversation\n      </button>\n    </div>\n  </ion-footer-bar>\n</ion-view>\n";
+  module.exports = "<ion-view view-title=\"Toc Messenger\">\n  <div class=\"bar bar-subheader\">\n    <toc-user-card enable-dismiss-notifications>\n    </toc-user-card>\n  </div>\n  <ion-content class=\"has-subheader has-subfooter\">\n    <toc-notification-list></toc-notification-list>\n  </ion-content>\n  <div class=\"bar bar-subfooter\">\n    <div class=\"col\">\n      <button class=\"button button-block button-royal button-clear\"\n        ng-click=\"homeView.showUpdateProfileModal()\">\n        Update your profile\n      </button>\n    </div>\n  </div>\n  <ion-footer-bar>\n    <div class=\"col\">\n      <button class=\"button button-block button-balanced button-clear\"\n        ng-click=\"homeView.showBeginConversationModal()\">\n        Start a conversation\n      </button>\n    </div>\n  </ion-footer-bar>\n</ion-view>\n";
   global.define = __define;
   return module.exports;
 });
