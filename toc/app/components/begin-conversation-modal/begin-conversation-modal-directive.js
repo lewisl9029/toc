@@ -35,13 +35,20 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
       let handleInviteError = (error) => {
         if (error === 'contact: cannot invite self') {
           return notifications.notifySystem(
-            'You just tried to invite yourself ._.'
+            'Cannot invite self'
           );
         }
 
         if (error === 'contact: contact already exists') {
           return notifications.notifySystem(
             'This contact already exists'
+          );
+        }
+
+        if (error === 'contacts: qr reader cancelled' ||
+          error.message === 'contacts: qr reader cancelled') {
+          return notifications.notifySystem(
+            'QR reader ran into a problem. Please try again.'
           );
         }
 
@@ -108,7 +115,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
               return $cordovaBarcodeScanner.scan()
                 .then((barcodeData) => {
                   if (barcodeData.cancelled) {
-                    return $q.reject(`QR reader was cancelled.`);
+                    throw new Error('contacts: qr reader cancelled');
                   }
                   let contactId = barcodeData.text;
                   if (!identity.validateId(contactId)) {
