@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-DOCKER_VERSION=1.8.2-0~trusty
+DOCKER_VERSION=1.8.3-0~trusty
 
 # according to http://blog.docker.com/2015/07/new-apt-and-yum-repos/
 

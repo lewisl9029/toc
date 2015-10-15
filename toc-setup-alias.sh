@@ -6,14 +6,11 @@ cat <<ALIASES
   alias toc-build="source $TOC_PATH/toc-setup-docker-build.sh"
 
   alias toc="sudo docker run \
-    -i -t --rm --privileged \
+    -i -t --rm \
     -p 8100:8100 \
     -p 8101:8101 \
-    -e TOC_HOST_IP=$TOC_HOST_IP \
-    -v /dev/bus/usb:/dev/bus/usb \
     -v $TOC_PATH:/toc \
-    -v $TOC_PATH/cache/android:/root/.android \
-    -v /home/$USERNAME/.gradle:/root/.gradle \
+    -v $TOC_PATH/cache/ionic:/root/.ionic \
     lewisl9029/toc-dev:latest \
     "$@""
 
