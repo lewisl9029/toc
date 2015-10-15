@@ -15,3 +15,6 @@ EXPOSE 8100 8101
 # adding volume mounts for project files
 WORKDIR /toc
 VOLUME /toc
+VOLUME /root/.ionic
+
+ENTRYPOINT ["bash"]
