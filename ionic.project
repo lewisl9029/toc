@@ -1,6 +1,7 @@
 {
   "name": "Toc Messenger",
   "documentRoot": "toc",
+  "createDocumentRoot": "toc",
   "gulpStartupTasks": [
     "bundle-sass",
     "watch"
