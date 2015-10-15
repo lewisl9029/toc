@@ -1,4 +1,4 @@
-FROM node:4.2.1-slim
+FROM node:4.2.1
 
 MAINTAINER Lewis Liu
 
@@ -17,4 +17,4 @@ WORKDIR /toc
 VOLUME /toc
 VOLUME /root/.ionic
 
-ENTRYPOINT ["bash"]
+CMD ["bash"]
