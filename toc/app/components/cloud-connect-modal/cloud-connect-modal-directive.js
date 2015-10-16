@@ -27,53 +27,11 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
 
       this.remoteStorageEmail = '';
 
-      this.submitRemoteStorageEmail = (event) => {
-        if (!this.remoteStorageEmail) {
-          if (event) {
-            event.preventDefault();
-          }
+      this.services = storage.SERVICES;
 
-          //validation is already done by angular form's email input
-          // email will be undefined if it didn't pass validation
-          return notifications.notifySystem(
-            `Please enter a valid email.`
-          );
-        }
-        let handleConnectionError = (error) => {
-          return notifications.notifyGenericError(error);
-        };
-
-        if (this.userExists) {
-          return $ionicPopup.confirm({
-              title: 'Preparing to Upload Data',
-              template: `
-                <p>Toc will try to upload your local data into this cloud account.</p>
-                <p>Please confirm this cloud account hasn't been used with Toc before.</p>
-              `,
-              cancelType: 'button-calm button-style',
-              okText: 'Confirm',
-              okType: 'button-assertive button-style'
-            })
-            .then((response) => {
-              if (!response) {
-                return;
-              }
-              storage.connect(this.remoteStorageEmail)
-                .catch(handleConnectionError);
-            });
-        }
-
-        storage.connect(this.remoteStorageEmail)
-          .catch(handleConnectionError);
-      };
-
-      this.services = {
-        'remotestorage': {
-          id: 'remotestorage',
-          name: 'remoteStorage',
-          description: 'An open protocol for web storage.',
-          img: 'remotestorage.svg',
-          connect: () => {
+      this.connect = () => {
+        switch (this.selectedService) {
+          case this.services.remotestorage.id:
             let remoteStoragePopup = $ionicPopup.show({
               template: `
                 <form ng-submit="cloudConnectModal.submitRemoteStorageEmail()"
@@ -98,31 +56,61 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
                 }
               ]
             });
-          }
-        },
-        'dropbox': {
-          id: 'dropbox',
-          name: 'Dropbox',
-          description: '(Coming soon)',
-          img: 'dropbox.svg',
-          connect: function connectDropbox() {
+            break;
+          case this.services.dropbox.id:
 
-          }
-        },
-        'googledrive': {
-          id: 'googledrive',
-          name: 'Google Drive',
-          description: '(Coming soon)',
-          img: 'googledrive.svg',
-          connect: function connectGoogledrive() {
+            break;
 
-          }
+          case this.services.googledrive.id:
+
+            break;
         }
       };
 
-      this.connect = () => {
-        this.services[this.selectedService].connect();
-      }
+      this.submitRemoteStorageEmail = (event) => {
+        if (!this.remoteStorageEmail) {
+          if (event) {
+            event.preventDefault();
+          }
+
+          //validation is already done by angular form's email input
+          // email will be undefined if it didn't pass validation
+          return notifications.notifySystem(
+            `Please enter a valid email.`
+          );
+        }
+        let handleConnectionError = (error) => {
+          return notifications.notifyGenericError(error);
+        };
+
+        let connectOptions = {
+          serviceId: this.services.remotestorage.id,
+          email: this.remoteStorageEmail
+        };
+
+        if (this.userExists) {
+          return $ionicPopup.confirm({
+              title: 'Preparing to Upload Data',
+              template: `
+                <p>Toc will try to upload your local data into this cloud account.</p>
+                <p>Please confirm this cloud account hasn't been used with Toc before.</p>
+              `,
+              cancelType: 'button-calm button-style',
+              okText: 'Confirm',
+              okType: 'button-assertive button-style'
+            })
+            .then((response) => {
+              if (!response) {
+                return;
+              }
+              storage.connect(connectOptions)
+                .catch(handleConnectionError);
+            });
+        }
+
+        storage.connect(connectOptions)
+          .catch(handleConnectionError);
+      };
     }
   };
 }

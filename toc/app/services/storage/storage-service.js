@@ -13,12 +13,43 @@ export default /*@ngInject*/ function storage(
   const DEFAULT_ACCESS_LEVEL = 'rw';
   const STORAGE_MODULE_PREFIX = 'toc-state-';
   const KEY_SEPARATOR = '.';
+  const SERVICES = {
+    remotestorage: {
+      id: 'remotestorage',
+      name: 'remoteStorage',
+      description: 'An open protocol for web storage',
+      image: 'assets/images/remotestorage.svg'
+    },
+    dropbox: {
+      id: 'dropbox',
+      name: 'Dropbox',
+      description: '(Experimental)',
+      image: 'assets/images/dropbox.svg'
+    },
+    googledrive: {
+      id: 'googledrive',
+      name: 'Google Drive',
+      description: '(Experimental)',
+      image: 'assets/images/googledrive.svg'
+    }
+  };
 
   let getStorageKey = R.join(KEY_SEPARATOR);
 
-  let connect = function connect(email) {
-    remoteStorage.setCordovaRedirectUri('http://toc.im');
-    return $q.when(remoteStorage.connect(email));
+  let connect = function connect(options) {
+    switch (options.serviceId) {
+      case this.services.remotestorage:
+        remoteStorage.setCordovaRedirectUri('http://toc.im');
+        return $q.when(remoteStorage.connect(options.email));
+        break;
+      case this.services.dropbox:
+
+        break;
+
+      case this.services.googledrive:
+
+        break;
+    }
   };
 
   let isConnected = function isConnected() {
@@ -428,6 +459,7 @@ export default /*@ngInject*/ function storage(
 
   let storageService = {
     KEY_SEPARATOR,
+    SERVICES,
     enableLogging,
     prepare,
     getStorageKey,
