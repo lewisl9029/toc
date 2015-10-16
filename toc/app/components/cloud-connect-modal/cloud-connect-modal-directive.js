@@ -34,13 +34,13 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
           return $q.when();
         }
         return $ionicPopup.confirm({
-            title: 'Preparing to Upload Data',
+            title: 'Preparing to Sync Data',
             template: `
-              <p>Please confirm this cloud account hasn't been used with Toc before.</p>
+              <p>Please ensure this storage account doesn't contain any data from a different Toc account.</p>
             `,
             cancelType: 'button-block button-positive button-outline',
-            okText: 'Confirm',
-            okType: 'button-block button-assertive'
+            okText: 'Sync',
+            okType: 'button-block button-positive'
           });
       };
 

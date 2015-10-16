@@ -38,18 +38,15 @@ export default /*@ngInject*/ function storage(
 
   let connect = function connect(options) {
     switch (options.serviceId) {
-      case this.services.remotestorage.id:
-        remoteStorage.setBackend(this.services.remotestorage.id);
+      case SERVICES.remotestorage.id:
         remoteStorage.setCordovaRedirectUri('http://toc.im');
         return $q.when(remoteStorage.connect(options.email));
         break;
-      case this.services.dropbox.id:
-        remoteStorage.setBackend(this.services.dropbox.id);
-        return $q.when(remoteStorage.connect());
+      case SERVICES.dropbox.id:
+        return $q.when(remoteStorage.dropbox.connect());
         break;
-      case this.services.googledrive.id:
-        remoteStorage.setBackend(this.services.googledrive.id);
-        return $q.when(remoteStorage.connect());
+      case SERVICES.googledrive.id:
+        return $q.when(remoteStorage.googledrive.connect());
         break;
     }
   };
