@@ -38,16 +38,18 @@ export default /*@ngInject*/ function storage(
 
   let connect = function connect(options) {
     switch (options.serviceId) {
-      case this.services.remotestorage:
+      case this.services.remotestorage.id:
+        remoteStorage.setBackend(this.services.remotestorage.id);
         remoteStorage.setCordovaRedirectUri('http://toc.im');
         return $q.when(remoteStorage.connect(options.email));
         break;
-      case this.services.dropbox:
-
+      case this.services.dropbox.id:
+        remoteStorage.setBackend(this.services.dropbox.id);
+        return $q.when(remoteStorage.connect());
         break;
-
-      case this.services.googledrive:
-
+      case this.services.googledrive.id:
+        remoteStorage.setBackend(this.services.googledrive.id);
+        return $q.when(remoteStorage.connect());
         break;
     }
   };
@@ -257,6 +259,10 @@ export default /*@ngInject*/ function storage(
 
     let initialize = function initialize() {
       privateClient.cache('');
+      remoteStorage.setApiKeys('dropbox', { appKey: 'j95l4gw6vc02csa' });
+      remoteStorage.setApiKeys('googledrive', {
+        clientId: ' 993124685715-l90kf80r8dgu5a1h89jul1efe25lsm2k.apps.googleusercontent.com '
+      });
     };
 
     return {

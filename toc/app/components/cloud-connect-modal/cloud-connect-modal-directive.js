@@ -29,6 +29,21 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
 
       this.services = storage.SERVICES;
 
+      let showExistingAccountPrompt = () => {
+        if (!this.userExists) {
+          return $q.when();
+        }
+        return $ionicPopup.confirm({
+            title: 'Preparing to Upload Data',
+            template: `
+              <p>Please confirm this cloud account hasn't been used with Toc before.</p>
+            `,
+            cancelType: 'button-block button-positive button-outline',
+            okText: 'Confirm',
+            okType: 'button-block button-assertive'
+          });
+      };
+
       this.connect = () => {
         switch (this.selectedService) {
           case this.services.remotestorage.id:
@@ -45,11 +60,11 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
               buttons: [
                 {
                   text: 'Cancel',
-                  type: 'button-calm button-style'
+                  type: 'button-block button-positive button-outline'
                 },
                 {
                   text: 'Connect',
-                  type: 'button-positive button-style',
+                  type: 'button-block button-positive',
                   onTap: (event) => {
                     this.submitRemoteStorageEmail(event);
                   }
@@ -58,11 +73,32 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
             });
             break;
           case this.services.dropbox.id:
+            return showExistingAccountPrompt()
+              .then((response) => {
+                if (!response) {
+                  return;
+                }
+                let connectOptions = {
+                  serviceId: this.services.dropbox.id
+                };
 
+                return storage.connect(connectOptions)
+                  .catch(notifications.notifyGenericError);
+              });
             break;
-
           case this.services.googledrive.id:
+            return showExistingAccountPrompt()
+              .then((response) => {
+                if (!response) {
+                  return;
+                }
+                let connectOptions = {
+                  serviceId: this.services.googledrive.id
+                };
 
+                return storage.connect(connectOptions)
+                  .catch(notifications.notifyGenericError);
+              });
             break;
         }
       };
@@ -79,37 +115,20 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
             `Please enter a valid email.`
           );
         }
-        let handleConnectionError = (error) => {
-          return notifications.notifyGenericError(error);
-        };
 
-        let connectOptions = {
-          serviceId: this.services.remotestorage.id,
-          email: this.remoteStorageEmail
-        };
+        showExistingAccountPrompt()
+          .then((response) => {
+            if (!response) {
+              return;
+            }
+            let connectOptions = {
+              serviceId: this.services.remotestorage.id,
+              email: this.remoteStorageEmail
+            };
 
-        if (this.userExists) {
-          return $ionicPopup.confirm({
-              title: 'Preparing to Upload Data',
-              template: `
-                <p>Toc will try to upload your local data into this cloud account.</p>
-                <p>Please confirm this cloud account hasn't been used with Toc before.</p>
-              `,
-              cancelType: 'button-calm button-style',
-              okText: 'Confirm',
-              okType: 'button-assertive button-style'
-            })
-            .then((response) => {
-              if (!response) {
-                return;
-              }
-              storage.connect(connectOptions)
-                .catch(handleConnectionError);
-            });
-        }
-
-        storage.connect(connectOptions)
-          .catch(handleConnectionError);
+            return storage.connect(connectOptions)
+              .catch(notifications.notifyGenericError);
+          });
       };
     }
   };
