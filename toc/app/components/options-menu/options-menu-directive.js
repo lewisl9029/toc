@@ -75,7 +75,7 @@ export default /*@ngInject*/ function tocOptionsMenu() {
           `,
           okText: 'Clear',
           okType: 'button-assertive button-block',
-          cancelType: 'button-calm button-block button-outline'
+          cancelType: 'button-positive button-block button-outline'
         });
 
         deleteDataPopup.then((response) => {
@@ -96,7 +96,7 @@ export default /*@ngInject*/ function tocOptionsMenu() {
           `,
           okText: 'Sign out',
           okType: 'button-assertive button-block',
-          cancelType: 'button-calm button-block button-outline'
+          cancelType: 'button-positive button-block button-outline'
         });
 
         signoutPopup.then((response) => {

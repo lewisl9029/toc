@@ -24,7 +24,7 @@ export default /*@ngInject*/ function contacts(
         buttons: [
           {
             text: 'Cancel',
-            type: 'button-calm button-block button-outline'
+            type: 'button-positive button-block button-outline'
           },
           {
             text: 'Accept',

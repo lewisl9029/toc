@@ -12,6 +12,7 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
     controller: /*@ngInject*/ function CloudConnectModalController(
       $ionicPopup,
       $scope,
+      $q,
       identity,
       notifications,
       storage,
@@ -27,53 +28,26 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
 
       this.remoteStorageEmail = '';
 
-      this.submitRemoteStorageEmail = (event) => {
-        if (!this.remoteStorageEmail) {
-          if (event) {
-            event.preventDefault();
-          }
+      this.services = storage.SERVICES;
 
-          //validation is already done by angular form's email input
-          // email will be undefined if it didn't pass validation
-          return notifications.notifySystem(
-            `Please enter a valid email.`
-          );
+      let showExistingAccountPrompt = () => {
+        if (!this.userExists) {
+          return $q.when(true);
         }
-        let handleConnectionError = (error) => {
-          return notifications.notifyGenericError(error);
-        };
-
-        if (this.userExists) {
-          return $ionicPopup.confirm({
-              title: 'Preparing to Upload Data',
-              template: `
-                <p>Toc will try to upload your local data into this cloud account.</p>
-                <p>Please confirm this cloud account hasn't been used with Toc before.</p>
-              `,
-              cancelType: 'button-calm button-style',
-              okText: 'Confirm',
-              okType: 'button-assertive button-style'
-            })
-            .then((response) => {
-              if (!response) {
-                return;
-              }
-              storage.connect(this.remoteStorageEmail)
-                .catch(handleConnectionError);
-            });
-        }
-
-        storage.connect(this.remoteStorageEmail)
-          .catch(handleConnectionError);
+        return $ionicPopup.confirm({
+            title: 'Preparing to Sync Data',
+            template: `
+              <p>Please ensure this storage account doesn't contain any data from a different Toc account.</p>
+            `,
+            cancelType: 'button-block button-positive button-outline',
+            okText: 'Sync',
+            okType: 'button-block button-positive'
+          });
       };
 
-      this.services = {
-        'remotestorage': {
-          id: 'remotestorage',
-          name: 'remoteStorage',
-          description: 'An open protocol for web storage.',
-          img: 'remotestorage.svg',
-          connect: () => {
+      this.connect = () => {
+        switch (this.selectedService) {
+          case this.services.remotestorage.id:
             let remoteStoragePopup = $ionicPopup.show({
               template: `
                 <form ng-submit="cloudConnectModal.submitRemoteStorageEmail()"
@@ -87,42 +61,76 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
               buttons: [
                 {
                   text: 'Cancel',
-                  type: 'button-calm button-style'
+                  type: 'button-block button-positive button-outline'
                 },
                 {
                   text: 'Connect',
-                  type: 'button-positive button-style',
+                  type: 'button-block button-positive',
                   onTap: (event) => {
                     this.submitRemoteStorageEmail(event);
                   }
                 }
               ]
             });
-          }
-        },
-        'dropbox': {
-          id: 'dropbox',
-          name: 'Dropbox',
-          description: '(Coming soon)',
-          img: 'dropbox.svg',
-          connect: function connectDropbox() {
-
-          }
-        },
-        'googledrive': {
-          id: 'googledrive',
-          name: 'Google Drive',
-          description: '(Coming soon)',
-          img: 'googledrive.svg',
-          connect: function connectGoogledrive() {
-
-          }
+            break;
+          // case this.services.dropbox.id:
+          //   return showExistingAccountPrompt()
+          //     .then((response) => {
+          //       if (!response) {
+          //         return;
+          //       }
+          //       let connectOptions = {
+          //         serviceId: this.services.dropbox.id
+          //       };
+          //
+          //       return storage.connect(connectOptions)
+          //         .catch(notifications.notifyGenericError);
+          //     });
+          //   break;
+          // case this.services.googledrive.id:
+          //   return showExistingAccountPrompt()
+          //     .then((response) => {
+          //       if (!response) {
+          //         return;
+          //       }
+          //       let connectOptions = {
+          //         serviceId: this.services.googledrive.id
+          //       };
+          //
+          //       return storage.connect(connectOptions)
+          //         .catch(notifications.notifyGenericError);
+          //     });
+          //   break;
         }
       };
 
-      this.connect = () => {
-        this.services[this.selectedService].connect();
-      }
+      this.submitRemoteStorageEmail = (event) => {
+        if (!this.remoteStorageEmail) {
+          if (event) {
+            event.preventDefault();
+          }
+
+          //validation is already done by angular form's email input
+          // email will be undefined if it didn't pass validation
+          return notifications.notifySystem(
+            `Please enter a valid email.`
+          );
+        }
+
+        showExistingAccountPrompt()
+          .then((response) => {
+            if (!response) {
+              return;
+            }
+            let connectOptions = {
+              serviceId: this.services.remotestorage.id,
+              email: this.remoteStorageEmail
+            };
+
+            return storage.connect(connectOptions)
+              .catch(notifications.notifyGenericError);
+          });
+      };
     }
   };
 }
