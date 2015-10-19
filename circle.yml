@@ -5,6 +5,7 @@ machine:
 dependencies:
   cache_directories:
     - "/var/lib/docker"
+    - "toc/app/dependencies"
   override:
     - docker info
     - docker build -t lewisl9029/toc-dev:latest .

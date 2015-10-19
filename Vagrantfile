@@ -2,7 +2,8 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "puphpet/ubuntu1404-x64"
-  config.vm.provision :shell, path: "toc-setup-env.sh", privileged: false
+  config.vm.provision :shell, path: "toc-setup-env.sh", privileged: false,
+    args: "#{ENV['TOC_HOST_IP']} #{ENV['JSPM_GITHUB_AUTH_TOKEN']}"
   config.vm.provision :shell, path: "vagrant-provision.sh", privileged: false
 
   # toc ports
