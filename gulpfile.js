@@ -90,12 +90,6 @@ gulp.task('clean-build', function clean(done) {
   ], done);
 });
 
-gulp.task('clean-package', function cleanPackage(done) {
-  return del([
-    basePaths.mobile + '**'
-  ], done);
-});
-
 gulp.task('build', function build(done) {
   return runSequence(
     'clean-build',
@@ -107,17 +101,13 @@ gulp.task('build', function build(done) {
   );
 });
 
-gulp.task('package', ['build', 'clean-package'], function package() {
+gulp.task('package', ['build'], function package() {
+  //FIXME: doesn't work yet due to
+  // https://github.com/driftyco/ionic-cli/issues/620
   return gulp.src('')
     .pipe(shell(
-      'ionic build android && ' +
-      'mkdir -p ' + basePaths.mobile + ' && ' +
-      'cp ' + basePaths.platforms +
-        'android/build/outputs/apk/* ' +
-        basePaths.mobile
+      'ionic package build android'
     ));
-    //FIXME: release build throws error on install
-    // .pipe(shell('ionic build android' + (argv.prod ? ' --release' : '')))
 });
 
 gulp.task('run', function run() {
