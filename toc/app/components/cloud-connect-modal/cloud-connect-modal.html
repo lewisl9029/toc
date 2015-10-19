@@ -19,10 +19,12 @@
   </ion-content>
   <div class="bar bar-subfooter">
     <div class="col">
-      <a onclick="window.open('https://remotestorage.io/get/', '_system');"
-        class="button button-block button-calm button-outline">
+      <button class="button button-block button-calm button-outline"
+        ng-click="::cloudConnectModal.openWindow(
+          'https://remotestorage.io/get/'
+        )">
         Get a storage account
-      </a>
+      </button>
     </div>
   </div>
   <ion-footer-bar>

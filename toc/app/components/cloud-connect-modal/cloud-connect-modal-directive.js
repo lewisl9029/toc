@@ -14,11 +14,14 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
       $scope,
       $q,
       identity,
+      navigation,
       notifications,
       storage,
       state
     ) {
       this.removeModal = $scope.removeModal;
+      this.openWindow = navigation.openWindow;
+
       this.selectedService = 'remotestorage';
       let userExistsCursor = state.cloudUnencrypted.cryptography;
       let updateUserExists = () => {

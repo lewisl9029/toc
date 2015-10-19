@@ -149,9 +149,8 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
               `http://toc.im/?inviteid=${this.userId}\n`
             );
 
-            $window.open(
-              `mailto:?to=&body=${mailBody}&subject=${mailSubject}`,
-              '_system'
+            navigation.openWindow(
+              `mailto:?to=&body=${mailBody}&subject=${mailSubject}`
             );
 
             this.removeModal();

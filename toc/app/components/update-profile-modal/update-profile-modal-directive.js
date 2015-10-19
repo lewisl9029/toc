@@ -16,10 +16,13 @@ export default /*@ngInject*/ function tocUpdateProfileModal() {
       contacts,
       identity,
       notifications,
+      navigation,
       state,
       R
     ) {
       this.removeModal = $scope.removeModal;
+      this.openWindow = navigation.openWindow;
+
       let userInfo = state.cloud.identity.get(['userInfo']);
       this.userInfo = R.assoc('version', userInfo.version + 1, userInfo);
 

@@ -12,6 +12,7 @@ export default /*@ngInject*/ function tocInvitePostModal() {
     controller: /*@ngInject*/ function InvitePostModalController(
       $scope,
       $window,
+      navigation,
       state
     ) {
       this.removeModal = $scope.removeModal;
@@ -27,8 +28,8 @@ export default /*@ngInject*/ function tocInvitePostModal() {
           text: 'Share an invite using Facebook',
           isEnabled: true,
           doShare: () => {
-            $window.open('http://www.facebook.com/share.php?u=' +
-            `http://toc.im/?inviteid=${this.userId}`, '_system');
+            navigation.openWindow('http://www.facebook.com/share.php?u=' +
+            `http://toc.im/?inviteid=${this.userId}`);
             this.removeModal();
           }
         },
@@ -37,8 +38,8 @@ export default /*@ngInject*/ function tocInvitePostModal() {
           text: 'Share an invite using Google+',
           isEnabled: true,
           doShare: () => {
-            $window.open('https://plus.google.com/share?url=' +
-            `http://toc.im/?inviteid=${this.userId}`, '_system');
+            navigation.openWindow('https://plus.google.com/share?url=' +
+            `http://toc.im/?inviteid=${this.userId}`);
             this.removeModal();
           }
         }

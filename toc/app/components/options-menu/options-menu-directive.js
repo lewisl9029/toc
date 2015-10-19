@@ -13,6 +13,8 @@ export default /*@ngInject*/ function tocOptionsMenu() {
       session,
       state
     ) {
+      this.openWindow = navigation.openWindow;
+
       session.preparePrivate().then(() => {
         this.userInfo = state.cloud.identity.get().userInfo;
         this.userId = this.userInfo.id;
