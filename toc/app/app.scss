@@ -113,6 +113,9 @@ form.ng-pristine button[type='submit'] {
 .popup-buttons {
   box-shadow: 0px -2px 2px $toc-separator-color;
   padding: 0px 10px;
+  .button:nth-child(2) {
+    margin-left: 5px;
+  }
 }
 
 // input::-moz-placeholder,
