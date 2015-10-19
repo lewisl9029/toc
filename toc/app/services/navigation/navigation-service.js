@@ -5,7 +5,9 @@ export default /*@ngInject*/ function navigation(
   $q,
   $rootScope,
   $state,
+  $window,
   $timeout,
+  devices,
   R,
   state
 ) {
@@ -84,6 +86,15 @@ export default /*@ngInject*/ function navigation(
 
     controller[modalName] = $ionicModal.fromTemplate(template, { scope });
     return controller[modalName].show();
+  };
+
+  let openWindow = function openWindow(address) {
+    let doOpenWindow = devices.isCordovaApp() ?
+      $window.cordova.InAppBrowser.open : $window.open;
+    let windowTarget = devices.isCordovaApp() ? '_system' : '_blank';
+
+    doOpenWindow(address, windowTarget);
+    return $q.when();
   };
 
   let setupRedirect = function setupRedirect() {
@@ -174,6 +185,7 @@ export default /*@ngInject*/ function navigation(
     go,
     at,
     navigate,
+    openWindow,
     isActiveView,
     isPrivateState,
     showModal,
