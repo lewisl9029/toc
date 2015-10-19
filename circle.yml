@@ -8,7 +8,7 @@ dependencies:
     - "toc/app/dependencies"
   pre:
     - docker info
-    - docker build -t lewisl9029/toc-dev:latest .
+    - docker pull lewisl9029/toc-dev:latest
   override:
     - >
         docker run \
