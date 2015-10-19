@@ -17,7 +17,7 @@ test:
 
 deployment:
   staging:
-    branch: master
+    branch: /.*/
     owner: lewisl9029
     commands:
       - ./toc-deploy-staging.sh
