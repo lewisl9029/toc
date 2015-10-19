@@ -23,13 +23,13 @@ export default /*@ngInject*/ function storage(
     dropbox: {
       id: 'dropbox',
       name: 'Dropbox',
-      description: '(Experimental)',
+      description: '(Coming soon)',
       image: 'assets/images/dropbox.svg'
     },
     googledrive: {
       id: 'googledrive',
       name: 'Google Drive',
-      description: '(Experimental)',
+      description: '(Coming soon)',
       image: 'assets/images/googledrive.svg'
     }
   };

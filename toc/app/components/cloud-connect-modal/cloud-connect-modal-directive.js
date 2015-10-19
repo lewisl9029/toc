@@ -12,6 +12,7 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
     controller: /*@ngInject*/ function CloudConnectModalController(
       $ionicPopup,
       $scope,
+      $q,
       identity,
       notifications,
       storage,
@@ -31,7 +32,7 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
 
       let showExistingAccountPrompt = () => {
         if (!this.userExists) {
-          return $q.when();
+          return $q.when(true);
         }
         return $ionicPopup.confirm({
             title: 'Preparing to Sync Data',
@@ -72,34 +73,34 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
               ]
             });
             break;
-          case this.services.dropbox.id:
-            return showExistingAccountPrompt()
-              .then((response) => {
-                if (!response) {
-                  return;
-                }
-                let connectOptions = {
-                  serviceId: this.services.dropbox.id
-                };
-
-                return storage.connect(connectOptions)
-                  .catch(notifications.notifyGenericError);
-              });
-            break;
-          case this.services.googledrive.id:
-            return showExistingAccountPrompt()
-              .then((response) => {
-                if (!response) {
-                  return;
-                }
-                let connectOptions = {
-                  serviceId: this.services.googledrive.id
-                };
-
-                return storage.connect(connectOptions)
-                  .catch(notifications.notifyGenericError);
-              });
-            break;
+          // case this.services.dropbox.id:
+          //   return showExistingAccountPrompt()
+          //     .then((response) => {
+          //       if (!response) {
+          //         return;
+          //       }
+          //       let connectOptions = {
+          //         serviceId: this.services.dropbox.id
+          //       };
+          //
+          //       return storage.connect(connectOptions)
+          //         .catch(notifications.notifyGenericError);
+          //     });
+          //   break;
+          // case this.services.googledrive.id:
+          //   return showExistingAccountPrompt()
+          //     .then((response) => {
+          //       if (!response) {
+          //         return;
+          //       }
+          //       let connectOptions = {
+          //         serviceId: this.services.googledrive.id
+          //       };
+          //
+          //       return storage.connect(connectOptions)
+          //         .catch(notifications.notifyGenericError);
+          //     });
+          //   break;
         }
       };
 
