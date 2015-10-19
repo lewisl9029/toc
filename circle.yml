@@ -3,11 +3,13 @@ machine:
     - docker
 
 dependencies:
+  cached_directories:
+    - "/var/lib/docker"
   override:
     - docker info
     - docker build -t lewisl9029/toc-dev:latest .
-    - docker run -v .:/toc lewisl9029/toc-dev npm install
-    - docker run -v .:/toc lewisl9029/toc-dev jspm install
+    - docker run -v $(pwd):/toc lewisl9029/toc-dev:latest npm install
+    - docker run -v $(pwd):/toc lewisl9029/toc-dev:latest jspm install
 
 test:
   override:
