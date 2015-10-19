@@ -3,7 +3,7 @@ machine:
     - docker
 
 dependencies:
-  cached_directories:
+  cache_directories:
     - "/var/lib/docker"
   override:
     - docker info
