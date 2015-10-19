@@ -6,19 +6,20 @@ dependencies:
   cache_directories:
     - "/var/lib/docker"
     - "toc/app/dependencies"
-  override:
+  pre:
     - docker info
     - docker build -t lewisl9029/toc-dev:latest .
+  override:
     - >
-        docker run
-          -v $(pwd):/toc
-          lewisl9029/toc-dev:latest
+        docker run \
+          -v $(pwd):/toc \
+          lewisl9029/toc-dev:latest \
           npm install
     - >
-        docker run
-          -v $(pwd):/toc
-          -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN
-          lewisl9029/toc-dev:latest
+        docker run \
+          -v $(pwd):/toc \
+          -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
+          lewisl9029/toc-dev:latest \
           jspm install
 
 test:
