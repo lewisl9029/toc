@@ -31,12 +31,12 @@ test:
   override:
     - echo "no tests =/"
 
-# deployment:
-#   staging:
-#     branch: /.*/
-#     owner: lewisl9029
-#     commands:
-#       - ./toc-deploy-staging.sh
+deployment:
+  staging:
+    branch: /.*/
+    owner: lewisl9029
+    commands:
+      - ./toc-deploy-staging.sh
 #   production:
 #     tag: /v[0-9]+(\.[0-9]+)*/
 #     owner: lewisl9029
