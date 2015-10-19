@@ -15,12 +15,12 @@ dependencies:
           -v $(pwd):/toc \
           lewisl9029/toc-dev:latest \
           npm install
-    - >
-        docker run \
-          -v $(pwd):/toc \
-          -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
-          lewisl9029/toc-dev:latest \
-          jspm install
+    # - >
+    #     docker run \
+    #       -v $(pwd):/toc \
+    #       -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
+    #       lewisl9029/toc-dev:latest \
+    #       jspm install
 
 test:
   override:
