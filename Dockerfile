@@ -16,6 +16,5 @@ EXPOSE 8100 8101
 WORKDIR /toc
 VOLUME /toc
 VOLUME /root/.ionic
-VOLUME /root/.jspm
 
 CMD ["bash"]
