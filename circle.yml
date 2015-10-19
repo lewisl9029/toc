@@ -1,6 +1,6 @@
-machine:
-  # services:
-  #   - docker
+# machine:
+#   services:
+#     - docker
 
 dependencies:
   cache_directories:
