@@ -9,11 +9,13 @@ dependencies:
   override:
     - docker info
     - docker build -t lewisl9029/toc-dev:latest .
-    - > docker run
+    - >
+        docker run
           -v $(pwd):/toc
           lewisl9029/toc-dev:latest
           npm install
-    - > docker run
+    - >
+        docker run
           -v $(pwd):/toc
           -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN
           lewisl9029/toc-dev:latest
