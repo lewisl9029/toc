@@ -6,8 +6,12 @@ dependencies:
   override:
     - docker info
     - docker build -t lewisl9029/toc-dev:latest .
-    - docker run lewisl9029/toc-dev npm install
-    - docker run lewisl9029/toc-dev jspm install
+    - docker run -v .:/toc lewisl9029/toc-dev npm install
+    - docker run -v .:/toc lewisl9029/toc-dev jspm install
+
+test:
+  override:
+    - echo "no tests =/"
 
 deployment:
   staging:
