@@ -16,8 +16,8 @@ dependencies:
   cache_directories:
     # - "/var/lib/docker"
     - "toc/app/dependencies"
-    - "~/nvm/v4.2.1/lib/node_modules"
-    - "~/nvm/v4.2.1/bin"
+    - "~/nvm/versions/node/v4.2.1/lib/node_modules"
+    - "~/nvm/versions/node/v4.2.1/bin"
   pre:
     - /bin/bash scripts/toc-install-deps.sh
   override:
