@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 gulp build
 
 git checkout gh-pages

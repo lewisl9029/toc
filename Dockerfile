@@ -3,11 +3,8 @@ FROM node:4.2.1
 MAINTAINER Lewis Liu
 
 # installing npm dependencies
-RUN npm install -g npm@3.3.8 && npm cache clean
-RUN npm install -g gulp-cli@0.3.0 && npm cache clean
-RUN npm install -g http-server@0.8.5 && npm cache clean
-RUN npm install -g jspm@0.16.12 && npm cache clean
-RUN npm install -g ionic@1.7.6 && npm cache clean
+COPY toc-install-deps.sh /root/
+RUN ./toc/toc-install-deps.sh
 
 # expose ionic serve, livereload
 EXPOSE 8100 8101
