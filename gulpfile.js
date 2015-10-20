@@ -158,7 +158,7 @@ gulp.task('rename-js', function injectJs() {
 });
 
 gulp.task('inject-js', function injectJs() {
-  var tocVersion = require('package.json').version;
+  var tocVersion = require('./package.json').version;
   return gulp.src([
       basePaths.prodApp + 'initialize.js',
     ], {
