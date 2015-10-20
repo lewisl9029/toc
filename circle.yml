@@ -1,6 +1,11 @@
 # machine:
 #   services:
 #     - docker
+general:
+  branches:
+    ignore:
+      - gh-pages
+      - toc-dev
 
 dependencies:
   cache_directories:
@@ -32,7 +37,8 @@ deployment:
     branch: /.*/
     owner: lewisl9029
     commands:
-      - ./scripts/toc-deploy-staging.sh
+      - gulp build
+      - /bin/bash scripts/toc-deploy-staging.sh
 #   production:
 #     tag: /v[0-9]+(\.[0-9]+)*/
 #     owner: lewisl9029
