@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -e
+
 $TOC_VERSION=$(git describe --abbrev=0 --tags)
 
 npm version $TOC_VERSION
