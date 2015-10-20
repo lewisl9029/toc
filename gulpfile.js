@@ -91,13 +91,28 @@ gulp.task('clean-build', function clean(done) {
 });
 
 gulp.task('build', function build(done) {
+  // fixes runsequence always exiting with 0 even on errors
+  // http://dev.topheman.com/gulp-fail-run-sequence-with-a-correct-exit-code/
+  var handleBuildError = function (error) {
+    //if any error happened in the previous tasks, exit with a code > 0
+    if (error) {
+      var exitCode = 2;
+      console.log('[ERROR] gulp build task failed', error);
+      console.log('[FAIL] gulp build task failed - exiting with code ' + exitCode);
+      return process.exit(exitCode);
+    }
+    else {
+      return done();
+    }
+  };
+
   return runSequence(
     'clean-build',
     'uncache-jspm',
     ['build-js', 'build-html', 'build-sass', 'build-asset'],
     ['inject-js', 'rename-js'],
     // 'cache-jspm',
-    done
+    handleBuildError
   );
 });
 
