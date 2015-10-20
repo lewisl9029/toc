@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 (
 cat <<ALIASES
-  alias toc-pull="source $TOC_PATH/toc-setup-docker-pull.sh"
+  alias toc-pull="source $TOC_PATH/scripts/toc-setup-docker-pull.sh"
 
-  alias toc-build="source $TOC_PATH/toc-setup-docker-build.sh"
+  alias toc-build="source $TOC_PATH/scripts/toc-setup-docker-build.sh"
 
   alias toc="sudo docker run \
     -i -t --rm \
