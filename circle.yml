@@ -1,0 +1,22 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker info
+    - docker build -t lewisl9029/toc-dev:latest .
+    - docker run lewisl9029/toc-dev npm install
+    - docker run lewisl9029/toc-dev jspm install
+
+deployment:
+  staging:
+    branch: master
+    owner: lewisl9029
+    commands:
+      - ./toc-deploy-staging.sh
+  production:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: lewisl9029
+    commands:
+      - ./toc-deploy-production.sh
