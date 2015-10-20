@@ -7,7 +7,7 @@ dependencies:
     # - "/var/lib/docker"
     - "toc/app/dependencies"
   pre:
-    - ./scripts/toc-install-deps.sh
+    - /bin/bash scripts/toc-install-deps.sh
   override:
     - npm install
     - jspm install
