@@ -1,4 +1,4 @@
-(function initialize(window) {
+window.tocVersion="0.10.0-alpha";(function initialize(window) {
   'use strict';
   var initializeApp = function initializeApp() {
     var disableLogging = function disableLogging() {
