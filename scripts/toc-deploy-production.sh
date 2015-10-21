@@ -18,3 +18,5 @@ rm -rf toc-pages/landing.css
 rm -rf toc-pages/landing.js
 
 cp -r www/* toc-pages/
+
+source scripts/toc-deploy-publish.sh
