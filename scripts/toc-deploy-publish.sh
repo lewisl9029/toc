@@ -13,7 +13,7 @@ cd toc-pages
 
 git add -A .
 git commit --allow-empty -m "Updated release $TOC_RELEASE"
-git push origin
+git push origin gh-pages
 
 cd ..
 
