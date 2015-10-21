@@ -1,0 +1,1 @@
+!function(){var e,n=2800,t=1500,o=document.getElementsByClassName("toc-loading-screen")[0];e=Date.now(),System["import"]("app").then(function(e){e.initialize()}).then(function(){var a=Date.now(),c=(a-e)%n;setTimeout(function(){o.className+=" toc-fadeout-loading-screen",setTimeout(function(){o.className+=" toc-non-interactive"},t)},n-c)})["catch"](console.onerror)}();
