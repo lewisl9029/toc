@@ -1,5 +1,5 @@
 "bundle";
-System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, function(__require, __exports, __module) {
+System.registerDynamic("github:angular/bower-angular@1.4.7/angular", [], false, function(__require, __exports, __module) {
   var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, "angular", null);
   (function() {
     "format global";
@@ -24,7 +24,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
             }
             return match;
           });
-          message += '\nhttp://errors.angularjs.org/1.4.6/' + (module ? module + '/' : '') + code;
+          message += '\nhttp://errors.angularjs.org/1.4.7/' + (module ? module + '/' : '') + code;
           for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
             message += paramPrefix + 'p' + (i - SKIP_INDEXES) + '=' + encodeURIComponent(toDebugString(templateArgs[i]));
           }
@@ -893,11 +893,11 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
         return obj;
       }
       var version = {
-        full: '1.4.6',
+        full: '1.4.7',
         major: 1,
         minor: 4,
-        dot: 6,
-        codeName: 'multiplicative-elevation'
+        dot: 7,
+        codeName: 'dark-luminescence'
       };
       function publishExternalAPI(angular) {
         extend(angular, {
@@ -1000,6 +1000,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
             $httpParamSerializer: $HttpParamSerializerProvider,
             $httpParamSerializerJQLike: $HttpParamSerializerJQLikeProvider,
             $httpBackend: $HttpBackendProvider,
+            $xhrFactory: $xhrFactoryProvider,
             $location: $LocationProvider,
             $log: $LogProvider,
             $parse: $ParseProvider,
@@ -1048,10 +1049,10 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
           return offset ? letter.toUpperCase() : letter;
         }).replace(MOZ_HACK_REGEXP, 'Moz$1');
       }
-      var SINGLE_TAG_REGEXP = /^<(\w+)\s*\/?>(?:<\/\1>|)$/;
+      var SINGLE_TAG_REGEXP = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/;
       var HTML_REGEXP = /<|&#?\w+;/;
-      var TAG_NAME_REGEXP = /<([\w:]+)/;
-      var XHTML_TAG_REGEXP = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi;
+      var TAG_NAME_REGEXP = /<([\w:-]+)/;
+      var XHTML_TAG_REGEXP = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:-]+)[^>]*)\/>/gi;
       var wrapMap = {
         'option': [1, '<select multiple="multiple">', '</select>'],
         'thead': [1, '<table>', '</table>'],
@@ -2353,6 +2354,9 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
             }
           };
           return function(element, options) {
+            if (options.cleanupStyles) {
+              options.from = options.to = null;
+            }
             if (options.from) {
               element.css(options.from);
               options.from = null;
@@ -3730,7 +3734,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
               priority: 100,
               compile: function() {
                 return {pre: function attrInterpolatePreLinkFn(scope, element, attr) {
-                    var $$observers = (attr.$$observers || (attr.$$observers = {}));
+                    var $$observers = (attr.$$observers || (attr.$$observers = createMap()));
                     if (EVENT_HANDLER_ATTR_REGEXP.test(name)) {
                       throw $compileMinErr('nodomevents', "Interpolations for HTML DOM event attributes are disallowed.  Please use the " + "ng- versions (such as ng-click instead of onclick) instead.");
                     }
@@ -4430,12 +4434,16 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
           }
         }];
       }
-      function createXhr() {
-        return new window.XMLHttpRequest();
+      function $xhrFactoryProvider() {
+        this.$get = function() {
+          return function createXhr() {
+            return new window.XMLHttpRequest();
+          };
+        };
       }
       function $HttpBackendProvider() {
-        this.$get = ['$browser', '$window', '$document', function($browser, $window, $document) {
-          return createHttpBackend($browser, createXhr, $browser.defer, $window.angular.callbacks, $document[0]);
+        this.$get = ['$browser', '$window', '$document', '$xhrFactory', function($browser, $window, $document, $xhrFactory) {
+          return createHttpBackend($browser, $xhrFactory, $browser.defer, $window.angular.callbacks, $document[0]);
         }];
       }
       function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDocument) {
@@ -4453,7 +4461,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
               callbacks[callbackId] = noop;
             });
           } else {
-            var xhr = createXhr();
+            var xhr = createXhr(method, url);
             xhr.open(method, url, true);
             forEach(headers, function(value, key) {
               if (isDefined(value)) {
@@ -5200,9 +5208,15 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
       }
       var $parseMinErr = minErr('$parse');
       function ensureSafeMemberName(name, fullExpression) {
-        name = (isObject(name) && name.toString) ? name.toString() : name;
         if (name === "__defineGetter__" || name === "__defineSetter__" || name === "__lookupGetter__" || name === "__lookupSetter__" || name === "__proto__") {
           throw $parseMinErr('isecfld', 'Attempting to access a disallowed field in Angular expressions! ' + 'Expression: {0}', fullExpression);
+        }
+        return name;
+      }
+      function getStringValue(name, fullExpression) {
+        name = name + '';
+        if (!isString(name)) {
+          throw $parseMinErr('iseccst', 'Cannot convert object to primitive value! ' + 'Expression: {0}', fullExpression);
         }
         return name;
       }
@@ -5229,6 +5243,13 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
             throw $parseMinErr('isecfn', 'Referencing Function in Angular expressions is disallowed! Expression: {0}', fullExpression);
           } else if (obj === CALL || obj === APPLY || obj === BIND) {
             throw $parseMinErr('isecff', 'Referencing call, apply or bind in Angular expressions is disallowed! Expression: {0}', fullExpression);
+          }
+        }
+      }
+      function ensureSafeAssignContext(obj, fullExpression) {
+        if (obj) {
+          if (obj === (0).constructor || obj === (false).constructor || obj === ''.constructor || obj === {}.constructor || obj === [].constructor || obj === Function.constructor) {
+            throw $parseMinErr('isecaf', 'Assigning to a constructor is disallowed! Expression: {0}', fullExpression);
           }
         }
       }
@@ -5970,7 +5991,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
           this.stage = 'main';
           this.recurse(ast);
           var fnString = '"' + this.USE + ' ' + this.STRICT + '";\n' + this.filterPrefix() + 'var fn=' + this.generateFunction('fn', 's,l,a,i') + extra + this.watchFns() + 'return fn;';
-          var fn = (new Function('$filter', 'ensureSafeMemberName', 'ensureSafeObject', 'ensureSafeFunction', 'ifDefined', 'plus', 'text', fnString))(this.$filter, ensureSafeMemberName, ensureSafeObject, ensureSafeFunction, ifDefined, plusFn, expression);
+          var fn = (new Function('$filter', 'ensureSafeMemberName', 'ensureSafeObject', 'ensureSafeFunction', 'getStringValue', 'ensureSafeAssignContext', 'ifDefined', 'plus', 'text', fnString))(this.$filter, ensureSafeMemberName, ensureSafeObject, ensureSafeFunction, getStringValue, ensureSafeAssignContext, ifDefined, plusFn, expression);
           this.state = this.stage = undefined;
           fn.literal = isLiteral(ast);
           fn.constant = isConstant(ast);
@@ -6105,6 +6126,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
                   if (ast.computed) {
                     right = self.nextId();
                     self.recurse(ast.property, right);
+                    self.getStringValue(right);
                     self.addEnsureSafeMemberName(right);
                     if (create && create !== 1) {
                       self.if_(self.not(self.computedMember(left, right)), self.lazyAssign(self.computedMember(left, right), '{}'));
@@ -6188,6 +6210,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
                 self.if_(self.notNull(left.context), function() {
                   self.recurse(ast.right, right);
                   self.addEnsureSafeObject(self.member(left.context, left.name, left.computed));
+                  self.addEnsureSafeAssignContext(left.context);
                   expression = self.member(left.context, left.name, left.computed) + ast.operator + right;
                   self.assign(intoId, expression);
                   recursionFn(intoId || expression);
@@ -6296,6 +6319,9 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
         addEnsureSafeFunction: function(item) {
           this.current().body.push(this.ensureSafeFunction(item), ';');
         },
+        addEnsureSafeAssignContext: function(item) {
+          this.current().body.push(this.ensureSafeAssignContext(item), ';');
+        },
         ensureSafeObject: function(item) {
           return 'ensureSafeObject(' + item + ',text)';
         },
@@ -6304,6 +6330,12 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
         },
         ensureSafeFunction: function(item) {
           return 'ensureSafeFunction(' + item + ',text)';
+        },
+        getStringValue: function(item) {
+          this.assign(item, 'getStringValue(' + item + ',text)');
+        },
+        ensureSafeAssignContext: function(item) {
+          return 'ensureSafeAssignContext(' + item + ',text)';
         },
         lazyRecurse: function(ast, intoId, nameId, recursionFn, create, skipWatchIdCheck) {
           var self = this;
@@ -6475,6 +6507,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
                 var lhs = left(scope, locals, assign, inputs);
                 var rhs = right(scope, locals, assign, inputs);
                 ensureSafeObject(lhs.value, self.expression);
+                ensureSafeAssignContext(lhs.context);
                 lhs.context[lhs.name] = rhs;
                 return context ? {value: rhs} : rhs;
               };
@@ -6680,6 +6713,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
             var value;
             if (lhs != null) {
               rhs = right(scope, locals, assign, inputs);
+              rhs = getStringValue(rhs);
               ensureSafeMemberName(rhs, expression);
               if (create && create !== 1 && lhs && !(lhs[rhs])) {
                 lhs[rhs] = {};
@@ -8460,6 +8494,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
           if (fractionSize > 0 && number < 1) {
             formatedText = number.toFixed(fractionSize);
             number = parseFloat(formatedText);
+            formatedText = formatedText.replace(DECIMAL_SEP, decimalSep);
           }
         }
         if (number === 0) {
@@ -10539,12 +10574,12 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
             function updateOptionElement(option, element) {
               option.element = element;
               element.disabled = option.disabled;
-              if (option.value !== element.value)
-                element.value = option.selectValue;
               if (option.label !== element.label) {
                 element.label = option.label;
                 element.textContent = option.label;
               }
+              if (option.value !== element.value)
+                element.value = option.selectValue;
             }
             function addOrReuseElement(parent, current, type, templateElement) {
               var element;
@@ -10572,7 +10607,7 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
               var emptyOption_ = emptyOption && emptyOption[0];
               var unknownOption_ = unknownOption && unknownOption[0];
               if (emptyOption_ || unknownOption_) {
-                while (current && (current === emptyOption_ || current === unknownOption_)) {
+                while (current && (current === emptyOption_ || current === unknownOption_ || emptyOption_ && emptyOption_.nodeType === NODE_TYPE_COMMENT)) {
                   current = current.nextSibling;
                 }
               }
@@ -11338,12 +11373,12 @@ System.registerDynamic("github:angular/bower-angular@1.4.6/angular", [], false, 
   return _retrieveGlobal();
 });
 
-System.registerDynamic("github:angular/bower-angular@1.4.6", ["github:angular/bower-angular@1.4.6/angular"], true, function(req, exports, module) {
+System.registerDynamic("github:angular/bower-angular@1.4.7", ["github:angular/bower-angular@1.4.7/angular"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = req('github:angular/bower-angular@1.4.6/angular');
+  module.exports = req('github:angular/bower-angular@1.4.7/angular');
   global.define = __define;
   return module.exports;
 });
@@ -11378,13 +11413,13 @@ System.register('components/auto-focus/auto-focus-directive.js', [], function (_
   };
 });
 
-System.register('components/auto-focus/auto-focus.js', ['github:angular/bower-angular@1.4.6', 'components/auto-focus/auto-focus-directive.js'], function (_export) {
+System.register('components/auto-focus/auto-focus.js', ['github:angular/bower-angular@1.4.7', 'components/auto-focus/auto-focus-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsAutoFocusAutoFocusDirectiveJs) {
       directive = _componentsAutoFocusAutoFocusDirectiveJs['default'];
       directiveName = _componentsAutoFocusAutoFocusDirectiveJs.directiveName;
@@ -11464,13 +11499,13 @@ System.register('components/auto-select/auto-select-directive.js', [], function 
   };
 });
 
-System.register('components/auto-select/auto-select.js', ['github:angular/bower-angular@1.4.6', 'components/auto-select/auto-select-directive.js'], function (_export) {
+System.register('components/auto-select/auto-select.js', ['github:angular/bower-angular@1.4.7', 'components/auto-select/auto-select-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsAutoSelectAutoSelectDirectiveJs) {
       directive = _componentsAutoSelectAutoSelectDirectiveJs['default'];
       directiveName = _componentsAutoSelectAutoSelectDirectiveJs.directiveName;
@@ -11518,13 +11553,13 @@ System.register('components/equal-to/equal-to-directive.js', [], function (_expo
   };
 });
 
-System.register('components/equal-to/equal-to.js', ['github:angular/bower-angular@1.4.6', 'components/equal-to/equal-to-directive.js'], function (_export) {
+System.register('components/equal-to/equal-to.js', ['github:angular/bower-angular@1.4.7', 'components/equal-to/equal-to-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsEqualToEqualToDirectiveJs) {
       directive = _componentsEqualToEqualToDirectiveJs['default'];
       directiveName = _componentsEqualToEqualToDirectiveJs.directiveName;
@@ -11606,13 +11641,13 @@ System.register('components/update-profile-modal/update-profile-modal-directive.
   };
 });
 
-System.register('components/update-profile-modal/update-profile-modal.js', ['github:angular/bower-angular@1.4.6', 'components/update-profile-modal/update-profile-modal-directive.js'], function (_export) {
+System.register('components/update-profile-modal/update-profile-modal.js', ['github:angular/bower-angular@1.4.7', 'components/update-profile-modal/update-profile-modal-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsUpdateProfileModalUpdateProfileModalDirectiveJs) {
       directive = _componentsUpdateProfileModalUpdateProfileModalDirectiveJs['default'];
       directiveName = _componentsUpdateProfileModalUpdateProfileModalDirectiveJs.directiveName;
@@ -11649,7 +11684,7 @@ System.register('components/begin-conversation-modal/begin-conversation-modal-di
         removeModal: '&'
       },
       controllerAs: 'beginConversationModal',
-      controller: /*@ngInject*/function BeginConversationModalController($cordovaBarcodeScanner, $ionicPopup, $log, $q, $window, $scope, contacts, navigation, notifications, devices, identity, state) {
+      controller: /*@ngInject*/function BeginConversationModalController($ionicPopup, $log, $q, $window, $scope, contacts, navigation, notifications, devices, identity, state) {
         var _this = this;
 
         this.removeModal = $scope.removeModal;
@@ -11720,21 +11755,36 @@ System.register('components/begin-conversation-modal/begin-conversation-modal-di
             text: 'Scan a picture ID',
             isEnabled: this.isCordovaApp,
             doInvite: function doInvite() {
-              if (_this.isCordovaApp) {
-                return $cordovaBarcodeScanner.scan().then(function (barcodeData) {
-                  if (barcodeData.cancelled) {
-                    throw new Error('contacts: qr reader cancelled');
-                  }
-                  var contactId = barcodeData.text;
-                  if (!identity.validateId(contactId)) {
-                    return notifications.notifySystem('Please enter a valid Toc ID.');
-                  }
+              var barcodeScanner = $window.cordova.plugins.barcodeScanner;
+              if (_this.isCordovaApp && barcodeScanner) {
+                var _ret = (function () {
+                  var scanningBarcode = $q.defer();
 
-                  return contacts.saveSendingInvite(contactId);
-                }).then(function () {
-                  _this.removeModal();
-                  return $q.when();
-                })['catch'](handleInviteError);
+                  barcodeScanner.scan(function (barcodeData) {
+                    return scanningBarcode.resolve(barcodeData);
+                  }, function (error) {
+                    return scanningBarcode.reject(error);
+                  });
+
+                  return {
+                    v: scanningBarcode.promise.then(function (barcodeData) {
+                      if (barcodeData.cancelled) {
+                        throw new Error('contacts: qr reader cancelled');
+                      }
+                      var contactId = barcodeData.text;
+                      if (!identity.validateId(contactId)) {
+                        return notifications.notifySystem('Please enter a valid Toc ID.');
+                      }
+
+                      return contacts.saveSendingInvite(contactId);
+                    }).then(function () {
+                      _this.removeModal();
+                      return $q.when();
+                    })['catch'](handleInviteError)
+                  };
+                })();
+
+                if (typeof _ret === 'object') return _ret.v;
               }
             }
           },
@@ -11798,13 +11848,13 @@ System.register('components/begin-conversation-modal/begin-conversation-modal-di
   };
 });
 
-System.register('components/begin-conversation-modal/begin-conversation-modal.js', ['github:angular/bower-angular@1.4.6', 'components/begin-conversation-modal/begin-conversation-modal-directive.js'], function (_export) {
+System.register('components/begin-conversation-modal/begin-conversation-modal.js', ['github:angular/bower-angular@1.4.7', 'components/begin-conversation-modal/begin-conversation-modal-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsBeginConversationModalBeginConversationModalDirectiveJs) {
       directive = _componentsBeginConversationModalBeginConversationModalDirectiveJs['default'];
       directiveName = _componentsBeginConversationModalBeginConversationModalDirectiveJs.directiveName;
@@ -11924,13 +11974,13 @@ System.register('components/password-prompt-modal/password-prompt-modal-directiv
   };
 });
 
-System.register('components/password-prompt-modal/password-prompt-modal.js', ['github:angular/bower-angular@1.4.6', 'components/password-prompt-modal/password-prompt-modal-directive.js'], function (_export) {
+System.register('components/password-prompt-modal/password-prompt-modal.js', ['github:angular/bower-angular@1.4.7', 'components/password-prompt-modal/password-prompt-modal-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsPasswordPromptModalPasswordPromptModalDirectiveJs) {
       directive = _componentsPasswordPromptModalPasswordPromptModalDirectiveJs['default'];
       directiveName = _componentsPasswordPromptModalPasswordPromptModalDirectiveJs.directiveName;
@@ -12059,13 +12109,13 @@ System.register('components/channel-card/channel-card-directive.js', ['component
   };
 });
 
-System.register('components/channel-card/channel-card.js', ['github:angular/bower-angular@1.4.6', 'components/channel-card/channel-card-directive.js'], function (_export) {
+System.register('components/channel-card/channel-card.js', ['github:angular/bower-angular@1.4.7', 'components/channel-card/channel-card-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsChannelCardChannelCardDirectiveJs) {
       directive = _componentsChannelCardChannelCardDirectiveJs['default'];
       directiveName = _componentsChannelCardChannelCardDirectiveJs.directiveName;
@@ -12151,13 +12201,13 @@ System.register('components/channel-list/channel-list-directive.js', ['component
   };
 });
 
-System.register('components/channel-list/channel-list.js', ['github:angular/bower-angular@1.4.6', 'components/channel-list/channel-list-directive.js'], function (_export) {
+System.register('components/channel-list/channel-list.js', ['github:angular/bower-angular@1.4.7', 'components/channel-list/channel-list-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsChannelListChannelListDirectiveJs) {
       directive = _componentsChannelListChannelListDirectiveJs['default'];
       directiveName = _componentsChannelListChannelListDirectiveJs.directiveName;
@@ -12313,13 +12363,13 @@ System.register('components/cloud-connect-modal/cloud-connect-modal-directive.js
   };
 });
 
-System.register('components/cloud-connect-modal/cloud-connect-modal.js', ['github:angular/bower-angular@1.4.6', 'components/cloud-connect-modal/cloud-connect-modal-directive.js'], function (_export) {
+System.register('components/cloud-connect-modal/cloud-connect-modal.js', ['github:angular/bower-angular@1.4.7', 'components/cloud-connect-modal/cloud-connect-modal-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsCloudConnectModalCloudConnectModalDirectiveJs) {
       directive = _componentsCloudConnectModalCloudConnectModalDirectiveJs['default'];
       directiveName = _componentsCloudConnectModalCloudConnectModalDirectiveJs.directiveName;
@@ -12406,13 +12456,13 @@ System.register('components/invite-post-modal/invite-post-modal-directive.js', [
   };
 });
 
-System.register('components/invite-post-modal/invite-post-modal.js', ['github:angular/bower-angular@1.4.6', 'components/invite-post-modal/invite-post-modal-directive.js'], function (_export) {
+System.register('components/invite-post-modal/invite-post-modal.js', ['github:angular/bower-angular@1.4.7', 'components/invite-post-modal/invite-post-modal-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsInvitePostModalInvitePostModalDirectiveJs) {
       directive = _componentsInvitePostModalInvitePostModalDirectiveJs['default'];
       directiveName = _componentsInvitePostModalInvitePostModalDirectiveJs.directiveName;
@@ -12478,13 +12528,13 @@ System.register('components/message-input-area/message-input-area-directive.js',
   };
 });
 
-System.register('components/message-input-area/message-input-area.js', ['github:angular/bower-angular@1.4.6', 'components/message-input-area/message-input-area-directive.js'], function (_export) {
+System.register('components/message-input-area/message-input-area.js', ['github:angular/bower-angular@1.4.7', 'components/message-input-area/message-input-area-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsMessageInputAreaMessageInputAreaDirectiveJs) {
       directive = _componentsMessageInputAreaMessageInputAreaDirectiveJs['default'];
       directiveName = _componentsMessageInputAreaMessageInputAreaDirectiveJs.directiveName;
@@ -12750,13 +12800,13 @@ System.register('components/message-list/message-list-directive.js', ['component
   };
 });
 
-System.register('components/message-list/message-list.js', ['github:angular/bower-angular@1.4.6', 'components/message-list/message-list-directive.js'], function (_export) {
+System.register('components/message-list/message-list.js', ['github:angular/bower-angular@1.4.7', 'components/message-list/message-list-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsMessageListMessageListDirectiveJs) {
       directive = _componentsMessageListMessageListDirectiveJs['default'];
       directiveName = _componentsMessageListMessageListDirectiveJs.directiveName;
@@ -12864,13 +12914,13 @@ System.register('components/notification-card/notification-card-directive.js', [
   };
 });
 
-System.register('components/notification-card/notification-card.js', ['github:angular/bower-angular@1.4.6', 'components/notification-card/notification-card-directive.js'], function (_export) {
+System.register('components/notification-card/notification-card.js', ['github:angular/bower-angular@1.4.7', 'components/notification-card/notification-card-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsNotificationCardNotificationCardDirectiveJs) {
       directive = _componentsNotificationCardNotificationCardDirectiveJs['default'];
       directiveName = _componentsNotificationCardNotificationCardDirectiveJs.directiveName;
@@ -12928,13 +12978,13 @@ System.register('components/notification-list/notification-list-directive.js', [
   };
 });
 
-System.register('components/notification-list/notification-list.js', ['github:angular/bower-angular@1.4.6', 'components/notification-list/notification-list-directive.js'], function (_export) {
+System.register('components/notification-list/notification-list.js', ['github:angular/bower-angular@1.4.7', 'components/notification-list/notification-list-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsNotificationListNotificationListDirectiveJs) {
       directive = _componentsNotificationListNotificationListDirectiveJs['default'];
       directiveName = _componentsNotificationListNotificationListDirectiveJs.directiveName;
@@ -13038,13 +13088,13 @@ System.register('components/notification-overlay/notification-overlay-directive.
   };
 });
 
-System.register('components/notification-overlay/notification-overlay.js', ['github:angular/bower-angular@1.4.6', 'components/notification-overlay/notification-overlay-directive.js'], function (_export) {
+System.register('components/notification-overlay/notification-overlay.js', ['github:angular/bower-angular@1.4.7', 'components/notification-overlay/notification-overlay-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsNotificationOverlayNotificationOverlayDirectiveJs) {
       directive = _componentsNotificationOverlayNotificationOverlayDirectiveJs['default'];
       directiveName = _componentsNotificationOverlayNotificationOverlayDirectiveJs.directiveName;
@@ -13128,13 +13178,13 @@ System.register('components/system-message-overlay/system-message-overlay-direct
   };
 });
 
-System.register('components/system-message-overlay/system-message-overlay.js', ['github:angular/bower-angular@1.4.6', 'components/system-message-overlay/system-message-overlay-directive.js'], function (_export) {
+System.register('components/system-message-overlay/system-message-overlay.js', ['github:angular/bower-angular@1.4.7', 'components/system-message-overlay/system-message-overlay-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsSystemMessageOverlaySystemMessageOverlayDirectiveJs) {
       directive = _componentsSystemMessageOverlaySystemMessageOverlayDirectiveJs['default'];
       directiveName = _componentsSystemMessageOverlaySystemMessageOverlayDirectiveJs.directiveName;
@@ -13176,13 +13226,13 @@ System.register('components/qr-image/qr-image-directive.js', [], function (_expo
   };
 });
 
-System.register('components/qr-image/qr-image.js', ['github:angular/bower-angular@1.4.6', 'components/qr-image/qr-image-directive.js'], function (_export) {
+System.register('components/qr-image/qr-image.js', ['github:angular/bower-angular@1.4.7', 'components/qr-image/qr-image-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsQrImageQrImageDirectiveJs) {
       directive = _componentsQrImageQrImageDirectiveJs['default'];
       directiveName = _componentsQrImageQrImageDirectiveJs.directiveName;
@@ -13252,13 +13302,13 @@ System.register('components/conversations-menu/conversations-menu-directive.js',
   };
 });
 
-System.register('components/conversations-menu/conversations-menu.js', ['github:angular/bower-angular@1.4.6', 'components/conversations-menu/conversations-menu-directive.js'], function (_export) {
+System.register('components/conversations-menu/conversations-menu.js', ['github:angular/bower-angular@1.4.7', 'components/conversations-menu/conversations-menu-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsConversationsMenuConversationsMenuDirectiveJs) {
       directive = _componentsConversationsMenuConversationsMenuDirectiveJs['default'];
       directiveName = _componentsConversationsMenuConversationsMenuDirectiveJs.directiveName;
@@ -13382,13 +13432,13 @@ System.register('components/options-menu/options-menu-directive.js', ['component
   };
 });
 
-System.register('components/options-menu/options-menu.js', ['github:angular/bower-angular@1.4.6', 'components/options-menu/options-menu-directive.js'], function (_export) {
+System.register('components/options-menu/options-menu.js', ['github:angular/bower-angular@1.4.7', 'components/options-menu/options-menu-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsOptionsMenuOptionsMenuDirectiveJs) {
       directive = _componentsOptionsMenuOptionsMenuDirectiveJs['default'];
       directiveName = _componentsOptionsMenuOptionsMenuDirectiveJs.directiveName;
@@ -13478,13 +13528,13 @@ System.register('components/spinner-button/spinner-button-directive.js', [], fun
   };
 });
 
-System.register('components/spinner-button/spinner-button.js', ['github:angular/bower-angular@1.4.6', 'components/spinner-button/spinner-button-directive.js'], function (_export) {
+System.register('components/spinner-button/spinner-button.js', ['github:angular/bower-angular@1.4.7', 'components/spinner-button/spinner-button-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsSpinnerButtonSpinnerButtonDirectiveJs) {
       directive = _componentsSpinnerButtonSpinnerButtonDirectiveJs['default'];
       directiveName = _componentsSpinnerButtonSpinnerButtonDirectiveJs.directiveName;
@@ -13589,13 +13639,13 @@ System.register('components/user-card/user-card-directive.js', ['components/user
   };
 });
 
-System.register('components/user-card/user-card.js', ['github:angular/bower-angular@1.4.6', 'components/user-card/user-card-directive.js'], function (_export) {
+System.register('components/user-card/user-card.js', ['github:angular/bower-angular@1.4.7', 'components/user-card/user-card-directive.js'], function (_export) {
   'use strict';
 
   var angular, directive, directiveName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsUserCardUserCardDirectiveJs) {
       directive = _componentsUserCardUserCardDirectiveJs['default'];
       directiveName = _componentsUserCardUserCardDirectiveJs.directiveName;
@@ -13606,13 +13656,13 @@ System.register('components/user-card/user-card.js', ['github:angular/bower-angu
   };
 });
 
-System.register('components/components.js', ['github:angular/bower-angular@1.4.6', 'components/auto-focus/auto-focus.js', 'components/auto-select/auto-select.js', 'components/equal-to/equal-to.js', 'components/update-profile-modal/update-profile-modal.js', 'components/begin-conversation-modal/begin-conversation-modal.js', 'components/password-prompt-modal/password-prompt-modal.js', 'components/channel-card/channel-card.js', 'components/channel-list/channel-list.js', 'components/cloud-connect-modal/cloud-connect-modal.js', 'components/invite-post-modal/invite-post-modal.js', 'components/message-input-area/message-input-area.js', 'components/message-list/message-list.js', 'components/notification-card/notification-card.js', 'components/notification-list/notification-list.js', 'components/notification-overlay/notification-overlay.js', 'components/system-message-overlay/system-message-overlay.js', 'components/qr-image/qr-image.js', 'components/conversations-menu/conversations-menu.js', 'components/options-menu/options-menu.js', 'components/spinner-button/spinner-button.js', 'components/user-card/user-card.js'], function (_export) {
+System.register('components/components.js', ['github:angular/bower-angular@1.4.7', 'components/auto-focus/auto-focus.js', 'components/auto-select/auto-select.js', 'components/equal-to/equal-to.js', 'components/update-profile-modal/update-profile-modal.js', 'components/begin-conversation-modal/begin-conversation-modal.js', 'components/password-prompt-modal/password-prompt-modal.js', 'components/channel-card/channel-card.js', 'components/channel-list/channel-list.js', 'components/cloud-connect-modal/cloud-connect-modal.js', 'components/invite-post-modal/invite-post-modal.js', 'components/message-input-area/message-input-area.js', 'components/message-list/message-list.js', 'components/notification-card/notification-card.js', 'components/notification-list/notification-list.js', 'components/notification-overlay/notification-overlay.js', 'components/system-message-overlay/system-message-overlay.js', 'components/qr-image/qr-image.js', 'components/conversations-menu/conversations-menu.js', 'components/options-menu/options-menu.js', 'components/spinner-button/spinner-button.js', 'components/user-card/user-card.js'], function (_export) {
   'use strict';
 
   var angular, autoFocus, autoSelect, equalTo, updateProfileModal, beginConversationModal, passwordPromptModal, channelCard, channelList, cloudConnectModal, invitePostModal, messageInputArea, messageList, notificationCard, notificationList, notificationOverlay, systemMessageOverlay, qrImage, conversationsMenu, optionsMenu, spinnerButton, userCard;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsAutoFocusAutoFocusJs) {
       autoFocus = _componentsAutoFocusAutoFocusJs['default'];
     }, function (_componentsAutoSelectAutoSelectJs) {
@@ -13907,14 +13957,14 @@ System.registerDynamic("npm:emmett@3.1.1", ["npm:emmett@3.1.1/emmett"], true, fu
   return module.exports;
 });
 
-System.registerDynamic("npm:baobab@2.0.0/dist/type", ["npm:baobab@2.0.0/dist/monkey"], true, function(req, exports, module) {
+System.registerDynamic("npm:baobab@2.1.0/dist/type", ["npm:baobab@2.1.0/dist/monkey"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   'use strict';
   Object.defineProperty(exports, '__esModule', {value: true});
-  var _monkey = req('npm:baobab@2.0.0/dist/monkey');
+  var _monkey = req('npm:baobab@2.1.0/dist/monkey');
   var type = {};
   function anyOf(target, allowed) {
     return allowed.some(function(t) {
@@ -13972,6 +14022,10 @@ System.registerDynamic("npm:baobab@2.0.0/dist/type", ["npm:baobab@2.0.0/dist/mon
     }
     return null;
   };
+  type.lazyGetter = function(o, propertyKey) {
+    var descriptor = Object.getOwnPropertyDescriptor(o, propertyKey);
+    return descriptor && descriptor.get && descriptor.get.isLazyGetter === true;
+  };
   type.monkeyDefinition = function(definition) {
     if (type.object(definition)) {
       if (!type['function'](definition.get) || definition.cursors && (!type.object(definition.cursors) || !Object.keys(definition.cursors).every(function(k) {
@@ -14005,7 +14059,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/type", ["npm:baobab@2.0.0/dist/mon
   return module.exports;
 });
 
-System.registerDynamic("npm:baobab@2.0.0/dist/helpers", ["npm:baobab@2.0.0/dist/monkey", "npm:baobab@2.0.0/dist/type"], true, function(req, exports, module) {
+System.registerDynamic("npm:baobab@2.1.0/dist/helpers", ["npm:baobab@2.1.0/dist/monkey", "npm:baobab@2.1.0/dist/type"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
@@ -14037,6 +14091,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/helpers", ["npm:baobab@2.0.0/dist/
   exports.getIn = getIn;
   exports.makeError = makeError;
   exports.pathObject = pathObject;
+  exports.solveRelativePath = solveRelativePath;
   exports.solveUpdate = solveUpdate;
   exports.splice = splice;
   function _interopRequireDefault(obj) {
@@ -14047,8 +14102,8 @@ System.registerDynamic("npm:baobab@2.0.0/dist/helpers", ["npm:baobab@2.0.0/dist/
       throw new TypeError('Cannot call a class as a function');
     }
   }
-  var _monkey = req('npm:baobab@2.0.0/dist/monkey');
-  var _type = req('npm:baobab@2.0.0/dist/type');
+  var _monkey = req('npm:baobab@2.1.0/dist/monkey');
+  var _type = req('npm:baobab@2.1.0/dist/type');
   var _type2 = _interopRequireDefault(_type);
   var noop = Function.prototype;
   var Archive = (function() {
@@ -14182,6 +14237,8 @@ System.registerDynamic("npm:baobab@2.0.0/dist/helpers", ["npm:baobab@2.0.0/dist/
       var p = undefined,
           k = undefined;
       for (k in o) {
+        if (_type2['default'].lazyGetter(o, k))
+          continue;
         p = o[k];
         if (!p || !o.hasOwnProperty(k) || typeof p !== 'object' || Object.isFrozen(p))
           continue;
@@ -14307,6 +14364,22 @@ System.registerDynamic("npm:baobab@2.0.0/dist/helpers", ["npm:baobab@2.0.0/dist/
       newArray[i] = array[i];
     return newArray;
   }
+  function solveRelativePath(base, to) {
+    var solvedPath = [];
+    for (var i = 0,
+        l = to.length; i < l; i++) {
+      var step = to[i];
+      if (step === '.') {
+        if (!i)
+          solvedPath = base.slice(0);
+      } else if (step === '..') {
+        solvedPath = (!i ? base : solvedPath).slice(0, -1);
+      } else {
+        solvedPath.push(step);
+      }
+    }
+    return solvedPath;
+  }
   function solveUpdate(affectedPaths, comparedPaths) {
     var i = undefined,
         j = undefined,
@@ -14355,7 +14428,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/helpers", ["npm:baobab@2.0.0/dist/
   return module.exports;
 });
 
-System.registerDynamic("npm:baobab@2.0.0/dist/update", ["npm:baobab@2.0.0/dist/type", "npm:baobab@2.0.0/dist/helpers"], true, function(req, exports, module) {
+System.registerDynamic("npm:baobab@2.1.0/dist/update", ["npm:baobab@2.1.0/dist/type", "npm:baobab@2.1.0/dist/monkey", "npm:baobab@2.1.0/dist/helpers"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
@@ -14376,9 +14449,10 @@ System.registerDynamic("npm:baobab@2.0.0/dist/update", ["npm:baobab@2.0.0/dist/t
       return Array.from(arr);
     }
   }
-  var _type = req('npm:baobab@2.0.0/dist/type');
+  var _type = req('npm:baobab@2.1.0/dist/type');
   var _type2 = _interopRequireDefault(_type);
-  var _helpers = req('npm:baobab@2.0.0/dist/helpers');
+  var _monkey = req('npm:baobab@2.1.0/dist/monkey');
+  var _helpers = req('npm:baobab@2.1.0/dist/helpers');
   function err(operation, expectedTarget, path) {
     return (0, _helpers.makeError)('Baobab.update: cannot apply the "' + operation + '" on ' + ('a non ' + expectedTarget + ' (path: /' + path.join('/') + ').'), {path: path});
   }
@@ -14401,11 +14475,22 @@ System.registerDynamic("npm:baobab@2.0.0/dist/update", ["npm:baobab@2.0.0/dist/t
         if (operationType === 'set') {
           if (opts.pure && p[s] === value)
             return {node: p[s]};
-          p[s] = opts.persistent ? (0, _helpers.shallowClone)(value) : value;
+          if (opts.persistent) {
+            p[s] = (0, _helpers.shallowClone)(value);
+          } else if (value instanceof _monkey.MonkeyDefinition) {
+            Object.defineProperty(p, s, {
+              value: value,
+              enumerable: true,
+              configurable: true
+            });
+          } else {
+            p[s] = value;
+          }
         } else if (operationType === 'monkey') {
           Object.defineProperty(p, s, {
             get: value,
-            enumerable: true
+            enumerable: true,
+            configurable: true
           });
         } else if (operationType === 'apply') {
           var result = value(p[s]);
@@ -14472,6 +14557,8 @@ System.registerDynamic("npm:baobab@2.0.0/dist/update", ["npm:baobab@2.0.0/dist/t
         (0, _helpers.freeze)(p);
       p = p[s];
     }
+    if (_type2['default'].lazyGetter(p, s))
+      return {data: dummy.root};
     return {
       data: dummy.root,
       node: p[s]
@@ -14482,7 +14569,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/update", ["npm:baobab@2.0.0/dist/t
   return module.exports;
 });
 
-System.registerDynamic("npm:baobab@2.0.0/dist/monkey", ["npm:baobab@2.0.0/dist/type", "npm:baobab@2.0.0/dist/update", "npm:baobab@2.0.0/dist/helpers"], true, function(req, exports, module) {
+System.registerDynamic("npm:baobab@2.1.0/dist/monkey", ["npm:baobab@2.1.0/dist/type", "npm:baobab@2.1.0/dist/update", "npm:baobab@2.1.0/dist/helpers"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
@@ -14516,11 +14603,11 @@ System.registerDynamic("npm:baobab@2.0.0/dist/monkey", ["npm:baobab@2.0.0/dist/t
       throw new TypeError('Cannot call a class as a function');
     }
   }
-  var _type = req('npm:baobab@2.0.0/dist/type');
+  var _type = req('npm:baobab@2.1.0/dist/type');
   var _type2 = _interopRequireDefault(_type);
-  var _update2 = req('npm:baobab@2.0.0/dist/update');
+  var _update2 = req('npm:baobab@2.1.0/dist/update');
   var _update3 = _interopRequireDefault(_update2);
-  var _helpers = req('npm:baobab@2.0.0/dist/helpers');
+  var _helpers = req('npm:baobab@2.1.0/dist/helpers');
   var MonkeyDefinition = function MonkeyDefinition(definition) {
     var _this = this;
     _classCallCheck(this, MonkeyDefinition);
@@ -14551,6 +14638,20 @@ System.registerDynamic("npm:baobab@2.0.0/dist/monkey", ["npm:baobab@2.0.0/dist/t
       this.path = pathInTree;
       this.definition = definition;
       this.isRecursive = false;
+      var projection = definition.projection,
+          relative = _helpers.solveRelativePath.bind(null, pathInTree.slice(0, -1));
+      if (definition.type === 'object') {
+        this.projection = Object.keys(projection).reduce(function(acc, k) {
+          acc[k] = relative(projection[k]);
+          return acc;
+        }, {});
+        this.depPaths = Object.keys(this.projection).map(function(k) {
+          return _this2.projection[k];
+        });
+      } else {
+        this.projection = projection.map(relative);
+        this.depPaths = this.projection;
+      }
       this.state = {killed: false};
       this.listener = function(_ref) {
         var path = _ref.data.path;
@@ -14567,7 +14668,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/monkey", ["npm:baobab@2.0.0/dist/t
       key: 'checkRecursivity',
       value: function checkRecursivity() {
         var _this3 = this;
-        this.isRecursive = this.definition.paths.some(function(p) {
+        this.isRecursive = this.depPaths.some(function(p) {
           return !!_type2['default'].monkeyPath(_this3.tree._monkeys, p);
         });
         if (this.isRecursive) {
@@ -14580,14 +14681,13 @@ System.registerDynamic("npm:baobab@2.0.0/dist/monkey", ["npm:baobab@2.0.0/dist/t
       key: 'relatedPaths',
       value: function relatedPaths() {
         var _this4 = this;
-        var def = this.definition;
         var paths = undefined;
-        if (def.hasDynamicPaths)
-          paths = def.paths.map(function(p) {
+        if (this.definition.hasDynamicPaths)
+          paths = this.depPaths.map(function(p) {
             return (0, _helpers.getIn)(_this4.tree._data, p).solvedPath;
           });
         else
-          paths = def.paths;
+          paths = this.depPaths;
         if (!this.isRecursive)
           return paths;
         else
@@ -14602,7 +14702,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/monkey", ["npm:baobab@2.0.0/dist/t
     }, {
       key: 'update',
       value: function update() {
-        var deps = this.tree.project(this.definition.projection);
+        var deps = this.tree.project(this.projection);
         var lazyGetter = (function(tree, def, data) {
           var cache = null,
               alreadyComputed = false;
@@ -14616,10 +14716,17 @@ System.registerDynamic("npm:baobab@2.0.0/dist/monkey", ["npm:baobab@2.0.0/dist/t
             return cache;
           };
         })(this.tree, this.definition, deps);
-        this.tree._data = (0, _update3['default'])(this.tree._data, this.path, {
-          type: 'monkey',
-          value: lazyGetter
-        }, this.tree.options).data;
+        lazyGetter.isLazyGetter = true;
+        if (this.tree.options.lazyMonkeys)
+          this.tree._data = (0, _update3['default'])(this.tree._data, this.path, {
+            type: 'monkey',
+            value: lazyGetter
+          }, this.tree.options).data;
+        else
+          this.tree._data = (0, _update3['default'])(this.tree._data, this.path, {
+            type: 'set',
+            value: lazyGetter()
+          }, this.tree.options).data;
         return this;
       }
     }, {
@@ -14627,6 +14734,8 @@ System.registerDynamic("npm:baobab@2.0.0/dist/monkey", ["npm:baobab@2.0.0/dist/t
       value: function release() {
         this.tree.off('write', this.listener);
         this.state.killed = true;
+        delete this.projection;
+        delete this.depPaths;
         delete this.tree;
       }
     }]);
@@ -14637,7 +14746,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/monkey", ["npm:baobab@2.0.0/dist/t
   return module.exports;
 });
 
-System.registerDynamic("npm:baobab@2.0.0/dist/cursor", ["npm:emmett@3.1.1", "npm:baobab@2.0.0/dist/monkey", "npm:baobab@2.0.0/dist/type", "npm:baobab@2.0.0/dist/helpers"], true, function(req, exports, module) {
+System.registerDynamic("npm:baobab@2.1.0/dist/cursor", ["npm:emmett@3.1.1", "npm:baobab@2.1.0/dist/monkey", "npm:baobab@2.1.0/dist/type", "npm:baobab@2.1.0/dist/helpers"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
@@ -14719,10 +14828,10 @@ System.registerDynamic("npm:baobab@2.0.0/dist/cursor", ["npm:emmett@3.1.1", "npm
   }
   var _emmett = req('npm:emmett@3.1.1');
   var _emmett2 = _interopRequireDefault(_emmett);
-  var _monkey = req('npm:baobab@2.0.0/dist/monkey');
-  var _type = req('npm:baobab@2.0.0/dist/type');
+  var _monkey = req('npm:baobab@2.1.0/dist/monkey');
+  var _type = req('npm:baobab@2.1.0/dist/type');
   var _type2 = _interopRequireDefault(_type);
-  var _helpers = req('npm:baobab@2.0.0/dist/helpers');
+  var _helpers = req('npm:baobab@2.1.0/dist/helpers');
   function checkPossibilityOfDynamicTraversal(method, solvedPath) {
     if (!solvedPath)
       throw (0, _helpers.makeError)('Baobab.Cursor.' + method + ': ' + ('cannot use ' + method + ' on an unresolved dynamic path.'), {path: solvedPath});
@@ -14830,7 +14939,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/cursor", ["npm:emmett@3.1.1", "npm
     }, {
       key: 'root',
       value: function root() {
-        return this.tree.root;
+        return this.tree.select();
       }
     }, {
       key: 'select',
@@ -15104,7 +15213,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/cursor", ["npm:emmett@3.1.1", "npm
   return module.exports;
 });
 
-System.registerDynamic("npm:baobab@2.0.0/dist/watcher", ["npm:emmett@3.1.1", "npm:baobab@2.0.0/dist/cursor", "npm:baobab@2.0.0/dist/type", "npm:baobab@2.0.0/dist/helpers"], true, function(req, exports, module) {
+System.registerDynamic("npm:baobab@2.1.0/dist/watcher", ["npm:emmett@3.1.1", "npm:baobab@2.1.0/dist/cursor", "npm:baobab@2.1.0/dist/type", "npm:baobab@2.1.0/dist/helpers"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
@@ -15186,11 +15295,11 @@ System.registerDynamic("npm:baobab@2.0.0/dist/watcher", ["npm:emmett@3.1.1", "np
   }
   var _emmett = req('npm:emmett@3.1.1');
   var _emmett2 = _interopRequireDefault(_emmett);
-  var _cursor = req('npm:baobab@2.0.0/dist/cursor');
+  var _cursor = req('npm:baobab@2.1.0/dist/cursor');
   var _cursor2 = _interopRequireDefault(_cursor);
-  var _type = req('npm:baobab@2.0.0/dist/type');
+  var _type = req('npm:baobab@2.1.0/dist/type');
   var _type2 = _interopRequireDefault(_type);
-  var _helpers = req('npm:baobab@2.0.0/dist/helpers');
+  var _helpers = req('npm:baobab@2.1.0/dist/helpers');
   var Watcher = (function(_Emitter) {
     _inherits(Watcher, _Emitter);
     function Watcher(tree, mapping) {
@@ -15274,7 +15383,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/watcher", ["npm:emmett@3.1.1", "np
   return module.exports;
 });
 
-System.registerDynamic("npm:baobab@2.0.0/dist/baobab", ["npm:emmett@3.1.1", "npm:baobab@2.0.0/dist/cursor", "npm:baobab@2.0.0/dist/monkey", "npm:baobab@2.0.0/dist/watcher", "npm:baobab@2.0.0/dist/type", "npm:baobab@2.0.0/dist/update", "npm:baobab@2.0.0/dist/helpers"], true, function(req, exports, module) {
+System.registerDynamic("npm:baobab@2.1.0/dist/baobab", ["npm:emmett@3.1.1", "npm:baobab@2.1.0/dist/cursor", "npm:baobab@2.1.0/dist/monkey", "npm:baobab@2.1.0/dist/watcher", "npm:baobab@2.1.0/dist/type", "npm:baobab@2.1.0/dist/update", "npm:baobab@2.1.0/dist/helpers"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
@@ -15382,16 +15491,16 @@ System.registerDynamic("npm:baobab@2.0.0/dist/baobab", ["npm:emmett@3.1.1", "npm
   }
   var _emmett = req('npm:emmett@3.1.1');
   var _emmett2 = _interopRequireDefault(_emmett);
-  var _cursor = req('npm:baobab@2.0.0/dist/cursor');
+  var _cursor = req('npm:baobab@2.1.0/dist/cursor');
   var _cursor2 = _interopRequireDefault(_cursor);
-  var _monkey = req('npm:baobab@2.0.0/dist/monkey');
-  var _watcher = req('npm:baobab@2.0.0/dist/watcher');
+  var _monkey = req('npm:baobab@2.1.0/dist/monkey');
+  var _watcher = req('npm:baobab@2.1.0/dist/watcher');
   var _watcher2 = _interopRequireDefault(_watcher);
-  var _type = req('npm:baobab@2.0.0/dist/type');
+  var _type = req('npm:baobab@2.1.0/dist/type');
   var _type2 = _interopRequireDefault(_type);
-  var _update2 = req('npm:baobab@2.0.0/dist/update');
+  var _update2 = req('npm:baobab@2.1.0/dist/update');
   var _update3 = _interopRequireDefault(_update2);
-  var _helpers = req('npm:baobab@2.0.0/dist/helpers');
+  var _helpers = req('npm:baobab@2.1.0/dist/helpers');
   var helpers = _interopRequireWildcard(_helpers);
   var arrayFrom = helpers.arrayFrom;
   var coercePath = helpers.coercePath;
@@ -15407,6 +15516,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/baobab", ["npm:emmett@3.1.1", "npm
     autoCommit: true,
     asynchronous: true,
     immutable: true,
+    lazyMonkeys: true,
     persistent: true,
     pure: true,
     validate: null,
@@ -15443,7 +15553,8 @@ System.registerDynamic("npm:baobab@2.0.0/dist/baobab", ["npm:emmett@3.1.1", "npm
       this._monkeys = {};
       this._previousData = null;
       this._data = initialData;
-      this.root = this.select();
+      this.root = new _cursor2['default'](this, [], '/');
+      delete this.root.release;
       if (this.options.immutable)
         deepFreeze(this._data);
       var bootstrap = function bootstrap(name) {
@@ -15590,7 +15701,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/baobab", ["npm:emmett@3.1.1", "npm
           }
         }
         if (!this._transaction.length)
-          this._previousData = this.get();
+          this._previousData = this._data;
         var result = (0, _update3['default'])(this._data, solvedPath, realOperation, this.options);
         var data = result.data;
         var node = result.node;
@@ -15649,6 +15760,7 @@ System.registerDynamic("npm:baobab@2.0.0/dist/baobab", ["npm:emmett@3.1.1", "npm
       value: function release() {
         var k = undefined;
         this.emit('release');
+        delete this.root;
         delete this._data;
         delete this._previousData;
         delete this._transaction;
@@ -15692,32 +15804,32 @@ System.registerDynamic("npm:baobab@2.0.0/dist/baobab", ["npm:emmett@3.1.1", "npm
   Baobab.Monkey = _monkey.Monkey;
   Baobab.type = _type2['default'];
   Baobab.helpers = helpers;
-  Object.defineProperty(Baobab, 'version', {value: '2.0.0'});
+  Object.defineProperty(Baobab, 'version', {value: '2.1.0'});
   exports['default'] = Baobab;
   module.exports = exports['default'];
   global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("npm:baobab@2.0.0", ["npm:baobab@2.0.0/dist/baobab"], true, function(req, exports, module) {
+System.registerDynamic("npm:baobab@2.1.0", ["npm:baobab@2.1.0/dist/baobab"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = req('npm:baobab@2.0.0/dist/baobab');
+  module.exports = req('npm:baobab@2.1.0/dist/baobab');
   global.define = __define;
   return module.exports;
 });
 
-System.register('libraries/baobab/baobab.js', ['github:angular/bower-angular@1.4.6', 'npm:baobab@2.0.0'], function (_export) {
+System.register('libraries/baobab/baobab.js', ['github:angular/bower-angular@1.4.7', 'npm:baobab@2.1.0'], function (_export) {
   'use strict';
 
   var angular, Baobab;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
-    }, function (_npmBaobab200) {
-      Baobab = _npmBaobab200['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
+    }, function (_npmBaobab210) {
+      Baobab = _npmBaobab210['default'];
     }],
     execute: function () {
       _export('default', angular.module('toc.libraries.baobab', []).factory('Baobab', /*@ngInject*/function () {
@@ -31774,13 +31886,13 @@ define("npm:node-forge@0.6.35", ["npm:node-forge@0.6.35/js/forge"], function(mai
 
 _removeDefine();
 })();
-System.register('libraries/forge/forge.js', ['github:angular/bower-angular@1.4.6', 'npm:node-forge@0.6.35'], function (_export) {
+System.register('libraries/forge/forge.js', ['github:angular/bower-angular@1.4.7', 'npm:node-forge@0.6.35'], function (_export) {
   'use strict';
 
   var angular, forge;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_npmNodeForge0635) {
       forge = _npmNodeForge0635['default'];
     }],
@@ -36708,7 +36820,7 @@ System.registerDynamic("libraries/ionic/ionic-library.js", [], false, function(_
   return _retrieveGlobal();
 });
 
-System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-animate", ["github:angular/bower-angular@1.4.6"], false, function(__require, __exports, __module) {
+System.registerDynamic("github:angular/bower-angular-animate@1.4.7/angular-animate", ["github:angular/bower-angular@1.4.7"], false, function(__require, __exports, __module) {
   var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
   (function() {
     "format global";
@@ -37019,11 +37131,6 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
           return a;
         return a + ' ' + b;
       }
-      function $$BodyProvider() {
-        this.$get = ['$document', function($document) {
-          return jqLite($document[0].body);
-        }];
-      }
       var $$rAFSchedulerFactory = ['$$rAF', function($$rAF) {
         var queue,
             cancelFn;
@@ -37165,6 +37272,11 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
           }
         };
       }
+      function registerRestorableStyles(backup, node, properties) {
+        forEach(properties, function(prop) {
+          backup[prop] = isDefined(backup[prop]) ? backup[prop] : node.style.getPropertyValue(prop);
+        });
+      }
       var $AnimateCssProvider = ['$animateProvider', function($animateProvider) {
         var gcsLookup = createLocalCacheLookup();
         var gcsStaggerLookup = createLocalCacheLookup();
@@ -37227,6 +37339,7 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
             return timings;
           }
           return function init(element, options) {
+            var restoreStyles = {};
             var node = getDomNode(element);
             if (!node || !node.parentNode || !$animate.enabled()) {
               return closeAndReturnNoopAnimator();
@@ -37363,7 +37476,12 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
               flags.blockTransition = timings.transitionDuration > 0;
               flags.blockKeyframeAnimation = timings.animationDuration > 0 && stagger.animationDelay > 0 && stagger.animationDuration === 0;
             }
-            applyAnimationFromStyles(element, options);
+            if (options.from) {
+              if (options.cleanupStyles) {
+                registerRestorableStyles(restoreStyles, node, Object.keys(options.from));
+              }
+              applyAnimationFromStyles(element, options);
+            }
             if (flags.blockTransition || flags.blockKeyframeAnimation) {
               applyBlocking(maxDuration);
             } else if (!options.skipBlocking) {
@@ -37408,6 +37526,11 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
               });
               applyAnimationClasses(element, options);
               applyAnimationStyles(element, options);
+              if (Object.keys(restoreStyles).length) {
+                forEach(restoreStyles, function(value, prop) {
+                  value ? node.style.setProperty(prop, value) : node.style.removeProperty(prop);
+                });
+              }
               if (options.onDone) {
                 options.onDone();
               }
@@ -37550,7 +37673,12 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
                   element.data(ANIMATE_TIMER_KEY, animationsData);
                 }
                 element.on(events.join(' '), onAnimationProgress);
-                applyAnimationToStyles(element, options);
+                if (options.to) {
+                  if (options.cleanupStyles) {
+                    registerRestorableStyles(restoreStyles, node, Object.keys(options.to));
+                  }
+                  applyAnimationToStyles(element, options);
+                }
               }
               function onAnimationExpired() {
                 var animationsData = element.data(ANIMATE_TIMER_KEY);
@@ -37581,12 +37709,15 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
         var NG_ANIMATE_ANCHOR_CLASS_NAME = 'ng-anchor';
         var NG_OUT_ANCHOR_CLASS_NAME = 'ng-anchor-out';
         var NG_IN_ANCHOR_CLASS_NAME = 'ng-anchor-in';
-        this.$get = ['$animateCss', '$rootScope', '$$AnimateRunner', '$rootElement', '$$body', '$sniffer', '$$jqLite', function($animateCss, $rootScope, $$AnimateRunner, $rootElement, $$body, $sniffer, $$jqLite) {
+        function isDocumentFragment(node) {
+          return node.parentNode && node.parentNode.nodeType === 11;
+        }
+        this.$get = ['$animateCss', '$rootScope', '$$AnimateRunner', '$rootElement', '$sniffer', '$$jqLite', '$document', function($animateCss, $rootScope, $$AnimateRunner, $rootElement, $sniffer, $$jqLite, $document) {
           if (!$sniffer.animations && !$sniffer.transitions)
             return noop;
-          var bodyNode = getDomNode($$body);
+          var bodyNode = $document[0].body;
           var rootNode = getDomNode($rootElement);
-          var rootBodyElement = jqLite(bodyNode.parentNode === rootNode ? bodyNode : rootNode);
+          var rootBodyElement = jqLite(isDocumentFragment(rootNode) || bodyNode.contains(rootNode) ? rootNode : bodyNode);
           var applyAnimationClasses = applyAnimationClassesFactory($$jqLite);
           return function initDriverFn(animationDetails) {
             return animationDetails.from && animationDetails.to ? prepareFromToAnchorAnimation(animationDetails.from, animationDetails.to, animationDetails.classes, animationDetails.anchors) : prepareRegularAnimation(animationDetails);
@@ -38055,10 +38186,23 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
           var cO = currentAnimation.options;
           return (nO.addClass && nO.addClass === cO.removeClass) || (nO.removeClass && nO.removeClass === cO.addClass);
         });
-        this.$get = ['$$rAF', '$rootScope', '$rootElement', '$document', '$$body', '$$HashMap', '$$animation', '$$AnimateRunner', '$templateRequest', '$$jqLite', '$$forceReflow', function($$rAF, $rootScope, $rootElement, $document, $$body, $$HashMap, $$animation, $$AnimateRunner, $templateRequest, $$jqLite, $$forceReflow) {
+        this.$get = ['$$rAF', '$rootScope', '$rootElement', '$document', '$$HashMap', '$$animation', '$$AnimateRunner', '$templateRequest', '$$jqLite', '$$forceReflow', function($$rAF, $rootScope, $rootElement, $document, $$HashMap, $$animation, $$AnimateRunner, $templateRequest, $$jqLite, $$forceReflow) {
           var activeAnimationsLookup = new $$HashMap();
           var disabledElementsLookup = new $$HashMap();
           var animationsEnabled = null;
+          function postDigestTaskFactory() {
+            var postDigestCalled = false;
+            return function(fn) {
+              if (postDigestCalled) {
+                fn();
+              } else {
+                $rootScope.$$postDigest(function() {
+                  postDigestCalled = true;
+                  fn();
+                });
+              }
+            };
+          }
           var deregisterWatch = $rootScope.$watch(function() {
             return $templateRequest.totalPendingRequests === 0;
           }, function(isEmpty) {
@@ -38096,13 +38240,6 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
               });
             }
             return matches;
-          }
-          function triggerCallback(event, element, phase, data) {
-            $$rAF(function() {
-              forEach(findCallbacks(element, event), function(callback) {
-                callback(element, phase, data);
-              });
-            });
           }
           return {
             on: function(event, container, callback) {
@@ -38172,6 +38309,7 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
             }
             options = prepareAnimationOptions(options);
             var runner = new $$AnimateRunner();
+            var runInNextPostDigestOrNow = postDigestTaskFactory();
             if (isArray(options.addClass)) {
               options.addClass = options.addClass.join(' ');
             }
@@ -38306,7 +38444,16 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
             });
             return runner;
             function notifyProgress(runner, event, phase, data) {
-              triggerCallback(event, element, phase, data);
+              runInNextPostDigestOrNow(function() {
+                var callbacks = findCallbacks(element, event);
+                if (callbacks.length) {
+                  $$rAF(function() {
+                    forEach(callbacks, function(callback) {
+                      callback(element, phase, data);
+                    });
+                  });
+                }
+              });
               runner.progress(event, phase, data);
             }
             function close(reject) {
@@ -38343,7 +38490,8 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
             return getDomNode(nodeOrElmA) === getDomNode(nodeOrElmB);
           }
           function areAnimationsAllowed(element, parentElement, event) {
-            var bodyElementDetected = isMatchingElement(element, $$body) || element[0].nodeName === 'HTML';
+            var bodyElement = jqLite($document[0].body);
+            var bodyElementDetected = isMatchingElement(element, bodyElement) || element[0].nodeName === 'HTML';
             var rootElementDetected = isMatchingElement(element, $rootElement);
             var parentAnimationDetected = false;
             var animateChildren;
@@ -38381,7 +38529,7 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
                 }
               }
               if (!bodyElementDetected) {
-                bodyElementDetected = isMatchingElement(parentElement, $$body);
+                bodyElementDetected = isMatchingElement(parentElement, bodyElement);
               }
               parentElement = parentElement.parent();
             }
@@ -38846,23 +38994,23 @@ System.registerDynamic("github:angular/bower-angular-animate@1.4.6/angular-anima
           };
         }];
       }];
-      angular.module('ngAnimate', []).provider('$$body', $$BodyProvider).directive('ngAnimateChildren', $$AnimateChildrenDirective).factory('$$rAFScheduler', $$rAFSchedulerFactory).factory('$$AnimateRunner', $$AnimateRunnerFactory).factory('$$animateAsyncRun', $$AnimateAsyncRunFactory).provider('$$animateQueue', $$AnimateQueueProvider).provider('$$animation', $$AnimationProvider).provider('$animateCss', $AnimateCssProvider).provider('$$animateCssDriver', $$AnimateCssDriverProvider).provider('$$animateJs', $$AnimateJsProvider).provider('$$animateJsDriver', $$AnimateJsDriverProvider);
+      angular.module('ngAnimate', []).directive('ngAnimateChildren', $$AnimateChildrenDirective).factory('$$rAFScheduler', $$rAFSchedulerFactory).factory('$$AnimateRunner', $$AnimateRunnerFactory).factory('$$animateAsyncRun', $$AnimateAsyncRunFactory).provider('$$animateQueue', $$AnimateQueueProvider).provider('$$animation', $$AnimationProvider).provider('$animateCss', $AnimateCssProvider).provider('$$animateCssDriver', $$AnimateCssDriverProvider).provider('$$animateJs', $$AnimateJsProvider).provider('$$animateJsDriver', $$AnimateJsDriverProvider);
     })(window, window.angular);
   })();
   return _retrieveGlobal();
 });
 
-System.registerDynamic("github:angular/bower-angular-animate@1.4.6", ["github:angular/bower-angular-animate@1.4.6/angular-animate"], true, function(req, exports, module) {
+System.registerDynamic("github:angular/bower-angular-animate@1.4.7", ["github:angular/bower-angular-animate@1.4.7/angular-animate"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = req('github:angular/bower-angular-animate@1.4.6/angular-animate');
+  module.exports = req('github:angular/bower-angular-animate@1.4.7/angular-animate');
   global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("github:angular/bower-angular-sanitize@1.4.6/angular-sanitize", ["github:angular/bower-angular@1.4.6"], false, function(__require, __exports, __module) {
+System.registerDynamic("github:angular/bower-angular-sanitize@1.4.7/angular-sanitize", ["github:angular/bower-angular@1.4.7"], false, function(__require, __exports, __module) {
   var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
   (function() {
     "format global";
@@ -39143,17 +39291,17 @@ System.registerDynamic("github:angular/bower-angular-sanitize@1.4.6/angular-sani
   return _retrieveGlobal();
 });
 
-System.registerDynamic("github:angular/bower-angular-sanitize@1.4.6", ["github:angular/bower-angular-sanitize@1.4.6/angular-sanitize"], true, function(req, exports, module) {
+System.registerDynamic("github:angular/bower-angular-sanitize@1.4.7", ["github:angular/bower-angular-sanitize@1.4.7/angular-sanitize"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = req('github:angular/bower-angular-sanitize@1.4.6/angular-sanitize');
+  module.exports = req('github:angular/bower-angular-sanitize@1.4.7/angular-sanitize');
   global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("github:angular-ui/ui-router@0.2.15/angular-ui-router", ["github:angular/bower-angular@1.4.6"], false, function(__require, __exports, __module) {
+System.registerDynamic("github:angular-ui/ui-router@0.2.15/angular-ui-router", ["github:angular/bower-angular@1.4.7"], false, function(__require, __exports, __module) {
   var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
   (function() {
     "format global";
@@ -41219,7 +41367,7 @@ System.registerDynamic("github:angular-ui/ui-router@0.2.15", ["github:angular-ui
   return module.exports;
 });
 
-System.registerDynamic("libraries/ionic/ionic-angular-library.js", ["libraries/ionic/ionic-library.js", "github:angular/bower-angular@1.4.6", "github:angular/bower-angular-animate@1.4.6", "github:angular/bower-angular-sanitize@1.4.6", "github:angular-ui/ui-router@0.2.15"], false, function(__require, __exports, __module) {
+System.registerDynamic("libraries/ionic/ionic-angular-library.js", ["libraries/ionic/ionic-library.js", "github:angular/bower-angular@1.4.7", "github:angular/bower-angular-animate@1.4.7", "github:angular/bower-angular-sanitize@1.4.7", "github:angular-ui/ui-router@0.2.15"], false, function(__require, __exports, __module) {
   var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
   (function() {
     "format global";
@@ -48175,7 +48323,7 @@ System.registerDynamic("libraries/ionic/ionic-angular-library.js", ["libraries/i
   return _retrieveGlobal();
 });
 
-System.register('libraries/ionic/ionic.js', ['github:angular/bower-angular@1.4.6', 'libraries/ionic/ionic-angular-library.js'], function (_export) {
+System.register('libraries/ionic/ionic.js', ['github:angular/bower-angular@1.4.7', 'libraries/ionic/ionic-angular-library.js'], function (_export) {
 
   // custom fork of ionic v1.1.0 with workaround for right side menu toggle
   // when exposeAsideWhen is enabled
@@ -48184,8 +48332,8 @@ System.register('libraries/ionic/ionic.js', ['github:angular/bower-angular@1.4.6
 
   var angular;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_librariesIonicIonicAngularLibraryJs) {}],
     execute: function () {
       _export('default', angular.module('toc.libraries.ionic', ['ionic']));
@@ -50527,13 +50675,13 @@ System.registerDynamic("npm:moment@2.10.6", ["npm:moment@2.10.6/moment"], true, 
   return module.exports;
 });
 
-System.register('libraries/moment/moment.js', ['github:angular/bower-angular@1.4.6', 'npm:moment@2.10.6'], function (_export) {
+System.register('libraries/moment/moment.js', ['github:angular/bower-angular@1.4.7', 'npm:moment@2.10.6'], function (_export) {
   'use strict';
 
   var angular, moment;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_npmMoment2106) {
       moment = _npmMoment2106['default'];
     }],
@@ -50541,5107 +50689,6 @@ System.register('libraries/moment/moment.js', ['github:angular/bower-angular@1.4
       _export('default', angular.module('toc.libraries.moment', []).factory('moment', /*@ngInject*/function () {
         return moment;
       }));
-    }
-  };
-});
-
-System.registerDynamic("npm:ng-cordova@0.1.17-alpha/dist/ng-cordova", ["github:angular/bower-angular@1.4.6"], false, function(__require, __exports, __module) {
-  var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
-  (function() {
-    "format global";
-    "deps angular";
-    (function() {
-      angular.module('ngCordova', ['ngCordova.plugins']);
-      angular.module('ngCordova.plugins.actionSheet', []).factory('$cordovaActionSheet', ['$q', '$window', function($q, $window) {
-        return {
-          show: function(options) {
-            var q = $q.defer();
-            $window.plugins.actionsheet.show(options, function(result) {
-              q.resolve(result);
-            });
-            return q.promise;
-          },
-          hide: function() {
-            return $window.plugins.actionsheet.hide();
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.adMob', []).factory('$cordovaAdMob', ['$q', '$window', function($q, $window) {
-        return {
-          createBannerView: function(options) {
-            var d = $q.defer();
-            $window.plugins.AdMob.createBannerView(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          createInterstitialView: function(options) {
-            var d = $q.defer();
-            $window.plugins.AdMob.createInterstitialView(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          requestAd: function(options) {
-            var d = $q.defer();
-            $window.plugins.AdMob.requestAd(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showAd: function(options) {
-            var d = $q.defer();
-            $window.plugins.AdMob.showAd(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          requestInterstitialAd: function(options) {
-            var d = $q.defer();
-            $window.plugins.AdMob.requestInterstitialAd(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.appAvailability', []).factory('$cordovaAppAvailability', ['$q', function($q) {
-        return {check: function(urlScheme) {
-            var q = $q.defer();
-            appAvailability.check(urlScheme, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }};
-      }]);
-      angular.module('ngCordova.plugins.appRate', []).provider("$cordovaAppRate", [function() {
-        this.setPreferences = function(defaults) {
-          if (!defaults || !angular.isObject(defaults)) {
-            return;
-          }
-          AppRate.preferences.useLanguage = defaults.language || null;
-          AppRate.preferences.displayAppName = defaults.appName || "";
-          AppRate.preferences.promptAgainForEachNewVersion = defaults.promptForNewVersion || true;
-          AppRate.preferences.openStoreInApp = defaults.openStoreInApp || false;
-          AppRate.preferences.usesUntilPrompt = defaults.usesUntilPrompt || 3;
-          AppRate.preferences.useCustomRateDialog = defaults.useCustomRateDialog || false;
-          AppRate.preferences.storeAppURL.ios = defaults.iosURL || null;
-          AppRate.preferences.storeAppURL.android = defaults.androidURL || null;
-          AppRate.preferences.storeAppURL.blackberry = defaults.blackberryURL || null;
-          AppRate.preferences.storeAppURL.windows8 = defaults.windowsURL || null;
-        };
-        this.setCustomLocale = function(customObj) {
-          var strings = {
-            title: 'Rate %@',
-            message: 'If you enjoy using %@, would you mind taking a moment to rate it? It won’t take more than a minute. Thanks for your support!',
-            cancelButtonLabel: 'No, Thanks',
-            laterButtonLabel: 'Remind Me Later',
-            rateButtonLabel: 'Rate It Now'
-          };
-          strings = angular.extend(strings, customObj);
-          AppRate.preferences.customLocale = strings;
-        };
-        this.$get = ['$q', function($q) {
-          return {
-            promptForRating: function(immediate) {
-              var q = $q.defer();
-              var prompt = AppRate.promptForRating(immediate);
-              q.resolve(prompt);
-              return q.promise;
-            },
-            navigateToAppStore: function() {
-              var q = $q.defer();
-              var navigate = AppRate.navigateToAppStore();
-              q.resolve(navigate);
-              return q.promise;
-            },
-            onButtonClicked: function(cb) {
-              AppRate.onButtonClicked = function(buttonIndex) {
-                cb.call(this, buttonIndex);
-              };
-            },
-            onRateDialogShow: function(cb) {
-              AppRate.onRateDialogShow = cb();
-            }
-          };
-        }];
-      }]);
-      angular.module('ngCordova.plugins.appVersion', []).factory('$cordovaAppVersion', ['$q', function($q) {
-        return {getAppVersion: function() {
-            var q = $q.defer();
-            cordova.getAppVersion(function(version) {
-              q.resolve(version);
-            });
-            return q.promise;
-          }};
-      }]);
-      angular.module('ngCordova.plugins.backgroundGeolocation', []).factory('$cordovaBackgroundGeolocation', ['$q', '$window', function($q, $window) {
-        return {
-          init: function() {
-            $window.navigator.geolocation.getCurrentPosition(function(location) {
-              return location;
-            });
-          },
-          configure: function(options) {
-            this.init();
-            var q = $q.defer();
-            $window.plugins.backgroundGeoLocation.configure(function(result) {
-              q.notify(result);
-              $window.plugins.backgroundGeoLocation.finish();
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            this.start();
-            return q.promise;
-          },
-          start: function() {
-            var q = $q.defer();
-            $window.plugins.backgroundGeoLocation.start(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          stop: function() {
-            var q = $q.defer();
-            $window.plugins.backgroundGeoLocation.stop(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.badge', []).factory('$cordovaBadge', ['$q', function($q) {
-        return {
-          hasPermission: function() {
-            var q = $q.defer();
-            cordova.plugins.notification.badge.hasPermission(function(permission) {
-              if (permission) {
-                q.resolve(true);
-              } else {
-                q.reject("You do not have permission");
-              }
-            });
-            return q.promise;
-          },
-          promptForPermission: function() {
-            return cordova.plugins.notification.badge.promptForPermission();
-          },
-          set: function(number) {
-            var q = $q.defer();
-            cordova.plugins.notification.badge.hasPermission(function(permission) {
-              if (permission) {
-                q.resolve(cordova.plugins.notification.badge.set(number));
-              } else {
-                q.reject("You do not have permission to set Badge");
-              }
-            });
-            return q.promise;
-          },
-          get: function() {
-            var q = $q.defer();
-            cordova.plugins.notification.badge.hasPermission(function(permission) {
-              if (permission) {
-                cordova.plugins.notification.badge.get(function(badge) {
-                  q.resolve(badge);
-                });
-              } else {
-                q.reject("You do not have permission to get Badge");
-              }
-            });
-            return q.promise;
-          },
-          clear: function() {
-            var q = $q.defer();
-            cordova.plugins.notification.badge.hasPermission(function(permission) {
-              if (permission) {
-                q.resolve(cordova.plugins.notification.badge.clear());
-              } else {
-                q.reject("You do not have permission to clear Badge");
-              }
-            });
-            return q.promise;
-          },
-          configure: function(config) {
-            return cordova.plugins.notification.badge.configure(config);
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.barcodeScanner', []).factory('$cordovaBarcodeScanner', ['$q', function($q) {
-        return {
-          scan: function(config) {
-            var q = $q.defer();
-            cordova.plugins.barcodeScanner.scan(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            }, config);
-            return q.promise;
-          },
-          encode: function(type, data) {
-            var q = $q.defer();
-            type = type || "TEXT_TYPE";
-            cordova.plugins.barcodeScanner.encode(type, data, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.batteryStatus', []).factory('$cordovaBatteryStatus', ['$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout) {
-        var batteryStatus = function(status) {
-          $timeout(function() {
-            $rootScope.$broadcast('$cordovaBatteryStatus:status', status);
-          });
-        };
-        var batteryCritical = function(status) {
-          $timeout(function() {
-            $rootScope.$broadcast('$cordovaBatteryStatus:critical', status);
-          });
-        };
-        var batteryLow = function(status) {
-          $timeout(function() {
-            $rootScope.$broadcast('$cordovaBatteryStatus:low', status);
-          });
-        };
-        document.addEventListener("deviceready", function() {
-          if (navigator.battery) {
-            $window.addEventListener('batterystatus', batteryStatus, false);
-            $window.addEventListener('batterycritical', batteryCritical, false);
-            $window.addEventListener('batterylow', batteryLow, false);
-          }
-        }, false);
-        return true;
-      }]).run(['$cordovaBatteryStatus', function($cordovaBatteryStatus) {}]);
-      angular.module('ngCordova.plugins.ble', []).factory('$cordovaBLE', ['$q', function($q) {
-        return {
-          scan: function(services, seconds) {
-            var q = $q.defer();
-            ble.scan(services, seconds, function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          connect: function(deviceID) {
-            var q = $q.defer();
-            ble.connect(deviceID, function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          disconnect: function(deviceID) {
-            var q = $q.defer();
-            ble.disconnect(deviceID, function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          read: function(deviceID, serviceUUID, characteristicUUID) {
-            var q = $q.defer();
-            ble.read(deviceID, serviceUUID, characteristicUUID, function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          write: function(deviceID, serviceUUID, characteristicUUID, data) {
-            var q = $q.defer();
-            ble.write(deviceID, serviceUUID, characteristicUUID, data, function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          writeCommand: function(deviceID, serviceUUID, characteristicUUID, data) {
-            var q = $q.defer();
-            ble.writeCommand(deviceID, serviceUUID, characteristicUUID, data, function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          startNotification: function(deviceID, serviceUUID, characteristicUUID) {
-            var q = $q.defer();
-            ble.startNotification(deviceID, serviceUUID, characteristicUUID, function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          stopNotification: function(deviceID, serviceUUID, characteristicUUID) {
-            var q = $q.defer();
-            ble.stopNotification(deviceID, serviceUUID, characteristicUUID, function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          isConnected: function(deviceID) {
-            var q = $q.defer();
-            ble.isConnected(deviceID, function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          isEnabled: function() {
-            var q = $q.defer();
-            ble.isEnabled(function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.bluetoothSerial', []).factory('$cordovaBluetoothSerial', ['$q', '$window', function($q, $window) {
-        return {
-          connect: function(address) {
-            var q = $q.defer();
-            $window.bluetoothSerial.connect(address, function() {
-              q.resolve();
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          connectInsecure: function(address) {
-            var q = $q.defer();
-            $window.bluetoothSerial.connectInsecure(address, function() {
-              q.resolve();
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          disconnect: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.disconnect(function() {
-              q.resolve();
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          list: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.list(function(data) {
-              q.resolve(data);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          discoverUnpaired: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.discoverUnpaired(function(data) {
-              q.resolve(data);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          setDeviceDiscoveredListener: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.setDeviceDiscoveredListener(function(data) {
-              q.notify(data);
-            });
-            return q.promise;
-          },
-          clearDeviceDiscoveredListener: function() {
-            $window.bluetoothSerial.clearDeviceDiscoveredListener();
-          },
-          showBluetoothSettings: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.showBluetoothSettings(function() {
-              q.resolve();
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          isEnabled: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.isEnabled(function() {
-              q.resolve();
-            }, function() {
-              q.reject();
-            });
-            return q.promise;
-          },
-          enable: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.enable(function() {
-              q.resolve();
-            }, function() {
-              q.reject();
-            });
-            return q.promise;
-          },
-          isConnected: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.isConnected(function() {
-              q.resolve();
-            }, function() {
-              q.reject();
-            });
-            return q.promise;
-          },
-          available: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.available(function(data) {
-              q.resolve(data);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          read: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.read(function(data) {
-              q.resolve(data);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          readUntil: function(delimiter) {
-            var q = $q.defer();
-            $window.bluetoothSerial.readUntil(delimiter, function(data) {
-              q.resolve(data);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          write: function(data) {
-            var q = $q.defer();
-            $window.bluetoothSerial.write(data, function() {
-              q.resolve();
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          subscribe: function(delimiter) {
-            var q = $q.defer();
-            $window.bluetoothSerial.subscribe(delimiter, function(data) {
-              q.notify(data);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          subscribeRawData: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.subscribeRawData(function(data) {
-              q.notify(data);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          unsubscribe: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.unsubscribe(function() {
-              q.resolve();
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          unsubscribeRawData: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.unsubscribeRawData(function() {
-              q.resolve();
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          clear: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.clear(function() {
-              q.resolve();
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          readRSSI: function() {
-            var q = $q.defer();
-            $window.bluetoothSerial.readRSSI(function(data) {
-              q.resolve(data);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.brightness', []).factory('$cordovaBrightness', ['$q', '$window', function($q, $window) {
-        return {
-          get: function() {
-            var q = $q.defer();
-            $window.cordova.plugins.brightness.getBrightness(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          set: function(data) {
-            var q = $q.defer();
-            $window.cordova.plugins.brightness.setBrightness(data, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          setKeepScreenOn: function(bool) {
-            var q = $q.defer();
-            $window.cordova.plugins.brightness.setKeepScreenOn(bool, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.calendar', []).factory('$cordovaCalendar', ['$q', '$window', function($q, $window) {
-        return {
-          createCalendar: function(options) {
-            var d = $q.defer(),
-                createCalOptions = $window.plugins.calendar.getCreateCalendarOptions();
-            if (typeof options === 'string') {
-              createCalOptions.calendarName = options;
-            } else {
-              createCalOptions = angular.extend(createCalOptions, options);
-            }
-            $window.plugins.calendar.createCalendar(createCalOptions, function(message) {
-              d.resolve(message);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          deleteCalendar: function(calendarName) {
-            var d = $q.defer();
-            $window.plugins.calendar.deleteCalendar(calendarName, function(message) {
-              d.resolve(message);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          createEvent: function(options) {
-            var d = $q.defer(),
-                defaultOptions = {
-                  title: null,
-                  location: null,
-                  notes: null,
-                  startDate: null,
-                  endDate: null
-                };
-            defaultOptions = angular.extend(defaultOptions, options);
-            $window.plugins.calendar.createEvent(defaultOptions.title, defaultOptions.location, defaultOptions.notes, new Date(defaultOptions.startDate), new Date(defaultOptions.endDate), function(message) {
-              d.resolve(message);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          createEventWithOptions: function(options) {
-            var d = $q.defer(),
-                defaultOptionKeys = [],
-                calOptions = window.plugins.calendar.getCalendarOptions(),
-                defaultOptions = {
-                  title: null,
-                  location: null,
-                  notes: null,
-                  startDate: null,
-                  endDate: null
-                };
-            defaultOptionKeys = Object.keys(defaultOptions);
-            for (var key in options) {
-              if (defaultOptionKeys.indexOf(key) === -1) {
-                calOptions[key] = options[key];
-              } else {
-                defaultOptions[key] = options[key];
-              }
-            }
-            $window.plugins.calendar.createEventWithOptions(defaultOptions.title, defaultOptions.location, defaultOptions.notes, new Date(defaultOptions.startDate), new Date(defaultOptions.endDate), calOptions, function(message) {
-              d.resolve(message);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          createEventInteractively: function(options) {
-            var d = $q.defer(),
-                defaultOptions = {
-                  title: null,
-                  location: null,
-                  notes: null,
-                  startDate: null,
-                  endDate: null
-                };
-            defaultOptions = angular.extend(defaultOptions, options);
-            $window.plugins.calendar.createEventInteractively(defaultOptions.title, defaultOptions.location, defaultOptions.notes, new Date(defaultOptions.startDate), new Date(defaultOptions.endDate), function(message) {
-              d.resolve(message);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          createEventInNamedCalendar: function(options) {
-            var d = $q.defer(),
-                defaultOptions = {
-                  title: null,
-                  location: null,
-                  notes: null,
-                  startDate: null,
-                  endDate: null,
-                  calendarName: null
-                };
-            defaultOptions = angular.extend(defaultOptions, options);
-            $window.plugins.calendar.createEventInNamedCalendar(defaultOptions.title, defaultOptions.location, defaultOptions.notes, new Date(defaultOptions.startDate), new Date(defaultOptions.endDate), defaultOptions.calendarName, function(message) {
-              d.resolve(message);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          findEvent: function(options) {
-            var d = $q.defer(),
-                defaultOptions = {
-                  title: null,
-                  location: null,
-                  notes: null,
-                  startDate: null,
-                  endDate: null
-                };
-            defaultOptions = angular.extend(defaultOptions, options);
-            $window.plugins.calendar.findEvent(defaultOptions.title, defaultOptions.location, defaultOptions.notes, new Date(defaultOptions.startDate), new Date(defaultOptions.endDate), function(foundEvent) {
-              d.resolve(foundEvent);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          listEventsInRange: function(startDate, endDate) {
-            var d = $q.defer();
-            $window.plugins.calendar.listEventsInRange(startDate, endDate, function(events) {
-              d.resolve(events);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          listCalendars: function() {
-            var d = $q.defer();
-            $window.plugins.calendar.listCalendars(function(calendars) {
-              d.resolve(calendars);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          findAllEventsInNamedCalendar: function(calendarName) {
-            var d = $q.defer();
-            $window.plugins.calendar.findAllEventsInNamedCalendar(calendarName, function(events) {
-              d.resolve(events);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          modifyEvent: function(options) {
-            var d = $q.defer(),
-                defaultOptions = {
-                  title: null,
-                  location: null,
-                  notes: null,
-                  startDate: null,
-                  endDate: null,
-                  newTitle: null,
-                  newLocation: null,
-                  newNotes: null,
-                  newStartDate: null,
-                  newEndDate: null
-                };
-            defaultOptions = angular.extend(defaultOptions, options);
-            $window.plugins.calendar.modifyEvent(defaultOptions.title, defaultOptions.location, defaultOptions.notes, new Date(defaultOptions.startDate), new Date(defaultOptions.endDate), defaultOptions.newTitle, defaultOptions.newLocation, defaultOptions.newNotes, new Date(defaultOptions.newStartDate), new Date(defaultOptions.newEndDate), function(message) {
-              d.resolve(message);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          deleteEvent: function(options) {
-            var d = $q.defer(),
-                defaultOptions = {
-                  newTitle: null,
-                  location: null,
-                  notes: null,
-                  startDate: null,
-                  endDate: null
-                };
-            defaultOptions = angular.extend(defaultOptions, options);
-            $window.plugins.calendar.deleteEvent(defaultOptions.newTitle, defaultOptions.location, defaultOptions.notes, new Date(defaultOptions.startDate), new Date(defaultOptions.endDate), function(message) {
-              d.resolve(message);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.camera', []).factory('$cordovaCamera', ['$q', function($q) {
-        return {
-          getPicture: function(options) {
-            var q = $q.defer();
-            if (!navigator.camera) {
-              q.resolve(null);
-              return q.promise;
-            }
-            navigator.camera.getPicture(function(imageData) {
-              q.resolve(imageData);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          cleanup: function() {
-            var q = $q.defer();
-            navigator.camera.cleanup(function() {
-              q.resolve();
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.capture', []).factory('$cordovaCapture', ['$q', function($q) {
-        return {
-          captureAudio: function(options) {
-            var q = $q.defer();
-            if (!navigator.device.capture) {
-              q.resolve(null);
-              return q.promise;
-            }
-            navigator.device.capture.captureAudio(function(audioData) {
-              q.resolve(audioData);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          captureImage: function(options) {
-            var q = $q.defer();
-            if (!navigator.device.capture) {
-              q.resolve(null);
-              return q.promise;
-            }
-            navigator.device.capture.captureImage(function(imageData) {
-              q.resolve(imageData);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          captureVideo: function(options) {
-            var q = $q.defer();
-            if (!navigator.device.capture) {
-              q.resolve(null);
-              return q.promise;
-            }
-            navigator.device.capture.captureVideo(function(videoData) {
-              q.resolve(videoData);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.clipboard', []).factory('$cordovaClipboard', ['$q', '$window', function($q, $window) {
-        return {
-          copy: function(text) {
-            var q = $q.defer();
-            $window.cordova.plugins.clipboard.copy(text, function() {
-              q.resolve();
-            }, function() {
-              q.reject();
-            });
-            return q.promise;
-          },
-          paste: function() {
-            var q = $q.defer();
-            $window.cordova.plugins.clipboard.paste(function(text) {
-              q.resolve(text);
-            }, function() {
-              q.reject();
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.contacts', []).factory('$cordovaContacts', ['$q', function($q) {
-        return {
-          save: function(contact) {
-            var q = $q.defer();
-            var deviceContact = navigator.contacts.create(contact);
-            deviceContact.save(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          remove: function(contact) {
-            var q = $q.defer();
-            var deviceContact = navigator.contacts.create(contact);
-            deviceContact.remove(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          clone: function(contact) {
-            var deviceContact = navigator.contacts.create(contact);
-            return deviceContact.clone(contact);
-          },
-          find: function(options) {
-            var q = $q.defer();
-            var fields = options.fields || ['id', 'displayName'];
-            delete options.fields;
-            navigator.contacts.find(fields, function(results) {
-              q.resolve(results);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          pickContact: function() {
-            var q = $q.defer();
-            navigator.contacts.pickContact(function(contact) {
-              q.resolve(contact);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.datePicker', []).factory('$cordovaDatePicker', ['$window', '$q', function($window, $q) {
-        return {show: function(options) {
-            var q = $q.defer();
-            options = options || {
-              date: new Date(),
-              mode: 'date'
-            };
-            $window.datePicker.show(options, function(date) {
-              q.resolve(date);
-            });
-            return q.promise;
-          }};
-      }]);
-      angular.module('ngCordova.plugins.device', []).factory('$cordovaDevice', [function() {
-        return {
-          getDevice: function() {
-            return device;
-          },
-          getCordova: function() {
-            return device.cordova;
-          },
-          getModel: function() {
-            return device.model;
-          },
-          getName: function() {
-            return device.name;
-          },
-          getPlatform: function() {
-            return device.platform;
-          },
-          getUUID: function() {
-            return device.uuid;
-          },
-          getVersion: function() {
-            return device.version;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.deviceMotion', []).factory('$cordovaDeviceMotion', ['$q', function($q) {
-        return {
-          getCurrentAcceleration: function() {
-            var q = $q.defer();
-            navigator.accelerometer.getCurrentAcceleration(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          watchAcceleration: function(options) {
-            var q = $q.defer();
-            var watchID = navigator.accelerometer.watchAcceleration(function(result) {
-              q.notify(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            q.promise.cancel = function() {
-              navigator.accelerometer.clearWatch(watchID);
-            };
-            q.promise.clearWatch = function(id) {
-              navigator.accelerometer.clearWatch(id || watchID);
-            };
-            q.promise.watchID = watchID;
-            return q.promise;
-          },
-          clearWatch: function(watchID) {
-            return navigator.accelerometer.clearWatch(watchID);
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.deviceOrientation', []).factory('$cordovaDeviceOrientation', ['$q', function($q) {
-        var defaultOptions = {frequency: 3000};
-        return {
-          getCurrentHeading: function() {
-            var q = $q.defer();
-            navigator.compass.getCurrentHeading(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          watchHeading: function(options) {
-            var q = $q.defer();
-            var _options = angular.extend(defaultOptions, options);
-            var watchID = navigator.compass.watchHeading(function(result) {
-              q.notify(result);
-            }, function(err) {
-              q.reject(err);
-            }, _options);
-            q.promise.cancel = function() {
-              navigator.compass.clearWatch(watchID);
-            };
-            q.promise.clearWatch = function(id) {
-              navigator.compass.clearWatch(id || watchID);
-            };
-            q.promise.watchID = watchID;
-            return q.promise;
-          },
-          clearWatch: function(watchID) {
-            return navigator.compass.clearWatch(watchID);
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.dialogs', []).factory('$cordovaDialogs', ['$q', '$window', function($q, $window) {
-        return {
-          alert: function(message, title, buttonName) {
-            var q = $q.defer();
-            if (!$window.navigator.notification) {
-              $window.alert(message);
-              q.resolve();
-            } else {
-              navigator.notification.alert(message, function() {
-                q.resolve();
-              }, title, buttonName);
-            }
-            return q.promise;
-          },
-          confirm: function(message, title, buttonLabels) {
-            var q = $q.defer();
-            if (!$window.navigator.notification) {
-              if ($window.confirm(message)) {
-                q.resolve(1);
-              } else {
-                q.resolve(2);
-              }
-            } else {
-              navigator.notification.confirm(message, function(buttonIndex) {
-                q.resolve(buttonIndex);
-              }, title, buttonLabels);
-            }
-            return q.promise;
-          },
-          prompt: function(message, title, buttonLabels, defaultText) {
-            var q = $q.defer();
-            if (!$window.navigator.notification) {
-              var res = $window.prompt(message, defaultText);
-              if (res !== null) {
-                q.resolve({
-                  input1: res,
-                  buttonIndex: 1
-                });
-              } else {
-                q.resolve({
-                  input1: res,
-                  buttonIndex: 2
-                });
-              }
-            } else {
-              navigator.notification.prompt(message, function(result) {
-                q.resolve(result);
-              }, title, buttonLabels, defaultText);
-            }
-            return q.promise;
-          },
-          beep: function(times) {
-            return navigator.notification.beep(times);
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.emailComposer', []).factory('$cordovaEmailComposer', ['$q', function($q) {
-        return {
-          isAvailable: function() {
-            var q = $q.defer();
-            cordova.plugins.email.isAvailable(function(isAvailable) {
-              if (isAvailable) {
-                q.resolve();
-              } else {
-                q.reject();
-              }
-            });
-            return q.promise;
-          },
-          open: function(properties) {
-            var q = $q.defer();
-            cordova.plugins.email.open(properties, function() {
-              q.reject();
-            });
-            return q.promise;
-          },
-          addAlias: function(app, schema) {
-            cordova.plugins.email.addAlias(app, schema);
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.facebook', []).provider('$cordovaFacebook', [function() {
-        this.browserInit = function(id, version) {
-          this.appID = id;
-          this.appVersion = version || "v2.0";
-          facebookConnectPlugin.browserInit(this.appID, this.appVersion);
-        };
-        this.$get = ['$q', function($q) {
-          return {
-            login: function(permissions) {
-              var q = $q.defer();
-              facebookConnectPlugin.login(permissions, function(res) {
-                q.resolve(res);
-              }, function(res) {
-                q.reject(res);
-              });
-              return q.promise;
-            },
-            showDialog: function(options) {
-              var q = $q.defer();
-              facebookConnectPlugin.showDialog(options, function(res) {
-                q.resolve(res);
-              }, function(err) {
-                q.reject(err);
-              });
-              return q.promise;
-            },
-            api: function(path, permissions) {
-              var q = $q.defer();
-              facebookConnectPlugin.api(path, permissions, function(res) {
-                q.resolve(res);
-              }, function(err) {
-                q.reject(err);
-              });
-              return q.promise;
-            },
-            getAccessToken: function() {
-              var q = $q.defer();
-              facebookConnectPlugin.getAccessToken(function(res) {
-                q.resolve(res);
-              }, function(err) {
-                q.reject(err);
-              });
-              return q.promise;
-            },
-            getLoginStatus: function() {
-              var q = $q.defer();
-              facebookConnectPlugin.getLoginStatus(function(res) {
-                q.resolve(res);
-              }, function(err) {
-                q.reject(err);
-              });
-              return q.promise;
-            },
-            logout: function() {
-              var q = $q.defer();
-              facebookConnectPlugin.logout(function(res) {
-                q.resolve(res);
-              }, function(err) {
-                q.reject(err);
-              });
-              return q.promise;
-            }
-          };
-        }];
-      }]);
-      angular.module('ngCordova.plugins.facebookAds', []).factory('$cordovaFacebookAds', ['$q', '$window', function($q, $window) {
-        return {
-          setOptions: function(options) {
-            var d = $q.defer();
-            $window.FacebookAds.setOptions(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          createBanner: function(options) {
-            var d = $q.defer();
-            $window.FacebookAds.createBanner(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          removeBanner: function() {
-            var d = $q.defer();
-            $window.FacebookAds.removeBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBanner: function(position) {
-            var d = $q.defer();
-            $window.FacebookAds.showBanner(position, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBannerAtXY: function(x, y) {
-            var d = $q.defer();
-            $window.FacebookAds.showBannerAtXY(x, y, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          hideBanner: function() {
-            var d = $q.defer();
-            $window.FacebookAds.hideBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          prepareInterstitial: function(options) {
-            var d = $q.defer();
-            $window.FacebookAds.prepareInterstitial(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showInterstitial: function() {
-            var d = $q.defer();
-            $window.FacebookAds.showInterstitial(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.file', []).constant("$cordovaFileError", {
-        1: 'NOT_FOUND_ERR',
-        2: 'SECURITY_ERR',
-        3: 'ABORT_ERR',
-        4: 'NOT_READABLE_ERR',
-        5: 'ENCODING_ERR',
-        6: 'NO_MODIFICATION_ALLOWED_ERR',
-        7: 'INVALID_STATE_ERR',
-        8: 'SYNTAX_ERR',
-        9: 'INVALID_MODIFICATION_ERR',
-        10: 'QUOTA_EXCEEDED_ERR',
-        11: 'TYPE_MISMATCH_ERR',
-        12: 'PATH_EXISTS_ERR'
-      }).provider('$cordovaFile', [function() {
-        this.$get = ['$q', '$window', '$cordovaFileError', function($q, $window, $cordovaFileError) {
-          return {
-            getFreeDiskSpace: function() {
-              var q = $q.defer();
-              cordova.exec(function(result) {
-                q.resolve(result);
-              }, function(error) {
-                q.reject(error);
-              }, "File", "getFreeDiskSpace", []);
-              return q.promise;
-            },
-            checkDir: function(path, dir) {
-              var q = $q.defer();
-              if ((/^\//.test(dir))) {
-                q.reject("directory cannot start with \/");
-              }
-              try {
-                var directory = path + dir;
-                $window.resolveLocalFileSystemURL(directory, function(fileSystem) {
-                  if (fileSystem.isDirectory === true) {
-                    q.resolve(fileSystem);
-                  } else {
-                    q.reject({
-                      code: 13,
-                      message: "input is not a directory"
-                    });
-                  }
-                }, function(error) {
-                  error.message = $cordovaFileError[error.code];
-                  q.reject(error);
-                });
-              } catch (err) {
-                err.message = $cordovaFileError[err.code];
-                q.reject(err);
-              }
-              return q.promise;
-            },
-            checkFile: function(path, file) {
-              var q = $q.defer();
-              if ((/^\//.test(file))) {
-                q.reject("directory cannot start with \/");
-              }
-              try {
-                var directory = path + file;
-                $window.resolveLocalFileSystemURL(directory, function(fileSystem) {
-                  if (fileSystem.isFile === true) {
-                    q.resolve(fileSystem);
-                  } else {
-                    q.reject({
-                      code: 13,
-                      message: "input is not a file"
-                    });
-                  }
-                }, function(error) {
-                  error.message = $cordovaFileError[error.code];
-                  q.reject(error);
-                });
-              } catch (err) {
-                err.message = $cordovaFileError[err.code];
-                q.reject(err);
-              }
-              return q.promise;
-            },
-            createDir: function(path, dirName, replaceBool) {
-              var q = $q.defer();
-              if ((/^\//.test(dirName))) {
-                q.reject("directory cannot start with \/");
-              }
-              replaceBool = replaceBool ? false : true;
-              var options = {
-                create: true,
-                exclusive: replaceBool
-              };
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getDirectory(dirName, options, function(result) {
-                    q.resolve(result);
-                  }, function(error) {
-                    error.message = $cordovaFileError[error.code];
-                    q.reject(error);
-                  });
-                }, function(err) {
-                  err.message = $cordovaFileError[err.code];
-                  q.reject(err);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            createFile: function(path, fileName, replaceBool) {
-              var q = $q.defer();
-              if ((/^\//.test(fileName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              replaceBool = replaceBool ? false : true;
-              var options = {
-                create: true,
-                exclusive: replaceBool
-              };
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(fileName, options, function(result) {
-                    q.resolve(result);
-                  }, function(error) {
-                    error.message = $cordovaFileError[error.code];
-                    q.reject(error);
-                  });
-                }, function(err) {
-                  err.message = $cordovaFileError[err.code];
-                  q.reject(err);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            removeDir: function(path, dirName) {
-              var q = $q.defer();
-              if ((/^\//.test(dirName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getDirectory(dirName, {create: false}, function(dirEntry) {
-                    dirEntry.remove(function() {
-                      q.resolve({
-                        success: true,
-                        fileRemoved: dirEntry
-                      });
-                    }, function(error) {
-                      error.message = $cordovaFileError[error.code];
-                      q.reject(error);
-                    });
-                  }, function(err) {
-                    err.message = $cordovaFileError[err.code];
-                    q.reject(err);
-                  });
-                }, function(er) {
-                  er.message = $cordovaFileError[er.code];
-                  q.reject(er);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            removeFile: function(path, fileName) {
-              var q = $q.defer();
-              if ((/^\//.test(fileName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(fileName, {create: false}, function(fileEntry) {
-                    fileEntry.remove(function() {
-                      q.resolve({
-                        success: true,
-                        fileRemoved: fileEntry
-                      });
-                    }, function(error) {
-                      error.message = $cordovaFileError[error.code];
-                      q.reject(error);
-                    });
-                  }, function(err) {
-                    err.message = $cordovaFileError[err.code];
-                    q.reject(err);
-                  });
-                }, function(er) {
-                  er.message = $cordovaFileError[er.code];
-                  q.reject(er);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            removeRecursively: function(path, dirName) {
-              var q = $q.defer();
-              if ((/^\//.test(dirName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getDirectory(dirName, {create: false}, function(dirEntry) {
-                    dirEntry.removeRecursively(function() {
-                      q.resolve({
-                        success: true,
-                        fileRemoved: dirEntry
-                      });
-                    }, function(error) {
-                      error.message = $cordovaFileError[error.code];
-                      q.reject(error);
-                    });
-                  }, function(err) {
-                    err.message = $cordovaFileError[err.code];
-                    q.reject(err);
-                  });
-                }, function(er) {
-                  er.message = $cordovaFileError[er.code];
-                  q.reject(er);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            writeFile: function(path, fileName, text, replaceBool) {
-              var q = $q.defer();
-              if ((/^\//.test(fileName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              replaceBool = replaceBool ? false : true;
-              var options = {
-                create: true,
-                exclusive: replaceBool
-              };
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(fileName, options, function(fileEntry) {
-                    fileEntry.createWriter(function(writer) {
-                      if (options.append === true) {
-                        writer.seek(writer.length);
-                      }
-                      if (options.truncate) {
-                        writer.truncate(options.truncate);
-                      }
-                      writer.onwriteend = function(evt) {
-                        if (this.error) {
-                          q.reject(this.error);
-                        } else {
-                          q.resolve(evt);
-                        }
-                      };
-                      writer.write(text);
-                      q.promise.abort = function() {
-                        writer.abort();
-                      };
-                    });
-                  }, function(error) {
-                    error.message = $cordovaFileError[error.code];
-                    q.reject(error);
-                  });
-                }, function(err) {
-                  err.message = $cordovaFileError[err.code];
-                  q.reject(err);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            writeExistingFile: function(path, fileName, text) {
-              var q = $q.defer();
-              if ((/^\//.test(fileName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(fileName, {create: false}, function(fileEntry) {
-                    fileEntry.createWriter(function(writer) {
-                      writer.seek(writer.length);
-                      writer.onwriteend = function(evt) {
-                        if (this.error) {
-                          q.reject(this.error);
-                        } else {
-                          q.resolve(evt);
-                        }
-                      };
-                      writer.write(text);
-                      q.promise.abort = function() {
-                        writer.abort();
-                      };
-                    });
-                  }, function(error) {
-                    error.message = $cordovaFileError[error.code];
-                    q.reject(error);
-                  });
-                }, function(err) {
-                  err.message = $cordovaFileError[err.code];
-                  q.reject(err);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            readAsText: function(path, file) {
-              var q = $q.defer();
-              if ((/^\//.test(file))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(file, {create: false}, function(fileEntry) {
-                    fileEntry.file(function(fileData) {
-                      var reader = new FileReader();
-                      reader.onloadend = function(evt) {
-                        if (evt.target.result !== undefined || evt.target.result !== null) {
-                          q.resolve(evt.target.result);
-                        } else if (evt.target.error !== undefined || evt.target.error !== null) {
-                          q.reject(evt.target.error);
-                        } else {
-                          q.reject({
-                            code: null,
-                            message: 'READER_ONLOADEND_ERR'
-                          });
-                        }
-                      };
-                      reader.readAsText(fileData);
-                    });
-                  }, function(error) {
-                    error.message = $cordovaFileError[error.code];
-                    q.reject(error);
-                  });
-                }, function(err) {
-                  err.message = $cordovaFileError[err.code];
-                  q.reject(err);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            readAsDataURL: function(path, file) {
-              var q = $q.defer();
-              if ((/^\//.test(file))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(file, {create: false}, function(fileEntry) {
-                    fileEntry.file(function(fileData) {
-                      var reader = new FileReader();
-                      reader.onloadend = function(evt) {
-                        if (evt.target.result !== undefined || evt.target.result !== null) {
-                          q.resolve(evt.target.result);
-                        } else if (evt.target.error !== undefined || evt.target.error !== null) {
-                          q.reject(evt.target.error);
-                        } else {
-                          q.reject({
-                            code: null,
-                            message: 'READER_ONLOADEND_ERR'
-                          });
-                        }
-                      };
-                      reader.readAsDataURL(fileData);
-                    });
-                  }, function(error) {
-                    error.message = $cordovaFileError[error.code];
-                    q.reject(error);
-                  });
-                }, function(err) {
-                  err.message = $cordovaFileError[err.code];
-                  q.reject(err);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            readAsBinaryString: function(path, file) {
-              var q = $q.defer();
-              if ((/^\//.test(file))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(file, {create: false}, function(fileEntry) {
-                    fileEntry.file(function(fileData) {
-                      var reader = new FileReader();
-                      reader.onloadend = function(evt) {
-                        if (evt.target.result !== undefined || evt.target.result !== null) {
-                          q.resolve(evt.target.result);
-                        } else if (evt.target.error !== undefined || evt.target.error !== null) {
-                          q.reject(evt.target.error);
-                        } else {
-                          q.reject({
-                            code: null,
-                            message: 'READER_ONLOADEND_ERR'
-                          });
-                        }
-                      };
-                      reader.readAsBinaryString(fileData);
-                    });
-                  }, function(error) {
-                    error.message = $cordovaFileError[error.code];
-                    q.reject(error);
-                  });
-                }, function(err) {
-                  err.message = $cordovaFileError[err.code];
-                  q.reject(err);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            readAsArrayBuffer: function(path, file) {
-              var q = $q.defer();
-              if ((/^\//.test(file))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(file, {create: false}, function(fileEntry) {
-                    fileEntry.file(function(fileData) {
-                      var reader = new FileReader();
-                      reader.onloadend = function(evt) {
-                        if (evt.target.result !== undefined || evt.target.result !== null) {
-                          q.resolve(evt.target.result);
-                        } else if (evt.target.error !== undefined || evt.target.error !== null) {
-                          q.reject(evt.target.error);
-                        } else {
-                          q.reject({
-                            code: null,
-                            message: 'READER_ONLOADEND_ERR'
-                          });
-                        }
-                      };
-                      reader.readAsArrayBuffer(fileData);
-                    });
-                  }, function(error) {
-                    error.message = $cordovaFileError[error.code];
-                    q.reject(error);
-                  });
-                }, function(err) {
-                  err.message = $cordovaFileError[err.code];
-                  q.reject(err);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            moveFile: function(path, fileName, newPath, newFileName) {
-              var q = $q.defer();
-              newFileName = newFileName || fileName;
-              if ((/^\//.test(fileName)) || (/^\//.test(newFileName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(fileName, {create: false}, function(fileEntry) {
-                    $window.resolveLocalFileSystemURL(newPath, function(newFileEntry) {
-                      fileEntry.moveTo(newFileEntry, newFileName, function(result) {
-                        q.resolve(result);
-                      }, function(error) {
-                        q.reject(error);
-                      });
-                    }, function(err) {
-                      q.reject(err);
-                    });
-                  }, function(err) {
-                    q.reject(err);
-                  });
-                }, function(er) {
-                  q.reject(er);
-                });
-              } catch (e) {
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            moveDir: function(path, dirName, newPath, newDirName) {
-              var q = $q.defer();
-              newDirName = newDirName || dirName;
-              if (/^\//.test(dirName) || (/^\//.test(newDirName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getDirectory(dirName, {create: false}, function(dirEntry) {
-                    $window.resolveLocalFileSystemURL(newPath, function(newDirEntry) {
-                      dirEntry.moveTo(newDirEntry, newDirName, function(result) {
-                        q.resolve(result);
-                      }, function(error) {
-                        q.reject(error);
-                      });
-                    }, function(erro) {
-                      q.reject(erro);
-                    });
-                  }, function(err) {
-                    q.reject(err);
-                  });
-                }, function(er) {
-                  q.reject(er);
-                });
-              } catch (e) {
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            copyDir: function(path, dirName, newPath, newDirName) {
-              var q = $q.defer();
-              newDirName = newDirName || dirName;
-              if (/^\//.test(dirName) || (/^\//.test(newDirName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getDirectory(dirName, {
-                    create: false,
-                    exclusive: false
-                  }, function(dirEntry) {
-                    $window.resolveLocalFileSystemURL(newPath, function(newDirEntry) {
-                      dirEntry.copyTo(newDirEntry, newDirName, function(result) {
-                        q.resolve(result);
-                      }, function(error) {
-                        error.message = $cordovaFileError[error.code];
-                        q.reject(error);
-                      });
-                    }, function(erro) {
-                      erro.message = $cordovaFileError[erro.code];
-                      q.reject(erro);
-                    });
-                  }, function(err) {
-                    err.message = $cordovaFileError[err.code];
-                    q.reject(err);
-                  });
-                }, function(er) {
-                  er.message = $cordovaFileError[er.code];
-                  q.reject(er);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            },
-            copyFile: function(path, fileName, newPath, newFileName) {
-              var q = $q.defer();
-              newFileName = newFileName || fileName;
-              if ((/^\//.test(fileName))) {
-                q.reject("file-name cannot start with \/");
-              }
-              try {
-                $window.resolveLocalFileSystemURL(path, function(fileSystem) {
-                  fileSystem.getFile(fileName, {
-                    create: false,
-                    exclusive: false
-                  }, function(fileEntry) {
-                    $window.resolveLocalFileSystemURL(newPath, function(newFileEntry) {
-                      fileEntry.copyTo(newFileEntry, newFileName, function(result) {
-                        q.resolve(result);
-                      }, function(error) {
-                        error.message = $cordovaFileError[error.code];
-                        q.reject(error);
-                      });
-                    }, function(erro) {
-                      erro.message = $cordovaFileError[erro.code];
-                      q.reject(erro);
-                    });
-                  }, function(err) {
-                    err.message = $cordovaFileError[err.code];
-                    q.reject(err);
-                  });
-                }, function(er) {
-                  er.message = $cordovaFileError[er.code];
-                  q.reject(er);
-                });
-              } catch (e) {
-                e.message = $cordovaFileError[e.code];
-                q.reject(e);
-              }
-              return q.promise;
-            }
-          };
-        }];
-      }]);
-      angular.module('ngCordova.plugins.fileOpener2', []).factory('$cordovaFileOpener2', ['$q', function($q) {
-        return {
-          open: function(file, type) {
-            var q = $q.defer();
-            cordova.plugins.fileOpener2.open(file, type, {
-              error: function(e) {
-                q.reject(e);
-              },
-              success: function() {
-                q.resolve();
-              }
-            });
-            return q.promise;
-          },
-          uninstall: function(pack) {
-            var q = $q.defer();
-            cordova.plugins.fileOpener2.uninstall(pack, {
-              error: function(e) {
-                q.reject(e);
-              },
-              success: function() {
-                q.resolve();
-              }
-            });
-            return q.promise;
-          },
-          appIsInstalled: function(pack) {
-            var q = $q.defer();
-            cordova.plugins.fileOpener2.appIsInstalled(pack, {success: function(res) {
-                q.resolve(res);
-              }});
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.fileTransfer', []).factory('$cordovaFileTransfer', ['$q', '$timeout', function($q, $timeout) {
-        return {
-          download: function(source, filePath, options, trustAllHosts) {
-            var q = $q.defer();
-            var ft = new FileTransfer();
-            var uri = (options && options.encodeURI === false) ? source : encodeURI(source);
-            if (options && options.timeout !== undefined && options.timeout !== null) {
-              $timeout(function() {
-                ft.abort();
-              }, options.timeout);
-              options.timeout = null;
-            }
-            ft.onprogress = function(progress) {
-              q.notify(progress);
-            };
-            q.promise.abort = function() {
-              ft.abort();
-            };
-            ft.download(uri, filePath, q.resolve, q.reject, trustAllHosts, options);
-            return q.promise;
-          },
-          upload: function(server, filePath, options, trustAllHosts) {
-            var q = $q.defer();
-            var ft = new FileTransfer();
-            var uri = (options && options.encodeURI === false) ? server : encodeURI(server);
-            if (options && options.timeout !== undefined && options.timeout !== null) {
-              $timeout(function() {
-                ft.abort();
-              }, options.timeout);
-              options.timeout = null;
-            }
-            ft.onprogress = function(progress) {
-              q.notify(progress);
-            };
-            q.promise.abort = function() {
-              ft.abort();
-            };
-            ft.upload(filePath, uri, q.resolve, q.reject, options, trustAllHosts);
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.flashlight', []).factory('$cordovaFlashlight', ['$q', '$window', function($q, $window) {
-        return {
-          available: function() {
-            var q = $q.defer();
-            $window.plugins.flashlight.available(function(isAvailable) {
-              q.resolve(isAvailable);
-            });
-            return q.promise;
-          },
-          switchOn: function() {
-            var q = $q.defer();
-            $window.plugins.flashlight.switchOn(function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          switchOff: function() {
-            var q = $q.defer();
-            $window.plugins.flashlight.switchOff(function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          toggle: function() {
-            var q = $q.defer();
-            $window.plugins.flashlight.toggle(function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.flurryAds', []).factory('$cordovaFlurryAds', ['$q', '$window', function($q, $window) {
-        return {
-          setOptions: function(options) {
-            var d = $q.defer();
-            $window.FlurryAds.setOptions(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          createBanner: function(options) {
-            var d = $q.defer();
-            $window.FlurryAds.createBanner(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          removeBanner: function() {
-            var d = $q.defer();
-            $window.FlurryAds.removeBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBanner: function(position) {
-            var d = $q.defer();
-            $window.FlurryAds.showBanner(position, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBannerAtXY: function(x, y) {
-            var d = $q.defer();
-            $window.FlurryAds.showBannerAtXY(x, y, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          hideBanner: function() {
-            var d = $q.defer();
-            $window.FlurryAds.hideBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          prepareInterstitial: function(options) {
-            var d = $q.defer();
-            $window.FlurryAds.prepareInterstitial(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showInterstitial: function() {
-            var d = $q.defer();
-            $window.FlurryAds.showInterstitial(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.ga', []).factory('$cordovaGA', ['$q', '$window', function($q, $window) {
-        return {
-          init: function(id, mingap) {
-            var q = $q.defer();
-            mingap = (mingap >= 0) ? mingap : 10;
-            $window.plugins.gaPlugin.init(function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            }, id, mingap);
-            return q.promise;
-          },
-          trackEvent: function(success, fail, category, eventAction, eventLabel, eventValue) {
-            var q = $q.defer();
-            $window.plugins.gaPlugin.trackEvent(function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            }, category, eventAction, eventLabel, eventValue);
-            return q.promise;
-          },
-          trackPage: function(success, fail, pageURL) {
-            var q = $q.defer();
-            $window.plugins.gaPlugin.trackPage(function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            }, pageURL);
-            return q.promise;
-          },
-          setVariable: function(success, fail, index, value) {
-            var q = $q.defer();
-            $window.plugins.gaPlugin.setVariable(function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            }, index, value);
-            return q.promise;
-          },
-          exit: function(success, fail) {
-            var q = $q.defer();
-            $window.plugins.gaPlugin.exit(function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.geolocation', []).factory('$cordovaGeolocation', ['$q', function($q) {
-        return {
-          getCurrentPosition: function(options) {
-            var q = $q.defer();
-            navigator.geolocation.getCurrentPosition(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          watchPosition: function(options) {
-            var q = $q.defer();
-            var watchID = navigator.geolocation.watchPosition(function(result) {
-              q.notify(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            q.promise.cancel = function() {
-              navigator.geolocation.clearWatch(watchID);
-            };
-            q.promise.clearWatch = function(id) {
-              navigator.geolocation.clearWatch(id || watchID);
-            };
-            q.promise.watchID = watchID;
-            return q.promise;
-          },
-          clearWatch: function(watchID) {
-            return navigator.geolocation.clearWatch(watchID);
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.globalization', []).factory('$cordovaGlobalization', ['$q', function($q) {
-        return {
-          getPreferredLanguage: function() {
-            var q = $q.defer();
-            navigator.globalization.getPreferredLanguage(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          getLocaleName: function() {
-            var q = $q.defer();
-            navigator.globalization.getLocaleName(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          getFirstDayOfWeek: function() {
-            var q = $q.defer();
-            navigator.globalization.getFirstDayOfWeek(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          dateToString: function(date, options) {
-            var q = $q.defer();
-            navigator.globalization.dateToString(date, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          stringToDate: function(dateString, options) {
-            var q = $q.defer();
-            navigator.globalization.stringToDate(dateString, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          getDatePattern: function(options) {
-            var q = $q.defer();
-            navigator.globalization.getDatePattern(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          getDateNames: function(options) {
-            var q = $q.defer();
-            navigator.globalization.getDateNames(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          isDayLightSavingsTime: function(date) {
-            var q = $q.defer();
-            navigator.globalization.isDayLightSavingsTime(date, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          numberToString: function(number, options) {
-            var q = $q.defer();
-            navigator.globalization.numberToString(number, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          stringToNumber: function(numberString, options) {
-            var q = $q.defer();
-            navigator.globalization.stringToNumber(numberString, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          getNumberPattern: function(options) {
-            var q = $q.defer();
-            navigator.globalization.getNumberPattern(function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            }, options);
-            return q.promise;
-          },
-          getCurrencyPattern: function(currencyCode) {
-            var q = $q.defer();
-            navigator.globalization.getCurrencyPattern(currencyCode, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.googleAds', []).factory('$cordovaGoogleAds', ['$q', '$window', function($q, $window) {
-        return {
-          setOptions: function(options) {
-            var d = $q.defer();
-            $window.AdMob.setOptions(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          createBanner: function(options) {
-            var d = $q.defer();
-            $window.AdMob.createBanner(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          removeBanner: function() {
-            var d = $q.defer();
-            $window.AdMob.removeBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBanner: function(position) {
-            var d = $q.defer();
-            $window.AdMob.showBanner(position, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBannerAtXY: function(x, y) {
-            var d = $q.defer();
-            $window.AdMob.showBannerAtXY(x, y, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          hideBanner: function() {
-            var d = $q.defer();
-            $window.AdMob.hideBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          prepareInterstitial: function(options) {
-            var d = $q.defer();
-            $window.AdMob.prepareInterstitial(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showInterstitial: function() {
-            var d = $q.defer();
-            $window.AdMob.showInterstitial(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.googleAnalytics', []).factory('$cordovaGoogleAnalytics', ['$q', '$window', function($q, $window) {
-        return {
-          startTrackerWithId: function(id) {
-            var d = $q.defer();
-            $window.analytics.startTrackerWithId(id, function(response) {
-              d.resolve(response);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          setUserId: function(id) {
-            var d = $q.defer();
-            $window.analytics.setUserId(id, function(response) {
-              d.resolve(response);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          debugMode: function() {
-            var d = $q.defer();
-            $window.analytics.debugMode(function(response) {
-              d.resolve(response);
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          trackView: function(screenName) {
-            var d = $q.defer();
-            $window.analytics.trackView(screenName, function(response) {
-              d.resolve(response);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          addCustomDimension: function(key, value) {
-            var d = $q.defer();
-            $window.analytics.addCustomDimension(key, value, function() {
-              d.resolve();
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          trackEvent: function(category, action, label, value) {
-            var d = $q.defer();
-            $window.analytics.trackEvent(category, action, label, value, function(response) {
-              d.resolve(response);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          trackException: function(description, fatal) {
-            var d = $q.defer();
-            $window.analytics.trackException(description, fatal, function(response) {
-              d.resolve(response);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          trackTiming: function(category, milliseconds, variable, label) {
-            var d = $q.defer();
-            $window.analytics.trackTiming(category, milliseconds, variable, label, function(response) {
-              d.resolve(response);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          addTransaction: function(transactionId, affiliation, revenue, tax, shipping, currencyCode) {
-            var d = $q.defer();
-            $window.analytics.addTransaction(transactionId, affiliation, revenue, tax, shipping, currencyCode, function(response) {
-              d.resolve(response);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          },
-          addTransactionItem: function(transactionId, name, sku, category, price, quantity, currencyCode) {
-            var d = $q.defer();
-            $window.analytics.addTransactionItem(transactionId, name, sku, category, price, quantity, currencyCode, function(response) {
-              d.resolve(response);
-            }, function(error) {
-              d.reject(error);
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.googleMap', []).factory('$cordovaGoogleMap', ['$q', '$window', function($q, $window) {
-        var map = null;
-        return {
-          getMap: function(options) {
-            var q = $q.defer();
-            if (!$window.plugin.google.maps) {
-              q.reject(null);
-            } else {
-              var div = document.getElementById("map_canvas");
-              map = $window.plugin.google.maps.Map.getMap(options);
-              map.setDiv(div);
-              q.resolve(map);
-            }
-            return q.promise;
-          },
-          isMapLoaded: function() {
-            return !!map;
-          },
-          addMarker: function(markerOptions) {
-            var q = $q.defer();
-            map.addMarker(markerOptions, function(marker) {
-              q.resolve(marker);
-            });
-            return q.promise;
-          },
-          getMapTypeIds: function() {
-            return $window.plugin.google.maps.mapTypeId;
-          },
-          setVisible: function(isVisible) {
-            var q = $q.defer();
-            map.setVisible(isVisible);
-            return q.promise;
-          },
-          cleanup: function() {
-            map = null;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.googlePlayGame', []).factory('$cordovaGooglePlayGame', ['$q', function($q) {
-        return {
-          auth: function() {
-            var q = $q.defer();
-            googleplaygame.auth(function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          },
-          signout: function() {
-            var q = $q.defer();
-            googleplaygame.signout(function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          },
-          isSignedIn: function() {
-            var q = $q.defer();
-            googleplaygame.isSignedIn(function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          },
-          showPlayer: function() {
-            var q = $q.defer();
-            googleplaygame.showPlayer(function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          },
-          submitScore: function(data) {
-            var q = $q.defer();
-            googleplaygame.submitScore(data, function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          },
-          showAllLeaderboards: function() {
-            var q = $q.defer();
-            googleplaygame.showAllLeaderboards(function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          },
-          showLeaderboard: function(data) {
-            var q = $q.defer();
-            googleplaygame.showLeaderboard(data, function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          },
-          unlockAchievement: function(data) {
-            var q = $q.defer();
-            googleplaygame.unlockAchievement(data, function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          },
-          incrementAchievement: function(data) {
-            var q = $q.defer();
-            googleplaygame.incrementAchievement(data, function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          },
-          showAchievements: function() {
-            var q = $q.defer();
-            googleplaygame.showAchievements(function(success) {
-              return q.resolve(success);
-            }, function(err) {
-              return q.reject(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.googleplus', []).factory('$cordovaGooglePlus', ['$q', '$window', function($q, $window) {
-        return {
-          login: function(iosKey) {
-            var q = $q.defer();
-            if (iosKey === undefined) {
-              iosKey = {};
-            }
-            $window.plugins.googleplus.login({'iOSApiKey': iosKey}, function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          silentLogin: function(iosKey) {
-            var q = $q.defer();
-            if (iosKey === undefined) {
-              iosKey = {};
-            }
-            $window.plugins.googleplus.trySilentLogin({'iOSApiKey': iosKey}, function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          logout: function() {
-            var q = $q.defer();
-            $window.plugins.googleplus.logout(function(response) {
-              q.resolve(response);
-            });
-          },
-          disconnect: function() {
-            var q = $q.defer();
-            $window.plugins.googleplus.disconnect(function(response) {
-              q.resolve(response);
-            });
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.healthKit', []).factory('$cordovaHealthKit', ['$q', '$window', function($q, $window) {
-        return {
-          isAvailable: function() {
-            var q = $q.defer();
-            $window.plugins.healthkit.available(function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          checkAuthStatus: function(type) {
-            var q = $q.defer();
-            type = type || 'HKQuantityTypeIdentifierHeight';
-            $window.plugins.healthkit.checkAuthStatus({'type': type}, function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          requestAuthorization: function(readTypes, writeTypes) {
-            var q = $q.defer();
-            readTypes = readTypes || ['HKCharacteristicTypeIdentifierDateOfBirth', 'HKQuantityTypeIdentifierActiveEnergyBurned', 'HKQuantityTypeIdentifierHeight'];
-            writeTypes = writeTypes || ['HKQuantityTypeIdentifierActiveEnergyBurned', 'HKQuantityTypeIdentifierHeight', 'HKQuantityTypeIdentifierDistanceCycling'];
-            $window.plugins.healthkit.requestAuthorization({
-              'readTypes': readTypes,
-              'writeTypes': writeTypes
-            }, function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          readDateOfBirth: function() {
-            var q = $q.defer();
-            $window.plugins.healthkit.readDateOfBirth(function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.resolve(err);
-            });
-            return q.promise;
-          },
-          readGender: function() {
-            var q = $q.defer();
-            $window.plugins.healthkit.readGender(function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.resolve(err);
-            });
-            return q.promise;
-          },
-          saveWeight: function(value, units, date) {
-            var q = $q.defer();
-            $window.plugins.healthkit.saveWeight({
-              'unit': units || 'lb',
-              'amount': value,
-              'date': date || new Date()
-            }, function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.resolve(err);
-            });
-            return q.promise;
-          },
-          readWeight: function(units) {
-            var q = $q.defer();
-            $window.plugins.healthkit.readWeight({'unit': units || 'lb'}, function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.resolve(err);
-            });
-            return q.promise;
-          },
-          saveHeight: function(value, units, date) {
-            var q = $q.defer();
-            $window.plugins.healthkit.saveHeight({
-              'unit': units || 'in',
-              'amount': value,
-              'date': date || new Date()
-            }, function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.resolve(err);
-            });
-            return q.promise;
-          },
-          readHeight: function(units) {
-            var q = $q.defer();
-            $window.plugins.healthkit.readHeight({'unit': units || 'in'}, function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.resolve(err);
-            });
-            return q.promise;
-          },
-          findWorkouts: function() {
-            var q = $q.defer();
-            $window.plugins.healthkit.findWorkouts({}, function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.resolve(err);
-            });
-            return q.promise;
-          },
-          saveWorkout: function(workout) {
-            var q = $q.defer();
-            $window.plugins.healthkit.saveWorkout(workout, function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.resolve(err);
-            });
-            return q.promise;
-          },
-          querySampleType: function(sampleQuery) {
-            var q = $q.defer();
-            $window.plugins.healthkit.querySampleType(sampleQuery, function(success) {
-              q.resolve(success);
-            }, function(err) {
-              q.resolve(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.httpd', []).factory('$cordovaHttpd', ['$q', function($q) {
-        return {
-          startServer: function(options) {
-            var d = $q.defer();
-            cordova.plugins.CorHttpd.startServer(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          stopServer: function() {
-            var d = $q.defer();
-            cordova.plugins.CorHttpd.stopServer(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          getURL: function() {
-            var d = $q.defer();
-            cordova.plugins.CorHttpd.getURL(function(url) {
-              d.resolve(url);
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          getLocalPath: function() {
-            var d = $q.defer();
-            cordova.plugins.CorHttpd.getLocalPath(function(path) {
-              d.resolve(path);
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.iAd', []).factory('$cordovaiAd', ['$q', '$window', function($q, $window) {
-        return {
-          setOptions: function(options) {
-            var d = $q.defer();
-            $window.iAd.setOptions(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          createBanner: function(options) {
-            var d = $q.defer();
-            $window.iAd.createBanner(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          removeBanner: function() {
-            var d = $q.defer();
-            $window.iAd.removeBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBanner: function(position) {
-            var d = $q.defer();
-            $window.iAd.showBanner(position, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBannerAtXY: function(x, y) {
-            var d = $q.defer();
-            $window.iAd.showBannerAtXY(x, y, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          hideBanner: function() {
-            var d = $q.defer();
-            $window.iAd.hideBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          prepareInterstitial: function(options) {
-            var d = $q.defer();
-            $window.iAd.prepareInterstitial(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showInterstitial: function() {
-            var d = $q.defer();
-            $window.iAd.showInterstitial(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.imagePicker', []).factory('$cordovaImagePicker', ['$q', '$window', function($q, $window) {
-        return {getPictures: function(options) {
-            var q = $q.defer();
-            $window.imagePicker.getPictures(function(results) {
-              q.resolve(results);
-            }, function(error) {
-              q.reject(error);
-            }, options);
-            return q.promise;
-          }};
-      }]);
-      angular.module('ngCordova.plugins.inAppBrowser', []).provider('$cordovaInAppBrowser', [function() {
-        var ref;
-        var defaultOptions = this.defaultOptions = {};
-        this.setDefaultOptions = function(config) {
-          defaultOptions = angular.extend(defaultOptions, config);
-        };
-        this.$get = ['$rootScope', '$q', '$window', '$timeout', function($rootScope, $q, $window, $timeout) {
-          return {
-            open: function(url, target, requestOptions) {
-              var q = $q.defer();
-              if (requestOptions && !angular.isObject(requestOptions)) {
-                q.reject("options must be an object");
-                return q.promise;
-              }
-              var options = angular.extend({}, defaultOptions, requestOptions);
-              var opt = [];
-              angular.forEach(options, function(value, key) {
-                opt.push(key + '=' + value);
-              });
-              var optionsString = opt.join();
-              ref = $window.open(url, target, optionsString);
-              ref.addEventListener('loadstart', function(event) {
-                $timeout(function() {
-                  $rootScope.$broadcast('$cordovaInAppBrowser:loadstart', event);
-                });
-              }, false);
-              ref.addEventListener('loadstop', function(event) {
-                q.resolve(event);
-                $timeout(function() {
-                  $rootScope.$broadcast('$cordovaInAppBrowser:loadstop', event);
-                });
-              }, false);
-              ref.addEventListener('loaderror', function(event) {
-                q.reject(event);
-                $timeout(function() {
-                  $rootScope.$broadcast('$cordovaInAppBrowser:loaderror', event);
-                });
-              }, false);
-              ref.addEventListener('exit', function(event) {
-                $timeout(function() {
-                  $rootScope.$broadcast('$cordovaInAppBrowser:exit', event);
-                });
-              }, false);
-              return q.promise;
-            },
-            close: function() {
-              ref.close();
-              ref = null;
-            },
-            show: function() {
-              ref.show();
-            },
-            executeScript: function(details) {
-              var q = $q.defer();
-              ref.executeScript(details, function(result) {
-                q.resolve(result);
-              });
-              return q.promise;
-            },
-            insertCSS: function(details) {
-              var q = $q.defer();
-              ref.insertCSS(details, function(result) {
-                q.resolve(result);
-              });
-              return q.promise;
-            }
-          };
-        }];
-      }]);
-      angular.module('ngCordova.plugins.insomnia', []).factory('$cordovaInsomnia', ['$window', function($window) {
-        return {
-          keepAwake: function() {
-            return $window.plugins.insomnia.keepAwake();
-          },
-          allowSleepAgain: function() {
-            return $window.plugins.insomnia.allowSleepAgain();
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.instagram', []).factory('$cordovaInstagram', ['$q', function($q) {
-        return {
-          share: function(options) {
-            var q = $q.defer();
-            if (!window.Instagram) {
-              console.error('Tried to call Instagram.share but the Instagram plugin isn\'t installed!');
-              q.resolve(null);
-              return q.promise;
-            }
-            Instagram.share(options.image, options.caption, function(err) {
-              if (err) {
-                q.reject(err);
-              } else {
-                q.resolve(true);
-              }
-            });
-            return q.promise;
-          },
-          isInstalled: function() {
-            var q = $q.defer();
-            if (!window.Instagram) {
-              console.error('Tried to call Instagram.isInstalled but the Instagram plugin isn\'t installed!');
-              q.resolve(null);
-              return q.promise;
-            }
-            Instagram.isInstalled(function(err, installed) {
-              if (err) {
-                q.reject(err);
-              } else {
-                q.resolve(installed || true);
-              }
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.keyboard', []).factory('$cordovaKeyboard', ['$rootScope', '$timeout', function($rootScope, $timeout) {
-        var keyboardShowEvent = function() {
-          $rootScope.$evalAsync(function() {
-            $rootScope.$broadcast('$cordovaKeyboard:show');
-          });
-        };
-        var keyboardHideEvent = function() {
-          $rootScope.$evalAsync(function() {
-            $rootScope.$broadcast('$cordovaKeyboard:hide');
-          });
-        };
-        document.addEventListener("deviceready", function() {
-          if (cordova.plugins.Keyboard) {
-            window.addEventListener("native.keyboardshow", keyboardShowEvent, false);
-            window.addEventListener("native.keyboardhide", keyboardHideEvent, false);
-          }
-        });
-        return {
-          hideAccessoryBar: function(bool) {
-            return cordova.plugins.Keyboard.hideKeyboardAccessoryBar(bool);
-          },
-          close: function() {
-            return cordova.plugins.Keyboard.close();
-          },
-          show: function() {
-            return cordova.plugins.Keyboard.show();
-          },
-          disableScroll: function(bool) {
-            return cordova.plugins.Keyboard.disableScroll(bool);
-          },
-          isVisible: function() {
-            return cordova.plugins.Keyboard.isVisible;
-          },
-          clearShowWatch: function() {
-            document.removeEventListener("native.keyboardshow", keyboardShowEvent);
-            $rootScope.$$listeners["$cordovaKeyboard:show"] = [];
-          },
-          clearHideWatch: function() {
-            document.removeEventListener("native.keyboardhide", keyboardHideEvent);
-            $rootScope.$$listeners["$cordovaKeyboard:hide"] = [];
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.keychain', []).factory('$cordovaKeychain', ['$q', function($q) {
-        return {
-          getForKey: function(key, serviceName) {
-            var defer = $q.defer(),
-                kc = new Keychain();
-            kc.getForKey(defer.resolve, defer.reject, key, serviceName);
-            return defer.promise;
-          },
-          setForKey: function(key, serviceName, value) {
-            var defer = $q.defer(),
-                kc = new Keychain();
-            kc.setForKey(defer.resolve, defer.reject, key, serviceName, value);
-            return defer.promise;
-          },
-          removeForKey: function(key, serviceName) {
-            var defer = $q.defer(),
-                kc = new Keychain();
-            kc.removeForKey(defer.resolve, defer.reject, key, serviceName);
-            return defer.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.localNotification', []).factory('$cordovaLocalNotification', ['$q', '$window', '$rootScope', '$timeout', function($q, $window, $rootScope, $timeout) {
-        document.addEventListener('deviceready', function() {
-          if ($window.cordova && $window.cordova.plugins && $window.cordova.plugins.notification && $window.cordova.plugins.notification.local) {
-            $window.cordova.plugins.notification.local.on('schedule', function(notification, state) {
-              $timeout(function() {
-                $rootScope.$broadcast('$cordovaLocalNotification:schedule', notification, state);
-              });
-            });
-            $window.cordova.plugins.notification.local.on('trigger', function(notification, state) {
-              $timeout(function() {
-                $rootScope.$broadcast('$cordovaLocalNotification:trigger', notification, state);
-              });
-            });
-            $window.cordova.plugins.notification.local.on('update', function(notification, state) {
-              $timeout(function() {
-                $rootScope.$broadcast('$cordovaLocalNotification:update', notification, state);
-              });
-            });
-            $window.cordova.plugins.notification.local.on('clear', function(notification, state) {
-              $timeout(function() {
-                $rootScope.$broadcast('$cordovaLocalNotification:clear', notification, state);
-              });
-            });
-            $window.cordova.plugins.notification.local.on('clearall', function(state) {
-              $timeout(function() {
-                $rootScope.$broadcast('$cordovaLocalNotification:clearall', state);
-              });
-            });
-            $window.cordova.plugins.notification.local.on('cancel', function(notification, state) {
-              $timeout(function() {
-                $rootScope.$broadcast('$cordovaLocalNotification:cancel', notification, state);
-              });
-            });
-            $window.cordova.plugins.notification.local.on('cancelall', function(state) {
-              $timeout(function() {
-                $rootScope.$broadcast('$cordovaLocalNotification:cancelall', state);
-              });
-            });
-            $window.cordova.plugins.notification.local.on('click', function(notification, state) {
-              $timeout(function() {
-                $rootScope.$broadcast('$cordovaLocalNotification:click', notification, state);
-              });
-            });
-          }
-        }, false);
-        return {
-          schedule: function(options, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.schedule(options, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          add: function(options, scope) {
-            console.warn('Deprecated: use "schedule" instead.');
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.schedule(options, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          update: function(options, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.update(options, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          clear: function(ids, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.clear(ids, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          clearAll: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.clearAll(function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          cancel: function(ids, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.cancel(ids, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          cancelAll: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.cancelAll(function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          isPresent: function(id, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.isPresent(id, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          isScheduled: function(id, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.isScheduled(id, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          isTriggered: function(id, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.isTriggered(id, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          hasPermission: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.hasPermission(function(result) {
-              if (result) {
-                q.resolve(result);
-              } else {
-                q.reject(result);
-              }
-            }, scope);
-            return q.promise;
-          },
-          registerPermission: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.registerPermission(function(result) {
-              if (result) {
-                q.resolve(result);
-              } else {
-                q.reject(result);
-              }
-            }, scope);
-            return q.promise;
-          },
-          promptForPermission: function(scope) {
-            console.warn('Deprecated: use "registerPermission" instead.');
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.registerPermission(function(result) {
-              if (result) {
-                q.resolve(result);
-              } else {
-                q.reject(result);
-              }
-            }, scope);
-            return q.promise;
-          },
-          getAllIds: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.getAllIds(function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          getIds: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.getIds(function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          getScheduledIds: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.getScheduledIds(function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          getTriggeredIds: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.getTriggeredIds(function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          get: function(ids, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.get(ids, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          getAll: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.getAll(function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          getScheduled: function(ids, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.getScheduled(ids, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          getAllScheduled: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.getAllScheduled(function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          getTriggered: function(ids, scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.getTriggered(ids, function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          getAllTriggered: function(scope) {
-            var q = $q.defer();
-            scope = scope || null;
-            $window.cordova.plugins.notification.local.getAllTriggered(function(result) {
-              q.resolve(result);
-            }, scope);
-            return q.promise;
-          },
-          getDefaults: function() {
-            return $window.cordova.plugins.notification.local.getDefaults();
-          },
-          setDefaults: function(Object) {
-            $window.cordova.plugins.notification.local.setDefaults(Object);
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.mMediaAds', []).factory('$cordovaMMediaAds', ['$q', '$window', function($q, $window) {
-        return {
-          setOptions: function(options) {
-            var d = $q.defer();
-            $window.mMedia.setOptions(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          createBanner: function(options) {
-            var d = $q.defer();
-            $window.mMedia.createBanner(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          removeBanner: function() {
-            var d = $q.defer();
-            $window.mMedia.removeBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBanner: function(position) {
-            var d = $q.defer();
-            $window.mMedia.showBanner(position, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBannerAtXY: function(x, y) {
-            var d = $q.defer();
-            $window.mMedia.showBannerAtXY(x, y, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          hideBanner: function() {
-            var d = $q.defer();
-            $window.mMedia.hideBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          prepareInterstitial: function(options) {
-            var d = $q.defer();
-            $window.mMedia.prepareInterstitial(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showInterstitial: function() {
-            var d = $q.defer();
-            $window.mMedia.showInterstitial(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.media', []).factory('$cordovaMedia', ['$q', function($q) {
-        return {newMedia: function(src) {
-            var q = $q.defer();
-            var mediaStatus = null;
-            var media;
-            media = new Media(src, function(success) {
-              q.resolve(success);
-            }, function(error) {
-              q.reject(error);
-            }, function(status) {
-              mediaStatus = status;
-            });
-            q.promise.getCurrentPosition = function() {
-              media.getCurrentPosition(function(success) {}, function(error) {});
-            };
-            q.promise.getDuration = function() {
-              media.getDuration();
-            };
-            q.promise.play = function(options) {
-              if (typeof options !== "object") {
-                options = {};
-              }
-              media.play(options);
-            };
-            q.promise.pause = function() {
-              media.pause();
-            };
-            q.promise.stop = function() {
-              media.stop();
-            };
-            q.promise.release = function() {
-              media.release();
-            };
-            q.promise.seekTo = function(timing) {
-              media.seekTo(timing);
-            };
-            q.promise.setVolume = function(volume) {
-              media.setVolume(volume);
-            };
-            q.promise.startRecord = function() {
-              media.startRecord();
-            };
-            q.promise.stopRecord = function() {
-              media.stopRecord();
-            };
-            q.promise.media = media;
-            return q.promise;
-          }};
-      }]);
-      angular.module('ngCordova.plugins.mobfoxAds', []).factory('$cordovaMobFoxAds', ['$q', '$window', function($q, $window) {
-        return {
-          setOptions: function(options) {
-            var d = $q.defer();
-            $window.MobFox.setOptions(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          createBanner: function(options) {
-            var d = $q.defer();
-            $window.MobFox.createBanner(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          removeBanner: function() {
-            var d = $q.defer();
-            $window.MobFox.removeBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBanner: function(position) {
-            var d = $q.defer();
-            $window.MobFox.showBanner(position, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBannerAtXY: function(x, y) {
-            var d = $q.defer();
-            $window.MobFox.showBannerAtXY(x, y, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          hideBanner: function() {
-            var d = $q.defer();
-            $window.MobFox.hideBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          prepareInterstitial: function(options) {
-            var d = $q.defer();
-            $window.MobFox.prepareInterstitial(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showInterstitial: function() {
-            var d = $q.defer();
-            $window.MobFox.showInterstitial(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins', ['ngCordova.plugins.actionSheet', 'ngCordova.plugins.adMob', 'ngCordova.plugins.appAvailability', 'ngCordova.plugins.appRate', 'ngCordova.plugins.appVersion', 'ngCordova.plugins.backgroundGeolocation', 'ngCordova.plugins.badge', 'ngCordova.plugins.barcodeScanner', 'ngCordova.plugins.batteryStatus', 'ngCordova.plugins.ble', 'ngCordova.plugins.bluetoothSerial', 'ngCordova.plugins.brightness', 'ngCordova.plugins.calendar', 'ngCordova.plugins.camera', 'ngCordova.plugins.capture', 'ngCordova.plugins.clipboard', 'ngCordova.plugins.contacts', 'ngCordova.plugins.datePicker', 'ngCordova.plugins.device', 'ngCordova.plugins.deviceMotion', 'ngCordova.plugins.deviceOrientation', 'ngCordova.plugins.dialogs', 'ngCordova.plugins.emailComposer', 'ngCordova.plugins.facebook', 'ngCordova.plugins.facebookAds', 'ngCordova.plugins.file', 'ngCordova.plugins.fileTransfer', 'ngCordova.plugins.fileOpener2', 'ngCordova.plugins.flashlight', 'ngCordova.plugins.flurryAds', 'ngCordova.plugins.ga', 'ngCordova.plugins.geolocation', 'ngCordova.plugins.globalization', 'ngCordova.plugins.googleAds', 'ngCordova.plugins.googleAnalytics', 'ngCordova.plugins.googleMap', 'ngCordova.plugins.googlePlayGame', 'ngCordova.plugins.healthKit', 'ngCordova.plugins.httpd', 'ngCordova.plugins.iAd', 'ngCordova.plugins.imagePicker', 'ngCordova.plugins.inAppBrowser', 'ngCordova.plugins.keyboard', 'ngCordova.plugins.keychain', 'ngCordova.plugins.localNotification', 'ngCordova.plugins.media', 'ngCordova.plugins.mMediaAds', 'ngCordova.plugins.mobfoxAds', 'ngCordova.plugins.mopubAds', 'ngCordova.plugins.nativeAudio', 'ngCordova.plugins.network', 'ngCordova.plugins.oauth', 'ngCordova.plugins.oauthUtility', 'ngCordova.plugins.pinDialog', 'ngCordova.plugins.prefs', 'ngCordova.plugins.printer', 'ngCordova.plugins.progressIndicator', 'ngCordova.plugins.push', 'ngCordova.plugins.sms', 'ngCordova.plugins.socialSharing', 'ngCordova.plugins.spinnerDialog', 'ngCordova.plugins.splashscreen', 'ngCordova.plugins.sqlite', 'ngCordova.plugins.statusbar', 'ngCordova.plugins.toast', 'ngCordova.plugins.touchid', 'ngCordova.plugins.vibration', 'ngCordova.plugins.videoCapturePlus', 'ngCordova.plugins.zip', 'ngCordova.plugins.insomnia']);
-      angular.module('ngCordova.plugins.mopubAds', []).factory('$cordovaMoPubAds', ['$q', '$window', function($q, $window) {
-        return {
-          setOptions: function(options) {
-            var d = $q.defer();
-            $window.MoPub.setOptions(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          createBanner: function(options) {
-            var d = $q.defer();
-            $window.MoPub.createBanner(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          removeBanner: function() {
-            var d = $q.defer();
-            $window.MoPub.removeBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBanner: function(position) {
-            var d = $q.defer();
-            $window.MoPub.showBanner(position, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showBannerAtXY: function(x, y) {
-            var d = $q.defer();
-            $window.MoPub.showBannerAtXY(x, y, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          hideBanner: function() {
-            var d = $q.defer();
-            $window.MoPub.hideBanner(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          prepareInterstitial: function(options) {
-            var d = $q.defer();
-            $window.MoPub.prepareInterstitial(options, function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          },
-          showInterstitial: function() {
-            var d = $q.defer();
-            $window.MoPub.showInterstitial(function() {
-              d.resolve();
-            }, function() {
-              d.reject();
-            });
-            return d.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.nativeAudio', []).factory('$cordovaNativeAudio', ['$q', '$window', function($q, $window) {
-        return {
-          preloadSimple: function(id, assetPath) {
-            var q = $q.defer();
-            $window.plugins.NativeAudio.preloadSimple(id, assetPath, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          preloadComplex: function(id, assetPath, volume, voices) {
-            var q = $q.defer();
-            $window.plugins.NativeAudio.preloadComplex(id, assetPath, volume, voices, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          play: function(id, completeCallback) {
-            var q = $q.defer();
-            $window.plugins.NativeAudio.play(id, completeCallback, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          stop: function(id) {
-            var q = $q.defer();
-            $window.plugins.NativeAudio.stop(id, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          loop: function(id) {
-            var q = $q.defer();
-            $window.plugins.NativeAudio.loop(id, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          unload: function(id) {
-            var q = $q.defer();
-            $window.plugins.NativeAudio.unload(id, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          setVolumeForComplexAsset: function(id, volume) {
-            var q = $q.defer();
-            $window.plugins.NativeAudio.setVolumeForComplexAsset(id, volume, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.network', []).factory('$cordovaNetwork', ['$rootScope', '$timeout', function($rootScope, $timeout) {
-        var offlineEvent = function() {
-          var networkState = navigator.connection.type;
-          $timeout(function() {
-            $rootScope.$broadcast('$cordovaNetwork:offline', networkState);
-          });
-        };
-        var onlineEvent = function() {
-          var networkState = navigator.connection.type;
-          $timeout(function() {
-            $rootScope.$broadcast('$cordovaNetwork:online', networkState);
-          });
-        };
-        document.addEventListener("deviceready", function() {
-          if (navigator.connection) {
-            document.addEventListener("offline", offlineEvent, false);
-            document.addEventListener("online", onlineEvent, false);
-          }
-        });
-        return {
-          getNetwork: function() {
-            return navigator.connection.type;
-          },
-          isOnline: function() {
-            var networkState = navigator.connection.type;
-            return networkState !== Connection.UNKNOWN && networkState !== Connection.NONE;
-          },
-          isOffline: function() {
-            var networkState = navigator.connection.type;
-            return networkState === Connection.UNKNOWN || networkState === Connection.NONE;
-          },
-          clearOfflineWatch: function() {
-            document.removeEventListener("offline", offlineEvent);
-            $rootScope.$$listeners["$cordovaNetwork:offline"] = [];
-          },
-          clearOnlineWatch: function() {
-            document.removeEventListener("online", offlineEvent);
-            $rootScope.$$listeners["$cordovaNetwork:online"] = [];
-          }
-        };
-      }]).run(['$cordovaNetwork', function($cordovaNetwork) {}]);
-      angular.module("ngCordova.plugins.oauth", ["ngCordova.plugins.oauthUtility"]).factory('$cordovaOauth', ['$q', '$http', '$cordovaOauthUtility', function($q, $http, $cordovaOauthUtility) {
-        return {
-          adfs: function(clientId, adfsServer, relyingPartyId) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open(adfsServer + '/adfs/oauth2/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=http://localhost/callback&resource=' + relyingPartyId, '_blank', 'location=no');
-                browserRef.addEventListener("loadstart", function(event) {
-                  if ((event.url).indexOf('http://localhost/callback') === 0) {
-                    var requestToken = (event.url).split("code=")[1];
-                    $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-                    $http({
-                      method: "post",
-                      url: adfsServer + "/adfs/oauth2/token",
-                      data: "client_id=" + clientId + "&code=" + requestToken + "&redirect_uri=http://localhost/callback&grant_type=authorization_code"
-                    }).success(function(data) {
-                      deferred.resolve(data);
-                    }).error(function(data, status) {
-                      deferred.reject("Problem authenticating");
-                    }).finally(function() {
-                      setTimeout(function() {
-                        browserRef.close();
-                      }, 10);
-                    });
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          dropbox: function(appKey) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open("https://www.dropbox.com/1/oauth2/authorize?client_id=" + appKey + "&redirect_uri=http://localhost/callback" + "&response_type=token", "_blank", "location=no,clearsessioncache=yes,clearcache=yes");
-                browserRef.addEventListener("loadstart", function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    var callbackResponse = (event.url).split("#")[1];
-                    var responseParameters = (callbackResponse).split("&");
-                    var parameterMap = [];
-                    for (var i = 0; i < responseParameters.length; i++) {
-                      parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.access_token !== undefined && parameterMap.access_token !== null) {
-                      deferred.resolve({
-                        access_token: parameterMap.access_token,
-                        token_type: parameterMap.token_type,
-                        uid: parameterMap.uid
-                      });
-                    } else {
-                      deferred.reject("Problem authenticating");
-                    }
-                    setTimeout(function() {
-                      browserRef.close();
-                    }, 10);
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          digitalOcean: function(clientId, clientSecret) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open("https://cloud.digitalocean.com/v1/oauth/authorize?client_id=" + clientId + "&redirect_uri=http://localhost/callback&response_type=code&scope=read%20write", "_blank", "location=no,clearsessioncache=yes,clearcache=yes");
-                browserRef.addEventListener("loadstart", function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    var requestToken = (event.url).split("code=")[1];
-                    $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-                    $http({
-                      method: "post",
-                      url: "https://cloud.digitalocean.com/v1/oauth/token",
-                      data: "client_id=" + clientId + "&client_secret=" + clientSecret + "&redirect_uri=http://localhost/callback" + "&grant_type=authorization_code" + "&code=" + requestToken
-                    }).success(function(data) {
-                      deferred.resolve(data);
-                    }).error(function(data, status) {
-                      deferred.reject("Problem authenticating");
-                    }).finally(function() {
-                      setTimeout(function() {
-                        browserRef.close();
-                      }, 10);
-                    });
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          google: function(clientId, appScope) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://accounts.google.com/o/oauth2/auth?client_id=' + clientId + '&redirect_uri=http://localhost/callback&scope=' + appScope.join(" ") + '&approval_prompt=force&response_type=token', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener("loadstart", function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    var callbackResponse = (event.url).split("#")[1];
-                    var responseParameters = (callbackResponse).split("&");
-                    var parameterMap = [];
-                    for (var i = 0; i < responseParameters.length; i++) {
-                      parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.access_token !== undefined && parameterMap.access_token !== null) {
-                      deferred.resolve({
-                        access_token: parameterMap.access_token,
-                        token_type: parameterMap.token_type,
-                        expires_in: parameterMap.expires_in
-                      });
-                    } else {
-                      deferred.reject("Problem authenticating");
-                    }
-                    setTimeout(function() {
-                      browserRef.close();
-                    }, 10);
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          github: function(clientId, clientSecret, appScope) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://github.com/login/oauth/authorize?client_id=' + clientId + '&redirect_uri=http://localhost/callback&scope=' + appScope.join(","), '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    requestToken = (event.url).split("code=")[1];
-                    $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-                    $http.defaults.headers.post.accept = 'application/json';
-                    $http({
-                      method: "post",
-                      url: "https://github.com/login/oauth/access_token",
-                      data: "client_id=" + clientId + "&client_secret=" + clientSecret + "&redirect_uri=http://localhost/callback" + "&code=" + requestToken
-                    }).success(function(data) {
-                      deferred.resolve(data);
-                    }).error(function(data, status) {
-                      deferred.reject("Problem authenticating");
-                    }).finally(function() {
-                      setTimeout(function() {
-                        browserRef.close();
-                      }, 10);
-                    });
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          facebook: function(clientId, appScope) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://www.facebook.com/dialog/oauth?client_id=' + clientId + '&redirect_uri=http://localhost/callback&response_type=token&scope=' + appScope.join(","), '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    var callbackResponse = (event.url).split("#")[1];
-                    var responseParameters = (callbackResponse).split("&");
-                    var parameterMap = [];
-                    for (var i = 0; i < responseParameters.length; i++) {
-                      parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.access_token !== undefined && parameterMap.access_token !== null) {
-                      deferred.resolve({
-                        access_token: parameterMap.access_token,
-                        expires_in: parameterMap.expires_in
-                      });
-                    } else {
-                      deferred.reject("Problem authenticating");
-                    }
-                    setTimeout(function() {
-                      browserRef.close();
-                    }, 10);
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          linkedin: function(clientId, clientSecret, appScope, state) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://www.linkedin.com/uas/oauth2/authorization?client_id=' + clientId + '&redirect_uri=http://localhost/callback&scope=' + appScope.join(" ") + '&response_type=code&state=' + state, '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    requestToken = (event.url).split("code=")[1];
-                    $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-                    $http({
-                      method: "post",
-                      url: "https://www.linkedin.com/uas/oauth2/accessToken",
-                      data: "client_id=" + clientId + "&client_secret=" + clientSecret + "&redirect_uri=http://localhost/callback" + "&grant_type=authorization_code" + "&code=" + requestToken
-                    }).success(function(data) {
-                      deferred.resolve(data);
-                    }).error(function(data, status) {
-                      deferred.reject("Problem authenticating");
-                    }).finally(function() {
-                      setTimeout(function() {
-                        browserRef.close();
-                      }, 10);
-                    });
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          instagram: function(clientId, appScope) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://api.instagram.com/oauth/authorize/?client_id=' + clientId + '&redirect_uri=http://localhost/callback&scope=' + appScope.join(" ") + '&response_type=token', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    var callbackResponse = (event.url).split("#")[1];
-                    var responseParameters = (callbackResponse).split("&");
-                    var parameterMap = [];
-                    for (var i = 0; i < responseParameters.length; i++) {
-                      parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.access_token !== undefined && parameterMap.access_token !== null) {
-                      deferred.resolve({access_token: parameterMap.access_token});
-                    } else {
-                      deferred.reject("Problem authenticating");
-                    }
-                    setTimeout(function() {
-                      browserRef.close();
-                    }, 10);
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          box: function(clientId, clientSecret, appState) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://app.box.com/api/oauth2/authorize/?client_id=' + clientId + '&redirect_uri=http://localhost/callback&state=' + appState + '&response_type=code', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    requestToken = (event.url).split("code=")[1];
-                    $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-                    $http({
-                      method: "post",
-                      url: "https://app.box.com/api/oauth2/token",
-                      data: "client_id=" + clientId + "&client_secret=" + clientSecret + "&redirect_uri=http://localhost/callback" + "&grant_type=authorization_code" + "&code=" + requestToken
-                    }).success(function(data) {
-                      deferred.resolve(data);
-                    }).error(function(data, status) {
-                      deferred.reject("Problem authenticating");
-                    }).finally(function() {
-                      setTimeout(function() {
-                        browserRef.close();
-                      }, 10);
-                    });
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          reddit: function(clientId, clientSecret, appScope) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://ssl.reddit.com/api/v1/authorize?client_id=' + clientId + '&redirect_uri=http://localhost/callback&duration=permanent&state=ngcordovaoauth&scope=' + appScope.join(",") + '&response_type=code', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    requestToken = (event.url).split("code=")[1];
-                    $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-                    $http.defaults.headers.post.Authorization = 'Basic ' + btoa(clientId + ":" + clientSecret);
-                    $http({
-                      method: "post",
-                      url: "https://ssl.reddit.com/api/v1/access_token",
-                      data: "redirect_uri=http://localhost/callback" + "&grant_type=authorization_code" + "&code=" + requestToken
-                    }).success(function(data) {
-                      deferred.resolve(data);
-                    }).error(function(data, status) {
-                      deferred.reject("Problem authenticating");
-                    }).finally(function() {
-                      setTimeout(function() {
-                        browserRef.close();
-                      }, 10);
-                    });
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          twitter: function(clientId, clientSecret) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                if (typeof jsSHA !== "undefined") {
-                  var oauthObject = {
-                    oauth_consumer_key: clientId,
-                    oauth_nonce: $cordovaOauthUtility.createNonce(10),
-                    oauth_signature_method: "HMAC-SHA1",
-                    oauth_timestamp: Math.round((new Date()).getTime() / 1000.0),
-                    oauth_version: "1.0"
-                  };
-                  var signatureObj = $cordovaOauthUtility.createSignature("POST", "https://api.twitter.com/oauth/request_token", oauthObject, {oauth_callback: "http://localhost/callback"}, clientSecret);
-                  $http({
-                    method: "post",
-                    url: "https://api.twitter.com/oauth/request_token",
-                    headers: {
-                      "Authorization": signatureObj.authorization_header,
-                      "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    data: "oauth_callback=" + encodeURIComponent("http://localhost/callback")
-                  }).success(function(requestTokenResult) {
-                    var requestTokenParameters = (requestTokenResult).split("&");
-                    var parameterMap = {};
-                    for (var i = 0; i < requestTokenParameters.length; i++) {
-                      parameterMap[requestTokenParameters[i].split("=")[0]] = requestTokenParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.hasOwnProperty("oauth_token") === false) {
-                      deferred.reject("Oauth request token was not received");
-                    }
-                    var browserRef = window.open('https://api.twitter.com/oauth/authenticate?oauth_token=' + parameterMap.oauth_token, '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                    browserRef.addEventListener('loadstart', function(event) {
-                      if ((event.url).indexOf("http://localhost/callback") === 0) {
-                        var callbackResponse = (event.url).split("?")[1];
-                        var responseParameters = (callbackResponse).split("&");
-                        var parameterMap = {};
-                        for (var i = 0; i < responseParameters.length; i++) {
-                          parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                        }
-                        if (parameterMap.hasOwnProperty("oauth_verifier") === false) {
-                          deferred.reject("Browser authentication failed to complete.  No oauth_verifier was returned");
-                        }
-                        delete oauthObject.oauth_signature;
-                        oauthObject.oauth_token = parameterMap.oauth_token;
-                        var signatureObj = $cordovaOauthUtility.createSignature("POST", "https://api.twitter.com/oauth/access_token", oauthObject, {oauth_verifier: parameterMap.oauth_verifier}, clientSecret);
-                        $http({
-                          method: "post",
-                          url: "https://api.twitter.com/oauth/access_token",
-                          headers: {"Authorization": signatureObj.authorization_header},
-                          params: {"oauth_verifier": parameterMap.oauth_verifier}
-                        }).success(function(result) {
-                          var accessTokenParameters = result.split("&");
-                          var parameterMap = {};
-                          for (var i = 0; i < accessTokenParameters.length; i++) {
-                            parameterMap[accessTokenParameters[i].split("=")[0]] = accessTokenParameters[i].split("=")[1];
-                          }
-                          if (parameterMap.hasOwnProperty("oauth_token_secret") === false) {
-                            deferred.reject("Oauth access token was not received");
-                          }
-                          deferred.resolve(parameterMap);
-                        }).error(function(error) {
-                          deferred.reject(error);
-                        }).finally(function() {
-                          setTimeout(function() {
-                            browserRef.close();
-                          }, 10);
-                        });
-                      }
-                    });
-                    browserRef.addEventListener('exit', function(event) {
-                      deferred.reject("The sign in flow was canceled");
-                    });
-                  }).error(function(error) {
-                    deferred.reject(error);
-                  });
-                } else {
-                  deferred.reject("Missing jsSHA JavaScript library");
-                }
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          meetup: function(clientId) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://secure.meetup.com/oauth2/authorize/?client_id=' + clientId + '&redirect_uri=http://localhost/callback&response_type=token', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    var callbackResponse = (event.url).split("#")[1];
-                    var responseParameters = (callbackResponse).split("&");
-                    var parameterMap = {};
-                    for (var i = 0; i < responseParameters.length; i++) {
-                      parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.access_token !== undefined && parameterMap.access_token !== null) {
-                      deferred.resolve(parameterMap);
-                    } else {
-                      deferred.reject("Problem authenticating");
-                    }
-                    setTimeout(function() {
-                      browserRef.close();
-                    }, 10);
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          salesforce: function(loginUrl, clientId) {
-            var redirectUri = 'http://localhost/callback';
-            var getAuthorizeUrl = function(loginUrl, clientId, redirectUri) {
-              return loginUrl + 'services/oauth2/authorize?display=touch' + '&response_type=token&client_id=' + escape(clientId) + '&redirect_uri=' + escape(redirectUri);
-            };
-            var startWith = function(string, str) {
-              return (string.substr(0, str.length) === str);
-            };
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open(getAuthorizeUrl(loginUrl, clientId, redirectUri), "_blank", "location=no,clearsessioncache=yes,clearcache=yes");
-                browserRef.addEventListener("loadstart", function(event) {
-                  if (startWith(event.url, redirectUri)) {
-                    var oauthResponse = {};
-                    var fragment = (event.url).split('#')[1];
-                    if (fragment) {
-                      var nvps = fragment.split('&');
-                      for (var nvp in nvps) {
-                        var parts = nvps[nvp].split('=');
-                        oauthResponse[parts[0]] = unescape(parts[1]);
-                      }
-                    }
-                    if (typeof oauthResponse === 'undefined' || typeof oauthResponse.access_token === 'undefined') {
-                      deferred.reject("Problem authenticating");
-                    } else {
-                      deferred.resolve(oauthResponse);
-                    }
-                    setTimeout(function() {
-                      browserRef.close();
-                    }, 10);
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          strava: function(clientId, clientSecret, appScope) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://www.strava.com/oauth/authorize?client_id=' + clientId + '&redirect_uri=http://localhost/callback&scope=' + appScope.join(",") + '&response_type=code&approval_prompt=force', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    requestToken = (event.url).split("code=")[1];
-                    $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-                    $http({
-                      method: "post",
-                      url: "https://www.strava.com/oauth/token",
-                      data: "client_id=" + clientId + "&client_secret=" + clientSecret + "&code=" + requestToken
-                    }).success(function(data) {
-                      deferred.resolve(data);
-                    }).error(function(data, status) {
-                      deferred.reject("Problem authenticating");
-                    }).finally(function() {
-                      setTimeout(function() {
-                        browserRef.close();
-                      }, 10);
-                    });
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          foursquare: function(clientId) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://foursquare.com/oauth2/authenticate?client_id=' + clientId + '&redirect_uri=http://localhost/callback&response_type=token', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    var callbackResponse = (event.url).split("#")[1];
-                    var responseParameters = (callbackResponse).split("&");
-                    var parameterMap = [];
-                    for (var i = 0; i < responseParameters.length; i++) {
-                      parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.access_token !== undefined && parameterMap.access_token !== null) {
-                      var promiseResponse = {
-                        access_token: parameterMap.access_token,
-                        expires_in: parameterMap.expires_in
-                      };
-                      deferred.resolve(promiseResponse);
-                    } else {
-                      deferred.reject("Problem authenticating");
-                    }
-                    setTimeout(function() {
-                      browserRef.close();
-                    }, 10);
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          magento: function(baseUrl, clientId, clientSecret) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                if (typeof jsSHA !== "undefined") {
-                  var oauthObject = {
-                    oauth_callback: "http://localhost/callback",
-                    oauth_consumer_key: clientId,
-                    oauth_nonce: $cordovaOauthUtility.createNonce(5),
-                    oauth_signature_method: "HMAC-SHA1",
-                    oauth_timestamp: Math.round((new Date()).getTime() / 1000.0),
-                    oauth_version: "1.0"
-                  };
-                  var signatureObj = $cordovaOauthUtility.createSignature("POST", baseUrl + "/oauth/initiate", oauthObject, {oauth_callback: "http://localhost/callback"}, clientSecret);
-                  $http.defaults.headers.post.Authorization = signatureObj.authorization_header;
-                  $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-                  $http({
-                    method: "post",
-                    url: baseUrl + "/oauth/initiate",
-                    data: "oauth_callback=http://localhost/callback"
-                  }).success(function(requestTokenResult) {
-                    var requestTokenParameters = (requestTokenResult).split("&");
-                    var parameterMap = {};
-                    for (var i = 0; i < requestTokenParameters.length; i++) {
-                      parameterMap[requestTokenParameters[i].split("=")[0]] = requestTokenParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.hasOwnProperty("oauth_token") === false) {
-                      deferred.reject("Oauth request token was not received");
-                    }
-                    var tokenSecret = parameterMap.oauth_token_secret;
-                    var browserRef = window.open(baseUrl + '/oauth/authorize?oauth_token=' + parameterMap.oauth_token, '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                    browserRef.addEventListener('loadstart', function(event) {
-                      if ((event.url).indexOf("http://localhost/callback") === 0) {
-                        var callbackResponse = (event.url).split("?")[1];
-                        var responseParameters = (callbackResponse).split("&");
-                        var parameterMap = {};
-                        for (var i = 0; i < responseParameters.length; i++) {
-                          parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                        }
-                        if (parameterMap.hasOwnProperty("oauth_verifier") === false) {
-                          deferred.reject("Browser authentication failed to complete.  No oauth_verifier was returned");
-                        }
-                        delete oauthObject.oauth_signature;
-                        delete oauthObject.oauth_callback;
-                        oauthObject.oauth_token = parameterMap.oauth_token;
-                        oauthObject.oauth_nonce = $cordovaOauthUtility.createNonce(5);
-                        oauthObject.oauth_verifier = parameterMap.oauth_verifier;
-                        var signatureObj = $cordovaOauthUtility.createSignature("POST", baseUrl + "/oauth/token", oauthObject, {}, clientSecret, tokenSecret);
-                        $http.defaults.headers.post.Authorization = signatureObj.authorization_header;
-                        $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-                        $http({
-                          method: "post",
-                          url: baseUrl + "/oauth/token"
-                        }).success(function(result) {
-                          var accessTokenParameters = result.split("&");
-                          var parameterMap = {};
-                          for (var i = 0; i < accessTokenParameters.length; i++) {
-                            parameterMap[accessTokenParameters[i].split("=")[0]] = accessTokenParameters[i].split("=")[1];
-                          }
-                          if (parameterMap.hasOwnProperty("oauth_token_secret") === false) {
-                            deferred.reject("Oauth access token was not received");
-                          }
-                          deferred.resolve(parameterMap);
-                        }).error(function(error) {
-                          deferred.reject(error);
-                        }).finally(function() {
-                          setTimeout(function() {
-                            browserRef.close();
-                          }, 10);
-                        });
-                      }
-                    });
-                    browserRef.addEventListener('exit', function(event) {
-                      deferred.reject("The sign in flow was canceled");
-                    });
-                  }).error(function(error) {
-                    deferred.reject(error);
-                  });
-                } else {
-                  deferred.reject("Missing jsSHA JavaScript library");
-                }
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          vkontakte: function(clientId, appScope) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://oauth.vk.com/authorize?client_id=' + clientId + '&redirect_uri=http://oauth.vk.com/blank.html&response_type=token&scope=' + appScope.join(",") + '&display=touch&response_type=token', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  var tmp = (event.url).split("#");
-                  if (tmp[0] == 'https://oauth.vk.com/blank.html' || tmp[0] == 'http://oauth.vk.com/blank.html') {
-                    var callbackResponse = (event.url).split("#")[1];
-                    var responseParameters = (callbackResponse).split("&");
-                    var parameterMap = [];
-                    for (var i = 0; i < responseParameters.length; i++) {
-                      parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.access_token !== undefined && parameterMap.access_token !== null) {
-                      deferred.resolve({
-                        access_token: parameterMap.access_token,
-                        expires_in: parameterMap.expires_in,
-                        user_id: parameterMap.user_id
-                      });
-                    } else {
-                      deferred.reject("Problem authenticating");
-                    }
-                    setTimeout(function() {
-                      browserRef.close();
-                    }, 10);
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          },
-          imgur: function(clientId) {
-            var deferred = $q.defer();
-            if (window.cordova) {
-              var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-              if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
-                var browserRef = window.open('https://api.imgur.com/oauth2/authorize?client_id=' + clientId + '&response_type=token', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
-                browserRef.addEventListener('loadstart', function(event) {
-                  if ((event.url).indexOf("http://localhost/callback") === 0) {
-                    browserRef.removeEventListener("exit", function(event) {});
-                    browserRef.close();
-                    var callbackResponse = (event.url).split("#")[1];
-                    var responseParameters = (callbackResponse).split("&");
-                    var parameterMap = [];
-                    for (var i = 0; i < responseParameters.length; i++) {
-                      parameterMap[responseParameters[i].split("=")[0]] = responseParameters[i].split("=")[1];
-                    }
-                    if (parameterMap.access_token !== undefined && parameterMap.access_token !== null) {
-                      deferred.resolve({
-                        access_token: parameterMap.access_token,
-                        expires_in: parameterMap.expires_in,
-                        account_username: parameterMap.account_username
-                      });
-                    } else {
-                      deferred.reject("Problem authenticating");
-                    }
-                  }
-                });
-                browserRef.addEventListener('exit', function(event) {
-                  deferred.reject("The sign in flow was canceled");
-                });
-              } else {
-                deferred.reject("Could not find InAppBrowser plugin");
-              }
-            } else {
-              deferred.reject("Cannot authenticate via a web browser");
-            }
-            return deferred.promise;
-          }
-        };
-      }]);
-      angular.module("ngCordova.plugins.oauthUtility", []).factory('$cordovaOauthUtility', ['$q', function($q) {
-        return {
-          createSignature: function(method, endPoint, headerParameters, bodyParameters, secretKey, tokenSecret) {
-            if (typeof jsSHA !== "undefined") {
-              var headerAndBodyParameters = angular.copy(headerParameters);
-              var bodyParameterKeys = Object.keys(bodyParameters);
-              for (var i = 0; i < bodyParameterKeys.length; i++) {
-                headerAndBodyParameters[bodyParameterKeys[i]] = encodeURIComponent(bodyParameters[bodyParameterKeys[i]]);
-              }
-              var signatureBaseString = method + "&" + encodeURIComponent(endPoint) + "&";
-              var headerAndBodyParameterKeys = (Object.keys(headerAndBodyParameters)).sort();
-              for (i = 0; i < headerAndBodyParameterKeys.length; i++) {
-                if (i == headerAndBodyParameterKeys.length - 1) {
-                  signatureBaseString += encodeURIComponent(headerAndBodyParameterKeys[i] + "=" + headerAndBodyParameters[headerAndBodyParameterKeys[i]]);
-                } else {
-                  signatureBaseString += encodeURIComponent(headerAndBodyParameterKeys[i] + "=" + headerAndBodyParameters[headerAndBodyParameterKeys[i]] + "&");
-                }
-              }
-              var oauthSignatureObject = new jsSHA(signatureBaseString, "TEXT");
-              var encodedTokenSecret = '';
-              if (tokenSecret) {
-                encodedTokenSecret = encodeURIComponent(tokenSecret);
-              }
-              headerParameters.oauth_signature = encodeURIComponent(oauthSignatureObject.getHMAC(encodeURIComponent(secretKey) + "&" + encodedTokenSecret, "TEXT", "SHA-1", "B64"));
-              var headerParameterKeys = Object.keys(headerParameters);
-              var authorizationHeader = 'OAuth ';
-              for (i = 0; i < headerParameterKeys.length; i++) {
-                if (i == headerParameterKeys.length - 1) {
-                  authorizationHeader += headerParameterKeys[i] + '="' + headerParameters[headerParameterKeys[i]] + '"';
-                } else {
-                  authorizationHeader += headerParameterKeys[i] + '="' + headerParameters[headerParameterKeys[i]] + '",';
-                }
-              }
-              return {
-                signature_base_string: signatureBaseString,
-                authorization_header: authorizationHeader,
-                signature: headerParameters.oauth_signature
-              };
-            } else {
-              return "Missing jsSHA JavaScript library";
-            }
-          },
-          createNonce: function(length) {
-            var text = "";
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            for (var i = 0; i < length; i++) {
-              text += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
-            return text;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.pinDialog', []).factory('$cordovaPinDialog', ['$q', '$window', function($q, $window) {
-        return {prompt: function(message, title, buttons) {
-            var q = $q.defer();
-            $window.plugins.pinDialog.prompt(message, function(res) {
-              q.resolve(res);
-            }, title, buttons);
-            return q.promise;
-          }};
-      }]);
-      angular.module('ngCordova.plugins.prefs', []).factory('$cordovaPreferences', ['$window', '$q', function($window, $q) {
-        return {
-          set: function(key, value) {
-            var q = $q.defer();
-            $window.appgiraffe.plugins.applicationPreferences.set(key, value, function(result) {
-              q.resolve(result);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          },
-          get: function(key) {
-            var q = $q.defer();
-            $window.appgiraffe.plugins.applicationPreferences.get(key, function(value) {
-              q.resolve(value);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.printer', []).factory('$cordovaPrinter', ['$q', '$window', function($q, $window) {
-        return {
-          isAvailable: function() {
-            var q = $q.defer();
-            $window.plugin.printer.isAvailable(function(isAvailable) {
-              q.resolve(isAvailable);
-            });
-            return q.promise;
-          },
-          print: function(doc, options) {
-            var q = $q.defer();
-            $window.plugin.printer.print(doc, options, function() {
-              q.resolve();
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.progressIndicator', []).factory('$cordovaProgress', ['$q', function($q) {
-        return {
-          show: function(_message) {
-            var message = _message || "Please wait...";
-            return ProgressIndicator.show(message);
-          },
-          showSimple: function(_dim) {
-            var dim = _dim || false;
-            return ProgressIndicator.showSimple(dim);
-          },
-          showSimpleWithLabel: function(_dim, _label) {
-            var dim = _dim || false;
-            var label = _label || "Loading...";
-            return ProgressIndicator.showSimpleWithLabel(dim, label);
-          },
-          showSimpleWithLabelDetail: function(_dim, _label, _detail) {
-            var dim = _dim || false;
-            var label = _label || "Loading...";
-            var detail = _detail || "Please wait";
-            return ProgressIndicator.showSimpleWithLabelDetail(dim, label, detail);
-          },
-          showDeterminate: function(_dim, _timeout) {
-            var dim = _dim || false;
-            var timeout = _timeout || 50000;
-            return ProgressIndicator.showDeterminate(dim, timeout);
-          },
-          showDeterminateWithLabel: function(_dim, _timeout, _label) {
-            var dim = _dim || false;
-            var timeout = _timeout || 50000;
-            var label = _label || "Loading...";
-            return ProgressIndicator.showDeterminateWithLabel(dim, timeout, label);
-          },
-          showAnnular: function(_dim, _timeout) {
-            var dim = _dim || false;
-            var timeout = _timeout || 50000;
-            return ProgressIndicator.showAnnular(dim, timeout);
-          },
-          showAnnularWithLabel: function(_dim, _timeout, _label) {
-            var dim = _dim || false;
-            var timeout = _timeout || 50000;
-            var label = _label || "Loading...";
-            return ProgressIndicator.showAnnularWithLabel(dim, timeout, label);
-          },
-          showBar: function(_dim, _timeout) {
-            var dim = _dim || false;
-            var timeout = _timeout || 50000;
-            return ProgressIndicator.showBar(dim, timeout);
-          },
-          showBarWithLabel: function(_dim, _timeout, _label) {
-            var dim = _dim || false;
-            var timeout = _timeout || 50000;
-            var label = _label || "Loading...";
-            return ProgressIndicator.showBarWithLabel(dim, timeout, label);
-          },
-          showSuccess: function(_dim, _label) {
-            var dim = _dim || false;
-            var label = _label || "Success";
-            return ProgressIndicator.showSuccess(dim, label);
-          },
-          showText: function(_dim, _text, _position) {
-            var dim = _dim || false;
-            var text = _text || "Warning";
-            var position = _position || "center";
-            return ProgressIndicator.showText(dim, text, position);
-          },
-          hide: function() {
-            return ProgressIndicator.hide();
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.push', []).factory('$cordovaPush', ['$q', '$window', '$rootScope', '$timeout', function($q, $window, $rootScope, $timeout) {
-        return {
-          onNotification: function(notification) {
-            $timeout(function() {
-              $rootScope.$broadcast('$cordovaPush:notificationReceived', notification);
-            });
-          },
-          register: function(config) {
-            var q = $q.defer();
-            var injector;
-            if (config !== undefined && config.ecb === undefined) {
-              if (document.querySelector('[ng-app]') === null) {
-                injector = "document.body";
-              } else {
-                injector = "document.querySelector('[ng-app]')";
-              }
-              config.ecb = "angular.element(" + injector + ").injector().get('$cordovaPush').onNotification";
-            }
-            $window.plugins.pushNotification.register(function(token) {
-              q.resolve(token);
-            }, function(error) {
-              q.reject(error);
-            }, config);
-            return q.promise;
-          },
-          unregister: function(options) {
-            var q = $q.defer();
-            $window.plugins.pushNotification.unregister(function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            }, options);
-            return q.promise;
-          },
-          setBadgeNumber: function(number) {
-            var q = $q.defer();
-            $window.plugins.pushNotification.setApplicationIconBadgeNumber(function(result) {
-              q.resolve(result);
-            }, function(error) {
-              q.reject(error);
-            }, number);
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.sms', []).factory('$cordovaSms', ['$q', function($q) {
-        return {send: function(number, message, options) {
-            var q = $q.defer();
-            sms.send(number, message, options, function(res) {
-              q.resolve(res);
-            }, function(err) {
-              q.reject(err);
-            });
-            return q.promise;
-          }};
-      }]);
-      angular.module('ngCordova.plugins.socialSharing', []).factory('$cordovaSocialSharing', ['$q', '$window', function($q, $window) {
-        return {
-          share: function(message, subject, file, link) {
-            var q = $q.defer();
-            subject = subject || null;
-            file = file || null;
-            link = link || null;
-            $window.plugins.socialsharing.share(message, subject, file, link, function() {
-              q.resolve(true);
-            }, function() {
-              q.reject(false);
-            });
-            return q.promise;
-          },
-          shareViaTwitter: function(message, file, link) {
-            var q = $q.defer();
-            file = file || null;
-            link = link || null;
-            $window.plugins.socialsharing.shareViaTwitter(message, file, link, function() {
-              q.resolve(true);
-            }, function() {
-              q.reject(false);
-            });
-            return q.promise;
-          },
-          shareViaWhatsApp: function(message, file, link) {
-            var q = $q.defer();
-            file = file || null;
-            link = link || null;
-            $window.plugins.socialsharing.shareViaWhatsApp(message, file, link, function() {
-              q.resolve(true);
-            }, function() {
-              q.reject(false);
-            });
-            return q.promise;
-          },
-          shareViaFacebook: function(message, file, link) {
-            var q = $q.defer();
-            message = message || null;
-            file = file || null;
-            link = link || null;
-            $window.plugins.socialsharing.shareViaFacebook(message, file, link, function() {
-              q.resolve(true);
-            }, function() {
-              q.reject(false);
-            });
-            return q.promise;
-          },
-          shareViaFacebookWithPasteMessageHint: function(message, file, link, pasteMessageHint) {
-            var q = $q.defer();
-            file = file || null;
-            link = link || null;
-            $window.plugins.socialsharing.shareViaFacebookWithPasteMessageHint(message, file, link, pasteMessageHint, function() {
-              q.resolve(true);
-            }, function() {
-              q.reject(false);
-            });
-            return q.promise;
-          },
-          shareViaSMS: function(message, commaSeparatedPhoneNumbers) {
-            var q = $q.defer();
-            $window.plugins.socialsharing.shareViaSMS(message, commaSeparatedPhoneNumbers, function() {
-              q.resolve(true);
-            }, function() {
-              q.reject(false);
-            });
-            return q.promise;
-          },
-          shareViaEmail: function(message, subject, toArr, ccArr, bccArr, fileArr) {
-            var q = $q.defer();
-            toArr = toArr || null;
-            ccArr = ccArr || null;
-            bccArr = bccArr || null;
-            fileArr = fileArr || null;
-            $window.plugins.socialsharing.shareViaEmail(message, subject, toArr, ccArr, bccArr, fileArr, function() {
-              q.resolve(true);
-            }, function() {
-              q.reject(false);
-            });
-            return q.promise;
-          },
-          shareVia: function(via, message, subject, file, link) {
-            var q = $q.defer();
-            message = message || null;
-            subject = subject || null;
-            file = file || null;
-            link = link || null;
-            $window.plugins.socialsharing.shareVia(via, message, subject, file, link, function() {
-              q.resolve(true);
-            }, function() {
-              q.reject(false);
-            });
-            return q.promise;
-          },
-          canShareViaEmail: function() {
-            var q = $q.defer();
-            $window.plugins.socialsharing.canShareViaEmail(function() {
-              q.resolve(true);
-            }, function() {
-              q.reject(false);
-            });
-            return q.promise;
-          },
-          canShareVia: function(via, message, subject, file, link) {
-            var q = $q.defer();
-            $window.plugins.socialsharing.canShareVia(via, message, subject, file, link, function(success) {
-              q.resolve(success);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          available: function() {
-            var q = $q.defer();
-            window.plugins.socialsharing.available(function(isAvailable) {
-              if (isAvailable) {
-                q.resolve();
-              } else {
-                q.reject();
-              }
-            });
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.spinnerDialog', []).factory('$cordovaSpinnerDialog', ['$window', function($window) {
-        return {
-          show: function(title, message, fixed) {
-            fixed = fixed || false;
-            return $window.plugins.spinnerDialog.show(title, message, fixed);
-          },
-          hide: function() {
-            return $window.plugins.spinnerDialog.hide();
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.splashscreen', []).factory('$cordovaSplashscreen', [function() {
-        return {
-          hide: function() {
-            return navigator.splashscreen.hide();
-          },
-          show: function() {
-            return navigator.splashscreen.show();
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.sqlite', []).factory('$cordovaSQLite', ['$q', '$window', function($q, $window) {
-        return {
-          openDB: function(dbName, background) {
-            if (typeof background === 'undefined') {
-              background = 0;
-            }
-            return $window.sqlitePlugin.openDatabase({
-              name: dbName,
-              bgType: background
-            });
-          },
-          execute: function(db, query, binding) {
-            var q = $q.defer();
-            db.transaction(function(tx) {
-              tx.executeSql(query, binding, function(tx, result) {
-                q.resolve(result);
-              }, function(transaction, error) {
-                q.reject(error);
-              });
-            });
-            return q.promise;
-          },
-          insertCollection: function(db, query, bindings) {
-            var q = $q.defer();
-            var coll = bindings.slice(0);
-            db.transaction(function(tx) {
-              (function insertOne() {
-                var record = coll.splice(0, 1)[0];
-                try {
-                  tx.executeSql(query, record, function(tx, result) {
-                    if (coll.length === 0) {
-                      q.resolve(result);
-                    } else {
-                      insertOne();
-                    }
-                  }, function(transaction, error) {
-                    q.reject(error);
-                    return;
-                  });
-                } catch (exception) {
-                  q.reject(exception);
-                }
-              })();
-            });
-            return q.promise;
-          },
-          nestedExecute: function(db, query1, query2, binding1, binding2) {
-            var q = $q.defer();
-            db.transaction(function(tx) {
-              tx.executeSql(query1, binding1, function(tx, result) {
-                q.resolve(result);
-                tx.executeSql(query2, binding2, function(tx, res) {
-                  q.resolve(res);
-                });
-              });
-            }, function(transaction, error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          deleteDB: function(dbName) {
-            var q = $q.defer();
-            $window.sqlitePlugin.deleteDatabase(dbName, function(success) {
-              q.resolve(success);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.statusbar', []).factory('$cordovaStatusbar', [function() {
-        return {
-          overlaysWebView: function(bool) {
-            return StatusBar.overlaysWebView(!!bool);
-          },
-          STYLES: {
-            DEFAULT: 0,
-            LIGHT_CONTENT: 1,
-            BLACK_TRANSLUCENT: 2,
-            BLACK_OPAQUE: 3
-          },
-          style: function(style) {
-            switch (style) {
-              case 0:
-                return StatusBar.styleDefault();
-              case 1:
-                return StatusBar.styleLightContent();
-              case 2:
-                return StatusBar.styleBlackTranslucent();
-              case 3:
-                return StatusBar.styleBlackOpaque();
-              default:
-                return StatusBar.styleDefault();
-            }
-          },
-          styleColor: function(color) {
-            return StatusBar.backgroundColorByName(color);
-          },
-          styleHex: function(colorHex) {
-            return StatusBar.backgroundColorByHexString(colorHex);
-          },
-          hide: function() {
-            return StatusBar.hide();
-          },
-          show: function() {
-            return StatusBar.show();
-          },
-          isVisible: function() {
-            return StatusBar.isVisible;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.toast', []).factory('$cordovaToast', ['$q', '$window', function($q, $window) {
-        return {
-          showShortTop: function(message) {
-            var q = $q.defer();
-            $window.plugins.toast.showShortTop(message, function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          showShortCenter: function(message) {
-            var q = $q.defer();
-            $window.plugins.toast.showShortCenter(message, function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          showShortBottom: function(message) {
-            var q = $q.defer();
-            $window.plugins.toast.showShortBottom(message, function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          showLongTop: function(message) {
-            var q = $q.defer();
-            $window.plugins.toast.showLongTop(message, function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          showLongCenter: function(message) {
-            var q = $q.defer();
-            $window.plugins.toast.showLongCenter(message, function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          showLongBottom: function(message) {
-            var q = $q.defer();
-            $window.plugins.toast.showLongBottom(message, function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          },
-          show: function(message, duration, position) {
-            var q = $q.defer();
-            $window.plugins.toast.show(message, duration, position, function(response) {
-              q.resolve(response);
-            }, function(error) {
-              q.reject(error);
-            });
-            return q.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.touchid', []).factory('$cordovaTouchID', ['$q', function($q) {
-        return {
-          checkSupport: function() {
-            var defer = $q.defer();
-            if (!window.cordova) {
-              defer.reject("Not supported without cordova.js");
-            } else {
-              touchid.checkSupport(function(value) {
-                defer.resolve(value);
-              }, function(err) {
-                defer.reject(err);
-              });
-            }
-            return defer.promise;
-          },
-          authenticate: function(auth_reason_text) {
-            var defer = $q.defer();
-            if (!window.cordova) {
-              defer.reject("Not supported without cordova.js");
-            } else {
-              touchid.authenticate(function(value) {
-                defer.resolve(value);
-              }, function(err) {
-                defer.reject(err);
-              }, auth_reason_text);
-            }
-            return defer.promise;
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.vibration', []).factory('$cordovaVibration', [function() {
-        return {
-          vibrate: function(times) {
-            return navigator.notification.vibrate(times);
-          },
-          vibrateWithPattern: function(pattern, repeat) {
-            return navigator.notification.vibrateWithPattern(pattern, repeat);
-          },
-          cancelVibration: function() {
-            return navigator.notification.cancelVibration();
-          }
-        };
-      }]);
-      angular.module('ngCordova.plugins.videoCapturePlus', []).provider('$cordovaVideoCapturePlus', [function() {
-        var defaultOptions = {};
-        this.setLimit = function setLimit(limit) {
-          defaultOptions.limit = limit;
-        };
-        this.setMaxDuration = function setMaxDuration(seconds) {
-          defaultOptions.duration = seconds;
-        };
-        this.setHighQuality = function setHighQuality(highquality) {
-          defaultOptions.highquality = highquality;
-        };
-        this.useFrontCamera = function useFrontCamera(frontcamera) {
-          defaultOptions.frontcamera = frontcamera;
-        };
-        this.setPortraitOverlay = function setPortraitOverlay(imageUrl) {
-          defaultOptions.portraitOverlay = imageUrl;
-        };
-        this.setLandscapeOverlay = function setLandscapeOverlay(imageUrl) {
-          defaultOptions.landscapeOverlay = imageUrl;
-        };
-        this.setOverlayText = function setOverlayText(text) {
-          defaultOptions.overlayText = text;
-        };
-        this.$get = ['$q', '$window', function($q, $window) {
-          return {captureVideo: function(options) {
-              var q = $q.defer();
-              if (!$window.plugins.videocaptureplus) {
-                q.resolve(null);
-                return q.promise;
-              }
-              $window.plugins.videocaptureplus.captureVideo(q.resolve, q.reject, angular.extend({}, defaultOptions, options));
-              return q.promise;
-            }};
-        }];
-      }]);
-      angular.module('ngCordova.plugins.zip', []).factory('$cordovaZip', ['$q', '$window', function($q, $window) {
-        return {unzip: function(source, destination) {
-            var q = $q.defer();
-            $window.zip.unzip(source, destination, function(isError) {
-              if (isError === 0) {
-                q.resolve();
-              } else {
-                q.reject();
-              }
-            }, function(progressEvent) {
-              q.notify(progressEvent);
-            });
-            return q.promise;
-          }};
-      }]);
-    })();
-  })();
-  return _retrieveGlobal();
-});
-
-System.registerDynamic("npm:ng-cordova@0.1.17-alpha", ["npm:ng-cordova@0.1.17-alpha/dist/ng-cordova"], true, function(req, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = req('npm:ng-cordova@0.1.17-alpha/dist/ng-cordova');
-  global.define = __define;
-  return module.exports;
-});
-
-System.register('libraries/ng-cordova/ng-cordova.js', ['github:angular/bower-angular@1.4.6', 'npm:ng-cordova@0.1.17-alpha'], function (_export) {
-  'use strict';
-
-  var angular, ngCordova;
-  return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
-    }, function (_npmNgCordova0117Alpha) {
-      ngCordova = _npmNgCordova0117Alpha['default'];
-    }],
-    execute: function () {
-      _export('default', angular.module('toc.libraries.ng-cordova', ['ngCordova']));
     }
   };
 });
@@ -65675,13 +60722,13 @@ System.registerDynamic("npm:qr-image@3.1.0", ["npm:qr-image@3.1.0/lib/qr"], true
   return module.exports;
 });
 
-System.register('libraries/qr-image/qr-image.js', ['github:angular/bower-angular@1.4.6', 'npm:qr-image@3.1.0'], function (_export) {
+System.register('libraries/qr-image/qr-image.js', ['github:angular/bower-angular@1.4.7', 'npm:qr-image@3.1.0'], function (_export) {
   'use strict';
 
   var angular, qrImage;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_npmQrImage310) {
       qrImage = _npmQrImage310['default'];
     }],
@@ -68254,13 +63301,13 @@ System.registerDynamic("npm:ramda@0.17.1", ["npm:ramda@0.17.1/dist/ramda"], true
   return module.exports;
 });
 
-System.register('libraries/ramda/ramda.js', ['github:angular/bower-angular@1.4.6', 'npm:ramda@0.17.1'], function (_export) {
+System.register('libraries/ramda/ramda.js', ['github:angular/bower-angular@1.4.7', 'npm:ramda@0.17.1'], function (_export) {
   'use strict';
 
   var angular, R;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_npmRamda0171) {
       R = _npmRamda0171['default'];
     }],
@@ -68272,7 +63319,7 @@ System.register('libraries/ramda/ramda.js', ['github:angular/bower-angular@1.4.6
   };
 });
 
-System.registerDynamic("npm:remotestoragejs@0.12.0/release/0.12.0/remotestorage", [], false, function(__require, __exports, __module) {
+System.registerDynamic("npm:remotestoragejs@0.12.1/release/stable/remotestorage", [], false, function(__require, __exports, __module) {
   var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
   (function() {
     var CHARS = this["CHARS"];
@@ -72056,6 +67103,7 @@ System.registerDynamic("npm:remotestoragejs@0.12.0/release/0.12.0/remotestorage"
         'http://webfist.org/spec/rel': 'webfist',
         'http://webfinger.net/rel/avatar': 'avatar',
         'remotestorage': 'remotestorage',
+        'http://tools.ietf.org/id/draft-dejong-remotestorage': 'remotestorage',
         'remoteStorage': 'remotestorage',
         'http://www.packetizer.com/rel/share': 'share',
         'http://webfinger.net/rel/profile-page': 'profile',
@@ -72075,7 +67123,7 @@ System.registerDynamic("npm:remotestoragejs@0.12.0/release/0.12.0/remotestorage"
         'share': [],
         'profile': [],
         'webfist': [],
-        'camilstore': []
+        'camlistore': []
       };
       var URIS = ['webfinger', 'host-meta', 'host-meta.json'];
       function _err(obj) {
@@ -72245,6 +67293,22 @@ System.registerDynamic("npm:remotestoragejs@0.12.0/release/0.12.0/remotestorage"
           });
         }
         setTimeout(_call, 0);
+      };
+      WebFinger.prototype.lookupLink = function(address, rel, cb) {
+        if (LINK_PROPERTIES.hasOwnProperty(rel)) {
+          this.lookup(address, function(err, p) {
+            var links = p.idx.links[rel];
+            if (err) {
+              cb(err);
+            } else if (links.length === 0) {
+              cb('no links found with rel="' + rel + '"');
+            } else {
+              cb(null, links[0]);
+            }
+          });
+        } else {
+          cb('unsupported rel ' + rel);
+        }
       };
       if (typeof window === 'object') {
         window.WebFinger = WebFinger;
@@ -77858,27 +72922,25 @@ System.registerDynamic("npm:remotestoragejs@0.12.0/release/0.12.0/remotestorage"
   return _retrieveGlobal();
 });
 
-System.registerDynamic("npm:remotestoragejs@0.12.0", ["npm:remotestoragejs@0.12.0/release/0.12.0/remotestorage"], true, function(req, exports, module) {
+System.registerDynamic("npm:remotestoragejs@0.12.1", ["npm:remotestoragejs@0.12.1/release/stable/remotestorage"], true, function(req, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = req('npm:remotestoragejs@0.12.0/release/0.12.0/remotestorage');
+  module.exports = req('npm:remotestoragejs@0.12.1/release/stable/remotestorage');
   global.define = __define;
   return module.exports;
 });
 
-System.register('libraries/remote-storage/remote-storage.js', ['github:angular/bower-angular@1.4.6', 'npm:remotestoragejs@0.12.0'], function (_export) {
+System.register('libraries/remote-storage/remote-storage.js', ['github:angular/bower-angular@1.4.7', 'npm:remotestoragejs@0.12.1'], function (_export) {
   'use strict';
 
-  // custom fork of remoteStorage v0.11.2 with cordova oauth support
-  // TODO: remoteStorage v0.12.x should obsolete this, migrate when available
   var angular, remoteStorage;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
-    }, function (_npmRemotestoragejs0120) {
-      remoteStorage = _npmRemotestoragejs0120['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
+    }, function (_npmRemotestoragejs0121) {
+      remoteStorage = _npmRemotestoragejs0121['default'];
     }],
     execute: function () {
       _export('default', angular.module('toc.libraries.remote-storage', []).factory('remoteStorage', /*@ngInject*/function () {
@@ -99738,7 +94800,7 @@ System.registerDynamic("libraries/telehash/telehash-library.js", [], false, func
   return _retrieveGlobal();
 });
 
-System.register('libraries/telehash/telehash.js', ['github:angular/bower-angular@1.4.6', 'libraries/telehash/telehash-library.js'], function (_export) {
+System.register('libraries/telehash/telehash.js', ['github:angular/bower-angular@1.4.7', 'libraries/telehash/telehash-library.js'], function (_export) {
   'use strict';
 
   // custom browserify build of telehash v2 that includes all dependencies
@@ -99746,8 +94808,8 @@ System.register('libraries/telehash/telehash.js', ['github:angular/bower-angular
   //TODO: keep up with telehash v3 development and blockname
   var angular, th;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_librariesTelehashTelehashLibraryJs) {
       th = _librariesTelehashTelehashLibraryJs['default'];
     }],
@@ -99759,13 +94821,13 @@ System.register('libraries/telehash/telehash.js', ['github:angular/bower-angular
   };
 });
 
-System.register('libraries/libraries.js', ['github:angular/bower-angular@1.4.6', 'libraries/baobab/baobab.js', 'libraries/forge/forge.js', 'libraries/ionic/ionic.js', 'libraries/moment/moment.js', 'libraries/ng-cordova/ng-cordova.js', 'libraries/qr-image/qr-image.js', 'libraries/ramda/ramda.js', 'libraries/remote-storage/remote-storage.js', 'libraries/telehash/telehash.js'], function (_export) {
+System.register('libraries/libraries.js', ['github:angular/bower-angular@1.4.7', 'libraries/baobab/baobab.js', 'libraries/forge/forge.js', 'libraries/ionic/ionic.js', 'libraries/moment/moment.js', 'libraries/qr-image/qr-image.js', 'libraries/ramda/ramda.js', 'libraries/remote-storage/remote-storage.js', 'libraries/telehash/telehash.js'], function (_export) {
   'use strict';
 
-  var angular, Baobab, forge, ionic, moment, ngCordova, qrImage, ramda, remoteStorage, telehash;
+  var angular, Baobab, forge, ionic, moment, qrImage, ramda, remoteStorage, telehash;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_librariesBaobabBaobabJs) {
       Baobab = _librariesBaobabBaobabJs['default'];
     }, function (_librariesForgeForgeJs) {
@@ -99774,8 +94836,6 @@ System.register('libraries/libraries.js', ['github:angular/bower-angular@1.4.6',
       ionic = _librariesIonicIonicJs['default'];
     }, function (_librariesMomentMomentJs) {
       moment = _librariesMomentMomentJs['default'];
-    }, function (_librariesNgCordovaNgCordovaJs) {
-      ngCordova = _librariesNgCordovaNgCordovaJs['default'];
     }, function (_librariesQrImageQrImageJs) {
       qrImage = _librariesQrImageQrImageJs['default'];
     }, function (_librariesRamdaRamdaJs) {
@@ -99786,7 +94846,7 @@ System.register('libraries/libraries.js', ['github:angular/bower-angular@1.4.6',
       telehash = _librariesTelehashTelehashJs['default'];
     }],
     execute: function () {
-      _export('default', angular.module('toc.libraries', [Baobab.name, forge.name, ionic.name, moment.name, ngCordova.name, qrImage.name, ramda.name, remoteStorage.name, telehash.name]));
+      _export('default', angular.module('toc.libraries', [Baobab.name, forge.name, ionic.name, moment.name, qrImage.name, ramda.name, remoteStorage.name, telehash.name]));
     }
   };
 });
@@ -100022,13 +95082,13 @@ System.register('services/buffer/buffer-service.js', [], function (_export) {
   };
 });
 
-System.register('services/buffer/buffer.js', ['github:angular/bower-angular@1.4.6', 'services/buffer/buffer-service.js'], function (_export) {
+System.register('services/buffer/buffer.js', ['github:angular/bower-angular@1.4.7', 'services/buffer/buffer-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesBufferBufferServiceJs) {
       service = _servicesBufferBufferServiceJs['default'];
       serviceName = _servicesBufferBufferServiceJs.serviceName;
@@ -100126,13 +95186,13 @@ System.register('services/channels/channels-service.js', [], function (_export) 
   };
 });
 
-System.register('services/channels/channels.js', ['github:angular/bower-angular@1.4.6', 'services/channels/channels-service.js'], function (_export) {
+System.register('services/channels/channels.js', ['github:angular/bower-angular@1.4.7', 'services/channels/channels-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesChannelsChannelsServiceJs) {
       service = _servicesChannelsChannelsServiceJs['default'];
       serviceName = _servicesChannelsChannelsServiceJs.serviceName;
@@ -100344,13 +95404,13 @@ System.register('services/contacts/contacts-service.js', [], function (_export) 
   };
 });
 
-System.register('services/contacts/contacts.js', ['github:angular/bower-angular@1.4.6', 'services/contacts/contacts-service.js'], function (_export) {
+System.register('services/contacts/contacts.js', ['github:angular/bower-angular@1.4.7', 'services/contacts/contacts-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesContactsContactsServiceJs) {
       service = _servicesContactsContactsServiceJs['default'];
       serviceName = _servicesContactsContactsServiceJs.serviceName;
@@ -100650,13 +95710,13 @@ System.register('services/cryptography/cryptography-service.js', [], function (_
   };
 });
 
-System.register('services/cryptography/cryptography.js', ['github:angular/bower-angular@1.4.6', 'services/cryptography/cryptography-service.js'], function (_export) {
+System.register('services/cryptography/cryptography.js', ['github:angular/bower-angular@1.4.7', 'services/cryptography/cryptography-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesCryptographyCryptographyServiceJs) {
       service = _servicesCryptographyCryptographyServiceJs['default'];
       serviceName = _servicesCryptographyCryptographyServiceJs.serviceName;
@@ -100810,13 +95870,13 @@ System.register('services/devices/devices-service.js', [], function (_export) {
   };
 });
 
-System.register('services/devices/devices.js', ['github:angular/bower-angular@1.4.6', 'services/devices/devices-service.js'], function (_export) {
+System.register('services/devices/devices.js', ['github:angular/bower-angular@1.4.7', 'services/devices/devices-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesDevicesDevicesServiceJs) {
       service = _servicesDevicesDevicesServiceJs['default'];
       serviceName = _servicesDevicesDevicesServiceJs.serviceName;
@@ -100961,13 +96021,13 @@ System.register('services/identity/identity-service.js', [], function (_export) 
   };
 });
 
-System.register('services/identity/identity.js', ['github:angular/bower-angular@1.4.6', 'services/identity/identity-service.js'], function (_export) {
+System.register('services/identity/identity.js', ['github:angular/bower-angular@1.4.7', 'services/identity/identity-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesIdentityIdentityServiceJs) {
       service = _servicesIdentityIdentityServiceJs['default'];
       serviceName = _servicesIdentityIdentityServiceJs.serviceName;
@@ -101147,13 +96207,13 @@ System.register('services/messages/messages-service.js', [], function (_export) 
   };
 });
 
-System.register('services/messages/messages.js', ['github:angular/bower-angular@1.4.6', 'services/messages/messages-service.js'], function (_export) {
+System.register('services/messages/messages.js', ['github:angular/bower-angular@1.4.7', 'services/messages/messages-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesMessagesMessagesServiceJs) {
       service = _servicesMessagesMessagesServiceJs['default'];
       serviceName = _servicesMessagesMessagesServiceJs.serviceName;
@@ -101361,13 +96421,13 @@ System.register('services/navigation/navigation-service.js', [], function (_expo
   };
 });
 
-System.register('services/navigation/navigation.js', ['github:angular/bower-angular@1.4.6', 'services/navigation/navigation-service.js'], function (_export) {
+System.register('services/navigation/navigation.js', ['github:angular/bower-angular@1.4.7', 'services/navigation/navigation-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesNavigationNavigationServiceJs) {
       service = _servicesNavigationNavigationServiceJs['default'];
       serviceName = _servicesNavigationNavigationServiceJs.serviceName;
@@ -101729,13 +96789,13 @@ System.register('services/network/network-service.js', [], function (_export) {
   };
 });
 
-System.register('services/network/network.js', ['github:angular/bower-angular@1.4.6', 'services/network/network-service.js'], function (_export) {
+System.register('services/network/network.js', ['github:angular/bower-angular@1.4.7', 'services/network/network-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesNetworkNetworkServiceJs) {
       service = _servicesNetworkNetworkServiceJs['default'];
       serviceName = _servicesNetworkNetworkServiceJs.serviceName;
@@ -101754,7 +96814,7 @@ System.register('services/notifications/notifications-service.js', [], function 
   _export('default', notifications);
 
   /*@ngInject*/
-  function notifications($cordovaLocalNotification, $rootScope, $window, $log, $timeout, $q, devices, cryptography, identity, navigation, state, R) {
+  function notifications($rootScope, $window, $log, $timeout, $q, devices, cryptography, identity, navigation, state, R) {
     var contacts = undefined;
     var activeWebNotifications = {};
     // cordovaLocalNotification uses number IDs
@@ -101782,29 +96842,29 @@ System.register('services/notifications/notifications-service.js', [], function 
       return state.cloud.messages.get([channelId, messageId, 'messageInfo', 'content']);
     };
 
-    var notifyCordova = function notifyCordova(notificationInfo) {
-      var channelId = notificationInfo.id;
-      var channelCursor = state.cloud.channels.select([channelId]);
-      var contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
-      var contactCursor = state.cloud.contacts.select(contactId);
-      var contactInfo = contactCursor.get('userInfo');
-
-      var icon = identity.getAvatar(contactInfo);
-      var title = contactInfo.displayName || 'Anonymous';
-      var text = getNotificationMessage(notificationInfo.id);
-
-      var cordovaNotificationInfo = {
-        id: notificationInfo.cordovaNotificationId,
-        title: title,
-        text: text,
-        icon: icon,
-        sound: 'res://platform_default',
-        smallIcon: 'res://icon.png',
-        data: notificationInfo
-      };
-
-      return $cordovaLocalNotification.schedule(cordovaNotificationInfo);
-    };
+    // let notifyCordova = function notifyCordova(notificationInfo) {
+    //   let channelId = notificationInfo.id;
+    //   let channelCursor = state.cloud.channels.select([channelId]);
+    //   let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
+    //   let contactCursor = state.cloud.contacts.select(contactId);
+    //   let contactInfo = contactCursor.get('userInfo');
+    //
+    //   let icon = identity.getAvatar(contactInfo);
+    //   let title = contactInfo.displayName || 'Anonymous';
+    //   let text = getNotificationMessage(notificationInfo.id);
+    //
+    //   let cordovaNotificationInfo = {
+    //     id: notificationInfo.cordovaNotificationId,
+    //     title,
+    //     text,
+    //     icon,
+    //     sound: 'res://platform_default',
+    //     smallIcon: 'res://icon.png',
+    //     data: notificationInfo
+    //   };
+    //
+    //   return $cordovaLocalNotification.schedule(cordovaNotificationInfo);
+    // };
 
     var notifyWeb = function notifyWeb(notificationInfo) {
       if (!$window.Notification) {
@@ -101881,13 +96941,13 @@ System.register('services/notifications/notifications-service.js', [], function 
       return notifySystem('Something went wrong. ' + 'Please contact the developer for further troubleshooting.');
     };
 
-    var dismissCordova = function dismissCordova(notificationInfo) {
-      return $cordovaLocalNotification.clear(notificationInfo.cordovaNotificationId)
-      // needed to avoid notifications poping up on next device startup
-      .then(function () {
-        return $cordovaLocalNotification.cancel(notificationInfo.cordovaNotificationId);
-      });
-    };
+    // let dismissCordova = function dismissCordova(notificationInfo) {
+    //   return $cordovaLocalNotification
+    //     .clear(notificationInfo.cordovaNotificationId)
+    //     // needed to avoid notifications poping up on next device startup
+    //     .then(() => $cordovaLocalNotification
+    //       .cancel(notificationInfo.cordovaNotificationId));
+    // };
 
     var dismissWeb = function dismissWeb(notificationInfo) {
       if (!$window.Notification) {
@@ -101945,17 +97005,6 @@ System.register('services/notifications/notifications-service.js', [], function 
       });
     };
 
-    $rootScope.$on('$cordovaLocalNotification:click', function (event, notification) {
-      var viewId = JSON.parse(notification.data).id;
-
-      if (viewId === 'home') {
-        return navigation.navigate(viewId);
-      }
-
-      var channelId = viewId;
-      return handleNotificationClick(channelId);
-    });
-
     var initialize = function initialize(contactsService) {
       contacts = contactsService;
 
@@ -101986,13 +97035,13 @@ System.register('services/notifications/notifications-service.js', [], function 
   };
 });
 
-System.register('services/notifications/notifications.js', ['github:angular/bower-angular@1.4.6', 'services/notifications/notifications-service.js'], function (_export) {
+System.register('services/notifications/notifications.js', ['github:angular/bower-angular@1.4.7', 'services/notifications/notifications-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesNotificationsNotificationsServiceJs) {
       service = _servicesNotificationsNotificationsServiceJs['default'];
       serviceName = _servicesNotificationsNotificationsServiceJs.serviceName;
@@ -102110,13 +97159,13 @@ System.register('services/session/session-service.js', [], function (_export) {
   };
 });
 
-System.register('services/session/session.js', ['github:angular/bower-angular@1.4.6', 'services/session/session-service.js'], function (_export) {
+System.register('services/session/session.js', ['github:angular/bower-angular@1.4.7', 'services/session/session-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesSessionSessionServiceJs) {
       service = _servicesSessionSessionServiceJs['default'];
       serviceName = _servicesSessionSessionServiceJs.serviceName;
@@ -102379,13 +97428,13 @@ System.register('services/state/state-service.js', [], function (_export) {
   };
 });
 
-System.register('services/state/state.js', ['github:angular/bower-angular@1.4.6', 'services/state/state-service.js'], function (_export) {
+System.register('services/state/state.js', ['github:angular/bower-angular@1.4.7', 'services/state/state-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesStateStateServiceJs) {
       service = _servicesStateStateServiceJs['default'];
       serviceName = _servicesStateStateServiceJs.serviceName;
@@ -102501,13 +97550,13 @@ System.register('services/status/status-service.js', [], function (_export) {
   };
 });
 
-System.register('services/status/status.js', ['github:angular/bower-angular@1.4.6', 'services/status/status-service.js'], function (_export) {
+System.register('services/status/status.js', ['github:angular/bower-angular@1.4.7', 'services/status/status-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesStatusStatusServiceJs) {
       service = _servicesStatusStatusServiceJs['default'];
       serviceName = _servicesStatusStatusServiceJs.serviceName;
@@ -102976,13 +98025,13 @@ System.register('services/storage/storage-service.js', [], function (_export) {
   };
 });
 
-System.register('services/storage/storage.js', ['github:angular/bower-angular@1.4.6', 'services/storage/storage-service.js'], function (_export) {
+System.register('services/storage/storage.js', ['github:angular/bower-angular@1.4.7', 'services/storage/storage-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesStorageStorageServiceJs) {
       service = _servicesStorageStorageServiceJs['default'];
       serviceName = _servicesStorageStorageServiceJs.serviceName;
@@ -103062,13 +98111,13 @@ System.register('services/time/time-service.js', [], function (_export) {
   };
 });
 
-System.register('services/time/time.js', ['github:angular/bower-angular@1.4.6', 'services/time/time-service.js'], function (_export) {
+System.register('services/time/time.js', ['github:angular/bower-angular@1.4.7', 'services/time/time-service.js'], function (_export) {
   'use strict';
 
   var angular, service, serviceName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesTimeTimeServiceJs) {
       service = _servicesTimeTimeServiceJs['default'];
       serviceName = _servicesTimeTimeServiceJs.serviceName;
@@ -103079,13 +98128,13 @@ System.register('services/time/time.js', ['github:angular/bower-angular@1.4.6', 
   };
 });
 
-System.register('services/services.js', ['github:angular/bower-angular@1.4.6', 'services/buffer/buffer.js', 'services/channels/channels.js', 'services/contacts/contacts.js', 'services/cryptography/cryptography.js', 'services/devices/devices.js', 'services/identity/identity.js', 'services/messages/messages.js', 'services/navigation/navigation.js', 'services/network/network.js', 'services/notifications/notifications.js', 'services/session/session.js', 'services/state/state.js', 'services/status/status.js', 'services/storage/storage.js', 'services/time/time.js'], function (_export) {
+System.register('services/services.js', ['github:angular/bower-angular@1.4.7', 'services/buffer/buffer.js', 'services/channels/channels.js', 'services/contacts/contacts.js', 'services/cryptography/cryptography.js', 'services/devices/devices.js', 'services/identity/identity.js', 'services/messages/messages.js', 'services/navigation/navigation.js', 'services/network/network.js', 'services/notifications/notifications.js', 'services/session/session.js', 'services/state/state.js', 'services/status/status.js', 'services/storage/storage.js', 'services/time/time.js'], function (_export) {
   'use strict';
 
   var angular, buffer, channels, contacts, cryptography, devices, identity, messages, navigation, network, notifications, session, state, status, storage, time;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_servicesBufferBufferJs) {
       buffer = _servicesBufferBufferJs['default'];
     }, function (_servicesChannelsChannelsJs) {
@@ -103186,13 +98235,13 @@ System.register('views/channel/channel-config.js', ['views/channel/channel.html!
   };
 });
 
-System.register('views/channel/channel.js', ['github:angular/bower-angular@1.4.6', 'views/channel/channel-config.js', 'views/channel/channel-controller.js'], function (_export) {
+System.register('views/channel/channel.js', ['github:angular/bower-angular@1.4.7', 'views/channel/channel-config.js', 'views/channel/channel-controller.js'], function (_export) {
   'use strict';
 
   var angular, config, controller, controllerName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_viewsChannelChannelConfigJs) {
       config = _viewsChannelChannelConfigJs['default'];
     }, function (_viewsChannelChannelControllerJs) {
@@ -103278,13 +98327,13 @@ System.register('views/home/home-config.js', ['views/home/home.html!github:syste
   };
 });
 
-System.register('views/home/home.js', ['github:angular/bower-angular@1.4.6', 'views/home/home-config.js', 'views/home/home-controller.js'], function (_export) {
+System.register('views/home/home.js', ['github:angular/bower-angular@1.4.7', 'views/home/home-config.js', 'views/home/home-controller.js'], function (_export) {
   'use strict';
 
   var angular, config, controller, controllerName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_viewsHomeHomeConfigJs) {
       config = _viewsHomeHomeConfigJs['default'];
     }, function (_viewsHomeHomeControllerJs) {
@@ -103374,13 +98423,13 @@ System.register('views/welcome/welcome-config.js', ['views/welcome/welcome.html!
   };
 });
 
-System.register('views/welcome/welcome.js', ['github:angular/bower-angular@1.4.6', 'views/welcome/welcome-config.js', 'views/welcome/welcome-controller.js'], function (_export) {
+System.register('views/welcome/welcome.js', ['github:angular/bower-angular@1.4.7', 'views/welcome/welcome-config.js', 'views/welcome/welcome-controller.js'], function (_export) {
   'use strict';
 
   var angular, config, controller, controllerName;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_viewsWelcomeWelcomeConfigJs) {
       config = _viewsWelcomeWelcomeConfigJs['default'];
     }, function (_viewsWelcomeWelcomeControllerJs) {
@@ -103393,13 +98442,13 @@ System.register('views/welcome/welcome.js', ['github:angular/bower-angular@1.4.6
   };
 });
 
-System.register('views/views.js', ['github:angular/bower-angular@1.4.6', 'views/channel/channel.js', 'views/home/home.js', 'views/welcome/welcome.js'], function (_export) {
+System.register('views/views.js', ['github:angular/bower-angular@1.4.7', 'views/channel/channel.js', 'views/home/home.js', 'views/welcome/welcome.js'], function (_export) {
   'use strict';
 
   var angular, channel, home, welcome;
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_viewsChannelChannelJs) {
       channel = _viewsChannelChannelJs['default'];
     }, function (_viewsHomeHomeJs) {
@@ -103536,7 +98585,7 @@ System.register('app-config.js', ['app.html!github:systemjs/plugin-text@0.0.2', 
   };
 });
 
-System.register('app.js', ['github:angular/bower-angular@1.4.6', 'components/components.js', 'libraries/libraries.js', 'services/services.js', 'views/views.js', 'app-run.js', 'app-config.js', 'app-controller.js'], function (_export) {
+System.register('app.js', ['github:angular/bower-angular@1.4.7', 'components/components.js', 'libraries/libraries.js', 'services/services.js', 'views/views.js', 'app-run.js', 'app-config.js', 'app-controller.js'], function (_export) {
   'use strict';
 
   var angular, components, libraries, services, views, run, config, controller, controllerName, appName;
@@ -103550,8 +98599,8 @@ System.register('app.js', ['github:angular/bower-angular@1.4.6', 'components/com
   }
 
   return {
-    setters: [function (_githubAngularBowerAngular146) {
-      angular = _githubAngularBowerAngular146['default'];
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
     }, function (_componentsComponentsJs) {
       components = _componentsComponentsJs['default'];
     }, function (_librariesLibrariesJs) {
