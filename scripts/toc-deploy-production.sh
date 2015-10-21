@@ -5,6 +5,10 @@ $TOC_VERSION=$(git describe --abbrev=0 --tags)
 
 npm version $TOC_VERSION
 
+if $?!=0; then
+  exit 0
+fi
+
 git push origin
 
 gulp build --prod

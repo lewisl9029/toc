@@ -11,6 +11,7 @@ cat <<ALIASES
     -p 8101:8101 \
     -v $TOC_PATH:/toc \
     -v $TOC_PATH/cache/ionic:/root/.ionic \
+    -v $TOC_PATH/cache/jspm:/root/.jspm \
     -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
     lewisl9029/toc-dev:latest \
     "$@""

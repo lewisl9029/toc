@@ -1,12 +1,11 @@
 /* jshint node: true */
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
-var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('gulp-autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
-var header = require('gulp-header');
+var replace = require('gulp-replace');
 var imagemin = require('gulp-imagemin');
 var minifyCss = require('gulp-minify-css');
 var minifyHtml = require('gulp-minify-html');
@@ -110,7 +109,7 @@ gulp.task('build', function build(done) {
     'clean-build',
     'uncache-jspm',
     ['build-js', 'build-html', 'build-sass', 'build-asset'],
-    ['inject-js', 'rename-js'],
+    ['replace-js', 'replace-html'],
     // 'cache-jspm',
     handleBuildError
   );
@@ -147,26 +146,36 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('rename-js', function injectJs() {
+gulp.task('replace-html', function replaceHtml() {
   return gulp.src([
-      basePaths.prodApp + 'dependencies/system-csp-production.src.js',
+      basePaths.prodApp + 'index.html',
     ], {
       base: basePaths.prodApp
     })
-    .pipe(rename('dependencies/system.src.js'))
+    .pipe(replace(
+      'dependencies/system.src.js',
+      'dependencies/system-csp-production.src.js'
+    ))
     .pipe(gulp.dest(basePaths.prodApp));
 });
 
-gulp.task('inject-js', function injectJs() {
+gulp.task('replace-js', function replaceJs() {
   var tocVersion = require('./package.json').version;
   return gulp.src([
-      basePaths.prodApp + 'initialize.js',
+      basePaths.prod + 'landing.js',
+      basePaths.prodApp + 'initialize.js'
     ], {
-      base: basePaths.prodApp
+      base: basePaths.prod
     })
-    .pipe(header('window.tocVersion="' + tocVersion + '";'))
-    .pipe(gulpif(argv.prod, header('window.tocProd=true;')))
-    .pipe(gulp.dest(basePaths.prodApp));
+    .pipe(replace(
+      'window.tocVersion=\'dev\';',
+      'window.tocVersion=\'' + tocVersion + '\';'
+    ))
+    .pipe(gulpif(argv.prod, replace(
+      'window.tocProd=false;',
+      'window.tocProd=true;'
+    )))
+    .pipe(gulp.dest(basePaths.prod));
 });
 
 gulp.task('build-jspm', ['bundle-jspm'], function buildJspm() {
