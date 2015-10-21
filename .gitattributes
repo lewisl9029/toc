@@ -1,5 +1,6 @@
 * text eol=lf
 
+*.ai binary
 *.vsdx binary
 *.docx binary
 *.pdf binary

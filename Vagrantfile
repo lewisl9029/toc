@@ -2,8 +2,16 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "puphpet/ubuntu1404-x64"
-  config.vm.provision :shell, path: "toc-setup-env.sh", privileged: false
-  config.vm.provision :shell, path: "vagrant-provision.sh", privileged: false
+  config.vm.provision :shell, path: "scripts/toc-setup-env.sh",
+    args: \
+      "#{ENV['TOC_HOST_IP']} " + \
+      "#{ENV['JSPM_GITHUB_AUTH_TOKEN']} " + \
+      "#{ENV['IONIC_EMAIL']} " + \
+      "#{ENV['IONIC_PASSWORD']} " \
+    ,
+    privileged: false
+  config.vm.provision :shell, path: "scripts/toc-setup-vagrant.sh",
+    privileged: false
 
   # toc ports
   config.vm.network "forwarded_port", guest: 8100, host: 8100 # http server
@@ -31,13 +39,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider "hyperv" do |vm, override|
     override.vm.box = "ericmann/trusty64"
-    begin
-      require_relative "secrets/vagrant-secrets"
-
-      override.vm.synced_folder ".", "/home/vagrant/toc",
-        smb_username: SMB_USERNAME, smb_password: SMB_PASSWORD
-    rescue LoadError
-      override.vm.synced_folder ".", "/home/vagrant/toc"
-    end
+    override.vm.synced_folder ".", "/home/vagrant/toc",
+      smb_username: ENV['SMB_USERNAME'],
+      smb_password: ENV['SMB_PASSWORD']
   end
 end

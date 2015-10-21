@@ -1,0 +1,56 @@
+# machine:
+#   services:
+#     - docker
+
+machine:
+  node:
+    version: 4.2.1
+
+general:
+  branches:
+    ignore:
+      - gh-pages
+      - toc-dev
+
+dependencies:
+  cache_directories:
+    # - "/var/lib/docker"
+    - "toc/app/dependencies"
+    - "~/nvm/versions/node/v4.2.1/lib/node_modules"
+    - "~/nvm/versions/node/v4.2.1/bin"
+  pre:
+    - /bin/bash scripts/toc-install-deps.sh
+  override:
+    - npm install
+    - npm rebuild node-sass
+    - npm rebuild optipng-bin
+    - jspm install
+    # - >
+    #     docker run \
+    #       -v $(pwd):/toc \
+    #       lewisl9029/toc-dev:latest \
+    #       npm install
+    # - >
+    #     docker run \
+    #       -v $(pwd):/toc \
+    #       -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
+    #       lewisl9029/toc-dev:latest \
+    #       jspm install
+
+test:
+  override:
+    - echo "no tests =/"
+
+deployment:
+  staging:
+    branch: /.*/
+    owner: lewisl9029
+    commands:
+      - /bin/bash scripts/toc-deploy-prepare.sh
+      - /bin/bash scripts/toc-deploy-staging.sh
+  production:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: lewisl9029
+    commands:
+      - /bin/bash scripts/toc-deploy-prepare.sh
+      - /bin/bash scripts/toc-deploy-production.sh

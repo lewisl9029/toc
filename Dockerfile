@@ -3,11 +3,8 @@ FROM node:4.2.1
 MAINTAINER Lewis Liu
 
 # installing npm dependencies
-RUN npm install -g npm@3.3.8 && npm cache clean
-RUN npm install -g gulp-cli@0.3.0 && npm cache clean
-RUN npm install -g http-server@0.8.5 && npm cache clean
-RUN npm install -g ionic@1.7.1 && npm cache clean
-RUN npm install -g jspm@0.16.12 && npm cache clean
+COPY ./scripts/toc-install-deps.sh /root/toc-install-deps.sh
+RUN /bin/bash /root/toc-install-deps.sh
 
 # expose ionic serve, livereload
 EXPOSE 8100 8101
@@ -16,5 +13,6 @@ EXPOSE 8100 8101
 WORKDIR /toc
 VOLUME /toc
 VOLUME /root/.ionic
+VOLUME /root/.jspm
 
 CMD ["bash"]
