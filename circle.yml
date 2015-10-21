@@ -50,7 +50,6 @@ deployment:
       - /bin/bash scripts/toc-deploy-staging.sh
   production:
     tag: /v[0-9]+(\.[0-9]+)*/
-    branch: master
     owner: lewisl9029
     commands:
       - /bin/bash scripts/toc-deploy-prepare.sh
