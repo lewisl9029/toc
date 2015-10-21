@@ -10,29 +10,26 @@
       <ion-radio class="item item-avatar toc-square-avatar toc-cloud-service-item"
         ng-repeat="(id, service) in ::cloudConnectModal.services track by id"
         ng-model="cloudConnectModal.selectedService" ng-value="::id">
-        <img ng-src="assets/images/{{::service.img}}"
+        <img ng-src="{{::service.image}}"
           alt="Icon for {{::service.name}}" />
         <h2>{{::service.name}}</h2>
         <p>{{::service.description}}</p>
       </ion-radio>
-      <!-- <label class="item item-input item-stacked-label">
-        <span class="input-label">Email</span>
-        <input type="password" placeholder="Your remoteStorage.io email."
-          ng-model="cloudConnectModal.email" toc-auto-focus>
-      </label> -->
     </div>
   </ion-content>
   <div class="bar bar-subfooter">
     <div class="col">
-      <a onclick="window.open('https://remotestorage.io/get/', '_system');"
-        class="button button-block button-positive button-outline">
+      <button class="button button-block button-calm button-outline"
+        ng-click="::cloudConnectModal.openWindow(
+          'https://remotestorage.io/get/'
+        )">
         Get a storage account
-      </a>
+      </button>
     </div>
   </div>
   <ion-footer-bar>
     <div class="col">
-      <button class="button button-block button-calm button-outline"
+      <button class="button button-block button-positive button-outline"
         ng-click="::cloudConnectModal.removeModal()">
         Cancel
       </button>

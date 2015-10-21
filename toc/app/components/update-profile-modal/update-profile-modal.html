@@ -35,16 +35,18 @@
   </ion-content>
   <div class="bar bar-subfooter">
     <div class="col">
-      <a onclick="window.open('https://www.libravatar.org/', '_system');"
-        class="button button-block button-positive button-outline">
+      <button class="button button-block button-calm button-outline"
+        ng-click="::updateProfileModal.openWindow(
+          'https://www.libravatar.org/'
+        )">
         Change your email avatar
-      </a>
+      </button>
     </div>
   </div>
   <ion-footer-bar>
     <div class="col">
       <button type="button"
-        class="button button-block button-calm button-outline"
+        class="button button-block button-positive button-outline"
         ng-click="::updateProfileModal.removeModal()">
         Cancel
       </button>

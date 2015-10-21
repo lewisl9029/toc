@@ -33,7 +33,7 @@ $toc-highlight-text-color-dark: #6eaeba;
 
 $toc-primary-background-gradient: radial-gradient(
   ellipse farthest-side at 0px 0px,
-  $toc-secondary-bg-color-dark 0%,
+  $toc-primary-bg-color-dark 0%,
   $toc-primary-bg-color-dark 100%
 );
 
@@ -259,12 +259,12 @@ a {
   position: absolute;
   top: 0;
   left: 0;
-  width: 90vh;
+  width: 90vmin;
   max-width: 100%;
-  height: 90vh;
+  height: 90vmin;
   background-image: $toc-primary-background-gradient;
   background-repeat: no-repeat;
-  background-size: 90vh 90vh;
+  background-size: 90vmin 90vmin;
 }
 
 .toc-main-content {

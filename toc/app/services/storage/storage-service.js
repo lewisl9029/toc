@@ -13,12 +13,42 @@ export default /*@ngInject*/ function storage(
   const DEFAULT_ACCESS_LEVEL = 'rw';
   const STORAGE_MODULE_PREFIX = 'toc-state-';
   const KEY_SEPARATOR = '.';
+  const SERVICES = {
+    remotestorage: {
+      id: 'remotestorage',
+      name: 'remoteStorage',
+      description: 'An open protocol for web storage',
+      image: 'assets/images/remotestorage.svg'
+    },
+    dropbox: {
+      id: 'dropbox',
+      name: 'Dropbox',
+      description: '(Coming soon)',
+      image: 'assets/images/dropbox.svg'
+    },
+    googledrive: {
+      id: 'googledrive',
+      name: 'Google Drive',
+      description: '(Coming soon)',
+      image: 'assets/images/googledrive.svg'
+    }
+  };
 
   let getStorageKey = R.join(KEY_SEPARATOR);
 
-  let connect = function connect(email) {
-    remoteStorage.setCordovaRedirectUri('http://toc.im');
-    return $q.when(remoteStorage.connect(email));
+  let connect = function connect(options) {
+    switch (options.serviceId) {
+      case SERVICES.remotestorage.id:
+        remoteStorage.setCordovaRedirectUri('http://toc.im');
+        return $q.when(remoteStorage.connect(options.email));
+        break;
+      case SERVICES.dropbox.id:
+        return $q.when(remoteStorage.dropbox.connect());
+        break;
+      case SERVICES.googledrive.id:
+        return $q.when(remoteStorage.googledrive.connect());
+        break;
+    }
   };
 
   let isConnected = function isConnected() {
@@ -226,6 +256,10 @@ export default /*@ngInject*/ function storage(
 
     let initialize = function initialize() {
       privateClient.cache('');
+      remoteStorage.setApiKeys('dropbox', { appKey: 'j95l4gw6vc02csa' });
+      remoteStorage.setApiKeys('googledrive', {
+        clientId: ' 993124685715-l90kf80r8dgu5a1h89jul1efe25lsm2k.apps.googleusercontent.com '
+      });
     };
 
     return {
@@ -428,6 +462,7 @@ export default /*@ngInject*/ function storage(
 
   let storageService = {
     KEY_SEPARATOR,
+    SERVICES,
     enableLogging,
     prepare,
     getStorageKey,

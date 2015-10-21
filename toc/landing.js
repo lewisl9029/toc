@@ -1,5 +1,9 @@
 (function initialize(window) {
   'use strict';
+
+  window.tocVersion = 'dev';
+  window.tocProd = false;
+
   var queryString = window.location.search;
 
   if (queryString.substr(0, 10) === '?inviteid=') {
@@ -47,8 +51,11 @@
   var appLinks = window.document.getElementsByClassName('toc-app-link');
 
   var appLinkHandler = function appLinkHandler(event) {
+    event.preventDefault();
     tocBody.classList.add('toc-hide');
-    return setTimeout(function() {}, 1000);
+    return setTimeout(function() {
+      window.location.href = 'app/';
+    }, 1000);
   };
 
   window.Array.prototype.forEach.call(appLinks,

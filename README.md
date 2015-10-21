@@ -4,7 +4,7 @@ Commits to this branch will trigger a new [Docker Hub Automated Build](https://h
 
 # Toc Messenger
 
-[![Stories in Ready](https://badge.waffle.io/lewisl9029/toc.png?label=ready&title=Ready)](https://waffle.io/lewisl9029/toc)
+[![Circle CI](https://circleci.com/gh/lewisl9029/toc.svg?style=svg&circle-token=1b2ccd52352469342382def79f8154faf0955c73)](https://circleci.com/gh/lewisl9029/toc)
 
 VERY ROUGH DRAFT:
 

@@ -1,12 +1,11 @@
 /* jshint node: true */
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
-var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('gulp-autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
-var header = require('gulp-header');
+var replace = require('gulp-replace');
 var imagemin = require('gulp-imagemin');
 var minifyCss = require('gulp-minify-css');
 var minifyHtml = require('gulp-minify-html');
@@ -23,9 +22,24 @@ function handleError(error) {
   this.emit('end');
 };
 
+// fixes runsequence always exiting with 0 even on errors
+// http://dev.topheman.com/gulp-fail-run-sequence-with-a-correct-exit-code/
+var handleSequenceError = function (error, done) {
+  //if any error happened in the previous tasks, exit with a code > 0
+  if (error) {
+    var exitCode = 1;
+    console.log('[ERROR] gulp sequenced task failed', error);
+    console.log('[FAIL] gulp sequenced task failed - exiting with code ' + exitCode);
+    return process.exit(exitCode);
+  }
+  else {
+    return done();
+  }
+};
+
 var basePaths = {
   dev: './toc/',
-  app: './toc/app/',
+  devApp: './toc/app/',
   prod: './www/',
   prodApp: './www/app/',
   mobile: './mobile/',
@@ -35,35 +49,35 @@ var basePaths = {
 var paths = {
   sass: {
     app: [
-      basePaths.app + 'components/**/*.scss',
-      basePaths.app + 'libraries/**/*.scss',
-      basePaths.app + 'views/**/*.scss',
-      basePaths.app + 'app.scss'
+      basePaths.devApp + 'components/**/*.scss',
+      basePaths.devApp + 'libraries/**/*.scss',
+      basePaths.devApp + 'views/**/*.scss',
+      basePaths.devApp + 'app.scss'
     ],
     init: [
-      basePaths.app + 'initialize.scss'
+      basePaths.devApp + 'initialize.scss'
     ],
     landing: [
       basePaths.dev + 'landing.scss'
     ]
   },
   js: [
-    basePaths.app + 'components/**/*.js',
-    basePaths.app + 'libraries/**/*.js',
-    basePaths.app + 'services/**/*.js',
-    basePaths.app + 'views/**/*.js',
-    basePaths.app + '*.js',
+    basePaths.devApp + 'components/**/*.js',
+    basePaths.devApp + 'libraries/**/*.js',
+    basePaths.devApp + 'services/**/*.js',
+    basePaths.devApp + 'views/**/*.js',
+    basePaths.devApp + '*.js',
     basePaths.dev + '*.js',
     './*.js'
   ],
   html: [
-    basePaths.app + 'components/**/*.html',
-    basePaths.app + 'views/**/*.html',
-    basePaths.app + '*.html',
+    basePaths.devApp + 'components/**/*.html',
+    basePaths.devApp + 'views/**/*.html',
+    basePaths.devApp + '*.html',
     basePaths.dev + '*.html'
   ],
   asset: [
-    basePaths.app + 'assets/**'
+    basePaths.devApp + 'assets/**'
   ]
 };
 
@@ -90,51 +104,111 @@ gulp.task('clean-build', function clean(done) {
   ], done);
 });
 
-gulp.task('clean-package', function cleanPackage(done) {
-  return del([
-    basePaths.mobile + '**'
-  ], done);
-});
-
 gulp.task('build', function build(done) {
   return runSequence(
     'clean-build',
     'uncache-jspm',
     ['build-js', 'build-html', 'build-sass', 'build-asset'],
-    ['inject-js', 'rename-js'],
     // 'cache-jspm',
-    done
+    function (error) {
+      return handleSequenceError(error, done);
+    }
   );
 });
 
-gulp.task('package', ['build', 'clean-package'], function package() {
+gulp.task('package', function package(done) {
+  var handlePackageError = function (error) {
+    runSequence(
+      ['uninject-cordova', 'unfix-ionic'],
+      function() {
+        return handleSequenceError(error, done);
+      }
+    );
+  };
+
+  if (argv['skip-build']) {
+    return runSequence(
+      ['inject-cordova', 'fix-ionic'],
+      ['package-android'],
+      ['uninject-cordova', 'unfix-ionic'],
+      handlePackageError
+    );
+  }
+  return runSequence(
+    'build',
+    ['inject-cordova', 'fix-ionic'],
+    ['package-android'],
+    ['uninject-cordova', 'unfix-ionic'],
+    handlePackageError
+  );
+});
+
+gulp.task('inject-cordova', function injectCordova() {
+  return gulp.src([
+      basePaths.prodApp + 'index.html'
+    ], {
+      base: basePaths.prodApp
+    })
+    .pipe(replace(
+      '</body>',
+      '<script src="../cordova.js"></script></body>'
+    ))
+    .pipe(gulp.dest(basePaths.prodApp));
+});
+
+gulp.task('uninject-cordova', function injectCordova() {
+  return gulp.src([
+      basePaths.prodApp + 'index.html'
+    ], {
+      base: basePaths.prodApp
+    })
+    .pipe(replace(
+      '<script src="../cordova.js"></script></body>',
+      '</body>'
+    ))
+    .pipe(gulp.dest(basePaths.prodApp));
+});
+
+gulp.task('fix-ionic', function fixIonic() {
+  //FIXME: workaround for
+  // https://github.com/driftyco/ionic-cli/issues/620
+  return gulp.src('ionic.project')
+    .pipe(replace(
+      '"documentRoot": "toc"',
+      '"documentRoot": "www"'
+    ))
+    .pipe(gulp.dest('./'));
+});
+
+gulp.task('unfix-ionic', function unfixIonic() {
+  return gulp.src('ionic.project')
+    .pipe(replace(
+      '"documentRoot": "www"',
+      '"documentRoot": "toc"'
+    ))
+    .pipe(gulp.dest('./'));
+});
+
+gulp.task('package-android', function packageAndroid() {
   return gulp.src('')
     .pipe(shell(
-      'ionic build android && ' +
-      'mkdir -p ' + basePaths.mobile + ' && ' +
-      'cp ' + basePaths.platforms +
-        'android/build/outputs/apk/* ' +
-        basePaths.mobile
+      'ionic package build android'
     ));
-    //FIXME: release build throws error on install
-    // .pipe(shell('ionic build android' + (argv.prod ? ' --release' : '')))
 });
 
 gulp.task('run', function run() {
   return gulp.src('')
     .pipe(shell(
       'ionic run --device --livereload --livereload-port 8101 ' +
-      '--external-address $TOC_HOST_IP android'
+        '--external-address $TOC_HOST_IP android'
     ));
 });
 
-gulp.task('build-js', ['build-jspm'], function buildJs() {
+gulp.task('build-js', ['replace-js', 'build-jspm'], function buildJs() {
   return gulp.src([
-      basePaths.app + 'dependencies/system-csp-production.src.js',
-      basePaths.app + 'dependencies/system-polyfills.js',
-      basePaths.app + 'jspm-config.js',
-      basePaths.app + 'initialize.js',
-      basePaths.dev + 'landing.js',
+      basePaths.devApp + 'dependencies/system-csp-production.src.js',
+      basePaths.devApp + 'dependencies/system-polyfills.js',
+      basePaths.devApp + 'jspm-config.js'
     ], {
       base: basePaths.dev
     })
@@ -142,24 +216,24 @@ gulp.task('build-js', ['build-jspm'], function buildJs() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('rename-js', function injectJs() {
+gulp.task('replace-js', function replaceJs() {
+  var tocVersion = require('./package.json').version;
   return gulp.src([
-      basePaths.prodApp + 'dependencies/system-csp-production.src.js',
+      basePaths.devApp + 'initialize.js',
+      basePaths.dev + 'landing.js'
     ], {
-      base: basePaths.prodApp
+      base: basePaths.dev
     })
-    .pipe(rename('dependencies/system.src.js'))
-    .pipe(gulp.dest(basePaths.prodApp));
-});
-
-gulp.task('inject-js', function injectJs() {
-  return gulp.src([
-      basePaths.prodApp + 'initialize.js',
-    ], {
-      base: basePaths.prodApp
-    })
-    .pipe(gulpif(argv.prod, header('window.tocProd=true;')))
-    .pipe(gulp.dest(basePaths.prodApp));
+    .pipe(replace(
+      'window.tocVersion = \'dev\';',
+      'window.tocVersion = \'' + tocVersion + '\';'
+    ))
+    .pipe(gulpif(argv.prod, replace(
+      'window.tocProd = false',
+      'window.tocProd = true'
+    )))
+    .pipe(gulpif(argv.prod, uglify()))
+    .pipe(gulp.dest(basePaths.prod));
 });
 
 gulp.task('build-jspm', ['bundle-jspm'], function buildJspm() {
@@ -192,10 +266,9 @@ gulp.task('cache-jspm', function cacheJspm() {
     ]));
 });
 
-gulp.task('build-html', function buildHtml() {
+gulp.task('build-html', ['replace-html'], function buildHtml() {
   return gulp.src([
-      basePaths.app + 'index.html',
-      basePaths.dev + 'index.html',
+      basePaths.dev + 'index.html'
     ], {
       base: basePaths.dev
     })
@@ -203,33 +276,48 @@ gulp.task('build-html', function buildHtml() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('build-asset', function buildAsset() {
+gulp.task('replace-html', function replaceHtml() {
   return gulp.src([
-      basePaths.app + 'assets/**'
+      basePaths.devApp + 'index.html'
+    ], {
+      base: basePaths.dev
+    })
+    .pipe(replace(
+      'dependencies/system.src.js',
+      'dependencies/system-csp-production.src.js'
+    ))
+    .pipe(gulpif(argv.prod, minifyHtml()))
+    .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('build-asset', ['build-image', 'build-font']);
+
+gulp.task('build-font', function buildFont() {
+  return gulp.src([
+      basePaths.devApp + 'assets/fonts/**'
     ], {
       base: basePaths.dev
     })
     .pipe(gulp.dest(basePaths.prod));
 });
 
-//not part of build because this only needs to run occassionaly for new images
 gulp.task('build-image', function buildImage() {
   return gulp.src([
-      basePaths.app + 'assets/images/**'
+      basePaths.devApp + 'assets/images/**'
     ], {
       base: basePaths.dev
     })
-    .pipe(imagemin({
+    .pipe(gulpif(argv.prod, imagemin({
       optimizationLevel: 7,
       multipass: true
-    }))
-    .pipe(gulp.dest(basePaths.dev));
+    })))
+    .pipe(gulp.dest(basePaths.prod));
 });
 
 gulp.task('build-sass', ['bundle-sass'], function buildSass() {
   return gulp.src([
-      basePaths.app + 'app.css',
-      basePaths.app + 'initialize.css',
+      basePaths.devApp + 'app.css',
+      basePaths.devApp + 'initialize.css',
       basePaths.dev + 'landing.css'
     ], {
       base: basePaths.dev
@@ -256,11 +344,11 @@ var makeSassTask = function makeSassTask(sassPath) {
 };
 
 gulp.task('bundle-sass-app', function bundleSass() {
-  return makeSassTask(basePaths.app + 'app.scss');
+  return makeSassTask(basePaths.devApp + 'app.scss');
 });
 
 gulp.task('bundle-sass-init', function bundleSass() {
-  return makeSassTask(basePaths.app + 'initialize.scss');
+  return makeSassTask(basePaths.devApp + 'initialize.scss');
 });
 
 gulp.task('bundle-sass-landing', function bundleSass() {
