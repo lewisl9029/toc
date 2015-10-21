@@ -6,16 +6,13 @@
 	.st0{fill:url(#SVGID_1_);}
 	.st1{opacity:0.8;fill:#FFFFFF;enable-background:new    ;}
 </style>
-<g>
-	
-		<radialGradient id="SVGID_1_" cx="221.7984" cy="-531.1727" r="202.1664" fx="68.5244" fy="-635.6114" gradientTransform="matrix(1 0 0 -1 -168 -180)" gradientUnits="userSpaceOnUse">
-		<stop  offset="0" style="stop-color:#C6E1E7"/>
-		<stop  offset="0" style="stop-color:#B2D0DE"/>
-	</radialGradient>
-	<path class="st0" d="M262.8,375c0-69.4-86-125.6-192-125.6s-192,56.2-192,125.6s86,125.6,192,125.6c14.3,0,28.2-1,41.6-3l0,0
-		l92.7,47.4L191,472.9C234.8,449.9,262.8,414.5,262.8,375L262.8,375z"/>
-	<circle class="st1" cx="2.5" cy="381" r="20.4"/>
-	<circle class="st1" cx="74" cy="381" r="20.4"/>
-	<circle class="st1" cx="145.5" cy="381" r="20.4"/>
-</g>
+<radialGradient id="SVGID_1_" cx="220.8869" cy="-531.4125" r="201.1134" fx="68.4112" fy="-635.3073" gradientTransform="matrix(1 0 0 -1 -168 -180)" gradientUnits="userSpaceOnUse">
+	<stop  offset="0" style="stop-color:#C6E1E7"/>
+	<stop  offset="0" style="stop-color:#B2D0DE"/>
+</radialGradient>
+<path class="st0" d="M260.8,375.1c0-69.1-85.5-125-191-125s-191,55.9-191,125s85.5,125,191,125c14.2,0,28.1-1,41.4-2.9l0,0
+	l92.2,47.2l-14-71.8C232.9,449.6,260.8,414.5,260.8,375.1L260.8,375.1z"/>
+<circle class="st1" cx="-7.9" cy="376.1" r="23.1"/>
+<circle class="st1" cx="73" cy="376.1" r="23.1"/>
+<circle class="st1" cx="153.9" cy="376.1" r="23.1"/>
 </svg>
