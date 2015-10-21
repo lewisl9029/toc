@@ -1,6 +1,11 @@
-FROM node:4.2.1
+FROM node:4.2.1-slim
 
 MAINTAINER Lewis Liu
+
+RUN apt-get update && apt-get install -y \
+  git && \
+  apt-get clean && \
+  rm -rf /tmp/* /var/tmp/*
 
 # installing npm dependencies
 COPY ./scripts/toc-install-deps.sh /root/toc-install-deps.sh

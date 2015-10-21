@@ -1,6 +1,5 @@
 export let serviceName = 'notifications';
 export default /*@ngInject*/ function notifications(
-  $cordovaLocalNotification,
   $rootScope,
   $window,
   $log,
@@ -42,29 +41,29 @@ export default /*@ngInject*/ function notifications(
     ]);
   };
 
-  let notifyCordova = function notifyCordova(notificationInfo) {
-    let channelId = notificationInfo.id;
-    let channelCursor = state.cloud.channels.select([channelId]);
-    let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
-    let contactCursor = state.cloud.contacts.select(contactId);
-    let contactInfo = contactCursor.get('userInfo');
-
-    let icon = identity.getAvatar(contactInfo);
-    let title = contactInfo.displayName || 'Anonymous';
-    let text = getNotificationMessage(notificationInfo.id);
-
-    let cordovaNotificationInfo = {
-      id: notificationInfo.cordovaNotificationId,
-      title,
-      text,
-      icon,
-      sound: 'res://platform_default',
-      smallIcon: 'res://icon.png',
-      data: notificationInfo
-    };
-
-    return $cordovaLocalNotification.schedule(cordovaNotificationInfo);
-  };
+  // let notifyCordova = function notifyCordova(notificationInfo) {
+  //   let channelId = notificationInfo.id;
+  //   let channelCursor = state.cloud.channels.select([channelId]);
+  //   let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
+  //   let contactCursor = state.cloud.contacts.select(contactId);
+  //   let contactInfo = contactCursor.get('userInfo');
+  //
+  //   let icon = identity.getAvatar(contactInfo);
+  //   let title = contactInfo.displayName || 'Anonymous';
+  //   let text = getNotificationMessage(notificationInfo.id);
+  //
+  //   let cordovaNotificationInfo = {
+  //     id: notificationInfo.cordovaNotificationId,
+  //     title,
+  //     text,
+  //     icon,
+  //     sound: 'res://platform_default',
+  //     smallIcon: 'res://icon.png',
+  //     data: notificationInfo
+  //   };
+  //
+  //   return $cordovaLocalNotification.schedule(cordovaNotificationInfo);
+  // };
 
   let notifyWeb = function notifyWeb(notificationInfo) {
     if (!$window.Notification) {
@@ -147,13 +146,13 @@ export default /*@ngInject*/ function notifications(
     );
   };
 
-  let dismissCordova = function dismissCordova(notificationInfo) {
-    return $cordovaLocalNotification
-      .clear(notificationInfo.cordovaNotificationId)
-      // needed to avoid notifications poping up on next device startup
-      .then(() => $cordovaLocalNotification
-        .cancel(notificationInfo.cordovaNotificationId));
-  };
+  // let dismissCordova = function dismissCordova(notificationInfo) {
+  //   return $cordovaLocalNotification
+  //     .clear(notificationInfo.cordovaNotificationId)
+  //     // needed to avoid notifications poping up on next device startup
+  //     .then(() => $cordovaLocalNotification
+  //       .cancel(notificationInfo.cordovaNotificationId));
+  // };
 
   let dismissWeb = function dismissWeb(notificationInfo) {
     if (!$window.Notification) {
@@ -207,17 +206,6 @@ export default /*@ngInject*/ function notifications(
       .then(() => navigation.navigate(channelId))
       .then(() => state.save(channelCursor, ['viewingLatest'], true));
   };
-
-  $rootScope.$on('$cordovaLocalNotification:click', (event, notification) => {
-    let viewId = JSON.parse(notification.data).id;
-
-    if (viewId === 'home') {
-      return navigation.navigate(viewId);
-    }
-
-    let channelId = viewId;
-    return handleNotificationClick(channelId);
-  });
 
   let initialize = function initialize(contactsService) {
     contacts = contactsService;
