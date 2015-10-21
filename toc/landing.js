@@ -1,8 +1,8 @@
 (function initialize(window) {
   'use strict';
 
-  window.tocVersion='dev';
-  window.tocProd=false;
+  window.tocVersion = 'dev';
+  window.tocProd = false;
 
   var queryString = window.location.search;
 

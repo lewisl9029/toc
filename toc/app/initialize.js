@@ -1,8 +1,8 @@
 (function initialize(window) {
   'use strict';
 
-  window.tocVersion='dev';
-  window.tocProd=false;
+  window.tocVersion = 'dev';
+  window.tocProd = false;
 
   var initializeApp = function initializeApp() {
     var disableLogging = function disableLogging() {

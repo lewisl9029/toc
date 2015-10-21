@@ -3,7 +3,12 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "puphpet/ubuntu1404-x64"
   config.vm.provision :shell, path: "scripts/toc-setup-env.sh",
-    args: "#{ENV['TOC_HOST_IP']} #{ENV['JSPM_GITHUB_AUTH_TOKEN']}",
+    args: "
+      #{ENV['TOC_HOST_IP']} \
+      #{ENV['JSPM_GITHUB_AUTH_TOKEN']} \
+      #{ENV['IONIC_EMAIL']} \
+      #{ENV['IONIC_PASSWORD']} \
+    ",
     privileged: false
   config.vm.provision :shell, path: "scripts/toc-setup-vagrant.sh",
     privileged: false

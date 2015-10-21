@@ -12,7 +12,10 @@ cat <<ALIASES
     -v $TOC_PATH:/toc \
     -v $TOC_PATH/cache/ionic:/root/.ionic \
     -v $TOC_PATH/cache/jspm:/root/.jspm \
+    -e TOC_HOST_IP=$TOC_HOST_IP \
     -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
+    -e IONIC_EMAIL=$IONIC_EMAIL \
+    -e IONIC_PASSWORD=$IONIC_PASSWORD \
     lewisl9029/toc-dev:latest \
     "$@""
 
