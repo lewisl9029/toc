@@ -3,7 +3,7 @@ set -e
 
 TOC_VERSION="$(git describe --abbrev=0 --tags)"
 
-# abort without error if version didn't change
+# abort without error if version tag didn't change
 npm version $TOC_VERSION || exit 0
 
 git push origin

@@ -292,7 +292,7 @@ gulp.task('replace-html', function replaceHtml() {
 
 gulp.task('build-asset', ['build-image', 'build-font']);
 
-gulp.task('build-font', , function buildFont() {
+gulp.task('build-font', function buildFont() {
   return gulp.src([
       basePaths.devApp + 'assets/fonts/**'
     ], {

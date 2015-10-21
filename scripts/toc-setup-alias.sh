@@ -22,6 +22,9 @@ cat <<ALIASES
   alias tocb="tocg \
     build "$@""
 
+  alias tocd="toci \
+    package download "$@""
+
   alias tocg="toc \
     gulp "$@""
 
