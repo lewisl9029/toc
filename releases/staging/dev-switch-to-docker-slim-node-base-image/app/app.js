@@ -96814,7 +96814,7 @@ System.register('services/notifications/notifications-service.js', [], function 
   _export('default', notifications);
 
   /*@ngInject*/
-  function notifications($cordovaLocalNotification, $rootScope, $window, $log, $timeout, $q, devices, cryptography, identity, navigation, state, R) {
+  function notifications($rootScope, $window, $log, $timeout, $q, devices, cryptography, identity, navigation, state, R) {
     var contacts = undefined;
     var activeWebNotifications = {};
     // cordovaLocalNotification uses number IDs
@@ -96842,29 +96842,29 @@ System.register('services/notifications/notifications-service.js', [], function 
       return state.cloud.messages.get([channelId, messageId, 'messageInfo', 'content']);
     };
 
-    var notifyCordova = function notifyCordova(notificationInfo) {
-      var channelId = notificationInfo.id;
-      var channelCursor = state.cloud.channels.select([channelId]);
-      var contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
-      var contactCursor = state.cloud.contacts.select(contactId);
-      var contactInfo = contactCursor.get('userInfo');
-
-      var icon = identity.getAvatar(contactInfo);
-      var title = contactInfo.displayName || 'Anonymous';
-      var text = getNotificationMessage(notificationInfo.id);
-
-      var cordovaNotificationInfo = {
-        id: notificationInfo.cordovaNotificationId,
-        title: title,
-        text: text,
-        icon: icon,
-        sound: 'res://platform_default',
-        smallIcon: 'res://icon.png',
-        data: notificationInfo
-      };
-
-      return $cordovaLocalNotification.schedule(cordovaNotificationInfo);
-    };
+    // let notifyCordova = function notifyCordova(notificationInfo) {
+    //   let channelId = notificationInfo.id;
+    //   let channelCursor = state.cloud.channels.select([channelId]);
+    //   let contactId = channelCursor.get(['channelInfo', 'contactIds'])[0];
+    //   let contactCursor = state.cloud.contacts.select(contactId);
+    //   let contactInfo = contactCursor.get('userInfo');
+    //
+    //   let icon = identity.getAvatar(contactInfo);
+    //   let title = contactInfo.displayName || 'Anonymous';
+    //   let text = getNotificationMessage(notificationInfo.id);
+    //
+    //   let cordovaNotificationInfo = {
+    //     id: notificationInfo.cordovaNotificationId,
+    //     title,
+    //     text,
+    //     icon,
+    //     sound: 'res://platform_default',
+    //     smallIcon: 'res://icon.png',
+    //     data: notificationInfo
+    //   };
+    //
+    //   return $cordovaLocalNotification.schedule(cordovaNotificationInfo);
+    // };
 
     var notifyWeb = function notifyWeb(notificationInfo) {
       if (!$window.Notification) {
@@ -96941,13 +96941,13 @@ System.register('services/notifications/notifications-service.js', [], function 
       return notifySystem('Something went wrong. ' + 'Please contact the developer for further troubleshooting.');
     };
 
-    var dismissCordova = function dismissCordova(notificationInfo) {
-      return $cordovaLocalNotification.clear(notificationInfo.cordovaNotificationId)
-      // needed to avoid notifications poping up on next device startup
-      .then(function () {
-        return $cordovaLocalNotification.cancel(notificationInfo.cordovaNotificationId);
-      });
-    };
+    // let dismissCordova = function dismissCordova(notificationInfo) {
+    //   return $cordovaLocalNotification
+    //     .clear(notificationInfo.cordovaNotificationId)
+    //     // needed to avoid notifications poping up on next device startup
+    //     .then(() => $cordovaLocalNotification
+    //       .cancel(notificationInfo.cordovaNotificationId));
+    // };
 
     var dismissWeb = function dismissWeb(notificationInfo) {
       if (!$window.Notification) {
@@ -97004,17 +97004,6 @@ System.register('services/notifications/notifications-service.js', [], function 
         return state.save(channelCursor, ['viewingLatest'], true);
       });
     };
-
-    $rootScope.$on('$cordovaLocalNotification:click', function (event, notification) {
-      var viewId = JSON.parse(notification.data).id;
-
-      if (viewId === 'home') {
-        return navigation.navigate(viewId);
-      }
-
-      var channelId = viewId;
-      return handleNotificationClick(channelId);
-    });
 
     var initialize = function initialize(contactsService) {
       contacts = contactsService;
