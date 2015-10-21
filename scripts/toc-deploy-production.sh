@@ -11,6 +11,7 @@ git tag -d $TOC_VERSION
 npm version $TOC_VERSION || exit 0
 
 git push origin :refs/tags/$TOC_VERSION
+git push origin
 git push origin --tags
 
 gulp package --prod
