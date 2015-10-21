@@ -10,7 +10,6 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
     },
     controllerAs: 'beginConversationModal',
     controller: /*@ngInject*/ function BeginConversationModalController(
-      $cordovaBarcodeScanner,
       $ionicPopup,
       $log,
       $q,
@@ -111,8 +110,16 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           text: 'Scan a picture ID',
           isEnabled: this.isCordovaApp,
           doInvite: () => {
-            if (this.isCordovaApp) {
-              return $cordovaBarcodeScanner.scan()
+            let barcodeScanner = $window.cordova.plugins.barcodeScanner;
+            if (this.isCordovaApp && barcodeScanner) {
+              let scanningBarcode = $q.defer();
+
+              barcodeScanner.scan(
+                (barcodeData) => scanningBarcode.resolve(barcodeData),
+                (error) => scanningBarcode.reject(error)
+              );
+
+              return scanningBarcode.promise
                 .then((barcodeData) => {
                   if (barcodeData.cancelled) {
                     throw new Error('contacts: qr reader cancelled');

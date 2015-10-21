@@ -1,4 +1,5 @@
 .idea
+/npm-debug.log
 /.vagrant
 /.vagrant.vmware
 /.vagrant.virtualbox
