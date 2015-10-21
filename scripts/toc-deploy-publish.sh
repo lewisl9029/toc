@@ -12,7 +12,7 @@ tar -cvf $CIRCLE_ARTIFACTS/www.tar www
 cd toc-pages
 
 git add -A .
-git commit -m "Updated release $TOC_RELEASE"
+git commit --allow-empty -m "Updated release $TOC_RELEASE"
 git push origin
 
 cd ..
