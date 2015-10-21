@@ -117,7 +117,8 @@ $toc-background-gradient-dark: radial-gradient(
 }
 
 .toc-loading-screen-hiding {
-  animation: tocLoadingSlideOutTop 1s 1s ease-in-out both;
+  opacity: 0;
+  transition: opacity 0.4s 1s ease-out;
   .toc-loading-screen-logo-container {
     animation: tocLoadingFadeOutBottom 1s $toc-animation-timing-function both;
   }
