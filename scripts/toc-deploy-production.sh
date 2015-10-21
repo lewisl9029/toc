@@ -1,17 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
-$TOC_VERSION=$(git describe --abbrev=0 --tags)
+TOC_VERSION="$(git describe --abbrev=0 --tags)"
 
-npm version $TOC_VERSION
-
-if $?!=0; then
-  exit 0
-fi
+# abort without error if version didn't change
+npm version $TOC_VERSION || exit 0
 
 git push origin
 
-gulp build --prod
+gulp package --prod
 
 rm -rf toc-pages/releases/$TOC_VERSION
 rm -rf toc-pages/app

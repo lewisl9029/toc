@@ -22,6 +22,21 @@ function handleError(error) {
   this.emit('end');
 };
 
+// fixes runsequence always exiting with 0 even on errors
+// http://dev.topheman.com/gulp-fail-run-sequence-with-a-correct-exit-code/
+var handleSequenceError = function (error, done) {
+  //if any error happened in the previous tasks, exit with a code > 0
+  if (error) {
+    var exitCode = 1;
+    console.log('[ERROR] gulp sequenced task failed', error);
+    console.log('[FAIL] gulp sequenced task failed - exiting with code ' + exitCode);
+    return process.exit(exitCode);
+  }
+  else {
+    return done();
+  }
+};
+
 var basePaths = {
   dev: './toc/',
   devApp: './toc/app/',
@@ -90,33 +105,91 @@ gulp.task('clean-build', function clean(done) {
 });
 
 gulp.task('build', function build(done) {
-  // fixes runsequence always exiting with 0 even on errors
-  // http://dev.topheman.com/gulp-fail-run-sequence-with-a-correct-exit-code/
-  var handleBuildError = function (error) {
-    //if any error happened in the previous tasks, exit with a code > 0
-    if (error) {
-      var exitCode = 2;
-      console.log('[ERROR] gulp build task failed', error);
-      console.log('[FAIL] gulp build task failed - exiting with code ' + exitCode);
-      return process.exit(exitCode);
-    }
-    else {
-      return done();
-    }
-  };
-
   return runSequence(
     'clean-build',
     'uncache-jspm',
     ['build-js', 'build-html', 'build-sass', 'build-asset'],
     // 'cache-jspm',
-    handleBuildError
+    function (error) {
+      return handleSequenceError(error, done);
+    }
   );
 });
 
-gulp.task('package', ['build'], function package() {
-  //FIXME: doesn't work yet due to
+gulp.task('package', function package(done) {
+  var handlePackageError = function (error) {
+    runSequence(
+      ['uninject-cordova', 'unfix-ionic'],
+      function() {
+        return handleSequenceError(error, done);
+      }
+    );
+  };
+
+  if (argv['skip-build']) {
+    return runSequence(
+      ['inject-cordova', 'fix-ionic'],
+      ['package-android'],
+      ['uninject-cordova', 'unfix-ionic'],
+      handlePackageError
+    );
+  }
+  return runSequence(
+    'build',
+    ['inject-cordova', 'fix-ionic'],
+    ['package-android'],
+    ['uninject-cordova', 'unfix-ionic'],
+    handlePackageError
+  );
+});
+
+gulp.task('inject-cordova', function injectCordova() {
+  return gulp.src([
+      basePaths.prodApp + 'index.html'
+    ], {
+      base: basePaths.prodApp
+    })
+    .pipe(replace(
+      '</body>',
+      '<script src="../cordova.js"></script></body>'
+    ))
+    .pipe(gulp.dest(basePaths.prodApp));
+});
+
+gulp.task('uninject-cordova', function injectCordova() {
+  return gulp.src([
+      basePaths.prodApp + 'index.html'
+    ], {
+      base: basePaths.prodApp
+    })
+    .pipe(replace(
+      '<script src="../cordova.js"></script></body>',
+      '</body>'
+    ))
+    .pipe(gulp.dest(basePaths.prodApp));
+});
+
+gulp.task('fix-ionic', function fixIonic() {
+  //FIXME: workaround for
   // https://github.com/driftyco/ionic-cli/issues/620
+  return gulp.src('ionic.project')
+    .pipe(replace(
+      '"documentRoot": "toc"',
+      '"documentRoot": "www"'
+    ))
+    .pipe(gulp.dest('./'));
+});
+
+gulp.task('unfix-ionic', function unfixIonic() {
+  return gulp.src('ionic.project')
+    .pipe(replace(
+      '"documentRoot": "www"',
+      '"documentRoot": "toc"'
+    ))
+    .pipe(gulp.dest('./'));
+});
+
+gulp.task('package-android', function packageAndroid() {
   return gulp.src('')
     .pipe(shell(
       'ionic package build android'
@@ -127,7 +200,7 @@ gulp.task('run', function run() {
   return gulp.src('')
     .pipe(shell(
       'ionic run --device --livereload --livereload-port 8101 ' +
-      '--external-address $TOC_HOST_IP android'
+        '--external-address $TOC_HOST_IP android'
     ));
 });
 
@@ -217,27 +290,28 @@ gulp.task('replace-html', function replaceHtml() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('build-asset', function buildAsset() {
+gulp.task('build-asset', ['build-image', 'build-font']);
+
+gulp.task('build-font', , function buildFont() {
   return gulp.src([
-      basePaths.devApp + 'assets/**'
+      basePaths.devApp + 'assets/fonts/**'
     ], {
       base: basePaths.dev
     })
     .pipe(gulp.dest(basePaths.prod));
 });
 
-//not part of build because this only needs to run occassionaly for new images
 gulp.task('build-image', function buildImage() {
   return gulp.src([
       basePaths.devApp + 'assets/images/**'
     ], {
       base: basePaths.dev
     })
-    .pipe(imagemin({
+    .pipe(gulpif(argv.prod, imagemin({
       optimizationLevel: 7,
       multipass: true
-    }))
-    .pipe(gulp.dest(basePaths.dev));
+    })))
+    .pipe(gulp.dest(basePaths.prod));
 });
 
 gulp.task('build-sass', ['bundle-sass'], function buildSass() {

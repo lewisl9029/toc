@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-gulp build
+gulp package
 
 rm -rf toc-pages/releases/staging/$CIRCLE_BRANCH
 
