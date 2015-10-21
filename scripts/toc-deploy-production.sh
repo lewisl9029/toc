@@ -5,10 +5,13 @@ TOC_VERSION="$(git describe --abbrev=0 --tags)"
 TOC_RELEASE=$TOC_VERSION
 TOC_URL="http://toc.im/releases/$TOC_RELEASE"
 
+git tag -d $TOC_VERSION
+
 # abort without error if version tag didn't change
 npm version $TOC_VERSION || exit 0
 
-git push origin
+git push origin :refs/tags/$TOC_VERSION
+git push origin --tags
 
 gulp package --prod
 
