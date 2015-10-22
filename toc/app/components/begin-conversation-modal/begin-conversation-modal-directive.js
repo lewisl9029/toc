@@ -194,18 +194,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
             text: 'Done',
             type: 'button-positive button-block'
           }],
-          template: `
-            <div class="list">
-              <div class="item item-image">
-                <toc-qr-image data="{{::beginConversationModal.userId}}">
-                </toc-qr-image>
-              </div>
-              <label class="toc-id-input item item-input">
-                <input type="text" ng-model="::beginConversationModal.userId"
-                  readonly toc-auto-select notify-copied="true">
-              </label>
-            </div>
-          `
+          template: `<toc-id-display></toc-id-display>`
         });
       };
     }
