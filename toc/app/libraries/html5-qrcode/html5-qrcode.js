@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-import 'dwa012/html5-qrcode';
+import 'lewisl9029/html5-qrcode';
 
 export default angular.module('toc.libraries.html5-qrcode', [])
   .factory('html5Qrcode', /*@ngInject*/ ($log, $q, $window) => {
