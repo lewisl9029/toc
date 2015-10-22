@@ -15,10 +15,12 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
       $q,
       $window,
       $scope,
+      $timeout,
       contacts,
       navigation,
       notifications,
       devices,
+      html5Qrcode,
       identity,
       state
     ) {
@@ -110,7 +112,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
           text: 'Scan a picture ID',
           isEnabled: true,
           doInvite: () => {
-            $ionicPopup.show({
+            let qrScannerPopup = $ionicPopup.show({
               title: 'Scanning ID',
               cssClass: 'toc-id-scanner-popup',
               scope: $scope,
@@ -118,8 +120,37 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                 text: 'Cancel',
                 type: 'button-positive button-block button-outline'
               }],
-              template: `<toc-id-scanner></toc-id-scanner>`
+              template: `
+                <div class="list toc-id-scanner-container">
+                  <div class="item item-image toc-id-scanner">
+                  </div>
+                </div>
+              `
             });
+
+            qrScannerPopup
+              .then(() => html5Qrcode.stopQrScanner('.toc-id-scanner'));
+
+            $timeout(
+              () => html5Qrcode.createQrScanner('.toc-id-scanner')
+                .then((qrData) => {
+                  let contactId = qrData;
+                  if (!identity.validateId(contactId)) {
+                    return notifications.notifySystem(
+                      `Please enter a valid Toc ID.`
+                    );
+                  }
+
+                  return contacts.saveSendingInvite(contactId);
+                })
+                .then(() => {
+                  this.removeModal();
+                  qrScannerPopup.close();
+                  return $q.when();
+                })
+                .catch(handleInviteError),
+            0, false);
+
           }
         },
         'email': {

@@ -2,7 +2,7 @@ import template from './id-scanner.html!text';
 
 export let directiveName = 'tocIdScanner';
 export default /*@ngInject*/ function tocIdScanner(
-  state
+  html5Qrcode
 ) {
   return {
     restrict: 'E',
@@ -12,7 +12,7 @@ export default /*@ngInject*/ function tocIdScanner(
     ) {
     },
     link: function linkIdScanner(scope, element, attrs) {
-
+      html5Qrcode.createQrScanner('.toc-id-scanner');
     }
   };
 }

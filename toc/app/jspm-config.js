@@ -25,6 +25,7 @@ System.config({
     "core-js": "npm:core-js@1.2.2",
     "driftyco/ionic": "github:driftyco/ionic@1.1.0",
     "dwa012/html5-qrcode": "github:dwa012/html5-qrcode@master",
+    "jquery": "npm:jquery@2.1.4",
     "moment": "npm:moment@2.10.6",
     "node-forge": "npm:node-forge@0.6.35",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
@@ -48,7 +49,7 @@ System.config({
       "angular-ui-router": "github:angular-ui/ui-router@0.2.15"
     },
     "github:dwa012/html5-qrcode@master": {
-      "jquery": "github:components/jquery@2.1.4"
+      "jquery": "npm:jquery@2.1.4"
     },
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
@@ -107,6 +108,9 @@ System.config({
     },
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:jquery@2.1.4": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:moment@2.10.6": {
       "process": "github:jspm/nodelibs-process@0.1.2"

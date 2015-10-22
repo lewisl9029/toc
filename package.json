@@ -41,6 +41,7 @@
       "baobab": "npm:baobab@^2.1.0",
       "driftyco/ionic": "github:driftyco/ionic@1.1.0",
       "dwa012/html5-qrcode": "github:dwa012/html5-qrcode@master",
+      "jquery": "npm:jquery@^2.1.4",
       "moment": "npm:moment@^2.10.6",
       "node-forge": "npm:node-forge@^0.6.35",
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
@@ -61,10 +62,21 @@
         "format": "global",
         "dependencies": {}
       },
+      "npm:jquery@2.1.4": {
+        "format": "global"
+      },
       "github:dwa012/html5-qrcode@master": {
-        "main": "lib/html5-qrcode.min.js",
+        "main": "lib/html5-qrcode.min",
+        "format": "global",
         "dependencies": {
-          "jquery": "jspm:jquery@^2.1.4"
+          "jquery": "npm:jquery@^2.1.4"
+        },
+        "shim": {
+          "lib/html5-qrcode.min": {
+            "deps": [
+              "jquery"
+            ]
+          }
         }
       },
       "github:driftyco/ionic@1.1.0": {
