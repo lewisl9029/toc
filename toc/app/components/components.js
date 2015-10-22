@@ -12,6 +12,7 @@ import channelCard from './channel-card/channel-card';
 import channelList from './channel-list/channel-list';
 import cloudConnectModal from './cloud-connect-modal/cloud-connect-modal';
 import invitePostModal from './invite-post-modal/invite-post-modal';
+import idDisplay from './id-display/id-display';
 import messageInputArea from './message-input-area/message-input-area';
 import messageList from './message-list/message-list';
 import notificationCard from './notification-card/notification-card';
@@ -36,6 +37,7 @@ export default angular.module('toc.components', [
   channelList.name,
   cloudConnectModal.name,
   invitePostModal.name,
+  idDisplay.name,
   messageInputArea.name,
   messageList.name,
   notificationCard.name,
