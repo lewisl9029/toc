@@ -108,38 +108,18 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
         'scan': {
           icon: 'ion-camera',
           text: 'Scan a picture ID',
-          isEnabled: this.isCordovaApp,
+          isEnabled: true,
           doInvite: () => {
-            let barcodeScanner = $window.cordova.plugins.barcodeScanner;
-            if (this.isCordovaApp && barcodeScanner) {
-              let scanningBarcode = $q.defer();
-
-              barcodeScanner.scan(
-                (barcodeData) => scanningBarcode.resolve(barcodeData),
-                (error) => scanningBarcode.reject(error)
-              );
-
-              return scanningBarcode.promise
-                .then((barcodeData) => {
-                  if (barcodeData.cancelled) {
-                    throw new Error('contacts: qr reader cancelled');
-                  }
-                  let contactId = barcodeData.text;
-                  if (!identity.validateId(contactId)) {
-                    return notifications.notifySystem(
-                      `Please enter a valid Toc ID.`
-                    );
-                  }
-
-                  return contacts.saveSendingInvite(contactId);
-                })
-                .then(() => {
-                  this.removeModal();
-                  return $q.when();
-                })
-                .catch(handleInviteError);
-            }
-
+            $ionicPopup.show({
+              title: 'Scanning ID',
+              cssClass: 'toc-id-scanner-popup',
+              scope: $scope,
+              buttons: [{
+                text: 'Cancel',
+                type: 'button-positive button-block button-outline'
+              }],
+              template: `<toc-id-scanner></toc-id-scanner>`
+            });
           }
         },
         'email': {
