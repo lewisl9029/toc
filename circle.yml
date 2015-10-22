@@ -1,10 +1,6 @@
-# machine:
-#   services:
-#     - docker
-
 machine:
-  node:
-    version: 4.2.1
+  services:
+    - docker
 
 general:
   branches:
@@ -14,28 +10,22 @@ general:
 
 dependencies:
   cache_directories:
-    # - "/var/lib/docker"
+    - "/var/lib/docker"
     - "toc/app/dependencies"
-    - "~/nvm/versions/node/v4.2.1/lib/node_modules"
-    - "~/nvm/versions/node/v4.2.1/bin"
   pre:
-    - /bin/bash scripts/toc-install-deps.sh
+    - docker build -t lewisl9029/toc-dev:latest $TOC_PATH/
   override:
-    - npm install
-    - npm rebuild node-sass
-    - npm rebuild optipng-bin
-    - jspm install
-    # - >
-    #     docker run \
-    #       -v $(pwd):/toc \
-    #       lewisl9029/toc-dev:latest \
-    #       npm install
-    # - >
-    #     docker run \
-    #       -v $(pwd):/toc \
-    #       -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
-    #       lewisl9029/toc-dev:latest \
-    #       jspm install
+    - >
+        docker run \
+          -v $(pwd):/home/toc/toc \
+          lewisl9029/toc-dev:latest \
+          npm install
+    - >
+        docker run \
+          -v $(pwd):/home/toc/toc \
+          -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
+          lewisl9029/toc-dev:latest \
+          jspm install
 
 test:
   override:
