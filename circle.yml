@@ -13,7 +13,7 @@ dependencies:
     - "/var/lib/docker"
     - "toc/app/dependencies"
   pre:
-    - docker build -t lewisl9029/toc-dev:latest $TOC_PATH/
+    - docker build -t lewisl9029/toc-dev:latest .
   override:
     - >
         docker run \

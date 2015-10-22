@@ -8,13 +8,22 @@ TOC_URL="http://toc.im/releases/$TOC_RELEASE"
 git tag -d $TOC_VERSION
 
 # abort without error if version tag didn't change
-npm version $TOC_VERSION || exit 0
+docker run \
+  -v $(pwd):/home/toc/toc \
+  lewisl9029/toc-dev:latest \
+  npm version $TOC_VERSION \
+  || exit 0
 
 git push origin :refs/tags/$TOC_VERSION
 git push origin master
 git push origin --tags
 
-gulp package --prod
+docker run \
+  -v $(pwd):/home/toc/toc \
+  lewisl9029/toc-dev:latest \
+  -e IONIC_EMAIL=$IONIC_EMAIL \
+  -e IONIC_PASSWORD=$IONIC_PASSWORD \
+  gulp package --prod
 
 rm -rf toc-pages/app
 rm -rf toc-pages/index.html

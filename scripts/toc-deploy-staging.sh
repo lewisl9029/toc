@@ -13,6 +13,11 @@ then
   exit 0
 fi
 
-gulp package
+docker run \
+  -v $(pwd):/home/toc/toc \
+  lewisl9029/toc-dev:latest \
+  -e IONIC_EMAIL=$IONIC_EMAIL \
+  -e IONIC_PASSWORD=$IONIC_PASSWORD \
+  gulp package
 
 source scripts/toc-deploy-publish.sh
