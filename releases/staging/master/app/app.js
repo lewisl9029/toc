@@ -11829,7 +11829,7 @@ System.register('components/begin-conversation-modal/begin-conversation-modal-di
               text: 'Done',
               type: 'button-positive button-block'
             }],
-            template: '\n            <div class="list">\n              <div class="item item-image">\n                <toc-qr-image data="{{::beginConversationModal.userId}}">\n                </toc-qr-image>\n              </div>\n              <label class="toc-id-input item item-input">\n                <input type="text" ng-model="::beginConversationModal.userId"\n                  readonly toc-auto-select notify-copied="true">\n              </label>\n            </div>\n          '
+            template: '<toc-id-display></toc-id-display>'
           });
         };
       }
@@ -12469,6 +12469,73 @@ System.register('components/invite-post-modal/invite-post-modal.js', ['github:an
     }],
     execute: function () {
       _export('default', angular.module('toc.components.invite-post-modal', []).directive(directiveName, directive));
+    }
+  };
+});
+
+System.registerDynamic("components/id-display/id-display.html!github:systemjs/plugin-text@0.0.2", [], true, function(req, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = "<div class=\"list\">\n  <div class=\"item item-image\">\n    <toc-qr-image data=\"{{::idDisplay.userId}}\">\n    </toc-qr-image>\n  </div>\n  <label class=\"toc-id-input item item-input\">\n    <input type=\"text\" ng-model=\"::idDisplay.userId\"\n      readonly toc-auto-select notify-copied=\"true\">\n  </label>\n</div>\n";
+  global.define = __define;
+  return module.exports;
+});
+
+System.register('components/id-display/id-display-directive.js', ['components/id-display/id-display.html!github:systemjs/plugin-text@0.0.2'], function (_export) {
+  'use strict';
+
+  var template, directiveName;
+
+  _export('default', tocIdDisplay);
+
+  /*@ngInject*/
+  function tocIdDisplay(state) {
+    return {
+      restrict: 'E',
+      template: template,
+      controllerAs: 'idDisplay',
+      controller: /*@ngInject*/function IdDisplayController() {
+        this.userId = state.cloud.identity.get(['userInfo', 'id']);
+      },
+      link: function linkIdDisplay(scope, element, attrs) {
+        // FIXME: I still don't know why .find doesn't work
+        var qrImage = element.children().children().children()[0];
+        var idInput = element.children().children().children()[1];
+
+        angular.element(qrImage).bind('click', function (event) {
+          angular.element(idInput).triggerHandler('click');
+        });
+      }
+    };
+  }
+
+  return {
+    setters: [function (_componentsIdDisplayIdDisplayHtmlGithubSystemjsPluginText002) {
+      template = _componentsIdDisplayIdDisplayHtmlGithubSystemjsPluginText002['default'];
+    }],
+    execute: function () {
+      directiveName = 'tocIdDisplay';
+
+      _export('directiveName', directiveName);
+    }
+  };
+});
+
+System.register('components/id-display/id-display.js', ['github:angular/bower-angular@1.4.7', 'components/id-display/id-display-directive.js'], function (_export) {
+  'use strict';
+
+  var angular, directive, directiveName;
+  return {
+    setters: [function (_githubAngularBowerAngular147) {
+      angular = _githubAngularBowerAngular147['default'];
+    }, function (_componentsIdDisplayIdDisplayDirectiveJs) {
+      directive = _componentsIdDisplayIdDisplayDirectiveJs['default'];
+      directiveName = _componentsIdDisplayIdDisplayDirectiveJs.directiveName;
+    }],
+    execute: function () {
+      _export('default', angular.module('toc.components.id-display', []).directive(directiveName, directive));
     }
   };
 });
@@ -13361,7 +13428,7 @@ System.register('components/options-menu/options-menu-directive.js', ['component
               text: 'Done',
               type: 'button-positive button-block'
             }],
-            template: '\n            <div class="list">\n              <div class="item item-image">\n                <toc-qr-image data="{{::optionsMenu.userId}}">\n                </toc-qr-image>\n              </div>\n              <label class="toc-id-input item item-input">\n                <input type="text" ng-model="::optionsMenu.userId"\n                  readonly toc-auto-select notify-copied="true">\n              </label>\n            </div>\n          '
+            template: '<toc-id-display></toc-id-display>'
           });
         };
 
@@ -13656,10 +13723,10 @@ System.register('components/user-card/user-card.js', ['github:angular/bower-angu
   };
 });
 
-System.register('components/components.js', ['github:angular/bower-angular@1.4.7', 'components/auto-focus/auto-focus.js', 'components/auto-select/auto-select.js', 'components/equal-to/equal-to.js', 'components/update-profile-modal/update-profile-modal.js', 'components/begin-conversation-modal/begin-conversation-modal.js', 'components/password-prompt-modal/password-prompt-modal.js', 'components/channel-card/channel-card.js', 'components/channel-list/channel-list.js', 'components/cloud-connect-modal/cloud-connect-modal.js', 'components/invite-post-modal/invite-post-modal.js', 'components/message-input-area/message-input-area.js', 'components/message-list/message-list.js', 'components/notification-card/notification-card.js', 'components/notification-list/notification-list.js', 'components/notification-overlay/notification-overlay.js', 'components/system-message-overlay/system-message-overlay.js', 'components/qr-image/qr-image.js', 'components/conversations-menu/conversations-menu.js', 'components/options-menu/options-menu.js', 'components/spinner-button/spinner-button.js', 'components/user-card/user-card.js'], function (_export) {
+System.register('components/components.js', ['github:angular/bower-angular@1.4.7', 'components/auto-focus/auto-focus.js', 'components/auto-select/auto-select.js', 'components/equal-to/equal-to.js', 'components/update-profile-modal/update-profile-modal.js', 'components/begin-conversation-modal/begin-conversation-modal.js', 'components/password-prompt-modal/password-prompt-modal.js', 'components/channel-card/channel-card.js', 'components/channel-list/channel-list.js', 'components/cloud-connect-modal/cloud-connect-modal.js', 'components/invite-post-modal/invite-post-modal.js', 'components/id-display/id-display.js', 'components/message-input-area/message-input-area.js', 'components/message-list/message-list.js', 'components/notification-card/notification-card.js', 'components/notification-list/notification-list.js', 'components/notification-overlay/notification-overlay.js', 'components/system-message-overlay/system-message-overlay.js', 'components/qr-image/qr-image.js', 'components/conversations-menu/conversations-menu.js', 'components/options-menu/options-menu.js', 'components/spinner-button/spinner-button.js', 'components/user-card/user-card.js'], function (_export) {
   'use strict';
 
-  var angular, autoFocus, autoSelect, equalTo, updateProfileModal, beginConversationModal, passwordPromptModal, channelCard, channelList, cloudConnectModal, invitePostModal, messageInputArea, messageList, notificationCard, notificationList, notificationOverlay, systemMessageOverlay, qrImage, conversationsMenu, optionsMenu, spinnerButton, userCard;
+  var angular, autoFocus, autoSelect, equalTo, updateProfileModal, beginConversationModal, passwordPromptModal, channelCard, channelList, cloudConnectModal, invitePostModal, idDisplay, messageInputArea, messageList, notificationCard, notificationList, notificationOverlay, systemMessageOverlay, qrImage, conversationsMenu, optionsMenu, spinnerButton, userCard;
   return {
     setters: [function (_githubAngularBowerAngular147) {
       angular = _githubAngularBowerAngular147['default'];
@@ -13683,6 +13750,8 @@ System.register('components/components.js', ['github:angular/bower-angular@1.4.7
       cloudConnectModal = _componentsCloudConnectModalCloudConnectModalJs['default'];
     }, function (_componentsInvitePostModalInvitePostModalJs) {
       invitePostModal = _componentsInvitePostModalInvitePostModalJs['default'];
+    }, function (_componentsIdDisplayIdDisplayJs) {
+      idDisplay = _componentsIdDisplayIdDisplayJs['default'];
     }, function (_componentsMessageInputAreaMessageInputAreaJs) {
       messageInputArea = _componentsMessageInputAreaMessageInputAreaJs['default'];
     }, function (_componentsMessageListMessageListJs) {
@@ -13707,7 +13776,7 @@ System.register('components/components.js', ['github:angular/bower-angular@1.4.7
       userCard = _componentsUserCardUserCardJs['default'];
     }],
     execute: function () {
-      _export('default', angular.module('toc.components', [autoFocus.name, autoSelect.name, equalTo.name, updateProfileModal.name, beginConversationModal.name, passwordPromptModal.name, channelCard.name, channelList.name, cloudConnectModal.name, invitePostModal.name, messageInputArea.name, messageList.name, notificationCard.name, notificationList.name, notificationOverlay.name, systemMessageOverlay.name, qrImage.name, conversationsMenu.name, optionsMenu.name, spinnerButton.name, userCard.name]));
+      _export('default', angular.module('toc.components', [autoFocus.name, autoSelect.name, equalTo.name, updateProfileModal.name, beginConversationModal.name, passwordPromptModal.name, channelCard.name, channelList.name, cloudConnectModal.name, invitePostModal.name, idDisplay.name, messageInputArea.name, messageList.name, notificationCard.name, notificationList.name, notificationOverlay.name, systemMessageOverlay.name, qrImage.name, conversationsMenu.name, optionsMenu.name, spinnerButton.name, userCard.name]));
     }
   };
 });

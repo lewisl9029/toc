@@ -1,7 +1,7 @@
 (function initialize(window) {
   'use strict';
 
-  window.tocVersion = '0.9.0-alpha';
+  window.tocVersion = '0.9.1';
   window.tocProd = false;
 
   var queryString = window.location.search;
