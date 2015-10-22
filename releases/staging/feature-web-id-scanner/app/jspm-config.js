@@ -26,6 +26,7 @@ System.config({
     "driftyco/ionic": "github:driftyco/ionic@1.1.0",
     "dwa012/html5-qrcode": "github:dwa012/html5-qrcode@master",
     "jquery": "npm:jquery@2.1.4",
+    "lewisl9029/html5-qrcode": "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera",
     "moment": "npm:moment@2.10.6",
     "node-forge": "npm:node-forge@0.6.35",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
@@ -74,6 +75,9 @@ System.config({
     },
     "github:jspm/nodelibs-zlib@0.1.0": {
       "browserify-zlib": "npm:browserify-zlib@0.1.4"
+    },
+    "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera": {
+      "jquery": "npm:jquery@2.1.4"
     },
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
