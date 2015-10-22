@@ -9,9 +9,9 @@ cat <<ALIASES
     -i -t --rm \
     -p 8100:8100 \
     -p 8101:8101 \
-    -v $TOC_PATH:/toc \
-    -v $TOC_PATH/cache/ionic:/root/.ionic \
-    -v $TOC_PATH/cache/jspm:/root/.jspm \
+    -v $TOC_PATH:/home/toc/toc \
+    -v $TOC_PATH/cache/ionic:/home/toc/.ionic \
+    -v $TOC_PATH/cache/jspm:/home/toc/.jspm \
     -e TOC_HOST_IP=$TOC_HOST_IP \
     -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
     -e IONIC_EMAIL=$IONIC_EMAIL \
