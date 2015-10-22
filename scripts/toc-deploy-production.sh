@@ -23,4 +23,7 @@ rm -rf toc-pages/landing.js
 
 cp -r www/* toc-pages/
 
+# clean up previous staging releases
+rm -rf toc-pages/releases/staging
+
 source scripts/toc-deploy-publish.sh
