@@ -127,10 +127,10 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                 </div>
               `
             });
-
             qrScannerPopup
               .then(() => html5Qrcode.stopQrScanner('.toc-id-scanner'));
 
+            // timeout to wait for popup to be created
             $timeout(
               () => html5Qrcode.createQrScanner('.toc-id-scanner')
                 .then((qrData) => {
@@ -150,7 +150,6 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                 })
                 .catch(handleInviteError),
             0, false);
-
           }
         },
         'email': {

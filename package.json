@@ -74,6 +74,7 @@
         "shim": {
           "lib/html5-qrcode.min": {
             "deps": [
+              "./jsqrcode-combined.min",
               "jquery"
             ]
           }
