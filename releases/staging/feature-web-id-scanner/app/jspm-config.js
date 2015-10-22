@@ -24,7 +24,6 @@ System.config({
     "baobab": "npm:baobab@2.1.0",
     "core-js": "npm:core-js@1.2.2",
     "driftyco/ionic": "github:driftyco/ionic@1.1.0",
-    "dwa012/html5-qrcode": "github:dwa012/html5-qrcode@master",
     "jquery": "npm:jquery@2.1.4",
     "lewisl9029/html5-qrcode": "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera",
     "moment": "npm:moment@2.10.6",
@@ -48,9 +47,6 @@ System.config({
       "angular-animate": "github:angular/bower-angular-animate@1.4.7",
       "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.7",
       "angular-ui-router": "github:angular-ui/ui-router@0.2.15"
-    },
-    "github:dwa012/html5-qrcode@master": {
-      "jquery": "npm:jquery@2.1.4"
     },
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
