@@ -19,14 +19,14 @@ cd ..
 
 MAX_ATTEMPTS=20
 current_attempt=1
-until ionic package download || [ $current_attempt == $MAX_ATTEMPTS ];
+until ionic package download || [ "$current_attempt" == "$MAX_ATTEMPTS" ];
 do
   echo "Package download attempt failed. Trying again in 10 seconds."
   current_attempt=$((current_attempt+1))
   sleep 10
 done
 
-if [ $current_attempt == $MAX_ATTEMPTS ];
+if [ "$current_attempt" == "$MAX_ATTEMPTS" ];
 then
   exit 1
 fi

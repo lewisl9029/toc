@@ -42,6 +42,7 @@
       "driftyco/ionic": "github:driftyco/ionic@1.1.0",
       "dwa012/html5-qrcode": "github:dwa012/html5-qrcode@master",
       "jquery": "npm:jquery@^2.1.4",
+      "lewisl9029/html5-qrcode": "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera",
       "moment": "npm:moment@^2.10.6",
       "node-forge": "npm:node-forge@^0.6.35",
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
@@ -65,16 +66,16 @@
       "npm:jquery@2.1.4": {
         "format": "global"
       },
-      "github:dwa012/html5-qrcode@master": {
-        "main": "lib/html5-qrcode.min",
+      "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera": {
+        "main": "src/html5-qrcode",
         "format": "global",
         "dependencies": {
           "jquery": "npm:jquery@^2.1.4"
         },
         "shim": {
-          "lib/html5-qrcode.min": {
+          "src/html5-qrcode": {
             "deps": [
-              "./jsqrcode-combined.min",
+              "../lib/jsqrcode-combined.min",
               "jquery"
             ]
           }
@@ -122,8 +123,7 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "cordova-plugin-crosswalk-webview",
-    "cordova-plugin-inappbrowser",
-    "phonegap-plugin-barcodescanner"
+    "cordova-plugin-inappbrowser"
   ],
   "cordovaPlatforms": [
     "android",
