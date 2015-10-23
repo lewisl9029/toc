@@ -20,12 +20,12 @@
   <preference name="xwalkVersion" value="14+"/>
   <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect"/>
   <preference name="xwalkMode" value="embedded"/>
-  <feature name="StatusBar">
-    <param name="ios-package" onload="true" value="CDVStatusBar"/>
-  </feature>
   <platform name="android">
     <config-file target="AndroidManifest.xml" parent="/manifest">
-        <uses-permission android:name="android.permission.CAMERA"/>
+      <uses-permission android:name="android.permission.CAMERA" />
+      <uses-permission android:name="android.permission.FLASHLIGHT" />
+      <!-- Not required to allow users to work around this -->
+      <uses-feature android:name="android.hardware.camera" android:required="false" />
     </config-file>
     <preference name="KeepRunning" value="true"/>
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
