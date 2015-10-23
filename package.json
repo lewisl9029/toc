@@ -122,8 +122,7 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "cordova-plugin-crosswalk-webview",
-    "cordova-plugin-inappbrowser",
-    "cordova-plugin-media-capture"
+    "cordova-plugin-inappbrowser"
   ],
   "cordovaPlatforms": [
     "android",

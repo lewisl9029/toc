@@ -24,6 +24,9 @@
     <param name="ios-package" onload="true" value="CDVStatusBar"/>
   </feature>
   <platform name="android">
+    <config-file target="AndroidManifest.xml" parent="/manifest">
+        <uses-permission android:name="android.permission.CAMERA"/>
+    </config-file>
     <preference name="KeepRunning" value="true"/>
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
     <icon src="resources/android/icon/drawable-mdpi-icon.png" density="mdpi"/>
