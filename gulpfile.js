@@ -25,7 +25,7 @@ function handleError(error) {
 var handleSequenceError = function (error, done) {
   //if any error happened in the previous tasks, exit with a code > 0
   if (error) {
-    var exitCode = 1;
+    var exitCode = 2;
     console.log('[ERROR] gulp sequenced task failed', error);
     console.log('[FAIL] gulp sequenced task failed - exiting with code ' + exitCode);
     return process.exit(exitCode);
@@ -85,6 +85,8 @@ var paths = {
   ]
 };
 
+gulp.task('nil');
+
 gulp.task('watch', function watch() {
   gulp.watch(paths.sass.app, ['bundle-sass-app']);
   gulp.watch(paths.sass.init, ['bundle-sass-init']);
@@ -121,6 +123,11 @@ gulp.task('build', function build(done) {
   );
 });
 
+gulp.task('download', function download() {
+  return gulp.src('')
+    .pipe(shell('/bin/bash scripts/toc-download-package.sh'));
+});
+
 gulp.task('package', function package(done) {
   var handlePackageError = function (error) {
     runSequence(
@@ -132,23 +139,31 @@ gulp.task('package', function package(done) {
   };
 
   if (argv.dev) {
+    var packageTask = argv.packagedev ? ['package-android'] : ['nil'];
+    var downloadTask = argv.packagedev ?
+      (argv.skipdownload ? ['nil'] : ['download']) :
+      ['nil'];
+
     return runSequence(
       ['inject-cordova', 'inject-livereload', 'fix-ionic'],
-      ['package-android'],
-      ['unfix-ionic'],
+      packageTask,
+      ['unfix-ionic', 'uninject-livereload'],
+      downloadTask,
       ['serve'],
-      ['uninject-cordova', 'uninject-livereload']
+      ['uninject-cordova'],
       handlePackageError
     );
   }
 
-  var buildTask = argv.skipbuild ? [], ['build'];
+  var buildTask = argv.skipbuild ? ['nil'] : ['build'];
+  var downloadTask = argv.skipdownload ? ['nil'] : ['download'];
 
   return runSequence(
     buildTask,
     ['inject-cordova', 'fix-ionic'],
     ['package-android'],
     ['uninject-cordova', 'unfix-ionic'],
+    downloadTask,
     handlePackageError
   );
 });
@@ -204,7 +219,8 @@ gulp.task('inject-cordova', function injectCordova() {
     ))
     .pipe(gulp.dest(baseAppPath))
     .pipe(gulpif(argv.dev, shell(
-      'cp -r ' + basePaths.cordova + '* ' + basePath
+      'cp -r ' + basePaths.cordova + 'android/cordova.js ' + basePath + ' && ' +
+      'cp -r ' + basePaths.cordova + 'android/plugins ' + basePath
     )));
 });
 
@@ -224,7 +240,7 @@ gulp.task('uninject-cordova', function injectCordova() {
     .pipe(gulp.dest(baseAppPath))
     .pipe(gulpif(argv.dev, shell(
       'rm -rf ' + basePath + 'cordova.js && ' +
-      'rm -rf ' + basePath + 'plugins/*'
+      'rm -rf ' + basePath + 'plugins'
     )));
 });
 
@@ -252,14 +268,6 @@ gulp.task('package-android', function packageAndroid() {
   return gulp.src('')
     .pipe(shell(
       'ionic package build android'
-    ));
-});
-
-gulp.task('run', function run() {
-  return gulp.src('')
-    .pipe(shell(
-      'ionic run --device --livereload --livereload-port 8101 ' +
-        '--external-address $TOC_HOST_IP android'
     ));
 });
 
