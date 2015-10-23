@@ -20,6 +20,18 @@ export default /*@ngInject*/ function tocOptionsMenu() {
         this.userId = this.userInfo.id;
       });
 
+      this.showAboutModal = () => {
+        let modalTemplate = `
+          <toc-about-toc-modal class="toc-modal-container"
+            remove-modal="optionsMenu.aboutTocModal.remove()">
+          </toc-about-toc-modal>
+        `;
+
+        let modalName = 'aboutTocModal';
+
+        return navigation.showModal(modalName, modalTemplate, this, $scope);
+      };
+
       this.showIdPopup = () => {
         $ionicPopup.show({
           title: 'Your ID',

@@ -1,0 +1,68 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-positive">
+    <h1 class="title">About Toc</h1>
+  </ion-header-bar>
+  <ion-content class="has-subfooter">
+    <div class="list">
+      <div class="item item-divider item-calm">
+        Toc is a distributed messaging app that syncs.
+      </div>
+    </div>
+    <div class="card">
+      <div class="item item-text-wrap">
+        <p>
+          Copyright:
+        </p>
+        <p>
+          Copyright (C) 2015 <a href="" ng-click="::aboutTocModal.openWindow('https://github.com/lewisl9029')">Lewis Liu</a> &lt;<a href="" ng-click="::aboutTocModal.openWindow('mailto:develop@lewisl.net')">develop@lewisl.net</a>&gt;
+        </p>
+        <br>
+        <p>
+          Version: {{::aboutTocModal.tocVersion}}
+        </p>
+        <br>
+        <p>
+          Privacy policy:
+        </p>
+        <p>
+          Toc does not collect data about users.
+        </p>
+        <br>
+        <p>
+          Disclaimer:
+        </p>
+        <p>
+          Toc is only a proof of concept.
+        </p>
+        <p>
+          Not recommended for general use.
+        </p>
+        <br>
+        <p>
+          Toc uses <a href="" ng-click="::aboutTocModal.openWindow('https://github.com/lewisl9029/toc/OSS.txt')">open-source software</a>.
+        </p>
+        <br>
+        <p>
+          License: <a href="" ng-click="::aboutTocModal.openWindow('https://github.com/lewisl9029/toc/LICENSE.txt')">AGPL</a>
+        </p>
+      </div>
+    </div>
+  </ion-content>
+  <div class="bar bar-subfooter">
+    <div class="col">
+      <button type="button"
+        ng-click="::aboutTocModal.openWindow('http://toc.im')"
+        class="button button-block button-calm button-outline">
+        Learn more about Toc
+      </button>
+    </div>
+  </div>
+  <ion-footer-bar>
+    <div class="col">
+      <button class="button button-block button-positive"
+        ng-click="::aboutTocModal.removeModal()">
+        Done
+      </button>
+    </div>
+  </ion-footer-bar>
+</ion-modal-view>
