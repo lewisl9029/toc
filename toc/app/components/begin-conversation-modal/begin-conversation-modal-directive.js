@@ -15,10 +15,12 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
       $q,
       $window,
       $scope,
+      $timeout,
       contacts,
       navigation,
       notifications,
       devices,
+      html5Qrcode,
       identity,
       state
     ) {
@@ -76,7 +78,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
       this.inviteMethods = {
         'enter': {
           icon: 'ion-ios-compose',
-          text: 'Enter someone\'s ID',
+          text: 'Enter an ID',
           isEnabled: true,
           doInvite: () => {
             let invitePopup = $ionicPopup.show({
@@ -108,23 +110,31 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
         'scan': {
           icon: 'ion-camera',
           text: 'Scan a picture ID',
-          isEnabled: this.isCordovaApp,
+          isEnabled: true,
           doInvite: () => {
-            let barcodeScanner = $window.cordova.plugins.barcodeScanner;
-            if (this.isCordovaApp && barcodeScanner) {
-              let scanningBarcode = $q.defer();
+            let qrScannerPopup = $ionicPopup.show({
+              title: 'Scanning ID',
+              cssClass: 'toc-id-scanner-popup',
+              scope: $scope,
+              buttons: [{
+                text: 'Cancel',
+                type: 'button-positive button-block button-outline'
+              }],
+              template: `
+                <div class="list toc-id-scanner-container">
+                  <div class="item item-image toc-id-scanner">
+                  </div>
+                </div>
+              `
+            });
+            qrScannerPopup
+              .then(() => html5Qrcode.stopQrScanner('.toc-id-scanner'));
 
-              barcodeScanner.scan(
-                (barcodeData) => scanningBarcode.resolve(barcodeData),
-                (error) => scanningBarcode.reject(error)
-              );
-
-              return scanningBarcode.promise
-                .then((barcodeData) => {
-                  if (barcodeData.cancelled) {
-                    throw new Error('contacts: qr reader cancelled');
-                  }
-                  let contactId = barcodeData.text;
+            // timeout to wait for popup to be created
+            $timeout(
+              () => html5Qrcode.createQrScanner('.toc-id-scanner')
+                .then((qrData) => {
+                  let contactId = qrData;
                   if (!identity.validateId(contactId)) {
                     return notifications.notifySystem(
                       `Please enter a valid Toc ID.`
@@ -135,11 +145,11 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                 })
                 .then(() => {
                   this.removeModal();
+                  qrScannerPopup.close();
                   return $q.when();
                 })
-                .catch(handleInviteError);
-            }
-
+                .catch(handleInviteError),
+            0, false);
           }
         },
         'email': {

@@ -24,6 +24,8 @@ System.config({
     "baobab": "npm:baobab@2.1.0",
     "core-js": "npm:core-js@1.2.2",
     "driftyco/ionic": "github:driftyco/ionic@1.1.0",
+    "jquery": "npm:jquery@2.1.4",
+    "lewisl9029/html5-qrcode": "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera",
     "moment": "npm:moment@2.10.6",
     "node-forge": "npm:node-forge@0.6.35",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
@@ -70,6 +72,9 @@ System.config({
     "github:jspm/nodelibs-zlib@0.1.0": {
       "browserify-zlib": "npm:browserify-zlib@0.1.4"
     },
+    "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera": {
+      "jquery": "npm:jquery@2.1.4"
+    },
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
     },
@@ -103,6 +108,9 @@ System.config({
     },
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:jquery@2.1.4": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:moment@2.10.6": {
       "process": "github:jspm/nodelibs-process@0.1.2"

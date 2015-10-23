@@ -40,6 +40,8 @@
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.15",
       "baobab": "npm:baobab@^2.1.0",
       "driftyco/ionic": "github:driftyco/ionic@1.1.0",
+      "jquery": "npm:jquery@^2.1.4",
+      "lewisl9029/html5-qrcode": "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera",
       "moment": "npm:moment@^2.10.6",
       "node-forge": "npm:node-forge@^0.6.35",
       "plugin-text": "github:systemjs/plugin-text@^0.0.2",
@@ -59,6 +61,24 @@
         "main": "release/stable/remotestorage",
         "format": "global",
         "dependencies": {}
+      },
+      "npm:jquery@2.1.4": {
+        "format": "global"
+      },
+      "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera": {
+        "main": "src/html5-qrcode",
+        "format": "global",
+        "dependencies": {
+          "jquery": "npm:jquery@^2.1.4"
+        },
+        "shim": {
+          "src/html5-qrcode": {
+            "deps": [
+              "../lib/jsqrcode-combined.min",
+              "jquery"
+            ]
+          }
+        }
       },
       "github:driftyco/ionic@1.1.0": {
         "registry": "jspm",
