@@ -122,7 +122,8 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "cordova-plugin-crosswalk-webview",
-    "cordova-plugin-inappbrowser"
+    "cordova-plugin-inappbrowser",
+    "phonegap-plugin-barcodescanner"
   ],
   "cordovaPlatforms": [
     "android",
