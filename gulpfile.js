@@ -25,7 +25,7 @@ function handleError(error) {
 var handleSequenceError = function (error, done) {
   //if any error happened in the previous tasks, exit with a code > 0
   if (error) {
-    var exitCode = 1;
+    var exitCode = 2;
     console.log('[ERROR] gulp sequenced task failed', error);
     console.log('[FAIL] gulp sequenced task failed - exiting with code ' + exitCode);
     return process.exit(exitCode);
@@ -36,12 +36,14 @@ var handleSequenceError = function (error, done) {
 };
 
 var basePaths = {
+  root: './',
   dev: './toc/',
   devApp: './toc/app/',
   prod: './www/',
   prodApp: './www/app/',
   mobile: './mobile/',
-  platforms: './platforms/'
+  platforms: './platforms/',
+  cordova: './cordova-bundles/'
 };
 
 var paths = {
@@ -76,8 +78,14 @@ var paths = {
   ],
   asset: [
     basePaths.devApp + 'assets/**'
+  ],
+  cordova: [
+    basePaths.cordova + 'android/cordova.js',
+    basePaths.cordova + 'android/plugins/*.js'
   ]
 };
+
+gulp.task('nil');
 
 gulp.task('watch', function watch() {
   gulp.watch(paths.sass.app, ['bundle-sass-app']);
@@ -89,7 +97,8 @@ gulp.task('serve', function serve() {
   var serveCommand = argv.prod ?
     'http-server www -p 8100' :
     // 'cd app && jspm-server --no-browser --port=8100 --ignore-exts=".scss"';
-    'ionic serve --lab --address=$(hostname -i) -i 8101 --nobrowser';
+    'ionic serve --lab ' +
+      '--address=$(hostname -i) -i 8101 --nobrowser --nocordovamock';
   return gulp.src('')
     .pipe(shell(serveCommand));
 });
@@ -114,91 +123,151 @@ gulp.task('build', function build(done) {
   );
 });
 
+gulp.task('download', function download() {
+  return gulp.src('')
+    .pipe(shell('/bin/bash scripts/toc-download-package.sh'));
+});
+
 gulp.task('package', function package(done) {
   var handlePackageError = function (error) {
     runSequence(
-      ['uninject-cordova', 'unfix-ionic'],
+      ['uninject-cordova', 'uninject-livereload', 'unfix-ionic'],
       function() {
         return handleSequenceError(error, done);
       }
     );
   };
 
-  if (argv['skip-build']) {
+  if (argv.dev) {
+    var packageTask = argv.packagedev ? ['package-android'] : ['nil'];
+    var downloadTask = argv.packagedev ?
+      (argv.skipdownload ? ['nil'] : ['download']) :
+      ['nil'];
+
     return runSequence(
-      ['inject-cordova', 'fix-ionic'],
-      ['package-android'],
-      ['uninject-cordova', 'unfix-ionic'],
+      ['inject-cordova', 'inject-livereload', 'fix-ionic'],
+      packageTask,
+      ['unfix-ionic', 'uninject-livereload'],
+      downloadTask,
+      ['serve'],
+      ['uninject-cordova'],
       handlePackageError
     );
   }
+
+  var buildTask = argv.skipbuild ? ['nil'] : ['build'];
+  var downloadTask = argv.skipdownload ? ['nil'] : ['download'];
+
   return runSequence(
-    'build',
+    buildTask,
     ['inject-cordova', 'fix-ionic'],
     ['package-android'],
     ['uninject-cordova', 'unfix-ionic'],
+    downloadTask,
     handlePackageError
   );
 });
 
-gulp.task('inject-cordova', function injectCordova() {
+gulp.task('inject-livereload', function injectLivereload() {
+  var hostIp = process.env['TOC_HOST_IP'] || argv.hostip;
+
+  if (!hostIp) {
+    throw new Error('Please provide a host IP through the --hostip parameter or TOC_HOST_IP environment variable');
+  }
+
   return gulp.src([
-      basePaths.prodApp + 'index.html'
+      basePaths.root + 'config.xml'
     ], {
-      base: basePaths.prodApp
+      base: basePaths.root
+    })
+    .pipe(replace(
+      '<content src="app/index.html"/>',
+      '<content src="http://' + process.env['TOC_HOST_IP'] +
+        ':8100/app/index.html" original-src="app/index.html"/>'
+    ))
+    .pipe(gulp.dest(basePaths.root));
+});
+
+gulp.task('uninject-livereload', function uninjectLivereload() {
+  var hostIp = process.env['TOC_HOST_IP'] || argv.hostip;
+
+  return gulp.src([
+      basePaths.root + 'config.xml'
+    ], {
+      base: basePaths.root
+    })
+    .pipe(replace(
+      '<content src="http://' + process.env['TOC_HOST_IP'] +
+        ':8100/app/index.html" original-src="app/index.html"/>',
+      '<content src="app/index.html"/>'
+    ))
+    .pipe(gulp.dest(basePaths.root));
+});
+
+gulp.task('inject-cordova', function injectCordova() {
+  var basePath = argv.dev ? basePaths.dev : basePaths.prod;
+  var baseAppPath = argv.dev ? basePaths.devApp : basePaths.prodApp;
+
+  return gulp.src([
+      baseAppPath + 'index.html'
+    ], {
+      base: baseAppPath
     })
     .pipe(replace(
       '</body>',
       '<script src="../cordova.js"></script></body>'
     ))
-    .pipe(gulp.dest(basePaths.prodApp));
+    .pipe(gulp.dest(baseAppPath))
+    .pipe(gulpif(argv.dev, shell(
+      'cp -r ' + basePaths.cordova + 'android/cordova.js ' + basePath + ' && ' +
+      'cp -r ' + basePaths.cordova + 'android/plugins ' + basePath
+    )));
 });
 
 gulp.task('uninject-cordova', function injectCordova() {
+  var basePath = argv.dev ? basePaths.dev : basePaths.prod;
+  var baseAppPath = argv.dev ? basePaths.devApp : basePaths.prodApp;
+
   return gulp.src([
-      basePaths.prodApp + 'index.html'
+      baseAppPath + 'index.html'
     ], {
-      base: basePaths.prodApp
+      base: baseAppPath
     })
     .pipe(replace(
       '<script src="../cordova.js"></script></body>',
       '</body>'
     ))
-    .pipe(gulp.dest(basePaths.prodApp));
+    .pipe(gulp.dest(baseAppPath))
+    .pipe(gulpif(argv.dev, shell(
+      'rm -rf ' + basePath + 'cordova.js && ' +
+      'rm -rf ' + basePath + 'plugins'
+    )));
 });
 
 gulp.task('fix-ionic', function fixIonic() {
   //FIXME: workaround for
   // https://github.com/driftyco/ionic-cli/issues/620
-  return gulp.src('ionic.project')
+  return gulp.src(basePaths.root + 'ionic.project')
     .pipe(replace(
       '"documentRoot": "toc"',
       '"documentRoot": "www"'
     ))
-    .pipe(gulp.dest('./'));
+    .pipe(gulp.dest(basePaths.root));
 });
 
 gulp.task('unfix-ionic', function unfixIonic() {
-  return gulp.src('ionic.project')
+  return gulp.src(basePaths.root + 'ionic.project')
     .pipe(replace(
       '"documentRoot": "www"',
       '"documentRoot": "toc"'
     ))
-    .pipe(gulp.dest('./'));
+    .pipe(gulp.dest(basePaths.root));
 });
 
 gulp.task('package-android', function packageAndroid() {
   return gulp.src('')
     .pipe(shell(
       'ionic package build android'
-    ));
-});
-
-gulp.task('run', function run() {
-  return gulp.src('')
-    .pipe(shell(
-      'ionic run --device --livereload --livereload-port 8101 ' +
-        '--external-address $TOC_HOST_IP android'
     ));
 });
 

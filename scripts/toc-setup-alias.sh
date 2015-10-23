@@ -1,49 +1,107 @@
 #!/usr/bin/env bash
+read -r -d '' RUN <<RUN
+sudo docker run -i -t --rm \\
+RUN
+
+read -r -d '' PORTS <<PORTS
+-p 8100:8100 \\
+-p 8101:8101 \\
+PORTS
+
+read -r -d '' VOLUMES <<VOLUMES
+-v $TOC_PATH:/toc \\
+-v $TOC_PATH/cache/ionic:/root/.ionic \\
+-v $TOC_PATH/cache/jspm:/root/.jspm \\
+VOLUMES
+
+read -r -d '' ENVS <<ENVS
+-e TOC_HOST_IP=$TOC_HOST_IP \\
+-e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \\
+-e IONIC_EMAIL=$IONIC_EMAIL \\
+-e IONIC_PASSWORD=$IONIC_PASSWORD \\
+ENVS
+
+read -r -d '' CONTAINER <<CONTAINER
+lewisl9029/toc-dev:latest \\
+CONTAINER
+
 (
 cat <<ALIASES
   alias toc-pull="source $TOC_PATH/scripts/toc-setup-docker-pull.sh"
 
   alias toc-build="source $TOC_PATH/scripts/toc-setup-docker-build.sh"
 
-  alias toc="sudo docker run \
-    -i -t --rm \
-    -p 8100:8100 \
-    -p 8101:8101 \
-    -v $TOC_PATH:/toc \
-    -v $TOC_PATH/cache/ionic:/root/.ionic \
-    -v $TOC_PATH/cache/jspm:/root/.jspm \
-    -e TOC_HOST_IP=$TOC_HOST_IP \
-    -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
-    -e IONIC_EMAIL=$IONIC_EMAIL \
-    -e IONIC_PASSWORD=$IONIC_PASSWORD \
-    lewisl9029/toc-dev:latest \
+  alias toc="
+    ${RUN}
+    ${PORTS}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
     "$@""
 
-  alias tocb="tocg \
-    build "$@""
+  alias tocb="
+    ${RUN}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
+    gulp build "$@""
 
-  alias tocd="toci \
-    package download "$@""
+  alias tocd="
+    ${RUN}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
+    ionic package download "$@""
 
-  alias tocg="toc \
+  alias tocg="
+    ${RUN}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
     gulp "$@""
 
-  alias toci="toc \
+  alias toci="
+    ${RUN}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
     ionic "$@""
 
-  alias tocj="toc \
+  alias tocj="
+    ${RUN}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
     jspm "$@""
 
-  alias tocn="toc \
+  alias tocn="
+    ${RUN}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
     npm "$@""
 
-  alias tocp="tocg \
-    package "$@""
+  alias tocp="
+    ${RUN}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
+    gulp package "$@""
 
-  alias tocs="tocg \
-    serve "$@""
+  alias tocr="
+    ${RUN}
+    ${PORTS}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
+    gulp package --dev "$@""
 
-  alias tocr="tocg \
-    run "$@""
+  alias tocs="
+    ${RUN}
+    ${PORTS}
+    ${VOLUMES}
+    ${ENVS}
+    ${CONTAINER}
+    gulp serve "$@""
 ALIASES
 ) | tee ~/.bash_aliases

@@ -7,6 +7,7 @@ mkdir -p toc-pages/releases/$TOC_RELEASE
 cp -r www/* toc-pages/releases/$TOC_RELEASE/
 
 tar -cvf $CIRCLE_ARTIFACTS/www.tar www
+cp "Toc Messenger.apk" $CIRCLE_ARTIFACTS/
 
 
 cd toc-pages
@@ -17,20 +18,5 @@ git push origin gh-pages
 
 cd ..
 
-MAX_ATTEMPTS=20
-current_attempt=1
-until ionic package download || [ "$current_attempt" == "$MAX_ATTEMPTS" ];
-do
-  echo "Package download attempt failed. Trying again in 10 seconds."
-  current_attempt=$((current_attempt+1))
-  sleep 10
-done
-
-if [ "$current_attempt" == "$MAX_ATTEMPTS" ];
-then
-  exit 1
-fi
-
-cp "Toc Messenger.apk" $CIRCLE_ARTIFACTS/
 
 echo $TOC_URL
