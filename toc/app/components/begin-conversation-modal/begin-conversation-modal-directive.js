@@ -78,7 +78,7 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
       this.inviteMethods = {
         'enter': {
           icon: 'ion-ios-compose',
-          text: 'Enter someone\'s ID',
+          text: 'Enter an ID',
           isEnabled: true,
           doInvite: () => {
             let invitePopup = $ionicPopup.show({
