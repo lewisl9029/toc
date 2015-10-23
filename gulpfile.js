@@ -105,10 +105,9 @@ gulp.task('serve', function serve() {
 
 gulp.task('clean', ['clean-build', 'clean-package']);
 
-gulp.task('clean-build', function clean(done) {
-  return del([
-    basePaths.prod + '**'
-  ], done);
+gulp.task('clean-build', function clean() {
+  return gulp.src('')
+    .pipe(shell('rm -rf ' + basePaths.prod));
 });
 
 gulp.task('build', function build(done) {

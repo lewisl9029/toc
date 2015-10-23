@@ -9,7 +9,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "del": "^2.0.2",
     "gulp": "^3.9.0",
     "gulp-if": "^2.0.0",
     "gulp-imagemin": "^2.3.0",
