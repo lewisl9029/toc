@@ -9,7 +9,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "del": "^2.0.2",
     "gulp": "^3.9.0",
     "gulp-if": "^2.0.0",
     "gulp-imagemin": "^2.3.0",
@@ -57,10 +56,8 @@
     },
     "overrides": {
       "npm:remotestoragejs@0.12.1": {
-        "registry": "jspm",
-        "main": "release/stable/remotestorage",
-        "format": "global",
-        "dependencies": {}
+        "main": "release/stable/remotestorage.amd",
+        "format": "amd"
       },
       "npm:jquery@2.1.4": {
         "format": "global"

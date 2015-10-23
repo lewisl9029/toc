@@ -1,6 +1,7 @@
 import angular from 'angular';
 
 import autoFocus from './auto-focus/auto-focus';
+import aboutTocModal from './about-toc-modal/about-toc-modal';
 import autoSelect from './auto-select/auto-select';
 import equalTo from './equal-to/equal-to';
 import updateProfileModal from './update-profile-modal/update-profile-modal';
@@ -28,6 +29,7 @@ import userCard from './user-card/user-card';
 
 export default angular.module('toc.components', [
   autoFocus.name,
+  aboutTocModal.name,
   autoSelect.name,
   equalTo.name,
   updateProfileModal.name,
