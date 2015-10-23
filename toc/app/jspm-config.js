@@ -18,16 +18,15 @@ System.config({
     "angular-animate": "github:angular/bower-angular-animate@1.4.7",
     "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.7",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.15",
-    "angular/bower-angular": "github:angular/bower-angular@1.4.7",
     "babel": "npm:babel-core@5.8.25",
     "babel-runtime": "npm:babel-runtime@5.8.25",
     "baobab": "npm:baobab@2.1.0",
-    "core-js": "npm:core-js@1.2.2",
+    "core-js": "npm:core-js@1.2.3",
     "driftyco/ionic": "github:driftyco/ionic@1.1.0",
     "jquery": "npm:jquery@2.1.4",
     "lewisl9029/html5-qrcode": "github:lewisl9029/html5-qrcode@feature-prefer-rear-camera",
     "moment": "npm:moment@2.10.6",
-    "node-forge": "npm:node-forge@0.6.35",
+    "node-forge": "npm:node-forge@0.6.37",
     "plugin-text": "github:systemjs/plugin-text@0.0.2",
     "qr-image": "npm:qr-image@3.1.0",
     "ramda": "npm:ramda@0.17.1",
@@ -97,7 +96,7 @@ System.config({
       "ieee754": "npm:ieee754@1.1.6",
       "is-array": "npm:is-array@1.0.1"
     },
-    "npm:core-js@1.2.2": {
+    "npm:core-js@1.2.3": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
@@ -108,9 +107,6 @@ System.config({
     },
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
-    },
-    "npm:jquery@2.1.4": {
-      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:moment@2.10.6": {
       "process": "github:jspm/nodelibs-process@0.1.2"

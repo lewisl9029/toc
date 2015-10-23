@@ -58,8 +58,8 @@
     "overrides": {
       "npm:remotestoragejs@0.12.1": {
         "registry": "jspm",
-        "main": "release/stable/remotestorage",
-        "format": "global",
+        "main": "release/stable/remotestorage.amd",
+        "format": "amd",
         "dependencies": {}
       },
       "npm:jquery@2.1.4": {
