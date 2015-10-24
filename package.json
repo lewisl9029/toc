@@ -56,8 +56,9 @@
     },
     "overrides": {
       "npm:remotestoragejs@0.12.1": {
-        "main": "release/stable/remotestorage.amd",
-        "format": "amd"
+        "main": "release/stable/remotestorage",
+        "format": "global",
+        "dependencies": {}
       },
       "npm:jquery@2.1.4": {
         "format": "global"
