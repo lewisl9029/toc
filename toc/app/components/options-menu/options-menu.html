@@ -3,19 +3,24 @@
 </ion-header-bar>
 <ion-content>
   <div class="list">
-    <div class="item" ng-click="optionsMenu.openWindow('http://toc.im')">
+    <div class="item" ng-click="::optionsMenu.showAboutModal()">
       About Toc
     </div>
-    <div class="item" ng-click="optionsMenu.showIdPopup()">
+    <div class="item" ng-click="::optionsMenu.showIdPopup()">
       Display your ID
     </div>
-    <div class="item" ng-click="optionsMenu.showCloudConnectModal()">
+    <div class="item" ng-click="::optionsMenu.showCloudConnectModal()"
+      ng-if="!optionsMenu.isStorageConnected()">
       Sync your profile
     </div>
-    <div class="item" ng-click="optionsMenu.showDeleteDataConfirm()">
+    <div class="item" ng-click="::optionsMenu.showCloudDisconnectConfirm()"
+      ng-if="optionsMenu.isStorageConnected()">
+      Disconnect your profile
+    </div>
+    <div class="item" ng-click="::optionsMenu.showDeleteDataConfirm()">
       Clear local data
     </div>
-    <div class="item" ng-click="optionsMenu.showSignoutConfirm()">
+    <div class="item" ng-click="::optionsMenu.showSignoutConfirm()">
       Sign out
     </div>
   </div>
@@ -23,7 +28,7 @@
 <ion-footer-bar>
   <div class="col">
     <button class="button button-block button-positive"
-      ng-click="optionsMenu.showBeginConversationModal()">
+      ng-click="::optionsMenu.showBeginConversationModal()">
       Start a conversation
     </button>
   </div>

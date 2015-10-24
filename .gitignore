@@ -19,7 +19,7 @@
 /node_modules
 /toc/app/dependencies
 /toc/cordova.js
-/toc/cordova_plugins.js
+/toc/plugins/*
 /resources/*
 !/resources/*.*
 /*.apk

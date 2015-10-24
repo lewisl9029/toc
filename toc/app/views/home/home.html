@@ -1,6 +1,6 @@
 <ion-view view-title="Toc Messenger">
   <div class="bar bar-subheader">
-    <toc-user-card enable-dismiss-notifications>
+    <toc-user-card enable-dismiss-notifications enable-profile-edit>
     </toc-user-card>
   </div>
   <ion-content class="has-subheader has-subfooter">
@@ -9,7 +9,7 @@
   <div class="bar bar-subfooter">
     <div class="col">
       <button class="button button-block button-calm button-outline"
-        ng-click="homeView.showUpdateProfileModal()">
+        ng-click="::homeView.showUpdateProfileModal()">
         Update your profile
       </button>
     </div>
@@ -17,7 +17,7 @@
   <ion-footer-bar>
     <div class="col">
       <button class="button button-block button-positive"
-        ng-click="homeView.showBeginConversationModal()">
+        ng-click="::homeView.showBeginConversationModal()">
         Start a conversation
       </button>
     </div>

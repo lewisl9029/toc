@@ -11,14 +11,28 @@ export default /*@ngInject*/ function tocOptionsMenu() {
       $scope,
       navigation,
       session,
+      storage,
       state
     ) {
       this.openWindow = navigation.openWindow;
+      this.isStorageConnected = storage.isConnected;
 
       session.preparePrivate().then(() => {
         this.userInfo = state.cloud.identity.get().userInfo;
         this.userId = this.userInfo.id;
       });
+
+      this.showAboutModal = () => {
+        let modalTemplate = `
+          <toc-about-toc-modal class="toc-modal-container"
+            remove-modal="optionsMenu.aboutTocModal.remove()">
+          </toc-about-toc-modal>
+        `;
+
+        let modalName = 'aboutTocModal';
+
+        return navigation.showModal(modalName, modalTemplate, this, $scope);
+      };
 
       this.showIdPopup = () => {
         $ionicPopup.show({
@@ -29,18 +43,7 @@ export default /*@ngInject*/ function tocOptionsMenu() {
             text: 'Done',
             type: 'button-positive button-block'
           }],
-          template: `
-            <div class="list">
-              <div class="item item-image">
-                <toc-qr-image data="{{::optionsMenu.userId}}">
-                </toc-qr-image>
-              </div>
-              <label class="toc-id-input item item-input">
-                <input type="text" ng-model="::optionsMenu.userId"
-                  readonly toc-auto-select notify-copied="true">
-              </label>
-            </div>
-          `
+          template: `<toc-id-display></toc-id-display>`
         });
       };
 
@@ -66,6 +69,27 @@ export default /*@ngInject*/ function tocOptionsMenu() {
         let modalName = 'cloudConnectModal';
 
         return navigation.showModal(modalName, modalTemplate, this, $scope);
+      };
+
+      this.showCloudDisconnectConfirm = function showCloudDisconnectConfirm() {
+        let disconnectProfilePopup = $ionicPopup.confirm({
+          title: 'Disconnect Profile',
+          template: `
+            <p>Your profile will be removed from this device.</p>
+            <p>Are you sure?</p>
+          `,
+          okText: 'Disconnect',
+          okType: 'button-assertive button-block',
+          cancelType: 'button-positive button-block button-outline'
+        });
+
+        disconnectProfilePopup.then((response) => {
+          if (!response) {
+            return;
+          }
+
+          return state.destroy();
+        });
       };
 
       this.showDeleteDataConfirm = function showDeleteDataConfirm() {

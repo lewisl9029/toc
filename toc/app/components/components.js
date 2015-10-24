@@ -1,6 +1,7 @@
 import angular from 'angular';
 
 import autoFocus from './auto-focus/auto-focus';
+import aboutTocModal from './about-toc-modal/about-toc-modal';
 import autoSelect from './auto-select/auto-select';
 import equalTo from './equal-to/equal-to';
 import updateProfileModal from './update-profile-modal/update-profile-modal';
@@ -12,6 +13,7 @@ import channelCard from './channel-card/channel-card';
 import channelList from './channel-list/channel-list';
 import cloudConnectModal from './cloud-connect-modal/cloud-connect-modal';
 import invitePostModal from './invite-post-modal/invite-post-modal';
+import idDisplay from './id-display/id-display';
 import messageInputArea from './message-input-area/message-input-area';
 import messageList from './message-list/message-list';
 import notificationCard from './notification-card/notification-card';
@@ -27,6 +29,7 @@ import userCard from './user-card/user-card';
 
 export default angular.module('toc.components', [
   autoFocus.name,
+  aboutTocModal.name,
   autoSelect.name,
   equalTo.name,
   updateProfileModal.name,
@@ -36,6 +39,7 @@ export default angular.module('toc.components', [
   channelList.name,
   cloudConnectModal.name,
   invitePostModal.name,
+  idDisplay.name,
   messageInputArea.name,
   messageList.name,
   notificationCard.name,

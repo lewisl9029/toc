@@ -13,8 +13,8 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
     controllerAs: 'passwordPromptModal',
     controller: /*@ngInject*/ function PasswordPromptModalController(
       $scope,
-      $ionicLoading,
       $ionicModal,
+      $ionicPopup,
       $log,
       $timeout,
       $window,
@@ -23,11 +23,13 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       navigation,
       notifications,
       identity,
+      storage,
       state
     ) {
       this.removeModal = $scope.removeModal;
       this.hideModal = $scope.hideModal;
       this.showModal = $scope.showModal;
+      this.isStorageConnected = storage.isConnected;
 
       let userExistsCursor = state.cloudUnencrypted.cryptography;
       let updateUserExists = () => {
@@ -94,6 +96,27 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
         let modalName = 'cloudConnectModal';
 
         return navigation.showModal(modalName, modalTemplate, this, $scope);
+      };
+
+      this.showCloudDisconnectConfirm = function showCloudDisconnectConfirm() {
+        let disconnectProfilePopup = $ionicPopup.confirm({
+          title: 'Disconnect Profile',
+          template: `
+            <p>Your profile will be removed from this device.</p>
+            <p>Are you sure?</p>
+          `,
+          okText: 'Disconnect',
+          okType: 'button-assertive button-block',
+          cancelType: 'button-positive button-block button-outline'
+        });
+
+        disconnectProfilePopup.then((response) => {
+          if (!response) {
+            return;
+          }
+
+          return state.destroy();
+        });
       };
     }
   };
