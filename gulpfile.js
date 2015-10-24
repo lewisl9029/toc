@@ -11,7 +11,6 @@ var argv = require('yargs').argv;
 var shell = require('gulp-shell');
 var uglify = require('gulp-uglify');
 var runSequence = require('run-sequence');
-var del = require('del');
 var ngAnnotate = require('gulp-ng-annotate');
 
 // allows for watch to continue after errors
