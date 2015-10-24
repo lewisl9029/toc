@@ -11,9 +11,11 @@ export default /*@ngInject*/ function tocOptionsMenu() {
       $scope,
       navigation,
       session,
+      storage,
       state
     ) {
       this.openWindow = navigation.openWindow;
+      this.isStorageConnected = storage.isConnected;
 
       session.preparePrivate().then(() => {
         this.userInfo = state.cloud.identity.get().userInfo;
@@ -67,6 +69,27 @@ export default /*@ngInject*/ function tocOptionsMenu() {
         let modalName = 'cloudConnectModal';
 
         return navigation.showModal(modalName, modalTemplate, this, $scope);
+      };
+
+      this.showCloudDisconnectConfirm = function showCloudDisconnectConfirm() {
+        let disconnectProfilePopup = $ionicPopup.confirm({
+          title: 'Disconnect Profile',
+          template: `
+            <p>Your profile will be removed from this device.</p>
+            <p>Are you sure?</p>
+          `,
+          okText: 'Disconnect',
+          okType: 'button-assertive button-block',
+          cancelType: 'button-positive button-block button-outline'
+        });
+
+        disconnectProfilePopup.then((response) => {
+          if (!response) {
+            return;
+          }
+
+          return state.destroy();
+        });
       };
 
       this.showDeleteDataConfirm = function showDeleteDataConfirm() {
