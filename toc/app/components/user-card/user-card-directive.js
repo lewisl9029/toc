@@ -49,7 +49,9 @@ export default /*@ngInject*/ function tocUserCard(
         )(notificationsCursor.get() || {}).length;
 
         if (this.notificationCount === 0) {
-          this.message = 'No new notifications';
+          this.message = this.enableProfileEdit ?
+            'Update your profile' :
+            'No new notifications';
           return;
         }
 
