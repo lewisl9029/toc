@@ -8,12 +8,14 @@ export default /*@ngInject*/ function tocUserCard(
     template: template,
     scope: {
       message: '@',
-      enableDismissNotifications: '@'
+      enableDismissNotifications: '@',
+      enableProfileEdit: '@'
     },
     controllerAs: 'userCard',
     controller: /*@ngInject*/ function UserCardController(
       $scope,
       identity,
+      navigation,
       R,
       state,
       session
@@ -21,6 +23,8 @@ export default /*@ngInject*/ function tocUserCard(
       this.message = $scope.message;
       this.enableDismissNotifications =
         $scope.enableDismissNotifications !== undefined;
+      this.enableProfileEdit =
+        $scope.enableProfileEdit !== undefined;
 
       session.preparePrivate().then(() => {
         let userInfoCursor = state.cloud.identity.select(['userInfo']);
@@ -66,18 +70,29 @@ export default /*@ngInject*/ function tocUserCard(
         return;
       }
 
-      this.dismissNotifications = () => {
-        R.pipe(
+      this.handleUserCardClick = () => {
+        let activeNotifications = R.pipe(
           R.values,
-          R.reject(R.prop('dismissed')),
-          R.forEach((notification) => {
-            state.save(
-              notificationsCursor,
-              [notification.notificationInfo.id, 'dismissed'],
-              true
-            );
-          })
-        )(notificationsCursor.get());
+          R.reject(R.prop('dismissed'))
+        )(notificationsCursor.get() || {});
+
+        if (activeNotifications.length === 0 && this.enableProfileEdit) {
+          let modalTemplate = `
+            <toc-update-profile-modal class="toc-modal-container"
+              remove-modal="userCard.updateProfileModal.remove()">
+            </toc-update-profile-modal>
+          `;
+
+          let modalName = 'updateProfileModal';
+
+          return navigation.showModal(modalName, modalTemplate, this, $scope);
+        }
+
+        return R.map((notification) => state.save(
+          notificationsCursor,
+          [notification.notificationInfo.id, 'dismissed'],
+          true
+        ))(activeNotifications);
       };
     }
   };

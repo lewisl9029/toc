@@ -4,7 +4,7 @@
 <div class="toc-conversations-menu-subheader bar bar-subheader">
   <toc-user-card
     ng-class="{'toc-active-view': conversationsMenu.viewId === 'home'}"
-    ng-click="conversationsMenu.goToHome()" menu-close></toc-user-card>
+    ng-click="::conversationsMenu.goToHome()" menu-close></toc-user-card>
 </div>
 <ion-content class="has-subheader">
   <toc-channel-list>
@@ -13,7 +13,7 @@
 <ion-footer-bar>
   <div class="col">
     <button class="button button-block button-positive"
-      ng-click="conversationsMenu.showBeginConversationModal()">
+      ng-click="::conversationsMenu.showBeginConversationModal()">
       Start a conversation
     </button>
   </div>

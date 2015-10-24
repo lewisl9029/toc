@@ -1,7 +1,7 @@
 <ion-view view-title="Toc Messenger">
   <div class="bar bar-subheader toc-channel-subheader">
     <toc-channel-card channel-id="{{::channelView.channelId}}"
-      ng-click="channelView.viewLatest()">
+      ng-click="::channelView.viewLatest()">
     </toc-channel-card>
   </div>
 
@@ -11,7 +11,7 @@
   </ion-content>
 
   <ion-footer-bar class="toc-message-input-footer"
-    ng-click="channelView.viewLatest()">
+    ng-click="::channelView.viewLatest()">
     <toc-message-input-area class="toc-message-input-area"
       channel-id="{{::channelView.channelId}}">
     </toc-message-input-area>
