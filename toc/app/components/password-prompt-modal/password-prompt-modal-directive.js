@@ -38,7 +38,7 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       state.addListener(userExistsCursor, updateUserExists, $scope);
 
       let staySignedIn = state.local.session.get(['staySignedIn']);
-      this.staySignedIn = staySignedIn === undefined ? true : staySignedIn;
+      this.staySignedIn = staySignedIn === undefined ? false : staySignedIn;
 
       this.begin = function begin(passwordPromptForm) {
         if (passwordPromptForm.$invalid) {
