@@ -361,6 +361,7 @@ gulp.task('replace-html', function replaceHtml() {
       'dependencies/system.src.js',
       'dependencies/system-csp-production.src.js'
     ))
+    .pipe(gulpif(argv.prod, replace(' http://*:8101', '')))
     .pipe(gulpif(argv.prod, minifyHtml()))
     .pipe(gulp.dest(basePaths.prod));
 });
