@@ -92,6 +92,16 @@ gulp.task('watch', function watch() {
   gulp.watch(paths.sass.landing, ['bundle-sass-landing']);
 });
 
+gulp.task('version', function version() {
+  var tocVersion = require('./package.json').version;
+  return gulp.src(basePaths.root + 'config.xml')
+    .pipe(replace(
+      /<widget id="net\.lewisl\.toc" version="[0-9]+(\.[0-9]+)*"/,
+      '<widget id="net.lewisl.toc" version="' + tocVersion + '"'
+    ))
+    .pipe(gulp.dest(basePaths.root));
+});
+
 gulp.task('serve', function serve() {
   var serveCommand = argv.prod ?
     'http-server www -p 8100' :
