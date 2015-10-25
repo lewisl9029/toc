@@ -1,9 +1,9 @@
 .toc-message-list {
   > :first-child {
-    box-shadow: unset;
+    box-shadow: initial;
   }
   > :last-child {
-    box-shadow: unset;
+    box-shadow: initial;
     margin-bottom: 20px;
   }
 }
@@ -12,7 +12,7 @@
   border: 0;
   background-color: transparent;
   padding-right: 72px;
-  min-height: unset;
+  min-height: initial;
 
   .toc-message-content {
     white-space: normal;
@@ -96,7 +96,7 @@
 .toc-message-avatar {
   padding-bottom: 0;
   > img:first-child {
-    top: unset;
+    top: initial;
     bottom: 0;
   }
 }
