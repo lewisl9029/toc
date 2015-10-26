@@ -24,3 +24,5 @@
 !/resources/*.*
 /*.apk
 /*.ipa
+/package-id-android.txt
+/package-id-ios.txt

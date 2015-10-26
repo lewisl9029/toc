@@ -132,11 +132,6 @@ gulp.task('build', function build(done) {
   );
 });
 
-gulp.task('download', function download() {
-  return gulp.src('')
-    .pipe(shell('/bin/bash scripts/toc-download-package.sh'));
-});
-
 gulp.task('package', function package(done) {
   var handlePackageError = function (error) {
     runSequence(
@@ -148,17 +143,23 @@ gulp.task('package', function package(done) {
   };
 
   if (argv.dev) {
-    var packageTask = argv.packagedev ?
-      ['package-android', 'package-ios'] :
+    var packageAndroidTask = argv.packagedev ?
+      ['package-android'] :
       ['nil'];
+    var packageIosTask = argv.packagedev ?
+      ['package-ios'] :
+      ['nil'];
+
     var downloadTask = argv.packagedev ?
       (argv.skipdownload ? ['nil'] : ['download']) :
       ['nil'];
 
     return runSequence(
       ['inject-cordova', 'inject-livereload', 'fix-ionic'],
-      packageTask,
+      packageIosTask,
+      packageAndroidTask,
       ['unfix-ionic', 'uninject-livereload'],
+      downloadTask,
       ['serve'],
       ['uninject-cordova'],
       handlePackageError
@@ -171,8 +172,10 @@ gulp.task('package', function package(done) {
   return runSequence(
     buildTask,
     ['inject-cordova', 'fix-ionic'],
-    ['package-android', 'package-ios'],
+    ['package-ios'],
+    ['package-android'],
     ['uninject-cordova', 'unfix-ionic'],
+    downloadTask,
     handlePackageError
   );
 });
@@ -189,6 +192,18 @@ gulp.task('package-ios', function packageAndroid() {
     .pipe(shell(
       '/bin/bash scripts/toc-package-ios.sh'
     ));
+});
+
+gulp.task('download', ['download-android', 'download-ios']);
+
+gulp.task('download-android', function download() {
+  return gulp.src('')
+    .pipe(shell('/bin/bash scripts/toc-package-download.sh android'));
+});
+
+gulp.task('download-ios', function download() {
+  return gulp.src('')
+    .pipe(shell('/bin/bash scripts/toc-package-download.sh ios'));
 });
 
 gulp.task('inject-livereload', function injectLivereload() {

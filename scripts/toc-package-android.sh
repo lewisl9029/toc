@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-TOC_PACKAGE_VERSION="$(ionic package build android | \
+TOC_PACKAGE_ID="$(ionic package build android | \
   grep "Build ID: " | \
   sed -r 's/Build ID: ([0-9]+)/\1/')"
 
-source scripts/toc-package-download.sh $TOC_PACKAGE_VERSION
+echo $TOC_PACKAGE_ID > package-id-android.txt
