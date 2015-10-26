@@ -146,13 +146,10 @@ gulp.task('package', function package(done) {
       }
     );
   };
-  //TODO: send package commands in parallel and download both
+
   if (argv.dev) {
-    var packageAndroidTask = argv.packagedev ?
-      ['package-android'] :
-      ['nil'];
-    var packageIosTask = argv.packagedev ?
-      ['package-ios'] :
+    var packageTask = argv.packagedev ?
+      ['package-android', 'package-ios'] :
       ['nil'];
     var downloadTask = argv.packagedev ?
       (argv.skipdownload ? ['nil'] : ['download']) :
@@ -160,13 +157,8 @@ gulp.task('package', function package(done) {
 
     return runSequence(
       ['inject-cordova', 'inject-livereload', 'fix-ionic'],
-      packageIosTask,
+      packageTask,
       ['unfix-ionic', 'uninject-livereload'],
-      downloadTask,
-      ['inject-cordova', 'inject-livereload', 'fix-ionic'],
-      packageAndroidTask,
-      ['unfix-ionic', 'uninject-livereload'],
-      downloadTask,
       ['serve'],
       ['uninject-cordova'],
       handlePackageError
@@ -179,15 +171,24 @@ gulp.task('package', function package(done) {
   return runSequence(
     buildTask,
     ['inject-cordova', 'fix-ionic'],
-    ['package-ios'],
+    ['package-android', 'package-ios'],
     ['uninject-cordova', 'unfix-ionic'],
-    downloadTask,
-    ['inject-cordova', 'fix-ionic'],
-    ['package-android'],
-    ['uninject-cordova', 'unfix-ionic'],
-    downloadTask,
     handlePackageError
   );
+});
+
+gulp.task('package-android', function packageAndroid() {
+  return gulp.src('')
+    .pipe(shell(
+      '/bin/bash scripts/toc-package-android.sh'
+    ));
+});
+
+gulp.task('package-ios', function packageAndroid() {
+  return gulp.src('')
+    .pipe(shell(
+      '/bin/bash scripts/toc-package-ios.sh'
+    ));
 });
 
 gulp.task('inject-livereload', function injectLivereload() {
@@ -284,20 +285,6 @@ gulp.task('unfix-ionic', function unfixIonic() {
       '"documentRoot": "toc"'
     ))
     .pipe(gulp.dest(basePaths.root));
-});
-
-gulp.task('package-android', function packageAndroid() {
-  return gulp.src('')
-    .pipe(shell(
-      'ionic package build android'
-    ));
-});
-
-gulp.task('package-ios', function packageAndroid() {
-  return gulp.src('')
-    .pipe(shell(
-      'ionic package build ios --profile toc_dev_profile'
-    ));
 });
 
 gulp.task('build-js', ['replace-js', 'build-jspm'], function buildJs() {
