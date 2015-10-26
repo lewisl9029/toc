@@ -5,6 +5,7 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var replace = require('gulp-replace');
 var imagemin = require('gulp-imagemin');
+var autoprefixer = require('gulp-autoprefixer');
 var minifyCss = require('gulp-minify-css');
 var minifyHtml = require('gulp-minify-html');
 var argv = require('yargs').argv;
@@ -413,8 +414,10 @@ var makeSassTask = function makeSassTask(sassPath) {
     .pipe(gulpif(!argv.prod, sourcemaps.init()))
     .pipe(sass())
     .on('error', handleError)
-    .pipe(gulpif(!argv.prod, sourcemaps.write()))
+    .pipe(autoprefixer({ browsers: ['last 2 versions'] }))
+    .on('error', handleError)
     .pipe(gulpif(argv.prod, minifyCss()))
+    .pipe(gulpif(!argv.prod, sourcemaps.write()))
     .pipe(gulp.dest(basePaths.dev))
     .on('error', handleError);
 };
