@@ -68,7 +68,7 @@ var paths = {
     basePaths.devApp + 'views/**/*.js',
     basePaths.devApp + '*.js',
     basePaths.dev + '*.js',
-    './*.js'
+    basePaths.root + '*.js'
   ],
   html: [
     basePaths.devApp + 'components/**/*.html',
@@ -146,16 +146,25 @@ gulp.task('package', function package(done) {
       }
     );
   };
-
+  //TODO: send package commands in parallel and download both
   if (argv.dev) {
-    var packageTask = argv.packagedev ? ['package-android'] : ['nil'];
+    var packageAndroidTask = argv.packagedev ?
+      ['package-android'] :
+      ['nil'];
+    var packageIosTask = argv.packagedev ?
+      ['package-ios'] :
+      ['nil'];
     var downloadTask = argv.packagedev ?
       (argv.skipdownload ? ['nil'] : ['download']) :
       ['nil'];
 
     return runSequence(
       ['inject-cordova', 'inject-livereload', 'fix-ionic'],
-      packageTask,
+      packageIosTask,
+      ['unfix-ionic', 'uninject-livereload'],
+      downloadTask,
+      ['inject-cordova', 'inject-livereload', 'fix-ionic'],
+      packageAndroidTask,
       ['unfix-ionic', 'uninject-livereload'],
       downloadTask,
       ['serve'],
@@ -169,6 +178,10 @@ gulp.task('package', function package(done) {
 
   return runSequence(
     buildTask,
+    ['inject-cordova', 'fix-ionic'],
+    ['package-ios'],
+    ['uninject-cordova', 'unfix-ionic'],
+    downloadTask,
     ['inject-cordova', 'fix-ionic'],
     ['package-android'],
     ['uninject-cordova', 'unfix-ionic'],
@@ -277,6 +290,13 @@ gulp.task('package-android', function packageAndroid() {
   return gulp.src('')
     .pipe(shell(
       'ionic package build android'
+    ));
+});
+
+gulp.task('package-ios', function packageAndroid() {
+  return gulp.src('')
+    .pipe(shell(
+      'ionic package build ios --profile toc_dev_profile'
     ));
 });
 

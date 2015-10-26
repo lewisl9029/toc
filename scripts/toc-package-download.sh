@@ -3,7 +3,7 @@ set -e
 
 MAX_ATTEMPTS=15
 current_attempt=1
-until ionic package download || [ "$current_attempt" == "$MAX_ATTEMPTS" ]
+until ionic package download $1 || [ "$current_attempt" == "$MAX_ATTEMPTS" ]
 do
   echo "Package download attempt $current_attempt failed. Trying again in 10 seconds."
   current_attempt=$((current_attempt+1))

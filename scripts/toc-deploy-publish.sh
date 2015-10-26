@@ -8,6 +8,7 @@ cp -r www/* toc-pages/releases/$TOC_RELEASE/
 
 tar -cvf $CIRCLE_ARTIFACTS/www.tar www
 cp "Toc Messenger.apk" $CIRCLE_ARTIFACTS/
+cp "Toc Messenger.ipa" $CIRCLE_ARTIFACTS/
 
 
 cd toc-pages
