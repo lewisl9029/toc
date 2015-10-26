@@ -305,8 +305,11 @@ a {
 
 
 .toc-main-actions {
-  max-width: 400px;
+  max-width: 300px;
   width: 90%;
+  @media (min-width: $toc-tablet-width) {
+    max-width: 400px;
+  }
   @include toc-margin-bottom(80px);
 }
 
