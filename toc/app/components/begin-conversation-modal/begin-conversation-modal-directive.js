@@ -33,6 +33,11 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
 
       this.inviteMethod = 'enter';
 
+      let isWebIdScannerSupported =
+        $window.navigator.getUserMedia ||
+        $window.navigator.webkitGetUserMedia ||
+        $window.navigator.mozGetUserMedia;
+
       let handleInviteError = (error) => {
         if (error === 'contact: cannot invite self') {
           return notifications.notifySystem(
@@ -79,8 +84,44 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
         'enter': {
           icon: 'ion-ios-compose',
           text: 'Enter an ID',
-          isEnabled: true,
+          isEnabled: isWebIdScannerSupported || devices.isIosApp(),
           doInvite: () => {
+            if (devices.isIosApp()) {
+              let barcodeScanner = $window.cordova.plugins.barcodeScanner;
+              if (!barcodeScanner) {
+                return notifications.notifySystem(
+                  `Barcode Scanner plugin was not found.`
+                );
+              }
+
+              let scanningBarcode = $q.defer();
+
+              barcodeScanner.scan(
+                (barcodeData) => scanningBarcode.resolve(barcodeData),
+                (error) => scanningBarcode.reject(error)
+              );
+
+              return scanningBarcode.promise
+                .then((barcodeData) => {
+                  if (barcodeData.cancelled) {
+                    throw new Error('contacts: qr reader cancelled');
+                  }
+                  let contactId = barcodeData.text;
+                  if (!identity.validateId(contactId)) {
+                    return notifications.notifySystem(
+                      `Please enter a valid Toc ID.`
+                    );
+                  }
+
+                  return contacts.saveSendingInvite(contactId);
+                })
+                .then(() => {
+                  this.removeModal();
+                  return $q.when();
+                })
+                .catch(handleInviteError);
+            }
+
             let invitePopup = $ionicPopup.show({
               template: `
                 <form ng-submit="beginConversationModal.sendInvite()"
