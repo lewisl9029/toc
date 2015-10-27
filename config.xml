@@ -74,5 +74,5 @@
     <icon src="resources/wp8/icon/Background.png" width="159" height="159"/>
     <splash src="resources/wp8/splash/SplashScreenImage.png" width="768" height="1280"/>
   </platform>
-  <icon src="resources/ios/icon/icon-small@3x.png"/>
+  <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
 </widget>
