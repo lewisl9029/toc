@@ -29,7 +29,7 @@ export default /*@ngInject*/ function devices(
     return $window.cordova.platformId === 'android';
   };
 
-  let isIosApp = function isAndroidApp() {
+  let isIosApp = function isIosApp() {
     if (!isCordovaApp()) {
       return false;
     }

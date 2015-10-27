@@ -84,6 +84,37 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
         'enter': {
           icon: 'ion-ios-compose',
           text: 'Enter an ID',
+          isEnabled: true,
+          doInvite: () => {
+            let invitePopup = $ionicPopup.show({
+              template: `
+                <form ng-submit="beginConversationModal.sendInvite()"
+                  novalidate>
+                <input type="text" placeholder="Your contact's user ID."
+                  ng-model="beginConversationModal.contactId" toc-auto-focus>
+                </form>
+              `,
+              title: 'Enter ID',
+              scope: $scope,
+              buttons: [
+                {
+                  text: 'Cancel',
+                  type: 'button-positive button-block button-outline'
+                },
+                {
+                  text: 'Invite',
+                  type: 'button-positive button-block',
+                  onTap: (event) => {
+                    return this.sendInvite(event);
+                  }
+                }
+              ]
+            });
+          }
+        },
+        'scan': {
+          icon: 'ion-camera',
+          text: 'Scan a picture ID',
           isEnabled: isWebIdScannerSupported || devices.isIosApp(),
           doInvite: () => {
             if (devices.isIosApp()) {
@@ -121,38 +152,6 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
                 })
                 .catch(handleInviteError);
             }
-
-            let invitePopup = $ionicPopup.show({
-              template: `
-                <form ng-submit="beginConversationModal.sendInvite()"
-                  novalidate>
-                <input type="text" placeholder="Your contact's user ID."
-                  ng-model="beginConversationModal.contactId" toc-auto-focus>
-                </form>
-              `,
-              title: 'Enter ID',
-              scope: $scope,
-              buttons: [
-                {
-                  text: 'Cancel',
-                  type: 'button-positive button-block button-outline'
-                },
-                {
-                  text: 'Invite',
-                  type: 'button-positive button-block',
-                  onTap: (event) => {
-                    return this.sendInvite(event);
-                  }
-                }
-              ]
-            });
-          }
-        },
-        'scan': {
-          icon: 'ion-camera',
-          text: 'Scan a picture ID',
-          isEnabled: true,
-          doInvite: () => {
             let qrScannerPopup = $ionicPopup.show({
               title: 'Scanning ID',
               cssClass: 'toc-id-scanner-popup',
