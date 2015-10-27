@@ -5,10 +5,10 @@
 <style type="text/css">
 	.st0{fill:url(#SVGID_1_);}
 </style>
-<radialGradient id="SVGID_1_" cx="221.3577" cy="-531.3376" r="201.6399" fx="68.4828" fy="-635.5043" gradientTransform="matrix(0.9974 0 0 -0.9974 -167.8778 -178.5527)" gradientUnits="userSpaceOnUse">
+<radialGradient id="SVGID_1_" cx="222.2974" cy="-530.437" r="205.5945" fx="66.4244" fy="-636.6466" gradientTransform="matrix(0.7861 0 0 -0.8977 -117.5392 -120.9775)" gradientUnits="userSpaceOnUse">
 	<stop  offset="0" style="stop-color:#C6E1E7"/>
 	<stop  offset="0" style="stop-color:#B2D0DE"/>
 </radialGradient>
-<path class="st0" d="M260.8,375.1c0-69.1-85.5-125-191-125s-191,55.9-191,125s85.5,125,191,125c14.2,0,28.1-1,41.4-2.9l0,0
-	l92.2,47.2l-14-71.8C232.9,449.6,260.8,414.4,260.8,375.1L260.8,375.1z"/>
+<path class="st0" d="M224.3,376.9c0-63.4-68.7-114.7-153.5-114.7S-82.7,313.5-82.7,376.9S-14,491.6,70.8,491.6
+	c11.4,0,22.6-0.9,33.3-2.7l0,0l74.1,43.3l-11.3-65.9C201.9,445.3,224.3,413,224.3,376.9L224.3,376.9z"/>
 </svg>
