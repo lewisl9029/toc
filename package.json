@@ -120,7 +120,9 @@
     }
   },
   "cordovaPlugins": [
+    "ionic-plugin-keyboard",
     "cordova-plugin-device",
+    "cordova-plugin-statusbar",
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "cordova-plugin-crosswalk-webview",
