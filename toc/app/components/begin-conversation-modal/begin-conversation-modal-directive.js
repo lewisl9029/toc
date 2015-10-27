@@ -115,43 +115,46 @@ export default /*@ngInject*/ function tocBeginConversationModal() {
         'scan': {
           icon: 'ion-camera',
           text: 'Scan a picture ID',
-          isEnabled: isWebIdScannerSupported || devices.isIosApp(),
+          isEnabled: isWebIdScannerSupported,
+          // FIXME: barcode scanner causes app to crash on ios
+          // isEnabled: isWebIdScannerSupported || devices.isIosApp(),
           doInvite: () => {
-            if (devices.isIosApp()) {
-              let barcodeScanner = $window.cordova.plugins.barcodeScanner;
-              if (!barcodeScanner) {
-                return notifications.notifySystem(
-                  `Barcode Scanner plugin was not found.`
-                );
-              }
-
-              let scanningBarcode = $q.defer();
-
-              barcodeScanner.scan(
-                (barcodeData) => scanningBarcode.resolve(barcodeData),
-                (error) => scanningBarcode.reject(error)
-              );
-
-              return scanningBarcode.promise
-                .then((barcodeData) => {
-                  if (barcodeData.cancelled) {
-                    throw new Error('contacts: qr reader cancelled');
-                  }
-                  let contactId = barcodeData.text;
-                  if (!identity.validateId(contactId)) {
-                    return notifications.notifySystem(
-                      `Please enter a valid Toc ID.`
-                    );
-                  }
-
-                  return contacts.saveSendingInvite(contactId);
-                })
-                .then(() => {
-                  this.removeModal();
-                  return $q.when();
-                })
-                .catch(handleInviteError);
-            }
+            // if (devices.isIosApp()) {
+            //   let barcodeScanner = $window.cordova.plugins.barcodeScanner;
+            //   if (!barcodeScanner) {
+            //     return notifications.notifySystem(
+            //       `Barcode Scanner plugin was not found.`
+            //     );
+            //   }
+            //
+            //   let scanningBarcode = $q.defer();
+            //
+            //   barcodeScanner.scan(
+            //     (barcodeData) => scanningBarcode.resolve(barcodeData),
+            //     (error) => scanningBarcode.reject(error)
+            //   );
+            //
+            //   return scanningBarcode.promise
+            //     .then((barcodeData) => {
+            //       if (barcodeData.cancelled) {
+            //         throw new Error('contacts: qr reader cancelled');
+            //       }
+            //       let contactId = barcodeData.text;
+            //       if (!identity.validateId(contactId)) {
+            //         return notifications.notifySystem(
+            //           `Please enter a valid Toc ID.`
+            //         );
+            //       }
+            //
+            //       return contacts.saveSendingInvite(contactId);
+            //     })
+            //     .then(() => {
+            //       this.removeModal();
+            //       return $q.when();
+            //     })
+            //     .catch(handleInviteError);
+            // }
+            
             let qrScannerPopup = $ionicPopup.show({
               title: 'Scanning ID',
               cssClass: 'toc-id-scanner-popup',
