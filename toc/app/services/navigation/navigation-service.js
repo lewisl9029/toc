@@ -128,7 +128,7 @@ export default /*@ngInject*/ function navigation(
 
   let isPrivateState = function isPrivateState(stateName) {
     if (stateName) {
-      return stateName.startsWith('private');
+      return stateName.indexOf('private') === 0;
     }
 
     return $state.includes('private');
@@ -168,7 +168,7 @@ export default /*@ngInject*/ function navigation(
           ));
       }
 
-      if (activeViewId.startsWith('toc-')) {
+      if (activeViewId.indexOf('toc-') === 0) {
         return resetHistory()
           .then(() => go(
             routes.private.channel,

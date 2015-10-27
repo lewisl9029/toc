@@ -29,6 +29,14 @@ export default /*@ngInject*/ function devices(
     return $window.cordova.platformId === 'android';
   };
 
+  let isIosApp = function isIosApp() {
+    if (!isCordovaApp()) {
+      return false;
+    }
+
+    return $window.cordova.platformId === 'ios';
+  };
+
   let isInForeground = function isInForeground() {
     // fallback for when page visibility api isnt supported
     if ($window.document.hidden === undefined) {
@@ -142,6 +150,7 @@ export default /*@ngInject*/ function devices(
     initialize,
     create,
     isAndroidApp,
+    isIosApp,
     isInForeground,
     isCordovaApp,
     isWebApp

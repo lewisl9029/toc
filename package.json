@@ -13,6 +13,7 @@
   "dependencies": {},
   "devDependencies": {
     "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
     "gulp-if": "^2.0.0",
     "gulp-imagemin": "^2.3.0",
     "gulp-minify-css": "^1.2.1",
@@ -119,7 +120,9 @@
     }
   },
   "cordovaPlugins": [
+    "ionic-plugin-keyboard",
     "cordova-plugin-device",
+    "cordova-plugin-statusbar",
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "cordova-plugin-crosswalk-webview",
@@ -132,6 +135,7 @@
       "platform": "android",
       "version": "",
       "locator": "android"
-    }
+    },
+    "ios"
   ]
 }

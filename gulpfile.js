@@ -5,6 +5,7 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var replace = require('gulp-replace');
 var imagemin = require('gulp-imagemin');
+var autoprefixer = require('gulp-autoprefixer');
 var minifyCss = require('gulp-minify-css');
 var minifyHtml = require('gulp-minify-html');
 var argv = require('yargs').argv;
@@ -67,7 +68,7 @@ var paths = {
     basePaths.devApp + 'views/**/*.js',
     basePaths.devApp + '*.js',
     basePaths.dev + '*.js',
-    './*.js'
+    basePaths.root + '*.js'
   ],
   html: [
     basePaths.devApp + 'components/**/*.html',
@@ -131,11 +132,6 @@ gulp.task('build', function build(done) {
   );
 });
 
-gulp.task('download', function download() {
-  return gulp.src('')
-    .pipe(shell('/bin/bash scripts/toc-download-package.sh'));
-});
-
 gulp.task('package', function package(done) {
   var handlePackageError = function (error) {
     runSequence(
@@ -147,14 +143,21 @@ gulp.task('package', function package(done) {
   };
 
   if (argv.dev) {
-    var packageTask = argv.packagedev ? ['package-android'] : ['nil'];
+    var packageAndroidTask = argv.packagedev ?
+      ['package-android'] :
+      ['nil'];
+    var packageIosTask = argv.packagedev ?
+      ['package-ios'] :
+      ['nil'];
+
     var downloadTask = argv.packagedev ?
       (argv.skipdownload ? ['nil'] : ['download']) :
       ['nil'];
 
     return runSequence(
       ['inject-cordova', 'inject-livereload', 'fix-ionic'],
-      packageTask,
+      packageIosTask,
+      packageAndroidTask,
       ['unfix-ionic', 'uninject-livereload'],
       downloadTask,
       ['serve'],
@@ -169,11 +172,38 @@ gulp.task('package', function package(done) {
   return runSequence(
     buildTask,
     ['inject-cordova', 'fix-ionic'],
+    ['package-ios'],
     ['package-android'],
     ['uninject-cordova', 'unfix-ionic'],
     downloadTask,
     handlePackageError
   );
+});
+
+gulp.task('package-android', function packageAndroid() {
+  return gulp.src('')
+    .pipe(shell(
+      '/bin/bash scripts/toc-package-android.sh'
+    ));
+});
+
+gulp.task('package-ios', function packageAndroid() {
+  return gulp.src('')
+    .pipe(shell(
+      '/bin/bash scripts/toc-package-ios.sh'
+    ));
+});
+
+gulp.task('download', ['download-android', 'download-ios']);
+
+gulp.task('download-android', function download() {
+  return gulp.src('')
+    .pipe(shell('/bin/bash scripts/toc-package-download.sh android'));
+});
+
+gulp.task('download-ios', function download() {
+  return gulp.src('')
+    .pipe(shell('/bin/bash scripts/toc-package-download.sh ios'));
 });
 
 gulp.task('inject-livereload', function injectLivereload() {
@@ -270,13 +300,6 @@ gulp.task('unfix-ionic', function unfixIonic() {
       '"documentRoot": "toc"'
     ))
     .pipe(gulp.dest(basePaths.root));
-});
-
-gulp.task('package-android', function packageAndroid() {
-  return gulp.src('')
-    .pipe(shell(
-      'ionic package build android'
-    ));
 });
 
 gulp.task('build-js', ['replace-js', 'build-jspm'], function buildJs() {
@@ -413,8 +436,10 @@ var makeSassTask = function makeSassTask(sassPath) {
     .pipe(gulpif(!argv.prod, sourcemaps.init()))
     .pipe(sass())
     .on('error', handleError)
-    .pipe(gulpif(!argv.prod, sourcemaps.write()))
+    .pipe(autoprefixer({ browsers: ['last 2 versions'] }))
+    .on('error', handleError)
     .pipe(gulpif(argv.prod, minifyCss()))
+    .pipe(gulpif(!argv.prod, sourcemaps.write()))
     .pipe(gulp.dest(basePaths.dev))
     .on('error', handleError);
 };

@@ -20,7 +20,11 @@
       {{::messageList.getDatestamp(message)}}
     </div>
     <h2 toc-auto-select>
-      {{messageList.getUserInfo(message).displayName || 'Anonymous'}}
+      {{
+        messageList.isByUser(message) ?
+          'You' :
+          messageList.getUserInfo(message).displayName || 'Anonymous'
+      }}
     </h2>
     <p class="toc-message-content" toc-auto-select>
       {{::message.messageInfo.content}}

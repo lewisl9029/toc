@@ -22,4 +22,10 @@
 /toc/plugins/*
 /resources/*
 !/resources/*.*
+!/resources/ios/*.*
+!/resources/android/*.*
+!/resources/wp8/*.*
 /*.apk
+/*.ipa
+/package-id-android.txt
+/package-id-ios.txt

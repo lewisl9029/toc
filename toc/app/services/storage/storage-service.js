@@ -400,7 +400,7 @@ export default /*@ngInject*/ function storage(
     let getAllObjects = function getAllObjectsLocal() {
       let objects = R.pipe(
         R.keys,
-        R.filter(key => key.startsWith(KEY_PREFIX)),
+        R.filter(key => key.indexOf(KEY_PREFIX) === 0),
         R.map(key => [
           key.substr(KEY_PREFIX.length),
           getObjectSync(key.substr(KEY_PREFIX.length))
@@ -413,7 +413,7 @@ export default /*@ngInject*/ function storage(
     let removeAllObjects = function removeAllObjectsLocal() {
       let objects = R.pipe(
         R.keys,
-        R.filter(key => key.startsWith(KEY_PREFIX)),
+        R.filter(key => key.indexOf(KEY_PREFIX) === 0),
         R.map((key) => $window.localStorage.removeItem(key))
       )($window.localStorage);
 

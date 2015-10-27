@@ -63,7 +63,7 @@
   }
   .toc-message-datestamp {
     text-align: center;
-    color: $calm;
+    color: $positive;
     font-size: 12px;
     width: 100%;
     // non-standard, but necessary to enable text selection on chrome
@@ -114,9 +114,7 @@
 }
 
 .toc-message-user {
-  > :not(.toc-message-datestamp){
-    opacity: 0.8;
-  }
+
 }
 
 .toc-message-contact {
