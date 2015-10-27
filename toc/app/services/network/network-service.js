@@ -16,9 +16,8 @@ export default /*@ngInject*/ function network(
     "876d5ce8956009afc010fc908ca29617a444db660cd5598d81bb6a5a2635ba7a": {
       "paths": [
         {
-          "type": "ipv4",
-          "ip": "23.96.119.36",
-          "port": 42424
+          "type": "http",
+          "http": "https://seed.toc.im:42424"
         }
       ],
       "parts": {
@@ -31,6 +30,12 @@ export default /*@ngInject*/ function network(
       }
     }
   };
+
+  let setSeeds = function setSeeds(seeds) {
+    state.save(state.cloud.network, ['networkInfo', 'seeds'], seeds);
+  };
+
+  $window.tocSetSeeds = setSeeds;
 
   let activatingSession = $q.defer();
   let activeSession;
@@ -266,7 +271,13 @@ export default /*@ngInject*/ function network(
   };
 
   let initialize = function initializeNetwork() {
-    $window.tocSeeds = TOC_SEEDS;
+    let existingSeeds = state.cloud.network.get(['networkInfo', 'seeds']);
+
+    if (!existingSeeds) {
+      setSeeds(TOC_SEEDS);
+    }
+    $window.tocSeeds = existingSeeds || TOC_SEEDS;
+
     let keypair = state.cloud.network.get(['networkInfo', 'keypair']);
 
     let saveUserInfo = (networkInfo) => {
