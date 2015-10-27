@@ -12,6 +12,26 @@ export default /*@ngInject*/ function network(
   time,
   telehash
 ) {
+  const TOC_SEEDS = {
+    "876d5ce8956009afc010fc908ca29617a444db660cd5598d81bb6a5a2635ba7a": {
+      "paths": [
+        {
+          "type": "ipv4",
+          "ip": "23.96.119.36",
+          "port": 42424
+        }
+      ],
+      "parts": {
+        "2a": "a9b3da6d514c8aeb1cc001f5423dbf80f0c523a000b1087286fd1b18168d9e3e",
+        "1a": "fc1c470beb1ca7fdb6ecf7a7e3b542e087e0e7705d91666e7a124bc2aeeea9bf"
+      },
+      "keys": {
+        "2a": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1Lb4LwKUW1D3XI/jK5cBtbO17e/6oSD5myO/wYOIyRcJpDgRe////94ugsPGO/FtDnNdWTJ8/bpRGkxnlHadSGA0K3hukx+SOSdddzB/wAp86l0eCuiIBeDfnBYvxC4KmiRHFHMXSRYq2HWSzH2Knz65g/6VI/Qe/F4M8+A19Wxq1RBDtLcigJtkUdJ/y4TUdSwAPaM/mcQFwjCqssC8sgH6LzqPP43+yloxqG5Hx4IsWgcnBzaCQh8yYbP04nH7fd19gPXyWCSjo3CdSwnvfCHiU/eulXT1wubMhR0ZI/XrF3fC8tglgAOsqSxBdwpWo7iZzrTX2sxV8QWnZ5xsmwIDAQAB",
+        "1a": "BO7ZnXZ6VorqlSXhXLfkHtPwctqM53eL3WRqRX/RHGVB2QuTYwLMnw=="
+      }
+    }
+  };
+
   let activatingSession = $q.defer();
   let activeSession;
 
@@ -246,6 +266,7 @@ export default /*@ngInject*/ function network(
   };
 
   let initialize = function initializeNetwork() {
+    $window.tocSeeds = TOC_SEEDS;
     let keypair = state.cloud.network.get(['networkInfo', 'keypair']);
 
     let saveUserInfo = (networkInfo) => {
