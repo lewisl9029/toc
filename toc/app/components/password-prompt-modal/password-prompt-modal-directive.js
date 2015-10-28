@@ -31,9 +31,10 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
       this.showModal = $scope.showModal;
       this.isStorageConnected = storage.isConnected;
 
-      let userExistsCursor = state.cloudUnencrypted.cryptography;
+      let userExistsCursor =
+        state.cloudUnencrypted.identity.select(['userExists']);
       let updateUserExists = () => {
-        this.userExists = userExistsCursor.get() !== undefined;
+        this.userExists = userExistsCursor.get();
       };
       state.addListener(userExistsCursor, updateUserExists, $scope);
 
@@ -73,6 +74,11 @@ export default /*@ngInject*/ function tocPasswordPromptModal() {
             this.showModal()
               .then(() => $window.tocPauseLoadingAnimation());
             let showErrorMessage = () => {
+              if (error === 'network: offline') {
+                return notifications.notifySystem(
+                  'Could not reach any peers. You might be offline.'
+                );
+              }
               if (error === 'identity: wrong password') {
                 return notifications.notifySystem(
                   'The password you entered was incorrect.'

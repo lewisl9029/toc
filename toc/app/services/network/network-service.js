@@ -17,7 +17,7 @@ export default /*@ngInject*/ function network(
       "paths": [
         {
           "type": "http",
-          "http": "https://seed.toc.im:42424"
+          "http": "http://seed.toc.im:42424"
         }
       ],
       "parts": {
@@ -273,9 +273,6 @@ export default /*@ngInject*/ function network(
   let initialize = function initializeNetwork() {
     let existingSeeds = state.cloud.network.get(['networkInfo', 'seeds']);
 
-    if (!existingSeeds) {
-      setSeeds(TOC_SEEDS);
-    }
     $window.tocSeeds = existingSeeds || TOC_SEEDS;
 
     let keypair = state.cloud.network.get(['networkInfo', 'keypair']);
@@ -357,7 +354,7 @@ export default /*@ngInject*/ function network(
       .then(saveNetworkInfo)
       .catch((error) => {
         if (error === 'offline') {
-          return $q.reject('New accounts cannot be created offline');
+          return $q.reject('network: offline');
         }
         return $q.reject(error);
       });

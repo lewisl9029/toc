@@ -52,6 +52,20 @@ export default /*@ngInject*/ function identity(
     return $q.when(derivedCredentials);
   };
 
+  let setUserExists = function setUserExists() {
+    let userExists = state.cloudUnencrypted.identity.get(['userExists']);
+
+    if (userExists === true) {
+      return $q.when();
+    }
+
+    return state.save(
+      state.cloudUnencrypted.identity,
+      ['userExists'],
+      true
+    );
+  };
+
   let initialize = function initializeIdentity(credentials, staySignedIn) {
     let saveCredentials = (derivedCredentials) => {
       if (!staySignedIn) {
@@ -127,6 +141,7 @@ export default /*@ngInject*/ function identity(
     getAvatar,
     validateId,
     authenticate,
+    setUserExists,
     initialize,
     destroy
   };
