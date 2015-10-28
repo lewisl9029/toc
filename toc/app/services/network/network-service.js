@@ -17,7 +17,7 @@ export default /*@ngInject*/ function network(
       "paths": [
         {
           "type": "http",
-          "http": "http://seed.toc.im:42424"
+          "http": "https://seed.toc.im:443"
         }
       ],
       "parts": {
