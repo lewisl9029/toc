@@ -181,27 +181,31 @@ gulp.task('package', function package(done) {
 });
 
 gulp.task('package-android', function packageAndroid() {
+  var packageCommandDev = '/bin/bash scripts/toc-package-android.sh';
+  var packageCommandProd = packageCommandDev + ' prod';
+
+  var packageCommand = argv.prod ? packageCommandProd : packageCommandDev;
   return gulp.src('')
-    .pipe(shell(
-      '/bin/bash scripts/toc-package-android.sh'
-    ));
+    .pipe(shell(packageCommand));
 });
 
-gulp.task('package-ios', function packageAndroid() {
+gulp.task('package-ios', function packageIos() {
+  var packageCommandDev = '/bin/bash scripts/toc-package-ios.sh';
+  var packageCommandProd = packageCommandDev + ' prod';
+
+  var packageCommand = argv.prod ? packageCommandProd : packageCommandDev;
   return gulp.src('')
-    .pipe(shell(
-      '/bin/bash scripts/toc-package-ios.sh'
-    ));
+    .pipe(shell(packageCommand));
 });
 
 gulp.task('download', ['download-android', 'download-ios']);
 
-gulp.task('download-android', function download() {
+gulp.task('download-android', function downloadAndroid() {
   return gulp.src('')
     .pipe(shell('/bin/bash scripts/toc-package-download.sh android'));
 });
 
-gulp.task('download-ios', function download() {
+gulp.task('download-ios', function downloadIos() {
   return gulp.src('')
     .pipe(shell('/bin/bash scripts/toc-package-download.sh ios'));
 });
