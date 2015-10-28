@@ -13,7 +13,7 @@ export default /*@ngInject*/ function network(
   telehash
 ) {
   const TOC_SEEDS = {
-    "876d5ce8956009afc010fc908ca29617a444db660cd5598d81bb6a5a2635ba7a": {
+    "ddb8f07845edf86420a080e8ffe5a91a420a376047c450b034969f3f4f57def5": {
       "paths": [
         {
           "type": "http",
@@ -21,12 +21,12 @@ export default /*@ngInject*/ function network(
         }
       ],
       "parts": {
-        "2a": "a9b3da6d514c8aeb1cc001f5423dbf80f0c523a000b1087286fd1b18168d9e3e",
-        "1a": "fc1c470beb1ca7fdb6ecf7a7e3b542e087e0e7705d91666e7a124bc2aeeea9bf"
+        "2a": "a4494cb4d121fa6c11f2357bf903d61b08d3c7d907cc3a89da6c1a7af9d0e3aa",
+        "1a": "3fbf2edf3fea007ae9ef37c345119676a813c4ca1746c6d3c8af930f6da75399"
       },
       "keys": {
-        "2a": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1Lb4LwKUW1D3XI/jK5cBtbO17e/6oSD5myO/wYOIyRcJpDgRe////94ugsPGO/FtDnNdWTJ8/bpRGkxnlHadSGA0K3hukx+SOSdddzB/wAp86l0eCuiIBeDfnBYvxC4KmiRHFHMXSRYq2HWSzH2Knz65g/6VI/Qe/F4M8+A19Wxq1RBDtLcigJtkUdJ/y4TUdSwAPaM/mcQFwjCqssC8sgH6LzqPP43+yloxqG5Hx4IsWgcnBzaCQh8yYbP04nH7fd19gPXyWCSjo3CdSwnvfCHiU/eulXT1wubMhR0ZI/XrF3fC8tglgAOsqSxBdwpWo7iZzrTX2sxV8QWnZ5xsmwIDAQAB",
-        "1a": "BO7ZnXZ6VorqlSXhXLfkHtPwctqM53eL3WRqRX/RHGVB2QuTYwLMnw=="
+        "2a": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAli3oIbh8Bq3YAEzPNVHYm6cSfE7StY/JIDjSCK8dCpAc5nkR2q5seeKJE8W8gcsIgW+oIURWrrK/8ATdCNE7OGhcPSLzrQKrH2lY/JKlFp9kFSNvlDxP2/0u/TafB/haOugiu8Zoi46ILuXwnEte2mEJ05PxBDV+QlYwjF56PoVPhvTPTuVUg5uKRs1HMEpt6W8yb/l3hpRk0y7oh3xGj+P1DV0SeTR4mcUJrSMKmy3ESx2hWJ7M69FKkKsrNGYQXT0i8OGpGLCLoIl0iyIWKQyzwCaU4ow3wQGx/qHHbaf7AForf3CcYioWhZ8Xtj0saTd960O4q6ESsoDTO/CEmwIDAQAB",
+        "1a": "hbBceV7i3kJVwyMbCBB1IbXSKwr82ML9cR1AtWphFE1qtK/fOJ7ycQ=="
       }
     }
   };
