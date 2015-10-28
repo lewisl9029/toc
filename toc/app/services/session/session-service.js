@@ -44,9 +44,11 @@ export default /*@ngInject*/ function session(
       .then(() => buffer.initialize(network, status))
       .then(() => time.initialize())
       .then(() => navigation.initialize())
+      .then(() => identity.setUserExists())
       .then(() => {
         preparingPrivateSession.resolve('session: private ready')
         $window.tocHideLoadingScreen();
+
         return $q.when();
       });
   };
@@ -55,8 +57,9 @@ export default /*@ngInject*/ function session(
     let startSession = () => {
       let derivedCredentials =
         state.local.cryptography.get(['derivedCredentials']);
+      let userExists = state.cloudUnencrypted.identity.get(['userExists']);
 
-      if (!derivedCredentials) {
+      if (!derivedCredentials && !userExists) {
         return navigation.initializePublic()
           .then(() => {
             preparingPublicSession.resolve('session: public ready');

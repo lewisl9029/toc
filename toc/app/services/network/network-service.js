@@ -12,6 +12,31 @@ export default /*@ngInject*/ function network(
   time,
   telehash
 ) {
+  const TOC_SEEDS = {
+    "ddb8f07845edf86420a080e8ffe5a91a420a376047c450b034969f3f4f57def5": {
+      "paths": [
+        {
+          "type": "http",
+          "http": "http://seed.toc.im:42424"
+        }
+      ],
+      "parts": {
+        "2a": "a4494cb4d121fa6c11f2357bf903d61b08d3c7d907cc3a89da6c1a7af9d0e3aa",
+        "1a": "3fbf2edf3fea007ae9ef37c345119676a813c4ca1746c6d3c8af930f6da75399"
+      },
+      "keys": {
+        "2a": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAli3oIbh8Bq3YAEzPNVHYm6cSfE7StY/JIDjSCK8dCpAc5nkR2q5seeKJE8W8gcsIgW+oIURWrrK/8ATdCNE7OGhcPSLzrQKrH2lY/JKlFp9kFSNvlDxP2/0u/TafB/haOugiu8Zoi46ILuXwnEte2mEJ05PxBDV+QlYwjF56PoVPhvTPTuVUg5uKRs1HMEpt6W8yb/l3hpRk0y7oh3xGj+P1DV0SeTR4mcUJrSMKmy3ESx2hWJ7M69FKkKsrNGYQXT0i8OGpGLCLoIl0iyIWKQyzwCaU4ow3wQGx/qHHbaf7AForf3CcYioWhZ8Xtj0saTd960O4q6ESsoDTO/CEmwIDAQAB",
+        "1a": "hbBceV7i3kJVwyMbCBB1IbXSKwr82ML9cR1AtWphFE1qtK/fOJ7ycQ=="
+      }
+    }
+  };
+
+  let setSeeds = function setSeeds(seeds) {
+    state.save(state.cloud.network, ['networkInfo', 'seeds'], seeds);
+  };
+
+  $window.tocSetSeeds = setSeeds;
+
   let activatingSession = $q.defer();
   let activeSession;
 
@@ -246,6 +271,10 @@ export default /*@ngInject*/ function network(
   };
 
   let initialize = function initializeNetwork() {
+    let existingSeeds = state.cloud.network.get(['networkInfo', 'seeds']);
+
+    $window.tocSeeds = existingSeeds || TOC_SEEDS;
+
     let keypair = state.cloud.network.get(['networkInfo', 'keypair']);
 
     let saveUserInfo = (networkInfo) => {
@@ -325,7 +354,7 @@ export default /*@ngInject*/ function network(
       .then(saveNetworkInfo)
       .catch((error) => {
         if (error === 'offline') {
-          return $q.reject('New accounts cannot be created offline');
+          return $q.reject('network: offline');
         }
         return $q.reject(error);
       });

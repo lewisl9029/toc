@@ -8177,48 +8177,25 @@
     Object.keys(seeds).forEach(function(seed){self.addSeed(seeds[seed])});
   }
 },{"./seeds.json":22}],22:[function(require,module,exports){
-  module.exports={
-  "876d5ce8956009afc010fc908ca29617a444db660cd5598d81bb6a5a2635ba7a": {
-    "paths": [
-      {
-        "type": "http",
-        "http": "http://azure.lewisl.net:42424"
-      }
-    ],
-    "parts": {
-      "2a": "a9b3da6d514c8aeb1cc001f5423dbf80f0c523a000b1087286fd1b18168d9e3e",
-      "1a": "fc1c470beb1ca7fdb6ecf7a7e3b542e087e0e7705d91666e7a124bc2aeeea9bf"
-    },
-    "keys": {
-      "2a": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1Lb4LwKUW1D3XI/jK5cBtbO17e/6oSD5myO/wYOIyRcJpDgRe////94ugsPGO/FtDnNdWTJ8/bpRGkxnlHadSGA0K3hukx+SOSdddzB/wAp86l0eCuiIBeDfnBYvxC4KmiRHFHMXSRYq2HWSzH2Knz65g/6VI/Qe/F4M8+A19Wxq1RBDtLcigJtkUdJ/y4TUdSwAPaM/mcQFwjCqssC8sgH6LzqPP43+yloxqG5Hx4IsWgcnBzaCQh8yYbP04nH7fd19gPXyWCSjo3CdSwnvfCHiU/eulXT1wubMhR0ZI/XrF3fC8tglgAOsqSxBdwpWo7iZzrTX2sxV8QWnZ5xsmwIDAQAB",
-      "1a": "BO7ZnXZ6VorqlSXhXLfkHtPwctqM53eL3WRqRX/RHGVB2QuTYwLMnw=="
-    }
-  }
-}
-//  {
-//    "5c63d7fb6a101471f15064ed05141b342cce9f3bebeb1616d8fc83dab35e61d5": {
-//      "paths": [
-//        {
-//          "type": "http",
-//          "http": "http://azure.lewisl.net:42424"
-//        },
-//        {
-//          "type": "ipv4",
-//          "ip": "23.100.21.191",
-//          "port": 42424
-//        }
-//      ],
-//      "parts": {
-//        "2a": "8cb716b34f138d72d32ba1d79cab4bb0d713bc3b959936b2273be29a15d9e437",
-//        "1a": "0360efab9c139a9e6cd49b945ce93efef3f39b7f0238bb5e087ea0ed4b935835"
-//      },
-//      "keys": {
-//        "2a": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxlm1hU1Oks9sHFbAiwevgjwirVmyEjxNmMUNV3lZZrejk3K0J59AOpt4ohEsGzySIumALLGpDSX+HAiuvEQF1PQnZW1kqtaGyiHymQH0V56FN5RYzpBXIOkE+eel2Ge3WhIGDP7v2jg6rIL3h0b+H9fbX3ixfPQC0NE796wB2xu5thX7ylM3DSFfcFUGh3P1WDXgejluAsw8AzSC1GjvH+Bw0gtNA7aFHiyrxhvAc5EEaeBQbbdBBANsb41ToWjhnFdgWEZUHFGVXdh0WyHDMNiSp+9JMHpbgb/zct+dVCGMK5HEDB05nPRadLkSbQIUUQLxEYUVC+Yvfangi0NSwQIDAQAB",
-//        "1a": "PK+9AzIMgPMTD+rr8v1Oct2KYRslcr3nNznM7jZgWmDneqSFfqI50Q=="
-//      }
-//    }
-//  }
-
+  module.exports=window.tocSeeds;
+// {
+//   "876d5ce8956009afc010fc908ca29617a444db660cd5598d81bb6a5a2635ba7a": {
+//     "paths": [
+//       {
+//         "type": "http",
+//         "http": "http://azure.lewisl.net:42424"
+//       }
+//     ],
+//     "parts": {
+//       "2a": "a9b3da6d514c8aeb1cc001f5423dbf80f0c523a000b1087286fd1b18168d9e3e",
+//       "1a": "fc1c470beb1ca7fdb6ecf7a7e3b542e087e0e7705d91666e7a124bc2aeeea9bf"
+//     },
+//     "keys": {
+//       "2a": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1Lb4LwKUW1D3XI/jK5cBtbO17e/6oSD5myO/wYOIyRcJpDgRe////94ugsPGO/FtDnNdWTJ8/bpRGkxnlHadSGA0K3hukx+SOSdddzB/wAp86l0eCuiIBeDfnBYvxC4KmiRHFHMXSRYq2HWSzH2Knz65g/6VI/Qe/F4M8+A19Wxq1RBDtLcigJtkUdJ/y4TUdSwAPaM/mcQFwjCqssC8sgH6LzqPP43+yloxqG5Hx4IsWgcnBzaCQh8yYbP04nH7fd19gPXyWCSjo3CdSwnvfCHiU/eulXT1wubMhR0ZI/XrF3fC8tglgAOsqSxBdwpWo7iZzrTX2sxV8QWnZ5xsmwIDAQAB",
+//       "1a": "BO7ZnXZ6VorqlSXhXLfkHtPwctqM53eL3WRqRX/RHGVB2QuTYwLMnw=="
+//     }
+//   }
+// }
 },{}],23:[function(require,module,exports){
   (function (Buffer){
     exports.install = function(self)

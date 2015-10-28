@@ -23,9 +23,10 @@ export default /*@ngInject*/ function tocCloudConnectModal() {
       this.openWindow = navigation.openWindow;
 
       this.selectedService = 'remotestorage';
-      let userExistsCursor = state.cloudUnencrypted.cryptography;
+      let userExistsCursor = 
+        state.cloudUnencrypted.identity.select(['userExists']);
       let updateUserExists = () => {
-        this.userExists = userExistsCursor.get() !== undefined;
+        this.userExists = userExistsCursor.get();
       };
       state.addListener(userExistsCursor, updateUserExists, $scope);
 
