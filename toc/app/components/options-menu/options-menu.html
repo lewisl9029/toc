@@ -3,34 +3,24 @@
 </ion-header-bar>
 <ion-content>
   <div class="list">
-    <div class="item item-icon-left" ng-click="::optionsMenu.showAboutModal()">
-      <i class="icon ion-information-circled"></i>
+    <div class="item" ng-click="::optionsMenu.showAboutModal()">
       About Toc
     </div>
-    <div class="item item-icon-left" ng-click="::optionsMenu.showIdPopup()">
-      <i class="icon ion-ios-barcode"></i>
+    <div class="item" ng-click="::optionsMenu.showIdPopup()">
       Display your ID
     </div>
-    <div class="item item-icon-left"
-      ng-click="::optionsMenu.showCloudConnectModal()"
+    <div class="item" ng-click="::optionsMenu.showCloudConnectModal()"
       ng-if="!optionsMenu.isStorageConnected()">
-      <i class="icon ion-android-sync"></i>
       Sync your profile
     </div>
-    <div class="item item-icon-left"
-      ng-click="::optionsMenu.showCloudDisconnectConfirm()"
+    <div class="item" ng-click="::optionsMenu.showCloudDisconnectConfirm()"
       ng-if="optionsMenu.isStorageConnected()">
-      <i class="icon ion-android-sync"></i>
       Disconnect your profile
     </div>
-    <div class="item item-icon-left"
-      ng-click="::optionsMenu.showDeleteDataConfirm()">
-      <i class="icon ion-trash-b"></i>
+    <div class="item" ng-click="::optionsMenu.showDeleteDataConfirm()">
       Clear local data
     </div>
-    <div class="item item-icon-left"
-      ng-click="::optionsMenu.showSignoutConfirm()">
-      <i class="icon ion-android-exit"></i>
+    <div class="item" ng-click="::optionsMenu.showSignoutConfirm()">
       Sign out
     </div>
   </div>

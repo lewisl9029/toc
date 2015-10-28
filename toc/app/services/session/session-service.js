@@ -59,7 +59,7 @@ export default /*@ngInject*/ function session(
         state.local.cryptography.get(['derivedCredentials']);
       let userExists = state.cloudUnencrypted.identity.get(['userExists']);
 
-      if (!derivedCredentials && !userExists) {
+      if (!derivedCredentials || !userExists) {
         return navigation.initializePublic()
           .then(() => {
             preparingPublicSession.resolve('session: public ready');
