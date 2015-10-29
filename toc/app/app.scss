@@ -72,7 +72,7 @@ $toc-animation-timing-function: cubic-bezier(0, 0.59, 0.375, 1);
 .toc-notification-badge {
   margin-right: 0 !important;
   position: absolute;
-  bottom: 0px;
+  top: -4px;
   left: 0px;
   width: 100%;
   text-align: center;

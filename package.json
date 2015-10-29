@@ -121,6 +121,7 @@
   },
   "cordovaPlugins": [
     "ionic-plugin-keyboard",
+    "cordova-plugin-ipad-multitasking",
     "cordova-plugin-device",
     "cordova-plugin-statusbar",
     "cordova-plugin-whitelist",
