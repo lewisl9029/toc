@@ -371,44 +371,6 @@ a {
   position: relative;
 }
 
-
-.toc-image-screenshot-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  .toc-image-screenshot img {
-    position: absolute;
-    opacity: 0.9;
-    left: 20px;
-    top: 70px;
-    width: 183px;
-    height: 323px;
-    @media (min-width: $toc-tablet-width) {
-      left: 32px;
-      top: 61px;
-      width: 396px;
-      height: 529px;
-    }
-    @media (min-width: $toc-notebook-width) {
-      left: 111px;
-      top: 35px;
-      width: 599px;
-      height: 375px;
-    }
-    @media (min-width: $toc-desktop-width) {
-      left: 38px;
-      top: 39px;
-      width: 824px;
-      height: 463px;
-    }
-  }
-}
-
-.toc-image-device {
-}
-
 .toc-landing-footer {
   position: absolute;
   bottom: 0px;

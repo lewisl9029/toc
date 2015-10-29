@@ -406,12 +406,14 @@ gulp.task('build-font', function buildFont() {
 
 gulp.task('build-image', function buildImage() {
   return gulp.src([
-      basePaths.devApp + 'assets/images/**'
+      basePaths.devApp + 'assets/images/*.svg'
+      // PNGs have been pre-minified
+      // basePaths.devApp + 'assets/images/**'
     ], {
       base: basePaths.dev
     })
     .pipe(gulpif(argv.prod, imagemin({
-      optimizationLevel: 7,
+      // optimizationLevel: 7,
       multipass: true
     })))
     .pipe(gulp.dest(basePaths.prod));
