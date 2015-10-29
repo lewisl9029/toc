@@ -2,7 +2,7 @@
   'use strict';
 
   window.tocVersion = 'dev';
-  window.tocProd = true;
+  window.tocProd = false;
 
   var initializeApp = function initializeApp() {
     var disableLogging = function disableLogging() {
@@ -49,8 +49,8 @@
 (function () {
     "use strict";
 
-    var baseLogFunction = console.log;
-    console.log = function(){
+    var baseLogFunction = console.error;
+    console.error = function(){
         baseLogFunction.apply(console, arguments);
 
         var args = Array.prototype.slice.call(arguments);
@@ -69,7 +69,7 @@
     }
 
     window.onerror = function(message, url, linenumber) {
-        console.log("JavaScript error: " + message + " on line " +
+        console.error("JavaScript error: " + message + " on line " +
             linenumber + " for " + url);
     };
 
