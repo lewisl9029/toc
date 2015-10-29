@@ -99,7 +99,7 @@ a {
   //polyfilling in js for unsupported browsers
   scroll-behavior: smooth;
   &.toc-hide {
-    .toc-ribbon {
+    .toc-ribbon-container {
       animation: tocLandingRibbonFadeOutRight 1s
         $toc-animation-timing-function both;
     }
@@ -112,12 +112,27 @@ a {
   }
 }
 
+.toc-ribbon-container {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  overflow: hidden;
+  height: 190px;
+  width: 190px;
+  @media (min-width: $toc-tablet-width) {
+    height: 230px;
+    width: 230px;
+  }
+}
+
 // pure css github fork-me ribbon
 // inspired by:
 // https://unindented.org/articles/github-ribbon-using-css-transforms/
 .toc-ribbon {
+  pointer-events: all;
   z-index: 2;
-  position: absolute;
+  position: relative;
   right: -50px;
   top: 30px;
   @media (min-width: $toc-tablet-width) {
@@ -368,7 +383,7 @@ a {
     opacity: 0.9;
     left: 20px;
     top: 70px;
-    width: 182px;
+    width: 183px;
     height: 323px;
     @media (min-width: $toc-tablet-width) {
       left: 32px;
@@ -379,7 +394,7 @@ a {
     @media (min-width: $toc-notebook-width) {
       left: 111px;
       top: 35px;
-      width: 598px;
+      width: 599px;
       height: 375px;
     }
     @media (min-width: $toc-desktop-width) {
