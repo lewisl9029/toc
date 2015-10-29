@@ -96,6 +96,12 @@ $toc-background-gradient-dark: radial-gradient(
   }
 }
 
+.toc-logs {
+  position: relative;
+  z-index: 50;
+  color: white;
+}
+
 .toc-loading-screen {
   position: fixed;
   z-index: 9; // 1 below modal layer
