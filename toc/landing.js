@@ -46,6 +46,12 @@
     }
   }
 
+  var clearData = window.document.getElementsByClassName('toc-clear-data')[0];
+
+  clearData.addEventListener('click', function(event) {
+    window.tocState.destroy();
+  });
+
   var tocBody = window.document.getElementsByClassName('toc-body')[0];
 
   var appLinks = window.document.getElementsByClassName('toc-app-link');
