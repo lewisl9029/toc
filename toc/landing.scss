@@ -135,6 +135,7 @@ a {
   position: relative;
   right: -50px;
   top: 30px;
+  white-space: nowrap;
   @media (min-width: $toc-tablet-width) {
     right: -50px;
     top: 50px;
