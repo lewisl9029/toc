@@ -4,33 +4,33 @@
 
 ## Overview
 
-[Toc Messenger]() is a proof-of-concept distributed messaging app designed from the ground up to support user data synchronization for use across multiple devices. Toc is available as a client-side web application (with a [seed server]() that anyone can easily host) and as a packaged [Cordova](https://cordova.apache.org/) app for Android and iOS (to be submitted to app stores once a few issues have been sorted out).
+[Toc Messenger](http://toc.im/) is a proof-of-concept distributed messaging app designed from the ground up to support user data synchronization for use across multiple devices. Toc is available as a client-side web application (with a [seed server](https://github.com/lewisl9029/toc-seed) that anyone can easily host) and as a packaged [Cordova](https://cordova.apache.org/) app for Android and iOS (to be submitted to app stores once a few issues have been sorted out).
 
-Toc's interface was built using AngularJS and the Ionic Framework, using bleeding edge JavaScript ES2015 features enabled by JSPM and Babel. We leverage Ramda to apply functional techniques wherever possible in our code, and employ a deliberate, centralized approach to application state management inspired by ClojureScript frameworks like Om, implemented using a wrapper around a single Baobab tree that holds our entire application state.
+Toc's interface was built using [AngularJS](https://angularjs.org/) and the [Ionic Framework](http://ionicframework.com/), using bleeding edge JavaScript ES2015 features enabled by the [jspm](http://jspm.io/) dependency manager and the [Babel](https://babeljs.io/) transpiler. We leverage [Ramda](http://ramdajs.com) to apply functional techniques wherever possible in our code, and employ a deliberate, centralized approach to application state management inspired by ClojureScript frameworks like [Om](https://github.com/omcljs/om), implemented using a wrapper around a single [Baobab](https://github.com/Yomguithereal/baobab) tree that holds our entire application state.
 
-We then persist and synchronize this central state tree using the open, federated remoteStorage protocol and library, while further implementing a custom encryption layer on top of it, built using Forge, with the intention to allow users to synchronize data without having to trust storage providers to respect their privacy.
+We then persist and synchronize this central state tree using the open, federated remoteStorage [protocol](https://remotestorage.io/) and [library](https://github.com/remotestorage/remotestorage.js), while further implementing a custom encryption layer on top of it, built using [Forge](https://github.com/digitalbazaar/forge), with the intention to allow users to synchronize data without having to trust storage providers to respect their privacy.
 
-Toc's peer-to-peer communication stack was built on top of Telehash (albiet the older V2 version with an integrated DHT). We use the randomly generated, cryptographically-verifiable Telehash hashname as the only identifier for our users, which means they are protected from impersonation without having to supply any personally identifiable information. However, users can still provide a friendly name for other users to recognize them by, and an email with which Toc can use to pull their profile picture using the federated, Gravatar-compatible Libravatar service.
+Toc's peer-to-peer communication stack was built on top of [Telehash](http://telehash.org/) (albeit the older V2 version with an integrated DHT). We use the randomly generated, cryptographically-verifiable Telehash [hashname](https://github.com/telehash/telehash.org/blob/master/v3/hashname.md) as the only identifier for our users, which means they can be protected from impersonation without having to supply any personally identifiable information. However, users can still provide a friendly name for other users to recognize them by, and an email with which Toc can use to pull their custom profile picture using the federated, [Gravatar](https://en.gravatar.com/)-compatible [Libravatar](https://www.libravatar.org/) service.
 
-As mentioned in the very beginning, Toc is only a proof-of-concept. Numerous potential issues and limitations prevent us from being able to recommend Toc for long term general use. And due to the fact that we simply won't have any more time to work on Toc, these issues will not likely get resolved any time soon. We recommend taking a look at one of the many, more mature open-source messaging projects for that purpose, such as TextSecure/Signal, Telegram, Matrix, and Tox.
+As mentioned in the very beginning, Toc is only a proof-of-concept. Numerous [potential issues and limitations]() prevent us from being able to recommend Toc for long-term general use. And due to the fact that we simply won't have any more time to work on Toc in the foreseeable future, these issues will not likely get resolved any time soon. For general use, We recommend taking a look at one of the many, more mature open-source messaging projects, such as [TextSecure/Signal](https://whispersystems.org/), [Telegram](https://telegram.org/), [Matrix](http://matrix.org/), and [Tox](https://tox.chat/).
 
-That said, we do hope that, by releasing Toc into the wild, we can generate some renewed interest in the amazing technologies for building decentralized software that Toc makes use of. We also hope that Toc can inspire more developers to strive for building apps that protects users' privacy without compromising on important aspects of their experience.
+That said, we do hope that, by releasing Toc into the world, we can generate some renewed interest in the amazing technologies for building decentralized software that Toc makes use of. We also hope that Toc can inspire more developers to strive for building apps that protect users' privacy without compromising on important aspects of their experience.
 
 ## Background
 
 Toc originated as a 4th year Computer Engineering design project at the University of Waterloo, where I worked with Asif Arman, Danny Yan, and SangHoon Lee to come up with the original concept for Toc and built the first few prototypes together.
 
-The earliest, most naive prototype can be seen in the linked repo, while all the  releases for the subsequent rewrite can be seen in the releases section of this repo. https://github.com/lewisl9029/FYDP-2015-010
+The earliest, most naive [prototype](https://github.com/lewisl9029/FYDP-2015-010) can be seen in the linked repo, while all the  releases for the subsequent rewrite can be seen in the releases section of this repo. 
 
 ## Limitations and Potential Issues
 
 (i.e. Reasons why you may not want to rely on Toc as your primary means of communication)
 
-- Toc is not secure.
+- Toc is *not* secure.
 
   It uses an outdated build of Telehash V2, which could have several security vulnerabilities that would have been fixed in the current V3 branch.
 
-  We also couldn't figure out how to use an SSL certificate with the Telehash V2 seed server, which limits our ability to use HTTPS to deliver the client-side code to your browser for the hosted app, which means it can be compromised by an attacker in transit.
+  We also couldn't figure out how to use an SSL certificate with the Telehash V2 seed server, which limits our ability to use HTTPS to deliver the client-side code to your browser for the hosted app, which means it can be compromised by an attacker in transit. You can download the code from GitHub and host it yourself to work around this, but that is obviously not the great user experience we've been striving for Toc.
 
   Lastly, our crypto implementation for data persistence has never been reviewed, and we certainly cannot claim to have implemented it perfectly, given our lack of experience in building real-world cryptography. This is compounded by the fact that we had to implement a custom deterministic encryption algorithm for securing storage keys in our key-value store, because we couldn't find any existing deterministic encryption implementations for JS. It's a very naive implementation, even from our own perspective, so there's a good chance that it's insecure in some manner.
 
@@ -38,7 +38,7 @@ The earliest, most naive prototype can be seen in the linked repo, while all the
 
   See our list of once-planned features for a taste of what's simply not there.
 
-  Some quick examples include group chat, voice/video chat, embeds support, emoticons, simultaneous login...
+  Some quick examples include group chat, voice/video chat, embeds support, emoticons, simultaneous login, contacts/messages deletion, etc...
 
 - Toc has some serious limitations that can severely impact usability for long-term use.
 
@@ -46,9 +46,11 @@ The earliest, most naive prototype can be seen in the linked repo, while all the
 
   Also, if we do ever release a new version of Toc, there's no guarantee that it will work properly with your existing profiles for this current version, because we simply haven't built a proper data schema versioning and migration mechanism.
 
+  Lastly, Toc will likely use more data and battery than most centralized messaging software, due in part to our very naively designed messaging protocol that's probably not nearly as efficient as it needs to be, and in part to the simple fact that as a distributed app, we have no access to push messaging, and need to use polling for just about everything. We have done some optimization in this area to make data and battery usage reasonably low for users with a small number of contacts, but expect usage to grow significantly when adding more contacts.
+
 ## Contributing
 
-As mentioned earlier, I won't have much time to review and accept pull requests for this project in the foreseeable future. However, you're certainly welcome to fork this repo and hack on it in any way you like, as long as you respect the AGPL license and release the source code with your modifications.
+As mentioned earlier, we won't have much time to review and accept pull requests for this project in the foreseeable future. However, you're certainly welcome to fork this repo and hack on it in any way you like, as long as you respect the AGPL license and release the source code with your modifications.
 
 ### Environment Setup
 
