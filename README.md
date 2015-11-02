@@ -32,7 +32,7 @@ After we graduated in May, I decided to take a short break before starting my jo
 
 With that said, I am now officially looking for work. If you have any openings for a ClojureScript frontend project, I'd love to hear about it. =)
 
-You can reach me through the email on my [GitHub profile](https://github.com/lewisl9029) or through my [Toc account](http://toc.im/?inviteid=9b0d50b86dd596aa8c7a94bd116c2ed4a24ffb0f2d88d44231d3747f655fb27a) (mostly for novelty, I probably won't be on 24/7).
+You can reach me through the email on my [GitHub profile](https://github.com/lewisl9029) or through my [Toc account](http://toc.im/?inviteid=9b0d50b86dd596aa8c7a94bd116c2ed4a24ffb0f2d88d44231d3747f655fb27a) (mostly for novelty - if I'm not online, just shoot me an email instead).
 
 ## Limitations and Potential Issues
 
