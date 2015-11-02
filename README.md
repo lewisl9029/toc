@@ -12,9 +12,9 @@ We then persist and synchronize this central state tree using the open, federate
 
 Toc's peer-to-peer communication stack was built on top of Telehash (albiet the older V2 version with an integrated DHT). We use the randomly generated, cryptographically-verifiable Telehash hashname as the only identifier for our users, which means they are protected from impersonation without having to supply any personally identifiable information. However, users can still provide a friendly name for other users to recognize them by, and an email with which Toc can use to pull their profile picture using the federated, Gravatar-compatible Libravatar service.
 
-As mentioned in the very beginning, Toc is only a proof-of-concept. Numerous potential issues and limitations prevent us from being able to recommend Toc for long term general use. And due to mainly a lack of time for myself and the rest of the original dev team, these issues will not likely get resolved any time soon. We recommend taking a look at one of the many, more mature open-source projects for that purpose, such as TextSecure, Signal, Matrix, and Tox.
+As mentioned in the very beginning, Toc is only a proof-of-concept. Numerous potential issues and limitations prevent us from being able to recommend Toc for long term general use. And due to the fact that we simply won't have any more time to work on Toc, these issues will not likely get resolved any time soon. We recommend taking a look at one of the many, more mature open-source messaging projects for that purpose, such as TextSecure/Signal, Telegram, Matrix, and Tox.
 
-We do hope that, by releasing Toc into the wild, we can generate some renewed interest in the amazing technologies for building decentralized software that Toc makes use of. We also hope that Toc can inspire more developers to strive for building apps that protects users' privacy without compromising on important aspects of their experience.
+That said, we do hope that, by releasing Toc into the wild, we can generate some renewed interest in the amazing technologies for building decentralized software that Toc makes use of. We also hope that Toc can inspire more developers to strive for building apps that protects users' privacy without compromising on important aspects of their experience.
 
 ## Background
 
@@ -22,10 +22,29 @@ Toc originated as a 4th year Computer Engineering design project at the Universi
 
 The earliest, most naive prototype can be seen in the linked repo, while all the  releases for the subsequent rewrite can be seen in the releases section of this repo. https://github.com/lewisl9029/FYDP-2015-010
 
-## Tradeoffs and Potential Issues
+## Limitations and Potential Issues
 
-(i.e. Reasons why you may not want to rely on Toc for anything critical)
+(i.e. Reasons why you may not want to rely on Toc as your primary means of communication)
 
+- Toc is not secure.
+
+  It uses an outdated build of Telehash V2, which could have several security vulnerabilities that would have been fixed in the current V3 branch.
+
+  We also couldn't figure out how to use an SSL certificate with the Telehash V2 seed server, which limits our ability to use HTTPS to deliver the client-side code to your browser for the hosted app, which means it can be compromised by an attacker in transit.
+
+  Lastly, our crypto implementation for data persistence has never been reviewed, and we certainly cannot claim to have implemented it perfectly, given our lack of experience in building real-world cryptography. This is compounded by the fact that we had to implement a custom deterministic encryption algorithm for securing storage keys in our key-value store, because we couldn't find any existing deterministic encryption implementations for JS. It's a very naive implementation, even from our own perspective, so there's a good chance that it's insecure in some manner.
+
+- Toc is missing many features that you might expect from messaging software that people would actually use.
+
+  See our list of once-planned features for a taste of what's simply not there.
+
+  Some quick examples include group chat, voice/video chat, embeds support, emoticons, simultaneous login...
+
+- Toc has some serious limitations that can severely impact usability for long-term use.
+
+  For instance, on mobile devices, Toc will often get paused when the app is placed in the background, which means Toc will not be able to send status updates or receive new messages. This can be worked around by writing native services, but that simply falls way out of my area of expertise.
+
+  Also, if we do ever release a new version of Toc, there's no guarantee that it will work properly with your existing profiles for this current version, because we simply haven't built a proper data schema versioning and migration mechanism.
 
 ## Contributing
 
