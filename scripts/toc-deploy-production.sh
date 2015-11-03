@@ -19,14 +19,14 @@ git push origin refs/tags/$TOC_VERSION
 # gulp package --prod
 gulp package
 
-rm -rf toc-pages/app
-rm -rf toc-pages/index.html
-rm -rf toc-pages/landing.css
-rm -rf toc-pages/landing.js
+rm -rf ../toc-pages/app
+rm -rf ../toc-pages/index.html
+rm -rf ../toc-pages/landing.css
+rm -rf ../toc-pages/landing.js
 
-cp -r www/* toc-pages/
+cp -r www/* ../toc-pages/
 
 # clean up previous staging releases
-rm -rf toc-pages/releases/staging
+rm -rf ../toc-pages/releases/staging
 
 source scripts/toc-deploy-publish.sh
