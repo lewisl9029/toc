@@ -14,10 +14,7 @@ npm version $TOC_VERSION || exit 0
 git push origin master
 git push origin refs/tags/$TOC_VERSION
 
-# FIXME: disabling release builds due to ionic package issues
-# https://github.com/lewisl9029/toc/issues/505
-# gulp package --prod
-gulp package
+gulp package --prod
 
 rm -rf ../toc-pages/app
 rm -rf ../toc-pages/index.html

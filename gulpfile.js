@@ -97,8 +97,8 @@ gulp.task('version', function version() {
   var tocVersion = require('./package.json').version;
   return gulp.src(basePaths.root + 'config.xml')
     .pipe(replace(
-      /<widget id="net\.lewisl\.toc" version="[0-9]+(\.[0-9]+)*"/,
-      '<widget id="net.lewisl.toc" version="' + tocVersion + '"'
+      /<widget id="net\.lewisl\.toc-im" version="[0-9]+(\.[0-9]+)*"/,
+      '<widget id="net.lewisl.toc-im" version="' + tocVersion + '"'
     ))
     .pipe(gulp.dest(basePaths.root));
 });

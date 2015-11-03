@@ -6,7 +6,7 @@ rm -rf ../toc-pages/releases/$TOC_RELEASE
 mkdir -p ../toc-pages/releases/$TOC_RELEASE
 cp -r www/* ../toc-pages/releases/$TOC_RELEASE/
 
-tar -cvf $CIRCLE_ARTIFACTS/www.tar www
+tar -cvf "$CIRCLE_ARTIFACTS/Toc Messenger.tar" www
 cp "Toc Messenger.apk" $CIRCLE_ARTIFACTS/
 cp "Toc Messenger.ipa" $CIRCLE_ARTIFACTS/
 
