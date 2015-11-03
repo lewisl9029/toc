@@ -1,1 +1,20 @@
-<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="-121.2 205.2 384 384"><style>.st0{fill:url(#SVGID_1_);} .st1{opacity:0.8;fill:#FFFFFF;enable-background:new ;}</style><radialGradient id="SVGID_1_" cx="220.887" cy="-531.413" r="201.113" fx="68.411" fy="-635.307" gradientTransform="matrix(1 0 0 -1 -168 -180)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#C6E1E7"/><stop offset="0" stop-color="#B2D0DE"/></radialGradient><path class="st0" d="M260.8 375.1c0-69.1-85.5-125-191-125s-191 55.9-191 125 85.5 125 191 125c14.2 0 28.1-1 41.4-2.9l92.2 47.2-14-71.8c43.5-23 71.4-58.1 71.4-97.5z"/><circle class="st1" cx="-7.9" cy="376.1" r="23.1"/><circle class="st1" cx="73" cy="376.1" r="23.1"/><circle class="st1" cx="153.9" cy="376.1" r="23.1"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="-121.2 205.2 384 384" style="enable-background:new -121.2 205.2 384 384;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:url(#SVGID_1_);}
+	.st1{opacity:0.8;fill:#FFFFFF;enable-background:new    ;}
+</style>
+<radialGradient id="SVGID_1_" cx="222.2783" cy="-530.3903" r="205.5945" fx="66.4053" fy="-636.5999" gradientTransform="matrix(0.7861 0 0 -0.8977 -117.5392 -120.9206)" gradientUnits="userSpaceOnUse">
+	<stop  offset="0" style="stop-color:#C6E1E7"/>
+	<stop  offset="0" style="stop-color:#B2D0DE"/>
+</radialGradient>
+<path class="st0" d="M224.3,376.9c0-63.4-68.7-114.7-153.5-114.7S-82.7,313.5-82.7,376.9S-14,491.6,70.8,491.6
+	c11.4,0,22.6-0.9,33.3-2.7l0,0l74.1,43.3l-11.3-65.9C201.9,445.3,224.3,413,224.3,376.9L224.3,376.9z"/>
+<g>
+	<circle class="st1" cx="-10.1" cy="377.9" r="23.1"/>
+	<circle class="st1" cx="70.8" cy="377.9" r="23.1"/>
+	<circle class="st1" cx="151.7" cy="377.9" r="23.1"/>
+</g>
+</svg>
