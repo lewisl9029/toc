@@ -16,7 +16,11 @@ dependencies:
     - "~/nvm/versions/node/v4.2.1/bin"
   pre:
     - >
-      if [ ! -e ~/nvm/versions/node/v4.2.1/bin ];
+      if [ ! -e ~/nvm/versions/node/v4.2.1/bin/npm ] || \
+        [ ! -e ~/nvm/versions/node/v4.2.1/bin/gulp ] || \
+        [ ! -e ~/nvm/versions/node/v4.2.1/bin/http-server ] || \
+        [ ! -e ~/nvm/versions/node/v4.2.1/bin/jspm ] || \
+        [ ! -e ~/nvm/versions/node/v4.2.1/bin/ionic ];
       then
         /bin/bash scripts/toc-install-deps.sh
       else
