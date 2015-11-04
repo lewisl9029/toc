@@ -1,7 +1,7 @@
 (function initialize(window) {
   'use strict';
 
-  window.tocVersion = '0.11.1';
+  window.tocVersion = '0.11.2';
   window.tocProd = false;
 
   var initializeApp = function initializeApp() {
