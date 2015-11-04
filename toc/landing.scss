@@ -298,7 +298,7 @@ a {
   width: 100%;
   max-width: $toc-tablet-width;
   h1 {
-    @include toc-landing-font(26px);
+    @include toc-landing-font(24px);
     color: $toc-primary-text-color-light;
     font-weight: 300;
     line-height: 1.5;

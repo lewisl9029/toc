@@ -2,7 +2,7 @@
 <widget id="net.lewisl.toc-im" version="0.11.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Toc Messenger</name>
   <description>
-      A distributed messaging app that syncs
+      A distributed messaging app that can sync across all of your devices
   </description>
   <author email="dev@lewisl.net" href="https://github.com/lewisl9029">
       Lewis Liu

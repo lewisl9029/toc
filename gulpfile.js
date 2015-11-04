@@ -404,10 +404,9 @@ gulp.task('build-font', function buildFont() {
     .pipe(gulp.dest(basePaths.prod));
 });
 
-gulp.task('build-image', function buildImage() {
+gulp.task('build-image', ['build-png'], function buildImage() {
   return gulp.src([
       basePaths.devApp + 'assets/images/*.svg'
-      // PNGs have been pre-minified
       // basePaths.devApp + 'assets/images/**'
     ], {
       base: basePaths.dev
@@ -416,6 +415,16 @@ gulp.task('build-image', function buildImage() {
       // optimizationLevel: 7,
       multipass: true
     })))
+    .pipe(gulp.dest(basePaths.prod));
+});
+
+gulp.task('build-png', function buildPng() {
+  // PNGs have been pre-minified, just need to copy
+  return gulp.src([
+      basePaths.devApp + 'assets/images/*.png'
+    ], {
+      base: basePaths.dev
+    })
     .pipe(gulp.dest(basePaths.prod));
 });
 
