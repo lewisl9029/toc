@@ -93,12 +93,24 @@ gulp.task('watch', function watch() {
   gulp.watch(paths.sass.landing, ['bundle-sass-landing']);
 });
 
-gulp.task('version', function version() {
-  var tocVersion = require('./package.json').version;
+gulp.task('version', ['version-npm', 'version-config']);
+
+gulp.task('version-config', function versionConfig() {
+  var tocVersion = argv.v || argv.version;
   return gulp.src(basePaths.root + 'config.xml')
     .pipe(replace(
       /<widget id="net\.lewisl\.toc-im" version="[0-9]+(\.[0-9]+)*"/,
       '<widget id="net.lewisl.toc-im" version="' + tocVersion + '"'
+    ))
+    .pipe(gulp.dest(basePaths.root));
+});
+
+gulp.task('version-npm', function versionNpm() {
+  var tocVersion = argv.v || argv.version;
+  return gulp.src(basePaths.root + 'package.json')
+    .pipe(replace(
+      /"version": "[0-9]+(\.[0-9]+)*"/,
+      '"version": "' + tocVersion + '"'
     ))
     .pipe(gulp.dest(basePaths.root));
 });
