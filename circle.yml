@@ -1,7 +1,3 @@
-# machine:
-#   services:
-#     - docker
-
 machine:
   node:
     version: 4.2.1
@@ -19,23 +15,18 @@ dependencies:
     - "~/nvm/versions/node/v4.2.1/lib/node_modules"
     - "~/nvm/versions/node/v4.2.1/bin"
   pre:
-    - /bin/bash scripts/toc-install-deps.sh
+    - >
+      if [ ! -e ~/nvm/versions/node/v4.2.1/bin ];
+      then
+        /bin/bash scripts/toc-install-deps.sh
+      else
+        echo "Cached global dependencies exist. Skipping install."
+      fi
   override:
     - npm install
     - npm rebuild node-sass
     - npm rebuild optipng-bin
     - jspm install
-    # - >
-    #     docker run \
-    #       -v $(pwd):/toc \
-    #       lewisl9029/toc-dev:latest \
-    #       npm install
-    # - >
-    #     docker run \
-    #       -v $(pwd):/toc \
-    #       -e JSPM_GITHUB_AUTH_TOKEN=$JSPM_GITHUB_AUTH_TOKEN \
-    #       lewisl9029/toc-dev:latest \
-    #       jspm install
 
 test:
   override:
