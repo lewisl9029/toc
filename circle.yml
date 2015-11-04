@@ -46,11 +46,9 @@ deployment:
     branch: /.*/
     owner: lewisl9029
     commands:
-      - /bin/bash scripts/toc-deploy-prepare.sh
       - /bin/bash scripts/toc-deploy-staging.sh
   production:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: lewisl9029
     commands:
-      - /bin/bash scripts/toc-deploy-prepare.sh
       - /bin/bash scripts/toc-deploy-production.sh
