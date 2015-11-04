@@ -7,9 +7,6 @@
     "type": "git",
     "url": "git@github.com:lewisl9029/toc.git"
   },
-  "scripts": {
-    "version": "gulp version && git add -A ."
-  },
   "dependencies": {},
   "devDependencies": {
     "gulp": "^3.9.0",
