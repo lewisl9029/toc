@@ -2,6 +2,8 @@
 
 [![Circle CI](https://circleci.com/gh/lewisl9029/toc.svg?style=svg&circle-token=1b2ccd52352469342382def79f8154faf0955c73)](https://circleci.com/gh/lewisl9029/toc)
 
+NOTE: Toc is no longer being actively maintained, and the seed server is no longer running as of March 31st, 2016. If you'd like to host and use your own seed server, take a look at the [toc-seed](https://github.com/lewisl9029/toc-seed) repo. 
+
 [Toc Messenger](http://toc.im/) is a proof-of-concept distributed messaging app designed from the ground up to support user data synchronization for use across multiple devices. Toc is available as a client-side web application (with a [seed server](https://github.com/lewisl9029/toc-seed) that anyone can easily host) and as a packaged [Cordova](https://cordova.apache.org/) app for Android and iOS (visit the [releases](releases) section to download the prebuilt packages).
 
 Toc is only a proof-of-concept. Numerous [potential issues and limitations](#limitations-and-potential-issues) prevent us from being able to recommend Toc for long-term general use. And due to the fact that we may not have any more time to work on Toc in the foreseeable future, these issues will not likely get resolved any time soon. For general use, we recommend taking a look at one of the many, more mature open-source messaging projects out there, such as [TextSecure/Signal](https://whispersystems.org/), [Telegram](https://telegram.org/), [Matrix](http://matrix.org/), and [Tox](https://tox.chat/) (the name similarity is unfortunate, and we would like to apologize for any confusion this might cause, but we honestly did not find out about Tox until very recently).
