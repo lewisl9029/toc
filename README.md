@@ -2,7 +2,7 @@
 
 [![Circle CI](https://circleci.com/gh/lewisl9029/toc.svg?style=svg&circle-token=1b2ccd52352469342382def79f8154faf0955c73)](https://circleci.com/gh/lewisl9029/toc)
 
-NOTE: Toc is no longer being actively maintained, and ~~the seed server is no longer running as of March 31, 2016~~ (it's back up as of May 23, 2016) the seed server may go offline from time to time, resulting in possible service interruptions for first-time users. If you'd like to host and use your own seed server, take a look at the [toc-seed](https://github.com/lewisl9029/toc-seed) repo. 
+NOTE: Toc is no longer being actively maintained, and ~~the seed server is no longer running as of March 31, 2016~~ (seed server is back up as of May 23, 2016) the seed server may go offline from time to time, possibly resulting in service interruptions for first-time users. If you'd like to host and use your own seed server, take a look at the [toc-seed](https://github.com/lewisl9029/toc-seed) repo. 
 
 [Toc Messenger](http://toc.im/) is a proof-of-concept distributed messaging app designed from the ground up to support user data synchronization for use across multiple devices. Toc is available as a client-side web application (with a [seed server](https://github.com/lewisl9029/toc-seed) that anyone can easily host) and as a packaged [Cordova](https://cordova.apache.org/) app for Android and iOS (visit the [releases](releases) section to download the prebuilt packages).
 
